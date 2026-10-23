@@ -1,8 +1,8 @@
 {
  "candidates": 7377,
- "events": 5,
+ "events": 8,
  "events_by_annotator": {
-  "deploytest": 5
+  "deploytest": 8
  },
  "images_done_by_annotator": {},
  "images_touched": 3,
