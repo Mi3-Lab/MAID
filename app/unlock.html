@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WheelView · access code</title><link rel="stylesheet" href="/style.css"></head>
+<body><header><b>WheelView Annotate</b></header>
+<section id="login"><h2>Enter the team access code</h2>
+<p>Needed once per device/browser. After that the app also works offline.</p>
+<input id="code" placeholder="XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters"> <button id="go">Unlock</button>
+<p id="msg" class="muted"></p></section>
+<script>
+const go = async () => {
+  const r = await fetch('/api/unlock', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code: document.getElementById('code').value }) });
+  if (r.ok) location.href = '/'; else document.getElementById('msg').textContent = (await r.json()).detail || ('error ' + r.status);
+};
+document.getElementById('go').onclick = go;
+document.getElementById('code').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+</script></body></html>

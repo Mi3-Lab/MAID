@@ -27,6 +27,8 @@ const allOf = store => tx(store, 'readonly', s => req(s.getAll()));
 // ---------- state ----------
 const S = { schema: null, annotator: null, device: null, images: [], idx: 0, mine: {}, row: 0, exclMode: false, bboxMode: false, syncing: false };
 const $ = id => document.getElementById(id);
+const _fetch = window.fetch.bind(window);
+window.fetch = async (...a) => { const r = await _fetch(...a); if (r.status === 401) { location.href = '/unlock.html'; throw new Error('locked'); } return r; };
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c == 'x' ? r : (r & 3 | 8)).toString(16); }));
 const slug = s => s.trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^[-.]+|[-.]+$/g, '').slice(0, 40);
 
@@ -106,6 +108,7 @@ async function getBatch() {
   $('btnBatch').disabled = true;
   try {
     const r = await fetch(`/api/assign?annotator=${encodeURIComponent(S.annotator)}&n=30`);
+    if (r.status === 503) { alert((await r.json()).detail); $('btnBatch').disabled = false; return; }
     if (!r.ok) throw new Error(r.status); const j = await r.json(); await addImages(j.images);
     if (S.idx >= S.images.length) S.idx = 0; render();
   } catch (e) { alert('Could not fetch a batch (offline?). You can keep labelling what is already cached.'); }

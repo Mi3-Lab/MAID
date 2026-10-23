@@ -1,10 +1,11 @@
 """WheelView annotation server: FastAPI + SQLite. Serves the PWA, images, the append-only event log,
 assignment (2 independent annotators, a 3rd on disagreement), adjudication and derived exports."""
-import csv, hashlib, io, json, os, sqlite3, threading, time
+import csv, hashlib, hmac, io, json, os, sqlite3, threading, time
+from contextlib import asynccontextmanager
 from pathlib import Path
 import httpx
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 import wvcore
 
@@ -68,12 +69,76 @@ def local_image(i):
         if p.exists(): return p
     return None
 
-app = FastAPI(title="WheelView Annotate")
+# ---------- optional Hugging Face persistence (ephemeral hosts) ----------
+HF_DATASET = os.environ.get("WV_HF_DATASET", "").strip()
+HF = None
+if HF_DATASET:
+    from hf_persist import HFPersistence
+    if not os.environ.get("HF_TOKEN"): raise SystemExit("WV_HF_DATASET is set but HF_TOKEN is missing")
+    HF = HFPersistence(HF_DATASET, os.environ["HF_TOKEN"], DB_PATH, DB_PATH.parent / "hfdata", IMAGE_DIR)
+
+def images_ready():
+    return HF is None or HF.state["images_ready"]
+
+@asynccontextmanager
+async def lifespan(app):
+    if HF:
+        HF.restore()          # raises -> server does not start (never push an empty copy over the remote)
+        HF.start()
+    yield
+    if HF: HF.stop()
+
+# ---------- access-code gate (one unlock per device, cookie-based) ----------
+ACCESS_CODE = os.environ.get("WV_ACCESS_CODE", "").strip()
+ACCESS_TOKEN = hmac.new(ACCESS_CODE.encode(), b"wheelview-access-v1", hashlib.sha256).hexdigest() if ACCESS_CODE else ""
+OPEN_PATHS = {"/unlock", "/unlock.html", "/api/unlock", "/api/health", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/style.css", "/favicon.ico"}
+FAILS = {}  # ip -> [window_start, count]
+
+def has_access(req: Request):
+    if not ACCESS_CODE: return True
+    c = req.cookies.get("wv_access", ""); h = req.headers.get("x-access-code", "")
+    return (c and hmac.compare_digest(c, ACCESS_TOKEN)) or (h and hmac.compare_digest(h, ACCESS_CODE))
+
+app = FastAPI(title="WheelView Annotate", lifespan=lifespan)
+
+@app.middleware("http")
+async def gate(req: Request, call_next):
+    if req.url.path in OPEN_PATHS or has_access(req): return await call_next(req)
+    if req.method == "GET" and "text/html" in req.headers.get("accept", ""):
+        return RedirectResponse("/unlock.html", status_code=303)
+    return JSONResponse({"detail": "access code required", "unlock": "/unlock.html"}, status_code=401)
+
+@app.post("/api/unlock")
+async def unlock(req: Request):
+    ip = (req.headers.get("x-forwarded-for") or (req.client.host if req.client else "?")).split(",")[0].strip()
+    w = FAILS.get(ip)
+    if w and time.time() - w[0] < 600 and w[1] >= 10: raise HTTPException(429, "too many attempts; try again in 10 minutes")
+    body = await req.json() if req.headers.get("content-type", "").startswith("application/json") else {}
+    code = str(body.get("code", "")).strip().upper()
+    if not ACCESS_CODE: return {"ok": True}
+    if not hmac.compare_digest(code, ACCESS_CODE.upper()):
+        if not w or time.time() - w[0] >= 600: FAILS[ip] = [time.time(), 1]
+        else: w[1] += 1
+        raise HTTPException(403, "wrong access code")
+    FAILS.pop(ip, None)
+    secure = req.headers.get("x-forwarded-proto", req.url.scheme) == "https"
+    r = JSONResponse({"ok": True})
+    # SameSite=None so it also works inside the huggingface.co Space iframe; Secure is required for that.
+    r.set_cookie("wv_access", ACCESS_TOKEN, max_age=400 * 86400, httponly=True, secure=secure, samesite="none" if secure else "lax", path="/")
+    return r
 
 @app.get("/api/health")
 def health():
     with db() as c: n = c.execute("SELECT COUNT(*) FROM events").fetchone()[0]
-    return {"ok": True, "events": n, "candidates": len(CANDIDATES)}
+    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "images_ready": images_ready()}
+    if HF: out["hf"] = {k: v for k, v in HF.state.items()}
+    return out
+
+@app.post("/api/admin/flush")
+def flush():
+    """Export + commit events to the HF dataset now (access-gated like every other endpoint)."""
+    if not HF: return {"ok": False, "detail": "HF persistence not enabled"}
+    HF.push_now(); return {"ok": True, "state": HF.state}
 
 @app.get("/api/schema")
 def schema(): return wvcore.SCHEMA
@@ -109,6 +174,7 @@ def order_key(i):  # deterministic shuffle so batches mix classes/sources
 def assign(annotator: str, n: int = Query(30, ge=1, le=200)):
     ann = wvcore.slug(annotator)
     if not ann or ann != annotator: raise HTTPException(400, "annotator must be a slug (lowercase, a-z0-9._-)")
+    if not images_ready(): raise HTTPException(503, "server is still downloading images; try again in a minute")
     maxn = wvcore.SCHEMA["max_annotators_per_image"]; base = wvcore.SCHEMA["annotators_per_image"]
     with LOCK, db() as c:
         st = statuses(c)

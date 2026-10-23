@@ -1,0 +1,39 @@
+name: sync events from Hugging Face dataset
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: derived-refs/heads/main
+  cancel-in-progress: false
+env:
+  WV_HF_DATASET: samitesla/wheelview-data
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install "huggingface_hub>=1.0,<3"
+      - name: Pull per-annotator event files from HF (append-only union by uuid)
+        env: { HF_TOKEN: "${{ secrets.HF_TOKEN }}" }
+        run: python scripts/pull_hf_events.py
+      # Pushes made with GITHUB_TOKEN do not trigger other workflows, so derived/ is rebuilt here.
+      - name: Validate + rebuild derived/
+        run: python scripts/build_derived.py --strict
+      - name: Commit and push
+        run: |
+          git config user.name "wheelview-bot"; git config user.email "wheelview-bot@users.noreply.github.com"
+          git add annotations/events derived
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "annotations: sync from HF dataset ${WV_HF_DATASET} [skip ci]"
+          for i in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            git pull --rebase origin main || { git rebase --abort; exit 1; }
+            python scripts/build_derived.py && git add derived && (git diff --cached --quiet || git commit -m "derived: rebuild [skip ci]")
+          done
+          exit 1

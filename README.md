@@ -149,3 +149,25 @@ Requirements:
 
 Run only **one** server instance per SQLite file. For multiple sites, run separate servers and merge through git: each
 server exports its events, and `import` on the others unions them.
+
+## Hosted deployment (Hugging Face Space)
+
+- **App:** Docker Space `samitesla/wheelview-annotate` at https://samitesla-wheelview-annotate.hf.space. It is built from this repo's `Dockerfile` on port 7860. Deploy with `python scripts/deploy_space.py`, which pushes `git archive HEAD` plus the Space front-matter.
+- **Data:** private dataset `samitesla/wheelview-data`.
+  - `images/` holds the thumbnails. The Space downloads them at startup.
+  - `annotations/events/*.jsonl` is the durable copy of all events.
+- **Persistence:** Space disk is ephemeral, so `server/hf_persist.py` takes over when `WV_HF_DATASET` is set.
+  - At startup it restores the events into SQLite. The restore is idempotent, and the server refuses to start if it fails.
+  - It exports new events to the per-annotator jsonl every 30 s.
+  - A `CommitScheduler` commits them to the dataset every 2 minutes and again on shutdown.
+  - `POST /api/admin/flush` forces a commit.
+- **Access:** set `WV_ACCESS_CODE` (a Space secret) to require a team code once per browser.
+  - The code is entered on `/unlock.html` and stored in an HttpOnly cookie that lasts 400 days.
+  - The service worker serves the cached app offline after that.
+  - Scripted clients can send the code in an `X-Access-Code` header instead.
+- **GitHub sync:** `.github/workflows/sync-from-hf.yml` runs every 30 minutes and on demand.
+  - It pulls `annotations/events/*.jsonl` from the dataset and appends only unseen uuids (`scripts/pull_hf_events.py`).
+  - It rebuilds `derived/` and commits to `main`. It needs the repo secret `HF_TOKEN`.
+- **Space settings:**
+  - secrets: `HF_TOKEN`, `WV_ACCESS_CODE`
+  - variable: `WV_HF_DATASET=samitesla/wheelview-data`
