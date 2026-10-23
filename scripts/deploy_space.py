@@ -24,7 +24,7 @@ ap.add_argument("--dataset", default="samitesla/wheelview-data"); a = ap.parse_a
 stage = Path(tempfile.mkdtemp(prefix="space-"))
 subprocess.run(f"git -C {ROOT} archive HEAD | tar -x -C {stage}", shell=True, check=True)
 for p in (".github",): shutil.rmtree(stage / p, ignore_errors=True)
-readme = stage / "README.md"; readme.write_text(FRONT.format(dataset=a.dataset) + readme.read_text())
+readme = stage / "README.md"; readme.write_text(FRONT.format(dataset=a.dataset) + readme.read_text(encoding="utf-8"), encoding="utf-8")
 sha = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
 api = HfApi(token=os.environ["HF_TOKEN"])
 r = api.upload_folder(repo_id=a.space, repo_type="space", folder_path=stage, delete_patterns=["*"], commit_message=f"Deploy {sha} from GitHub main")

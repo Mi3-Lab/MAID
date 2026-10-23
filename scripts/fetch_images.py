@@ -21,7 +21,7 @@ def main():
     ap.add_argument("--source", help="only rows of this source (openimages/openverse/commons)")
     ap.add_argument("--limit", type=int, default=0); ap.add_argument("--delay", type=float, default=1.0)
     a = ap.parse_args(); out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
-    rows = list(csv.DictReader(open(a.candidates, newline="")))
+    rows = list(csv.DictReader(open(a.candidates, newline="", encoding="utf-8")))
     if a.source: rows = [r for r in rows if r["source"] == a.source]
     stats = dict(present=0, linked=0, copied=0, downloaded=0, failed=0, skipped=0); n_dl = 0
     for r in rows:

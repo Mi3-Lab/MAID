@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from itertools import combinations
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SCHEMA = json.load(open(os.path.join(HERE, "schema.json")))
+SCHEMA = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
 FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}
 COMPARE = [f["name"] for f in SCHEMA["fields"] if f.get("compare")] + ["exclude"]
 ALL_FIELDS = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status"]
@@ -122,7 +122,7 @@ def kappa(per):
     return res
 
 def load_candidates(path):
-    with open(path, newline="") as fh:
+    with open(path, newline="", encoding="utf-8") as fh:
         return {r["candidate_id"]: r for r in csv.DictReader(fh)}
 
 def materialize(events, cands, outdir):
@@ -131,7 +131,7 @@ def materialize(events, cands, outdir):
     per, adjv = fold(events)
     imgs = sorted(set(per) | {k[0] for k in adjv})
     stat = {i: image_status(i, per, adjv) for i in imgs}
-    with open(os.path.join(outdir, "labels.csv"), "w", newline="") as fh:
+    with open(os.path.join(outdir, "labels.csv"), "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["image_id", "status", "n_done", "annotators"] + [x for f in COMPARE for x in (f, f + "_agreement")] +
                    ["face_blur_missed", "proposed_class", "source", "license", "source_page_url"])
@@ -139,21 +139,21 @@ def materialize(events, cands, outdir):
             s = stat[i]; c = cands.get(i, {})
             w.writerow([i, s["status"], len(s["done"]), ";".join(s["done"])] + [x for f in COMPARE for x in s["fields"][f][:2]] +
                        [s["face_blur_missed"], c.get("proposed_class", ""), c.get("source", ""), c.get("license", ""), c.get("source_page_url", "")])
-    with open(os.path.join(outdir, "per_annotator_labels.csv"), "w", newline="") as fh:
+    with open(os.path.join(outdir, "per_annotator_labels.csv"), "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh); fl = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status"]
         w.writerow(["image_id", "annotator"] + fl)
         for i in imgs:
             for a, fv in sorted(per.get(i, {}).items()):
                 w.writerow([i, a] + [json.dumps(fv[f]) if f == "bbox" and f in fv else fv.get(f, "") for f in fl])
-    with open(os.path.join(outdir, "adjudication_needed.csv"), "w", newline="") as fh:
+    with open(os.path.join(outdir, "adjudication_needed.csv"), "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh); w.writerow(["image_id", "status", "field", "values_by_annotator"])
         for i in imgs:
             for f in stat[i]["conflicts"]:
                 w.writerow([i, stat[i]["status"], f, json.dumps(stat[i]["fields"][f][2], sort_keys=True)])
     k = kappa(per)
-    json.dump(k, open(os.path.join(outdir, "kappa.json"), "w"), indent=1, sort_keys=True)
+    json.dump(k, open(os.path.join(outdir, "kappa.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
     prog = progress(events, cands, stat)
-    json.dump(prog, open(os.path.join(outdir, "progress.json"), "w"), indent=1, sort_keys=True)
+    json.dump(prog, open(os.path.join(outdir, "progress.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
     return stat, k, prog
 
 def progress(events, cands, stat):

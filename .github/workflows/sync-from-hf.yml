@@ -1,7 +1,9 @@
 name: sync events from Hugging Face dataset
+# Schedule disabled: the server is self-hosted on the laptop (no HF Space), so nothing writes to the dataset.
+# Re-enable the cron if the HF Space deployment is revived.
 on:
-  schedule:
-    - cron: "*/30 * * * *"
+  # schedule:
+  #   - cron: "*/30 * * * *"
   workflow_dispatch:
 permissions:
   contents: write

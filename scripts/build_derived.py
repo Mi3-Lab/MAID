@@ -11,7 +11,7 @@ def load_events(evdir):
     evs, seen, bad = [], set(), 0
     for fn in sorted(glob.glob(os.path.join(evdir, "*.jsonl"))):
         owner = Path(fn).stem
-        for ln, line in enumerate(open(fn), 1):
+        for ln, line in enumerate(open(fn, encoding="utf-8"), 1):
             if not line.strip(): continue
             try: e, why = wvcore.validate(json.loads(line))
             except json.JSONDecodeError: e, why = None, "invalid json"

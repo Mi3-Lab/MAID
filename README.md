@@ -171,3 +171,23 @@ server exports its events, and `import` on the others unions them.
 - **Space settings:**
   - secrets: `HF_TOKEN`, `WV_ACCESS_CODE`
   - variable: `WV_HF_DATASET=samitesla/wheelview-data`
+
+## Self-hosting on a Windows laptop (current deployment)
+
+- `run.ps1` creates `.venv`, installs the requirements, and imports the committed events.
+  - It then serves on `127.0.0.1:8770` and restarts uvicorn if it exits.
+  - It reads `ACCESS_CODE.txt`, which is gitignored. HF persistence stays off.
+- `scripts\windows\tunnel.ps1` runs a Cloudflare quick tunnel (no account).
+  - It writes the current HTTPS URL to `var\public_url.txt`.
+  - The URL changes whenever cloudflared restarts, and each new URL is a new origin, so annotators must reopen it and unlock again. A stable URL needs a free Cloudflare named tunnel or a Tailscale Funnel account.
+- `scripts\windows\sync.ps1` runs every 30 minutes. It exports events, commits, does `git pull --rebase` and pushes. `rebuild-derived.yml` then rebuilds `derived/`.
+- `scripts\windows\install-tasks.ps1` registers the scheduled tasks.
+  - Run it elevated to also start the server and tunnel at boot without a logon.
+  - Run it with `-Uninstall` to remove the tasks.
+- `scripts\windows\power-apply.ps1` and `power-revert.ps1` change only the AC settings:
+  - never sleep
+  - never hibernate
+  - lid close does nothing
+
+  The original values are saved in `var\power_original.json`.
+- Images: unpack the thumbnails into `images\<candidate_id>.jpg`. Commons images are proxied lazily.

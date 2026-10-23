@@ -18,12 +18,12 @@ def main():
         lf = local / rf.name
         have = set()
         if lf.exists():
-            for line in lf.open():
+            for line in lf.open(encoding="utf-8"):
                 if line.strip():
                     try: have.add(json.loads(line)["uuid"])
                     except Exception: pass
         new = []
-        for line in rf.open():
+        for line in rf.open(encoding="utf-8"):
             if not line.strip(): continue
             try: e, why = wvcore.validate(json.loads(line))
             except json.JSONDecodeError: e, why = None, "json"
@@ -31,7 +31,7 @@ def main():
             if e["uuid"] in have: continue
             have.add(e["uuid"]); new.append(json.dumps({k: e[k] for k in sorted(e)}, sort_keys=True, separators=(",", ":")))
         if new:
-            with lf.open("a") as fh:
+            with lf.open("a", encoding="utf-8", newline="\n") as fh:
                 if lf.stat().st_size and not lf.read_bytes().endswith(b"\n"): fh.write("\n")
                 fh.write("\n".join(new) + "\n")
         added += len(new); print(f"{rf.name}: +{len(new)}")
