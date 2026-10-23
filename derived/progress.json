@@ -1,15 +1,15 @@
 {
  "candidates": 7377,
- "events": 316,
+ "events": 476,
  "events_by_annotator": {
   "deploytest": 8,
-  "samir": 308
+  "samir": 468
  },
  "images_done_by_annotator": {
-  "samir": 53
+  "samir": 92
  },
- "images_touched": 63,
+ "images_touched": 109,
  "status_counts": {
-  "in_progress": 63
+  "in_progress": 109
  }
 }
