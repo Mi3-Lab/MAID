@@ -1,8 +1,12 @@
 {
  "candidates": 7377,
- "events": 0,
- "events_by_annotator": {},
+ "events": 5,
+ "events_by_annotator": {
+  "deploytest": 5
+ },
  "images_done_by_annotator": {},
- "images_touched": 0,
- "status_counts": {}
+ "images_touched": 3,
+ "status_counts": {
+  "in_progress": 3
+ }
 }

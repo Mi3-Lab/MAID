@@ -1,1 +1,4 @@
 image_id,annotator,device_type,occupied,propulsion,occlusion,viewpoint,lighting,setting,exclude,face_blur_missed,bbox,_status
+wv_000001,deploytest,,,,,,daylight,,,,,
+wv_000002,deploytest,,,,,,daylight,,,,,
+wv_000003,deploytest,,,,,,daylight,,,,,

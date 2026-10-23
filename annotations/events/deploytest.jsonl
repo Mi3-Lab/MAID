@@ -1,0 +1,5 @@
+{"annotator":"deploytest","device_id":"deploy-verify-local","field":"lighting","image_id":"wv_000001","kind":"label","ts":"2026-10-23T01:37:41.857Z","uuid":"b70ffabb-3e4c-4ef0-88ec-97dabdbd2678","value":"daylight"}
+{"annotator":"deploytest","device_id":"deploy-verify-local","field":"lighting","image_id":"wv_000002","kind":"label","ts":"2026-10-23T01:37:41.858Z","uuid":"c907ba81-498e-4199-ab9a-bddeab92d92b","value":"daylight"}
+{"annotator":"deploytest","device_id":"deploy-verify-local","field":"lighting","image_id":"wv_000003","kind":"label","ts":"2026-10-23T01:37:41.859Z","uuid":"60fbd3e1-e775-475d-9301-f4ac1fb8b6d0","value":"daylight"}
+{"annotator":"deploytest","device_id":"deploy-verify-local-shutdown","field":"lighting","image_id":"wv_000001","kind":"label","ts":"2026-10-23T01:37:59.251Z","uuid":"2f71cd76-c165-4aee-8b07-4b9ed248aaab","value":"daylight"}
+{"annotator":"deploytest","device_id":"deploy-verify-local-shutdown","field":"lighting","image_id":"wv_000002","kind":"label","ts":"2026-10-23T01:37:59.252Z","uuid":"f9407904-c86d-4242-9fd8-3fb13ed36f13","value":"daylight"}
