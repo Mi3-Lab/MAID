@@ -1,0 +1,9 @@
+# Replace the placeholder handles with real GitHub usernames once the private repo exists.
+*                         @MI3-LAB-MAINTAINER
+/server/                  @MI3-LAB-MAINTAINER
+/server/schema.json       @MI3-LAB-MAINTAINER @WHEELVIEW-LABEL-LEAD
+/data/                    @MI3-LAB-MAINTAINER @WHEELVIEW-LICENSE-REVIEWER
+/derived/                 @MI3-LAB-MAINTAINER
+/.github/                 @MI3-LAB-MAINTAINER
+# Each annotator owns their own event file, e.g.:
+# /annotations/events/samir.jsonl   @samir-github-handle

@@ -1,0 +1,34 @@
+name: validate events & rebuild derived outputs
+on:
+  push:
+    branches: [main]
+    paths: ["annotations/events/**", "server/**", "scripts/**", "data/**"]
+  pull_request:
+    paths: ["annotations/events/**", "server/**", "scripts/**", "data/**"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: derived-${{ github.ref }}, cancel-in-progress: false }
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Append-only check (PRs) - existing event lines may never change or disappear
+        if: github.event_name == 'pull_request'
+        run: |
+          bad=$(git diff --numstat "origin/${{ github.base_ref }}...HEAD" -- annotations/events | awk '$2 != 0 {print $3}')
+          if [ -n "$bad" ]; then echo "::error::lines removed/edited in: $bad (event files are append-only)"; exit 1; fi
+      - name: Validate events and rebuild derived/
+        run: python scripts/build_derived.py --strict     # stdlib only, no installs needed
+      - uses: actions/upload-artifact@v4
+        with: { name: derived, path: derived/ }
+      - name: Commit derived/ (main only)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "wheelview-bot"; git config user.email "wheelview-bot@users.noreply.github.com"
+          git add derived
+          git diff --cached --quiet || (git commit -m "derived: rebuild from annotations/events [skip ci]" && git push)

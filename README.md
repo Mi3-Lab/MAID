@@ -1,0 +1,151 @@
+# WheelView Annotate
+
+An offline-first annotation and correction tool for the WheelView candidate pool (IEEE AgeTech Global Dataset
+Competition 2026, Track 3). It consists of:
+
+* **The PWA.** Uses a service worker and IndexedDB, and is installable.
+* **A FastAPI + SQLite server.** It holds an append-only event log.
+* **A git layout.** Each annotator appends to their own event file, so annotators never overwrite each other's work.
+
+```
+app/                    PWA: index.html, app.js, sw.js, manifest, adjudicate.html/js
+server/                 main.py (FastAPI), wvcore.py (validation/consensus/kappa, shared with CI), schema.json
+data/                   candidates.csv, LICENSES_draft.csv (from the WheelView candidate build)
+annotations/events/     <annotator>.jsonl, append-only event logs: the source of truth in git
+derived/                generated outputs (labels.csv, adjudication_needed.csv, per_annotator_labels.csv, kappa.json, progress.json). Do not edit.
+scripts/                fetch_images.py, sync_events.py (export/import/sync), build_derived.py
+tests/test_e2e.py       Playwright end-to-end test (two annotators, offline period, third annotator, adjudication, git round-trip)
+.github/                rebuild-derived.yml workflow, CODEOWNERS
+images/ var/            git-ignored: image files, SQLite DB, proxy cache, server-side exports
+```
+
+## Run locally (one command)
+```bash
+./run.sh            # http://127.0.0.1:8770  (or ./run.sh 9000; HOST=0.0.0.0 ./run.sh to expose on the LAN)
+# or with Docker:
+docker build -t wheelview-annotate . && docker run -p 8770:8000 -v $PWD/var:/srv/wheelview/var -v $PWD/images:/srv/wheelview/images wheelview-annotate
+```
+`run.sh` installs the Python dependencies if they are missing. If a WheelView build is present
+(`WHEELVIEW_BUILD_DIR`, default `/workspace/wheelview`), it links the thumbnails into `images/`. It then imports any
+committed `annotations/events/*.jsonl` (an idempotent step) and starts uvicorn.
+
+Pages:
+* `/` is the annotator app.
+* `/adjudicate.html` is the adjudicator view. It also shows progress and kappa.
+* `/export/labels.csv` and the other files under `/export/` are always rebuilt live.
+
+## Annotating
+* **Starting out.** Enter your name; there is no password. **Get batch** assigns about 30 images and caches them, with
+  their metadata, for offline work. You can then label with no connection. Edits are queued in IndexedDB and pushed
+  automatically on the browser's `online` event and every 15 s.
+* **Fields.** These come from `server/schema.json`: device_type, occupied, propulsion, occlusion, viewpoint, lighting
+  and setting.
+  * There is also exclude-with-reason (child, clinical_setting, identifiable_person, not_a_photo, license_concern,
+    duplicate), a *face blur missed* flag and optional bboxes.
+  * **The option values are my working definition.** The report's Table 1 was not available when this was built.
+    Edit `schema.json` to match Table 1 exactly; the UI, the server validation and CI all read it.
+* **Prefill.** Weak labels from `proposed_class` appear as dashed suggestions. They are saved only when you click them
+  or press **Done** (Enter).
+* **Keyboard shortcuts.**
+
+  | Key | Action |
+  |---|---|
+  | ↑ / ↓ | choose the field row |
+  | 1–9 | pick a value (0 clears it) |
+  | Enter | Done, then next image |
+  | ← / → or p / n | previous / next image |
+  | e, then 1–6 | exclude with that reason |
+  | f | face-blur flag |
+  | b | bbox mode |
+  | Backspace | clear bboxes |
+  | ? | help |
+* **Corrections.** *My images* lists everything you have labelled; open any of them to change a field. Your newest
+  event wins, but only for *you*.
+* **Independence.** Annotators never see each other's labels.
+
+## Data model and consensus
+* **Events.** Every edit is one event: `{uuid, image_id, annotator, field, value, ts, device_id, kind}`.
+  * Inserts are `INSERT OR IGNORE` on uuid, so re-pushes are idempotent.
+  * Nothing is ever updated or deleted.
+  * The latest value per (image, annotator, field) is chosen by `ts`, with `uuid` as the tie-break.
+* **Assignment.** Each image goes to 2 independent annotators. When their *done* labels disagree on a compared field,
+  the image gets a third annotator, who is assigned first.
+* **labels.csv status per image.** These are computed per field:
+  * `consensus` when all done annotators agree
+  * `majority` for 2 of 3
+  * `adjudicated` when an adjudication event exists, which always wins
+  * `conflict` otherwise
+  * `face_blur_missed` is OR-combined across annotators, for safety.
+  * If the image is excluded by consensus, disagreements on the other fields are marked `moot_excluded`.
+* **Image status.** The overall status is one of `unlabelled`, `in_progress`, `needs_third_annotator`,
+  `needs_adjudication` or `final`.
+* **Kappa.** Cohen's kappa is computed per field in two ways:
+  * pooled, using the first two annotators (alphabetical) of every image
+  * pairwise, for every annotator pair with at least 5 shared images
+
+  Kappa is meaningless until there are many items per field.
+
+## Git workflow (see CONTRIBUTING.md)
+* **The SQLite DB is the server's working copy.** The jsonl files in git are the durable, reviewable record.
+  * `python scripts/sync_events.py export` appends the server's new events to `annotations/events/<annotator>.jsonl`.
+    It deduplicates by uuid, so it never rewrites a line.
+  * `python scripts/sync_events.py import` loads all jsonl files into the DB. It is idempotent, which also makes it the
+    way to restore the DB.
+  * `python scripts/sync_events.py sync [--push]` runs import, export and a local rebuild of `derived/`, then
+    `git commit annotations/events`. It runs `git push` only with `--push` *and* a configured remote.
+* **Rebuilding derived/.** `python scripts/build_derived.py` rebuilds `derived/` from the jsonl files alone, using the
+  same code as the server, so the output is byte-identical (the e2e test checks this). The GitHub Actions workflow:
+  * runs this on every push and PR
+  * fails PRs that modify or remove existing event lines
+  * commits `derived/` on `main`
+* **Branches.** Use one branch per annotator (`annotate/<name>`) and PRs into `main`. Event files never conflict because
+  each annotator writes only their own file; `.gitattributes` sets `merge=union` for the rare same-annotator case.
+
+## Images are not in git
+* **Fetching.** `scripts/fetch_images.py` fills `images/<image_id>.jpg`:
+  * `--from-dir <wheelview build> [--link]` takes them from an existing thumbnail cache.
+  * `--download [--source openverse] [--limit N]` takes them from `image_url`, politely: 1 request/s and backoff on 429.
+    Images are resized to at most 640 px and re-encoded, which drops EXIF.
+* **The server's /img/ proxy.** `/img/<id>` serves `images/`. Otherwise, by default (`WV_IMAGE_PROXY=1`), it fetches
+  `image_url` once, caches the result in `var/imgcache/`, and backs off a host for 10 minutes after a 429.
+* **Wikimedia Commons rows (2,528) have no local thumbnail yet.** `upload.wikimedia.org` was answering 429 to this build
+  machine, so these rows are **not assigned by default**: only images that can already be served are assigned. To
+  include them, either:
+  * run `fetch_images.py --download --source commons` from a machine that is not rate-limited, or
+  * set `WV_ASSIGN_WITHOUT_LOCAL_IMAGE=1` to rely on the proxy. In that case a batch only caches the images that the
+    proxy managed to fetch.
+* **Git LFS (optional).** If the team prefers images inside the repo, run `git lfs install && git lfs track "images/*.jpg"`,
+  remove `images/` and `*.jpg` from `.gitignore`, and commit.
+  * About 4,850 thumbnails are about 440 MB. That fits the GitHub LFS free quota only barely: 1 GB of storage and
+    1 GB/month of bandwidth on free plans as of this writing, so check your org's plan.
+  * Every clone that pulls LFS uses up bandwidth.
+  * The license obligations (attribution in `data/LICENSES_draft.csv`) still apply to redistributed copies.
+
+## Backing up SQLite
+The jsonl files are a complete backup of all labels: `sync_events.py export`, then commit. To restore, run
+`sync_events.py import` against an empty DB. Assignments are not exported; they are re-derived as people request new
+batches. For a hot copy of the DB itself:
+```bash
+sqlite3 var/wheelview.db ".backup 'backup/wheelview-$(date +%F-%H%M).db'"     # safe while the server runs (WAL)
+# cron example: */30 * * * *  cd /srv/wheelview-annotate && python3 scripts/sync_events.py sync --push && sqlite3 var/wheelview.db ".backup var/backup.db"
+```
+Litestream (continuous replication to S3-compatible storage) is a good fit for a hosted instance.
+
+## Hosting publicly (not done; needs an account or a server)
+Requirements:
+* **HTTPS.** Service workers and `crypto.randomUUID` only work on HTTPS or localhost.
+* **Persistent disk** for `var/`.
+* **The images.** Either run `fetch_images.py --download` on the host or mount a volume.
+* **Some access control.** Names are not authentication. At minimum, put the app behind your institution's SSO, an
+  HTTP basic-auth reverse proxy, Cloudflare Access, or a Tailscale/VPN.
+
+| Option | Notes |
+|---|---|
+| **UC Merced server / VM** | `HOST=0.0.0.0 ./run.sh 8770` under systemd, with nginx or Caddy in front for TLS, campus SSO or basic auth, cron backups. Simplest for data governance. |
+| **Fly.io** | `fly launch` (uses the Dockerfile), `fly volumes create wv_data`, mounted at `/srv/wheelview/var`. Images go in a second volume or are fetched on boot. Single machine only (SQLite). |
+| **Render** | Docker web service plus a persistent disk at `/srv/wheelview/var`. Persistent disks require a paid instance; the free tier's filesystem is ephemeral and sleeps when idle. |
+| **Railway** | Docker deploy plus a volume at `/srv/wheelview/var`. |
+| **Hugging Face Spaces** | Docker Space with `PORT=7860`. Storage is ephemeral unless you buy persistent storage, so run `sync_events.py sync --push` frequently (it needs a deploy key) or attach persistent storage. Make the Space private. |
+
+Run only **one** server instance per SQLite file. For multiple sites, run separate servers and merge through git: each
+server exports its events, and `import` on the others unions them.

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WheelView Annotate</title>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#1d4e89">
+<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css">
+</head><body>
+<header>
+  <b>WheelView Annotate</b>
+  <span id="who"></span>
+  <span id="net" class="pill">…</span>
+  <span id="queue" class="pill">0 queued</span>
+  <span class="grow"></span>
+  <button id="btnSync" title="Sync now">Sync</button>
+  <button id="btnBatch" title="Download more assigned images for offline work">Get batch</button>
+  <button id="btnList">My images</button>
+  <a href="/adjudicate.html">Adjudicate</a>
+  <button id="btnHelp">?</button>
+  <button id="btnLogout" title="Switch annotator">⎋</button>
+</header>
+<section id="login" hidden>
+  <h2>Who is annotating?</h2>
+  <p>Enter your name (no password). It is used as your annotator id; labels are attributed to it.</p>
+  <input id="name" placeholder="e.g. samir" autocomplete="off"> <button id="btnLogin">Start</button>
+  <p class="muted">Your labels are stored on this device and synced when online. Others' labels are never shown to you (independent annotation).</p>
+</section>
+<main id="main" hidden>
+  <div id="imgwrap"><img id="img" alt=""><canvas id="cv"></canvas><div id="imgmsg"></div></div>
+  <aside id="panel">
+    <div id="pos"></div>
+    <div id="meta" class="muted"></div>
+    <div id="fields"></div>
+    <div class="row"><span class="lbl">Exclude <kbd>e</kbd></span><span id="excl"></span></div>
+    <div class="row"><span class="lbl">Flags</span>
+      <label><input type="checkbox" id="face"> face blur missed <kbd>f</kbd></label></div>
+    <div class="row"><span class="lbl">BBox <kbd>b</kbd></span><span id="bboxinfo"></span>
+      <button id="btnBbox">draw</button><button id="btnBboxClear">clear</button></div>
+    <div class="row"><button id="btnPrev">← prev</button><button id="btnDone" class="primary">Done ⏎</button><button id="btnNext">next →</button></div>
+    <div id="hist" class="muted"></div>
+  </aside>
+</main>
+<section id="list" hidden></section>
+<dialog id="help"><h3>Keyboard</h3><table>
+<tr><td><kbd>↑</kbd><kbd>↓</kbd></td><td>select field row</td></tr>
+<tr><td><kbd>1</kbd>–<kbd>9</kbd></td><td>set value in selected row (<kbd>0</kbd> clears)</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>done (accepts dashed suggestions) + next image</td></tr>
+<tr><td><kbd>←</kbd><kbd>→</kbd> / <kbd>p</kbd><kbd>n</kbd></td><td>previous / next image</td></tr>
+<tr><td><kbd>e</kbd> then <kbd>1</kbd>–<kbd>6</kbd></td><td>exclude with reason (<kbd>e</kbd><kbd>0</kbd> un-exclude)</td></tr>
+<tr><td><kbd>f</kbd></td><td>toggle "face blur missed"</td></tr>
+<tr><td><kbd>b</kbd> / <kbd>Backspace</kbd></td><td>draw bbox (drag on image) / clear bboxes</td></tr>
+<tr><td><kbd>?</kbd></td><td>this help</td></tr></table>
+<p>Dashed = weak-label suggestion from <code>proposed_class</code>; it is only saved when you press Done or click it.</p>
+<button onclick="this.closest('dialog').close()">close</button></dialog>
+<script src="/app.js"></script>
+</body></html>

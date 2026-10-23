@@ -1,0 +1,21 @@
+# runtime state (SQLite DB, WAL, image proxy cache, server-side exports)
+var/
+*.db
+*.db-wal
+*.db-shm
+# images are never committed: rebuild with scripts/fetch_images.py (or use Git LFS, see README)
+images/
+thumbs/
+cache/
+*.jpg
+*.jpeg
+*.png
+!app/icon-*.png
+# e2e output (screenshots contain dataset images)
+screenshots/
+# python / editor
+__pycache__/
+*.pyc
+.venv/
+.env
+.DS_Store

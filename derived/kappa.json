@@ -1,0 +1,42 @@
+{
+ "device_type": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "exclude": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "lighting": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "occlusion": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "occupied": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "propulsion": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "setting": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ },
+ "viewpoint": {
+  "n_items": 0,
+  "pairwise": {},
+  "pooled_kappa": null
+ }
+}

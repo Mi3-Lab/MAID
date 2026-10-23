@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "note": "Field values follow WheelView Table 1 as understood from the task brief; edit here (single source of truth for UI, server validation and derivation).",
+  "fields": [
+    {"name": "device_type", "label": "Device type", "options": ["manual", "powered", "other_aid", "lookalike", "unclear"], "compare": true},
+    {"name": "occupied", "label": "Occupied", "options": ["yes", "no", "unclear"], "compare": true},
+    {"name": "propulsion", "label": "Propulsion", "options": ["self", "attendant", "motor", "stationary", "unclear", "n/a"], "compare": true},
+    {"name": "occlusion", "label": "Occlusion", "options": ["none", "partial", "heavy"], "compare": true},
+    {"name": "viewpoint", "label": "Viewpoint", "options": ["front", "side", "rear", "oblique", "top", "unclear"], "compare": true},
+    {"name": "lighting", "label": "Lighting", "options": ["daylight", "indoor", "low/night", "backlit/mixed"], "compare": true},
+    {"name": "setting", "label": "Setting", "options": ["home", "indoor_public", "street", "transit", "park/outdoor", "clinical", "event", "other"], "compare": true}
+  ],
+  "exclude_reasons": ["child", "clinical_setting", "identifiable_person", "not_a_photo", "license_concern", "duplicate"],
+  "extra_fields": {
+    "exclude": "one of exclude_reasons or '' (= not excluded); compared between annotators",
+    "face_blur_missed": "true/false; OR-combined across annotators (safety flag)",
+    "bbox": "JSON list of [x,y,w,h] in 0..1 image coordinates, or []; not compared, kept per annotator",
+    "_status": "'done' when the annotator has finished the image; only 'done' annotators count towards consensus"
+  },
+  "prefill": {
+    "manual_wheelchair": {"device_type": "manual", "propulsion": null},
+    "powered_wheelchair": {"device_type": "powered"},
+    "powered_wheelchair_ambiguous_addon": {"device_type": "powered"},
+    "other_aid_scooter": {"device_type": "other_aid", "propulsion": "motor"},
+    "other_aid_rollator_walker": {"device_type": "other_aid"},
+    "lookalike_stroller": {"device_type": "lookalike"},
+    "lookalike_shopping_cart": {"device_type": "lookalike"},
+    "lookalike_office_chair": {"device_type": "lookalike"},
+    "lookalike_luggage_trolley": {"device_type": "lookalike"}
+  },
+  "annotators_per_image": 2,
+  "max_annotators_per_image": 3
+}

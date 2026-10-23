@@ -1,0 +1,24 @@
+*{box-sizing:border-box}body{margin:0;font:14px/1.4 system-ui,sans-serif;background:#f4f6f9;color:#1b1f24}
+header{display:flex;gap:8px;align-items:center;padding:6px 10px;background:#1d4e89;color:#fff;flex-wrap:wrap}
+header a{color:#fff}.grow{flex:1}.pill{padding:1px 8px;border-radius:10px;background:#ffffff33;font-size:12px}
+.pill.off{background:#c0392b}.pill.on{background:#27ae60}
+button{font:inherit;padding:4px 10px;border:1px solid #9aa5b1;border-radius:5px;background:#fff;cursor:pointer}
+button.primary{background:#1d4e89;color:#fff;border-color:#1d4e89}
+section{padding:20px}#login input{font-size:18px;padding:6px}
+main{display:flex;gap:12px;padding:10px;height:calc(100vh - 44px)}
+#imgwrap{position:relative;flex:1;display:flex;align-items:center;justify-content:center;background:#222;border-radius:6px;overflow:hidden}
+#img{max-width:100%;max-height:100%;display:block}#cv{position:absolute;cursor:crosshair}
+#imgmsg{position:absolute;color:#fff;bottom:6px;left:8px;font-size:12px}
+#panel{width:420px;overflow:auto;background:#fff;border-radius:6px;padding:10px}
+.row{display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding:4px;border-radius:4px;margin:2px 0}
+.row.active{background:#e3edf9;outline:2px solid #1d4e89}
+.lbl{width:96px;font-weight:600;font-size:12px}
+.opt{padding:2px 7px;border:1px solid #c5ccd3;border-radius:4px;font-size:12px;cursor:pointer;background:#fff}
+.opt.sel{background:#1d4e89;color:#fff;border-color:#1d4e89}
+.opt.sug{border:2px dashed #1d4e89}
+.opt.ex.sel{background:#c0392b;border-color:#c0392b}
+.muted{color:#66707a;font-size:12px}kbd{border:1px solid #aaa;border-radius:3px;padding:0 3px;font-size:11px;background:#fafafa}
+#list table{border-collapse:collapse;background:#fff}#list td,#list th{padding:3px 8px;border-bottom:1px solid #ddd;font-size:12px}
+.tag{font-size:11px;padding:0 5px;border-radius:3px;background:#ddd}.tag.done{background:#27ae60;color:#fff}.tag.excl{background:#c0392b;color:#fff}
+#pos{font-weight:700}
+.opt.sel kbd{background:transparent;color:#fff;border-color:#ffffff88}

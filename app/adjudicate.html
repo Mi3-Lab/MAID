@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WheelView · Adjudicate</title><link rel="stylesheet" href="/style.css">
+<style>.card{display:flex;gap:12px;background:#fff;border-radius:6px;padding:10px;margin:10px 0}.card img{width:300px;max-height:300px;object-fit:contain;background:#222}
+.cf{margin:4px 0}.cf .opt{margin:1px}.who{font-size:11px;color:#555}table.k td,table.k th{padding:2px 8px;border-bottom:1px solid #ddd;font-size:12px}</style>
+</head><body>
+<header><b>WheelView · Adjudication</b><span class="grow"></span>
+<label>Adjudicator <input id="adj" placeholder="your name" size="12"></label>
+<a href="/export/labels.csv">labels.csv</a><a href="/export/adjudication_needed.csv">adjudication_needed.csv</a>
+<a href="/export/per_annotator_labels.csv">per-annotator</a><a href="/export/kappa.json">kappa</a><a href="/">← annotate</a></header>
+<section>
+<div id="stats"></div>
+<h3>Disagreements <button id="reload">reload</button></h3>
+<p class="muted">Shown only to adjudicators. Status <b>needs_third_annotator</b> means a third independent annotator is being assigned automatically;
+you may still resolve it now. Click a value to record an adjudication event (append-only; later adjudications supersede earlier ones).</p>
+<div id="list"></div>
+</section>
+<script src="/adjudicate.js"></script></body></html>
