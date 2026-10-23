@@ -8,7 +8,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency: { group: derived-${{ github.ref }}, cancel-in-progress: false }
+concurrency:
+  group: derived-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   rebuild:
     runs-on: ubuntu-latest
