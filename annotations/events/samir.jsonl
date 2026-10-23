@@ -588,3 +588,6 @@
 {"annotator":"samir","device_id":"78a19c94-a92e-41c7-802c-69de148d6cf9","field":"exclude","image_id":"wv_007026","kind":"label","ts":"2026-10-23T07:13:51.636Z","uuid":"7b655ca7-1bcc-44f9-b1e4-5d921bf75ef5","value":"not_a_photo"}
 {"annotator":"samir","device_id":"78a19c94-a92e-41c7-802c-69de148d6cf9","field":"_status","image_id":"wv_007026","kind":"label","ts":"2026-10-23T07:13:52.355Z","uuid":"ad552a58-0445-497b-9f6e-bc1aae1181bb","value":"done"}
 {"annotator":"samir","device_id":"78a19c94-a92e-41c7-802c-69de148d6cf9","field":"_status","image_id":"wv_007026","kind":"label","ts":"2026-10-23T07:13:54.437Z","uuid":"15b3f508-ac17-4894-b38d-cfdd187af4eb","value":"done"}
+{"annotator":"samir","device_id":"78a19c94-a92e-41c7-802c-69de148d6cf9","field":"bbox","image_id":"wv_000274","kind":"label","ts":"2026-10-23T07:40:00.706Z","uuid":"4faad70f-239a-48b2-bd24-377d9944718b","value":[[0.3375,0.1856,0.3521,0.5102]]}
+{"annotator":"samir","device_id":"78a19c94-a92e-41c7-802c-69de148d6cf9","field":"device_type","image_id":"wv_000274","kind":"label","ts":"2026-10-23T07:40:02.425Z","uuid":"c5c5d1a6-992e-49d2-8ab3-5e97f5d8a4b6","value":"powered"}
+{"annotator":"samir","device_id":"78a19c94-a92e-41c7-802c-69de148d6cf9","field":"occupied","image_id":"wv_000274","kind":"label","ts":"2026-10-23T07:40:05.166Z","uuid":"8b94c165-9571-4cc1-82de-375849c179b6","value":"yes"}
