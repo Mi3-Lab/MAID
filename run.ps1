@@ -11,6 +11,16 @@ New-Item -ItemType Directory -Force -Path (Join-Path $Root 'var') | Out-Null
 $Log = Join-Path $Root 'var\server.log'
 function Say($m) { $line = "$(Get-Date -Format s) [run.ps1] $m"; Add-Content -Path $Log -Value $line -Encoding UTF8; Write-Output $line }
 
+# Single instance: stopping the scheduled task kills wscript but can orphan this loop; a second loop would fight over
+# the port and re-run the event import every 5 s. The mutex is freed by Windows when this process dies.
+$script:Mutex = $null; $got = $true
+foreach ($name in @("Global\WheelViewServerLoop$Port", "Local\WheelViewServerLoop$Port")) {
+    try { $script:Mutex = New-Object System.Threading.Mutex($false, $name)
+          try { $got = $script:Mutex.WaitOne(0) } catch [System.Threading.AbandonedMutexException] { $got = $true }
+          break } catch { $script:Mutex = $null }
+}
+if (-not $got) { Say "another run.ps1 loop for port $Port is alive; exiting"; exit 0 }
+
 $Py = Join-Path $Root '.venv\Scripts\python.exe'
 if (-not (Test-Path $Py)) {
     $Base = $env:WV_PYTHON

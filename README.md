@@ -224,6 +224,9 @@ server exports its events, and `import` on the others unions them.
   - It reads `ACCESS_CODE.txt`, which is gitignored. HF persistence stays off.
 - `scripts\windows\tunnel.ps1` runs a Cloudflare quick tunnel (no account).
   - It writes the current HTTPS URL to `var\public_url.txt`.
+  - Single instance: a named mutex (`WheelViewTunnelLoop`) plus `var\tunnel.lock` (PID-checked) make a second loop exit immediately. On startup it kills stray `cloudflared` processes from `var\bin` (or pointing at this port) left by dead loops. `run.ps1` has the same mutex guard (`WheelViewServerLoop<port>`).
+  - Health check: every 60 s it fetches `<public url>/api/health`. After 3 consecutive failures while the local server is up, it kills cloudflared and starts a new tunnel (new URL in `var\public_url.txt`, log in `var\tunnel.log`). A dead local server doesn't count against the tunnel.
+  - `Stop-ScheduledTask` kills only the `wscript` wrapper and can orphan the loop. To stop it for real, kill the `powershell` process whose command line contains `tunnel.ps1`.
   - The URL changes whenever cloudflared restarts, and each new URL is a new origin, so annotators must reopen it and unlock again. A stable URL needs a free Cloudflare named tunnel or a Tailscale Funnel account.
 - `scripts\windows\sync.ps1` runs every 30 minutes. It exports events, commits, does `git pull --rebase` and pushes. `rebuild-derived.yml` then rebuilds `derived/`.
 - `scripts\windows\install-tasks.ps1` registers the scheduled tasks.
