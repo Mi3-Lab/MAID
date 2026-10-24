@@ -55,6 +55,7 @@ wv_000270,shaaz,,,,,,,,not_a_photo,,,done
 wv_000271,shaaz,,,,,,,,not_a_photo,,,done
 wv_000272,shaaz,powered,yes,not_applicable,none,front,indoor,indoor,,True,"[[0.0447, 0.0588, 0.4027, 0.8935], [0.5559, 0.0899, 0.3557, 0.9027], [0.8508, 0.0217, 0.1442, 0.2499], [0.3239, 0.1012, 0.3047, 0.4251]]",done
 wv_000273,shaaz,,,,,,,,not_a_photo,,,done
+wv_000274,samir,powered,yes,,,,,,,,"[[0.3375, 0.1856, 0.3521, 0.5102]]",
 wv_000274,shaaz,powered,yes,not_applicable,none,side,indoor,indoor,,True,"[[0.3472, 0.1779, 0.3259, 0.4438]]",done
 wv_000275,shaaz,powered,yes,not_applicable,none,side,indoor,indoor,,True,"[[0.0524, 0.0237, 0.1786, 0.3365], [0.2598, 0.0588, 0.5632, 0.8488]]",done
 wv_000276,shaaz,other_aid,yes,not_applicable,none,rear,shade,other,,,"[[0.5512, 0.3728, 0.2893, 0.6041]]",done

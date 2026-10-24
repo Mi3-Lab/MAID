@@ -1,9 +1,9 @@
 {
  "candidates": 7377,
- "events": 1752,
+ "events": 1755,
  "events_by_annotator": {
   "deploytest": 8,
-  "samir": 590,
+  "samir": 593,
   "shaaz": 1154
  },
  "images_done_by_annotator": {
