@@ -26,6 +26,8 @@ jobs:
           if [ -n "$bad" ]; then echo "::error::lines removed/edited in: $bad (event files are append-only)"; exit 1; fi
       - name: Validate events and rebuild derived/
         run: python scripts/build_derived.py --strict     # stdlib only, no installs needed
+      - name: Rebuild attribution note (offline, from data/attribution_cache.json)
+        run: python scripts/build_attributions.py         # stdlib only, no network
       - uses: actions/upload-artifact@v4
         with: { name: derived, path: derived/ }
       - name: Commit derived/ (main only)

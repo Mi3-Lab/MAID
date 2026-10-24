@@ -191,3 +191,9 @@ server exports its events, and `import` on the others unions them.
 
   The original values are saved in `var\power_original.json`.
 - Images: unpack the thumbnails into `images\<candidate_id>.jpg`. Commons images are proxied lazily.
+
+## Image attributions / citations
+`derived/ATTRIBUTIONS.md`, `derived/attributions.csv` and `derived/attributions.bib` are rebuilt by CI on every push
+(`scripts/build_attributions.py`, offline). They list the exact credit line for each image, images whose authors ask for a
+specific credit or carry restrictions, and the images currently in use. When candidates are added, refresh the metadata
+cache by hand with `python scripts/fetch_attribution_meta.py` (network; incremental; polite to the Commons API) and push.
