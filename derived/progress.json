@@ -1,18 +1,18 @@
 {
  "candidates": 7377,
- "events": 1465,
+ "events": 1752,
  "events_by_annotator": {
   "deploytest": 8,
   "samir": 590,
-  "shaaz": 867
+  "shaaz": 1154
  },
  "images_done_by_annotator": {
   "samir": 108,
-  "shaaz": 90
+  "shaaz": 100
  },
- "images_touched": 214,
+ "images_touched": 224,
  "status_counts": {
   "final": 1,
-  "in_progress": 213
+  "in_progress": 223
  }
 }
