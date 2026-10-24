@@ -13,6 +13,12 @@
   <span class="grow"></span>
   <button id="btnSync" title="Sync now">Sync</button>
   <button id="btnBatch" title="Download more assigned images for offline work">Get batch</button>
+  <button id="btnReview" title="Review machine pre-labels: confirm or fix (r)">Review auto labels</button>
+  <select id="rorder" hidden title="Review queue order">
+    <option value="lowconf">lowest confidence first</option>
+    <option value="wheelchair">untyped wheelchairs first</option>
+    <option value="random">random</option>
+  </select>
   <button id="btnList">My images</button>
   <a href="/adjudicate.html">Adjudicate</a>
   <button id="btnHelp">?</button>
@@ -29,6 +35,7 @@
   <aside id="panel">
     <div id="pos"></div>
     <div id="meta" class="muted"></div>
+    <div id="aibanner" hidden></div>
     <div id="fields"></div>
     <div class="row"><span class="lbl">Exclude <kbd>e</kbd></span><span id="excl"></span></div>
     <div class="row"><span class="lbl">Flags</span>
@@ -48,8 +55,22 @@
 <tr><td><kbd>e</kbd> then <kbd>1</kbd>–<kbd>6</kbd></td><td>exclude with reason (<kbd>e</kbd><kbd>0</kbd> un-exclude)</td></tr>
 <tr><td><kbd>f</kbd></td><td>toggle "face blur missed"</td></tr>
 <tr><td><kbd>b</kbd> / <kbd>Backspace</kbd></td><td>draw bbox (drag on image) / clear bboxes</td></tr>
-<tr><td><kbd>?</kbd></td><td>this help</td></tr></table>
-<p>Dashed = weak-label suggestion from <code>proposed_class</code>; it is only saved when you press Done or click it.</p>
+<tr><td><kbd>?</kbd></td><td>this help</td></tr>
+<tr><th colspan="2" style="text-align:left;padding-top:8px">Review auto labels (<kbd>r</kbd> or the header button)</th></tr>
+<tr><td><kbd>r</kbd></td><td>switch between normal labelling and reviewing machine suggestions</td></tr>
+<tr><td><kbd>a</kbd> / <kbd>Enter</kbd></td><td>confirm all remaining orange suggestions as your labels, mark done, go to next open image</td></tr>
+<tr><td><kbd>↑</kbd><kbd>↓</kbd> + <kbd>1</kbd>–<kbd>9</kbd></td><td>fix a field before confirming (your value wins; recorded as a correction)</td></tr>
+<tr><td><kbd>a</kbd> <kbd>a</kbd></td><td>on images with a ⚠ screening flag (child / clinical / not a photo), press twice — or exclude with <kbd>e</kbd></td></tr>
+<tr><td><kbd>Shift</kbd>+<kbd>B</kbd></td><td>accept the model's dashed device boxes as your bbox</td></tr>
+<tr><td><kbd>o</kbd></td><td>show / hide the face-blur detector's boxes (magenta)</td></tr>
+<tr><td><kbd>f</kbd></td><td>a face is still recognisable after blurring → "face blur missed" (works in both modes)</td></tr></table>
+<p>Images are shown <b>face-blurred</b> (as they will be released) wherever <code>scripts/auto_blur.py</code> has processed them.
+If you can still recognise a face, press <kbd>f</kbd>; those images get re-blurred by hand before release.</p>
+<p>Dashed blue = weak-label suggestion from <code>proposed_class</code> (normal mode); it is only saved when you press Done or click it.
+Orange = machine suggestion with its confidence (review mode). Confirmed or fixed values are saved under <b>your</b> name, with a note
+that they were model-suggested; the model itself never counts as an annotator and never excludes an image.
+Queue order (review): lowest model confidence first (default), untyped wheelchairs first, or random; images that already have one
+human label are offered first so every image gets two independent people.</p>
 <button onclick="this.closest('dialog').close()">close</button></dialog>
 <script src="/app.js"></script>
 </body></html>

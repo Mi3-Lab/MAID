@@ -2,9 +2,9 @@ name: validate events & rebuild derived outputs
 on:
   push:
     branches: [main]
-    paths: ["annotations/events/**", "server/**", "scripts/**", "data/**"]
+    paths: ["annotations/events/**", "annotations/auto/**", "server/**", "scripts/**", "data/**"]
   pull_request:
-    paths: ["annotations/events/**", "server/**", "scripts/**", "data/**"]
+    paths: ["annotations/events/**", "annotations/auto/**", "server/**", "scripts/**", "data/**"]
   workflow_dispatch:
 permissions:
   contents: write

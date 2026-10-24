@@ -1,0 +1,296 @@
+{
+ "classifier": {
+  "license": "Apache-2.0",
+  "method": "zero-shot, prompt ensemble (mean of normalised text embeddings per option), softmax over options at temperature 0.01 on cosine similarity; propulsion = P(manual)*P(self/attendant/empty | manual) + (1-P(manual)) -> not_applicable",
+  "model": "google/siglip2-so400m-patch14-224",
+  "revision": "78e403963a4f6a3640d07803284752326fdf4edf"
+ },
+ "detector": {
+  "images_with_boxes": 300,
+  "license": "Apache-2.0",
+  "min_score": 0.25,
+  "model": "google/owlv2-base-patch16-ensemble",
+  "queries": [
+   "a wheelchair",
+   "a power wheelchair",
+   "a mobility scooter",
+   "a rollator walker",
+   "a baby stroller",
+   "a shopping cart",
+   "an office chair",
+   "a luggage trolley"
+  ],
+  "revision": "cfd3195ba4ea9592eec887ded089f4c08eff231d"
+ },
+ "generated_at": "2026-10-24T08:55:59Z",
+ "images": 4849,
+ "kind": "machine_suggestions",
+ "model_tag": "siglip2-so400m-224_zs-v1",
+ "never_counts_as_human_annotation": true,
+ "prompt_version": "zs-v1",
+ "prompts": {
+  "_propulsion_manual": {
+   "attendant": [
+    "a person pushing someone else in a wheelchair from behind",
+    "a caregiver pushing a wheelchair",
+    "a helper standing behind a wheelchair holding the handles"
+   ],
+   "not_applicable": [
+    "an empty wheelchair with nobody in it",
+    "a parked wheelchair"
+   ],
+   "self": [
+    "a person pushing the wheels of their own wheelchair",
+    "a wheelchair user propelling themselves",
+    "a person wheeling themselves in a manual wheelchair"
+   ]
+  },
+  "device_type": {
+   "lookalike": [
+    "a baby stroller",
+    "a pram or pushchair",
+    "a shopping cart",
+    "a supermarket trolley",
+    "an office chair on wheels",
+    "a luggage trolley",
+    "a baggage cart at an airport"
+   ],
+   "manual": [
+    "a manual wheelchair with large rear wheels and push rims",
+    "a person sitting in a manual wheelchair",
+    "a folding manual wheelchair",
+    "a lightweight sports wheelchair pushed by hand",
+    "a hospital-style manual wheelchair with push handles"
+   ],
+   "other_aid": [
+    "a mobility scooter",
+    "a person riding a mobility scooter",
+    "a rollator walker with wheels and a seat",
+    "a walking frame",
+    "a person using a walker",
+    "a walking cane or crutches"
+   ],
+   "powered": [
+    "an electric powered wheelchair with a joystick control",
+    "a person in a power wheelchair",
+    "a motorized wheelchair with a battery box and small wheels",
+    "an electric wheelchair"
+   ]
+  },
+  "lighting": {
+   "daylight": [
+    "a photo taken outdoors in bright sunlight",
+    "an outdoor scene in daylight",
+    "a sunny day outside"
+   ],
+   "indoor": [
+    "a photo taken indoors under artificial light",
+    "an indoor room",
+    "inside a building"
+   ],
+   "low_light": [
+    "a dark photo taken at night",
+    "a dimly lit scene in low light",
+    "a night-time street"
+   ],
+   "shade": [
+    "an outdoor photo in the shade",
+    "an overcast cloudy day outside",
+    "an outdoor scene in shadow"
+   ]
+  },
+  "occlusion": {
+   "heavy": [
+    "a wheelchair mostly hidden, only a small part visible",
+    "a heavily occluded wheelchair in a crowd"
+   ],
+   "none": [
+    "a fully visible wheelchair, nothing blocking the view",
+    "the whole mobility device is clearly visible"
+   ],
+   "partial": [
+    "a wheelchair partly hidden behind other objects or people",
+    "a partially occluded wheelchair",
+    "a wheelchair cut off by the edge of the photo"
+   ]
+  },
+  "occupied": {
+   "no": [
+    "an empty wheelchair with nobody in it",
+    "an empty mobility device with no one sitting on it",
+    "an unoccupied chair",
+    "an empty stroller"
+   ],
+   "yes": [
+    "a person sitting in a wheelchair",
+    "a person seated on a mobility device",
+    "someone riding a scooter",
+    "a wheelchair user"
+   ]
+  },
+  "setting": {
+   "curb": [
+    "a wheelchair at a street curb",
+    "a curb ramp at a crosswalk",
+    "the edge of a sidewalk by the road"
+   ],
+   "indoor": [
+    "inside a building",
+    "an indoor room or hallway",
+    "inside a shop or office"
+   ],
+   "other": [
+    "in a park or garden",
+    "on a beach or trail",
+    "at a sports court",
+    "on a stage or at an event",
+    "a plain studio background"
+   ],
+   "sidewalk": [
+    "a wheelchair on a sidewalk",
+    "a pavement or footpath in a city street",
+    "a pedestrian walkway"
+   ],
+   "vehicle": [
+    "a wheelchair getting into a van or car",
+    "a wheelchair ramp on a bus",
+    "a wheelchair inside a vehicle",
+    "a wheelchair lift on a vehicle"
+   ]
+  },
+  "viewpoint": {
+   "front": [
+    "a wheelchair seen from the front",
+    "a front view of a person in a wheelchair facing the camera"
+   ],
+   "rear": [
+    "a wheelchair seen from behind",
+    "a rear view of a wheelchair, back of the seat facing the camera"
+   ],
+   "side": [
+    "a side view of a wheelchair in profile",
+    "a wheelchair seen from the side"
+   ],
+   "three-quarter": [
+    "a three-quarter view of a wheelchair, seen diagonally from the front corner",
+    "a wheelchair photographed at an angle"
+   ]
+  }
+ },
+ "runs": [
+  {
+   "embed_seconds": 4.1,
+   "embedded": 16,
+   "finished": "2026-10-24T08:03:55Z",
+   "host_cpus": 8,
+   "started": "2026-10-24T08:03:46Z",
+   "threads": 8
+  },
+  {
+   "embed_seconds": 2374.5,
+   "embedded": 4833,
+   "finished": "2026-10-24T08:43:53Z",
+   "host_cpus": 8,
+   "started": "2026-10-24T08:04:14Z",
+   "threads": 8
+  },
+  {
+   "finished": "2026-10-24T08:46:12Z",
+   "host_cpus": 8,
+   "started": "2026-10-24T08:46:12Z",
+   "threads": 8
+  },
+  {
+   "finished": "2026-10-24T08:46:26Z",
+   "host_cpus": 8,
+   "started": "2026-10-24T08:46:26Z",
+   "threads": 8
+  },
+  {
+   "finished": "2026-10-24T08:46:51Z",
+   "host_cpus": 8,
+   "started": "2026-10-24T08:46:51Z",
+   "threads": 8
+  },
+  {
+   "detect_seconds": 442.8,
+   "detected": 300,
+   "finished": "2026-10-24T08:55:50Z",
+   "host_cpus": 8,
+   "started": "2026-10-24T08:48:25Z",
+   "threads": 8
+  }
+ ],
+ "runs_locally": "images are processed on the lab machine; nothing is uploaded",
+ "screening_policy": "flags are suggestions for the human reviewer; the model never excludes an image",
+ "screening_prompts": {
+  "child": [
+   [
+    "a photo of a child",
+    "a young kid",
+    "a toddler",
+    "a baby",
+    "children playing"
+   ],
+   [
+    "a photo of an adult",
+    "an elderly person",
+    "a photo with no people",
+    "an adult man or woman"
+   ]
+  ],
+  "clinical_setting": [
+   [
+    "a hospital room",
+    "a hospital ward with beds",
+    "a clinic or doctor's office",
+    "a patient in a hospital",
+    "a nurse in a medical setting",
+    "a rehabilitation clinic"
+   ],
+   [
+    "a street or public place",
+    "a home living room",
+    "a shop",
+    "a park",
+    "an office"
+   ]
+  ],
+  "not_a_photo": [
+   [
+    "a drawing",
+    "a cartoon illustration",
+    "an icon or pictogram",
+    "a diagram or technical drawing",
+    "clip art",
+    "a logo or sign symbol",
+    "a 3D render",
+    "a scanned document with text"
+   ],
+   [
+    "a real photograph",
+    "a photo taken with a camera",
+    "a snapshot of a real scene"
+   ]
+  ],
+  "visible_face": [
+   [
+    "a photo where a person's face is clearly visible",
+    "a close-up portrait of a person's face",
+    "a person looking at the camera"
+   ],
+   [
+    "a photo with no people",
+    "a person seen from behind",
+    "an object with no face visible",
+    "a person far away, face too small to see"
+   ]
+  ]
+ },
+ "screening_thresholds": {
+  "child": 0.5,
+  "clinical_setting": 0.5,
+  "not_a_photo": 0.5,
+  "visible_face": 0.5
+ }
+}

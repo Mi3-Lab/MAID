@@ -1,0 +1,366 @@
+{
+ "siglip2-so400m-224_zs-v1": {
+  "fields": {
+   "device_type": {
+    "all_done_human_labels": {
+     "accuracy": 0.7671,
+     "confusion": {
+      "manual|manual": 25,
+      "manual|other_aid": 2,
+      "manual|powered": 6,
+      "other_aid|manual": 2,
+      "other_aid|powered": 2,
+      "powered|powered": 31,
+      "unclear|powered": 5
+     },
+     "kappa": 0.5952,
+     "n": 73
+    },
+    "independent": {
+     "accuracy": 0.7671,
+     "confusion": {
+      "manual|manual": 25,
+      "manual|other_aid": 2,
+      "manual|powered": 6,
+      "other_aid|manual": 2,
+      "other_aid|powered": 2,
+      "powered|powered": 31,
+      "unclear|powered": 5
+     },
+     "kappa": 0.5952,
+     "n": 73
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 1.0,
+     "confusion": {
+      "manual|manual": 1
+     },
+     "kappa": 1.0,
+     "n": 1
+    }
+   },
+   "lighting": {
+    "all_done_human_labels": {
+     "accuracy": 0.8889,
+     "confusion": {
+      "daylight|daylight": 20,
+      "daylight|indoor": 3,
+      "daylight|shade": 2,
+      "indoor|indoor": 43,
+      "low_light|low_light": 1,
+      "shade|daylight": 2,
+      "shade|indoor": 1
+     },
+     "kappa": 0.779,
+     "n": 72
+    },
+    "independent": {
+     "accuracy": 0.8889,
+     "confusion": {
+      "daylight|daylight": 20,
+      "daylight|indoor": 3,
+      "daylight|shade": 2,
+      "indoor|indoor": 43,
+      "low_light|low_light": 1,
+      "shade|daylight": 2,
+      "shade|indoor": 1
+     },
+     "kappa": 0.779,
+     "n": 72
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 1.0,
+     "confusion": {
+      "indoor|indoor": 1
+     },
+     "kappa": 1.0,
+     "n": 1
+    }
+   },
+   "occlusion": {
+    "all_done_human_labels": {
+     "accuracy": 0.2329,
+     "confusion": {
+      "heavy|none": 1,
+      "none|heavy": 18,
+      "none|none": 11,
+      "none|partial": 33,
+      "partial|heavy": 3,
+      "partial|none": 1,
+      "partial|partial": 6
+     },
+     "kappa": 0.0058,
+     "n": 73
+    },
+    "independent": {
+     "accuracy": 0.2329,
+     "confusion": {
+      "heavy|none": 1,
+      "none|heavy": 18,
+      "none|none": 11,
+      "none|partial": 33,
+      "partial|heavy": 3,
+      "partial|none": 1,
+      "partial|partial": 6
+     },
+     "kappa": 0.0058,
+     "n": 73
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 0.0,
+     "confusion": {
+      "none|partial": 1
+     },
+     "kappa": 0.0,
+     "n": 1
+    }
+   },
+   "occupied": {
+    "all_done_human_labels": {
+     "accuracy": 0.9589,
+     "confusion": {
+      "no|no": 1,
+      "no|yes": 3,
+      "yes|yes": 69
+     },
+     "kappa": 0.3866,
+     "n": 73
+    },
+    "independent": {
+     "accuracy": 0.9589,
+     "confusion": {
+      "no|no": 1,
+      "no|yes": 3,
+      "yes|yes": 69
+     },
+     "kappa": 0.3866,
+     "n": 73
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 1.0,
+     "confusion": {
+      "yes|yes": 1
+     },
+     "kappa": 1.0,
+     "n": 1
+    }
+   },
+   "propulsion": {
+    "all_done_human_labels": {
+     "accuracy": 0.7534,
+     "confusion": {
+      "attendant|not_applicable": 1,
+      "attendant|self": 1,
+      "not_applicable|attendant": 1,
+      "not_applicable|not_applicable": 39,
+      "not_applicable|self": 4,
+      "self|attendant": 2,
+      "self|not_applicable": 3,
+      "self|self": 16,
+      "unclear|not_applicable": 6
+     },
+     "kappa": 0.518,
+     "n": 73
+    },
+    "independent": {
+     "accuracy": 0.7534,
+     "confusion": {
+      "attendant|not_applicable": 1,
+      "attendant|self": 1,
+      "not_applicable|attendant": 1,
+      "not_applicable|not_applicable": 39,
+      "not_applicable|self": 4,
+      "self|attendant": 2,
+      "self|not_applicable": 3,
+      "self|self": 16,
+      "unclear|not_applicable": 6
+     },
+     "kappa": 0.518,
+     "n": 73
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 0.0,
+     "confusion": {
+      "self|attendant": 1
+     },
+     "kappa": 0.0,
+     "n": 1
+    }
+   },
+   "setting": {
+    "all_done_human_labels": {
+     "accuracy": 0.2877,
+     "confusion": {
+      "curb|vehicle": 1,
+      "indoor|indoor": 3,
+      "indoor|other": 13,
+      "indoor|sidewalk": 1,
+      "indoor|vehicle": 28,
+      "other|other": 17,
+      "other|sidewalk": 1,
+      "other|vehicle": 6,
+      "sidewalk|sidewalk": 1,
+      "sidewalk|vehicle": 2
+     },
+     "kappa": 0.1498,
+     "n": 73
+    },
+    "independent": {
+     "accuracy": 0.2877,
+     "confusion": {
+      "curb|vehicle": 1,
+      "indoor|indoor": 3,
+      "indoor|other": 13,
+      "indoor|sidewalk": 1,
+      "indoor|vehicle": 28,
+      "other|other": 17,
+      "other|sidewalk": 1,
+      "other|vehicle": 6,
+      "sidewalk|sidewalk": 1,
+      "sidewalk|vehicle": 2
+     },
+     "kappa": 0.1498,
+     "n": 73
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 0.0,
+     "confusion": {
+      "indoor|vehicle": 1
+     },
+     "kappa": 0.0,
+     "n": 1
+    }
+   },
+   "viewpoint": {
+    "all_done_human_labels": {
+     "accuracy": 0.5205,
+     "confusion": {
+      "front|front": 30,
+      "front|three-quarter": 2,
+      "rear|front": 3,
+      "rear|rear": 4,
+      "rear|side": 1,
+      "rear|three-quarter": 1,
+      "side|front": 17,
+      "side|rear": 3,
+      "side|side": 4,
+      "side|three-quarter": 4,
+      "three-quarter|front": 3,
+      "three-quarter|side": 1
+     },
+     "kappa": 0.2427,
+     "n": 73
+    },
+    "independent": {
+     "accuracy": 0.5205,
+     "confusion": {
+      "front|front": 30,
+      "front|three-quarter": 2,
+      "rear|front": 3,
+      "rear|rear": 4,
+      "rear|side": 1,
+      "rear|three-quarter": 1,
+      "side|front": 17,
+      "side|rear": 3,
+      "side|side": 4,
+      "side|three-quarter": 4,
+      "three-quarter|front": 3,
+      "three-quarter|side": 1
+     },
+     "kappa": 0.2427,
+     "n": 73
+    },
+    "reviewed": {
+     "accuracy": null,
+     "confusion": {},
+     "kappa": null,
+     "n": 0
+    },
+    "vs_final_labels": {
+     "accuracy": 1.0,
+     "confusion": {
+      "front|front": 1
+     },
+     "kappa": 1.0,
+     "n": 1
+    }
+   }
+  },
+  "images_with_suggestions": 4849,
+  "review_acceptance": {},
+  "screening": {
+   "child": {
+    "fn": 3,
+    "fp": 11,
+    "human_proxy": "exclude=child",
+    "precision": 0.3889,
+    "recall": 0.7,
+    "tn": 187,
+    "tp": 7
+   },
+   "clinical_setting": {
+    "fn": 0,
+    "fp": 46,
+    "human_proxy": "exclude=clinical_setting",
+    "precision": 0.0213,
+    "recall": 1.0,
+    "tn": 161,
+    "tp": 1
+   },
+   "not_a_photo": {
+    "fn": 97,
+    "fp": 0,
+    "human_proxy": "exclude=not_a_photo",
+    "precision": 1.0,
+    "recall": 0.049,
+    "tn": 106,
+    "tp": 5
+   },
+   "visible_face": {
+    "fn": 40,
+    "fp": 36,
+    "human_proxy": "face_blur_missed",
+    "precision": 0.4286,
+    "recall": 0.403,
+    "tn": 105,
+    "tp": 27
+   }
+  }
+ }
+}

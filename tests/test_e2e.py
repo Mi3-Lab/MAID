@@ -3,6 +3,8 @@
 alice and bob annotate the same images independently; bob works OFFLINE (Playwright context offline, page reloaded
 offline from the service worker), then reconnects; events must sync, conflicts must be flagged, a third annotator
 must be assigned, adjudication must resolve, labels.csv must update, and the JSONL export/import/rebuild must round-trip.
+Review mode: machine suggestions (synthetic, in a temp WV_AUTO_DIR) are confirmed with one key or fixed per field;
+events carry provenance under the human's name; the model never counts as an annotator, in kappa or in labels.csv.
 Run: python tests/test_e2e.py   (screenshots -> screenshots/)"""
 import csv, io, json, os, shutil, subprocess, sys, tempfile, time, uuid
 from pathlib import Path
@@ -29,7 +31,22 @@ def wait(fn, timeout=30, step=0.3):
         time.sleep(step)
     return fn()
 
-env = dict(os.environ, WV_DB=str(TMP / "e2e.db"), WV_EXPORT_DIR=str(TMP / "exports"), WV_IMAGE_PROXY="0")
+# ---- synthetic machine suggestions (the real model is not needed for the test) ----
+sys.path.insert(0, str(ROOT / "server")); import wvcore
+TAG = "testmodel_zs-v0"; AUTO = TMP / "auto"; AUTO.mkdir()
+_ids = sorted(r["candidate_id"] for r in csv.DictReader(open(ROOT / "data/candidates.csv", encoding="utf-8")) if (ROOT / "images" / f"{r['candidate_id']}.jpg").exists())
+CHILD = None
+with open(AUTO / f"{TAG}.jsonl", "w") as fh:
+    for n, i in enumerate(_ids):
+        sug = {f["name"]: {"value": ("manual" if f["name"] == "device_type" else f["options"][0]), "confidence": round(0.3 + (n % 60) / 100, 2)} for f in wvcore.SCHEMA["fields"]}
+        flags = []
+        if n < 5: sug["device_type"]["confidence"] = round(0.10 + n / 100, 2)                  # the 5 least confident come first
+        fh.write(json.dumps({"image_id": i, "model_tag": TAG, "suggestions": sug, "screening": {"child": 0.9 if flags else 0.1, "visible_face": 0.2},
+                             "flags": flags, "boxes": [{"box": [0.1, 0.1, 0.5, 0.6], "score": 0.8, "label": "wheelchair"}]}) + "\n")
+
+BLUR = TMP / "blurred"; BLUR.mkdir(); BLUR_MAN = TMP / "blur_manifest.jsonl"; BLUR_MAN.write_text("")
+env = dict(os.environ, WV_DB=str(TMP / "e2e.db"), WV_EXPORT_DIR=str(TMP / "exports"), WV_IMAGE_PROXY="0", WV_AUTO_DIR=str(AUTO),
+           WV_BLUR_DIR=str(BLUR), WV_BLUR_MANIFESTS=str(BLUR_MAN))
 srv = subprocess.Popen([sys.executable, "-m", "uvicorn", "main:app", "--port", str(PORT), "--log-level", "warning"],
                        cwd=ROOT / "server", env=env, stdout=open(TMP / "server.log", "w"), stderr=subprocess.STDOUT)
 def _try_health():
@@ -47,7 +64,7 @@ try:
             pg.wait_for_function("document.querySelector('#pos').textContent.includes(' / 30')", timeout=20000)
             pg.evaluate("navigator.serviceWorker.ready")
             # all 30 batch images cached for offline use
-            pg.wait_for_function("caches.open('wv-img-v1').then(c=>c.keys()).then(k=>window.__n=k.length) && window.__n>=30", timeout=60000)
+            pg.wait_for_function("caches.open('wv-img-v2').then(c=>c.keys()).then(k=>window.__n=k.length) && window.__n>=30", timeout=60000)
             return ctx, pg
         def ids(pg): return pg.evaluate("S.images.map(i=>i.image_id)")
         def press(pg, *keys):
@@ -152,9 +169,96 @@ try:
         D.screenshot(path=str(SHOTS / "06_adjudicator_after_resolve.png"), full_page=True)
         A.click("#btnList"); A.wait_for_timeout(300); A.screenshot(path=str(SHOTS / "07_alice_my_images.png"))
         A.click("#btnList"); A.keyboard.press("?"); A.wait_for_timeout(200); A.screenshot(path=str(SHOTS / "08_keyboard_help.png"))
+
+        # ---- review auto labels: dave confirms / fixes machine suggestions ----
+        check("server serves machine suggestions", api("/api/auto").json()["models"].get(TAG, 0) == len(_ids), json.dumps(api("/api/auto").json()["models"]))
+        dctx, Dv = login("dave")
+        Dv.click("#btnReview")
+        Dv.wait_for_function("S.mode==='review' && S.images.length>0 && S.images.every(i=>S.auto[i.image_id]) && document.querySelector('#pos').textContent.includes('REVIEW')", timeout=20000)
+        Dv.evaluate("S.row=0; render()")
+        rq = Dv.evaluate("S.images.map(i=>i.image_id)")
+        confs = Dv.evaluate("S.images.filter(i=>!S.mine[i.image_id]).map(i=>S.auto[i.image_id].suggestions.device_type.confidence)")
+        check("review queue: lowest confidence first", confs == sorted(confs) and len(confs) > 5, str(confs[:6]))
+        check("review mode shows suggestions with confidence", Dv.locator(".opt.ai").count() >= 5 and "%" in Dv.inner_text(".aiv"), Dv.inner_text(".aiv"))
+        Dv.wait_for_function("document.querySelector('#img').complete && document.querySelector('#img').naturalWidth>0", timeout=10000)
+        Dv.screenshot(path=str(SHOTS / "09_review_mode_suggestions.png"))
+        r1 = Dv.evaluate("cur().image_id"); press(Dv, "a")
+        Dv.wait_for_function(f"cur().image_id !== '{r1}'", timeout=10000)
+        r2 = Dv.evaluate("cur().image_id"); Dv.evaluate("S.row=0; render()")
+        press(Dv, "2")                                                       # fix device_type: powered (model said manual)
+        Dv.wait_for_timeout(200); Dv.screenshot(path=str(SHOTS / "10_review_fixed_field.png"))
+        press(Dv, "Enter"); Dv.wait_for_function(f"cur().image_id !== '{r2}'", timeout=10000)
+        wait(lambda: Dv.inner_text("#queue") == "0 queued", 15)
+        ev = api("/api/events?annotator=dave").json()["events"]
+        e1 = {e["field"]: e for e in ev if e["image_id"] == r1}; e2 = {e["field"]: e for e in ev if e["image_id"] == r2}
+        check("confirm-all: every suggested field saved as dave's label + done",
+              all(e1.get(f["name"], {}).get("value") == (f["options"][0] if f["name"] != "device_type" else "manual") for f in wvcore.SCHEMA["fields"]) and e1["_status"]["value"] == "done",
+              json.dumps({k: v["value"] for k, v in e1.items()}))
+        check("provenance recorded on review events", all(e1[f].get("source") == "auto_review" and e1[f].get("model_tag") == TAG for f in e1)
+              and e1["device_type"]["suggested"] == "manual" and isinstance(e1["device_type"]["confidence"], float), json.dumps(e1["device_type"]))
+        check("fix one field: human value wins, suggestion kept as provenance", e2["device_type"]["value"] == "powered" and e2["device_type"]["suggested"] == "manual"
+              and e2["occupied"]["value"] == e2["occupied"]["suggested"], json.dumps(e2["device_type"]))
+        check("review events are written under the human's name only", {e["annotator"] for e in ev} == {"dave"})
+        # screening flag: mark one queued image as "likely child" (server reloads annotations/auto when it changes)
+        CHILD = [i for i in rq if i not in (r1, r2)][3]
+        recs = [json.loads(l) for l in open(AUTO / f"{TAG}.jsonl")]
+        for rec in recs:
+            if rec["image_id"] == CHILD: rec["flags"] = ["child"]; rec["screening"]["child"] = 0.9
+        (AUTO / f"{TAG}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in recs))
+        Dv.evaluate("getReviewBatch()"); Dv.wait_for_function(f"(S.auto['{CHILD}'].flags||[]).includes('child')", timeout=10000)
+        if CHILD not in rq:
+            check("child-flagged image is in dave's review queue", False, CHILD)
+        else:
+            Dv.evaluate(f"S.idx = S.images.findIndex(i=>i.image_id=='{CHILD}'); render()"); press(Dv, "a"); Dv.wait_for_timeout(300)
+            warned = "Press a again" in Dv.inner_text("#aibanner") and Dv.evaluate(f"val('{CHILD}','_status')") is None
+            Dv.screenshot(path=str(SHOTS / "11_review_screening_warning.png"))
+            check("screening flag never auto-excludes; needs a 2nd press", warned and Dv.evaluate(f"val('{CHILD}','exclude')") is None)
+            press(Dv, "a"); Dv.wait_for_timeout(300)
+            check("2nd press confirms the flagged image (not excluded)", Dv.evaluate(f"val('{CHILD}','_status')") == "done" and Dv.evaluate(f"val('{CHILD}','exclude')") == "")
+        # face blur: a blurred copy appears (as after scripts/auto_blur.py); the app must show it + the face boxes
+        from PIL import Image, ImageFilter
+        BL = [i for i in rq if i not in (r1, r2, CHILD)][0]
+        im0 = Image.open(ROOT / "images" / f"{BL}.jpg").convert("RGB"); W0, H0 = im0.size; fb = (0.4, 0.2, 0.2, 0.25)
+        box = tuple(int(v) for v in (fb[0] * W0, fb[1] * H0, (fb[0] + fb[2]) * W0, (fb[1] + fb[3]) * H0))
+        im0.paste(im0.crop(box).filter(ImageFilter.GaussianBlur(12)), box[:2]); im0.save(BLUR / f"{BL}.jpg", quality=90)
+        BLUR_MAN.write_text(json.dumps({"image_id": BL, "n_faces": 1, "faces": [{"box": list(fb), "score": 0.91}], "detector": "test", "version": "t1"}) + "\n")
+        check("server serves the blurred copy, original untouched", api(f"/img/{BL}").content == (BLUR / f"{BL}.jpg").read_bytes()
+              and (ROOT / "images" / f"{BL}.jpg").read_bytes() != (BLUR / f"{BL}.jpg").read_bytes())
+        Dv.evaluate("getReviewBatch()"); Dv.wait_for_function(f"(S.images.find(i=>i.image_id=='{BL}')||{{}}).blurred===true", timeout=10000)
+        Dv.evaluate(f"S.idx = S.images.findIndex(i=>i.image_id=='{BL}'); render()")
+        Dv.wait_for_function("document.querySelector('#img').src.includes('?b=') && document.querySelector('#img').complete && document.querySelector('#img').naturalWidth>0", timeout=10000)
+        Dv.wait_for_timeout(200); Dv.screenshot(path=str(SHOTS / "13_review_blurred_face_overlay.png"))
+        check("app shows blurred image with face-box overlay hint", "face-blurred" in Dv.inner_text("#aibanner") and Dv.evaluate("cur().faces.length") == 1)
+        press(Dv, "f"); wait(lambda: Dv.inner_text("#queue") == "0 queued", 15)
+        fm = [e for e in api("/api/events?annotator=dave").json()["events"] if e["image_id"] == BL and e["field"] == "face_blur_missed"]
+        check("'f' flags a missed face in review mode (with provenance)", fm and fm[-1]["value"] is True and fm[-1].get("source") == "auto_review", json.dumps(fm[-1:]))
+        Dv.keyboard.press("?"); Dv.wait_for_timeout(200); Dv.screenshot(path=str(SHOTS / "12_review_help.png")); Dv.keyboard.press("Escape")
+        wait(lambda: Dv.inner_text("#queue") == "0 queued", 15)
+        L = labels()
+        check("model is not an annotator: dave-only image is not final", L[r1]["status"] != "final" and L[r1]["annotators"] == "dave", f"{L[r1]['status']} {L[r1]['annotators']}")
+        # erin reviews: pair formation offers dave's images first
+        ectx, E = login("erin"); E.click("#btnReview")
+        E.wait_for_function("S.mode==='review' && S.images.length>0 && S.images.every(i=>S.auto[i.image_id]) && document.querySelector('#pos').textContent.includes('REVIEW')", timeout=20000)
+        ie = E.evaluate("S.images.map(i=>i.image_id)")
+        check("review queue prefers images with one human label (pairs form)", r1 in ie[:6] and r2 in ie[:6], str(ie[:6]))
+        for rid in (r1, r2):
+            E.evaluate(f"S.idx = S.images.findIndex(i=>i.image_id=='{rid}'); render()"); press(E, "a"); E.wait_for_timeout(300)
+        wait(lambda: E.inner_text("#queue") == "0 queued", 15)
+        L = labels()
+        check("two humans confirming -> final consensus", L[r1]["status"] == "final" and L[r1]["device_type"] == "manual" and L[r1]["annotators"] == "dave;erin",
+              f"{L[r1]['status']} {L[r1]['device_type']} {L[r1]['annotators']}")
+        check("human fix vs human confirm -> disagreement (model's vote ignored)", L[r2]["status"] == "needs_third_annotator", L[r2]["status"])
         br.close()
 
     st = api("/api/stats").json()
+    anns = {a for f in st["kappa"].values() for pair in f.get("pairwise", {}) for a in str(pair).replace("|", ",").replace("__", ",").split(",")}
+    pa_anns = {r["annotator"] for r in csv.DictReader(io.StringIO(api("/export/per_annotator_labels.csv").text))}
+    check("auto labels are excluded from kappa and per-annotator labels", TAG not in json.dumps(st["kappa"]) and TAG not in pa_anns and TAG not in api("/export/labels.csv").text,
+          f"annotators {sorted(pa_anns)}")
+    avh = api("/export/auto_vs_human.json").json()
+    dt = avh.get(TAG, {}).get("fields", {}).get("device_type", {})
+    check("model-vs-human agreement reported separately", dt.get("all_done_human_labels", {}).get("n", 0) >= 6 and dt.get("reviewed", {}).get("n", 0) >= 4
+          and dt.get("independent", {}).get("n", 0) >= 2, json.dumps({k: (dt.get(k) or {}).get("n") for k in ("all_done_human_labels", "independent", "reviewed")}))
     check("kappa computed per field", "device_type" in st["kappa"] and st["kappa"]["device_type"]["n_items"] >= 3,
           json.dumps({f: v["pooled_kappa"] for f, v in st["kappa"].items()}))
 
@@ -162,18 +266,26 @@ try:
     evdir = TMP / "events"
     subprocess.run([sys.executable, ROOT / "scripts/sync_events.py", "export", "--db", env["WV_DB"], "--events", evdir], check=True)
     files = sorted(p.name for p in evdir.glob("*.jsonl"))
-    check("export writes one append-only file per annotator", files == ["alice.jsonl", "bob.jsonl", "carol.jsonl", "samir.jsonl"], str(files))
+    check("export writes one append-only file per annotator", files == ["alice.jsonl", "bob.jsonl", "carol.jsonl", "dave.jsonl", "erin.jsonl", "samir.jsonl"], str(files))
+    dl = [json.loads(l) for l in open(evdir / "dave.jsonl")]
+    check("provenance survives JSONL export", sum(e.get("source") == "auto_review" for e in dl) >= 10 and all(e.get("model_tag") == TAG for e in dl if e.get("source")))
     n_lines = sum(1 for p in evdir.glob("*.jsonl") for _ in open(p))
     subprocess.run([sys.executable, ROOT / "scripts/sync_events.py", "export", "--db", env["WV_DB"], "--events", evdir], check=True)
     check("re-export appends nothing (dedup by uuid)", sum(1 for p in evdir.glob("*.jsonl") for _ in open(p)) == n_lines, f"{n_lines} lines")
-    subprocess.run([sys.executable, ROOT / "scripts/build_derived.py", "--events", evdir, "--out", TMP / "derived"], check=True)
+    subprocess.run([sys.executable, ROOT / "scripts/build_derived.py", "--events", evdir, "--out", TMP / "derived", "--auto", AUTO], check=True)
+    check("CI rebuild writes derived/auto_vs_human.json", json.load(open(TMP / "derived/auto_vs_human.json"))[TAG]["fields"]["device_type"] == dt)
     same = (TMP / "derived/labels.csv").read_bytes() == api("/export/labels.csv").content
     check("CI rebuild from JSONL reproduces server labels.csv byte-for-byte", same)
     out = subprocess.run([sys.executable, ROOT / "scripts/sync_events.py", "import", "--db", TMP / "fresh.db", "--events", evdir], capture_output=True, text=True).stdout
     check("import into empty DB restores every event", f"imported {n_lines} new" in out, out.strip())
     out2 = subprocess.run([sys.executable, ROOT / "scripts/sync_events.py", "import", "--db", TMP / "fresh.db", "--events", evdir], capture_output=True, text=True).stdout
     check("re-import is idempotent", "imported 0 new" in out2, out2.strip())
+    ev2 = TMP / "events2"
+    subprocess.run([sys.executable, ROOT / "scripts/sync_events.py", "export", "--db", TMP / "fresh.db", "--events", ev2], check=True)
+    check("provenance round-trips through import", (ev2 / "dave.jsonl").read_text().count('"auto_review"') == (evdir / "dave.jsonl").read_text().count('"auto_review"'))
     shutil.copy(TMP / "derived/labels.csv", SHOTS / "e2e_labels.csv")
+except Exception:
+    import traceback; traceback.print_exc(); check("test ran to completion", False)
 finally:
     srv.terminate()
     print(f"\n{sum(r[1] for r in results)}/{len(results)} checks passed; temp dir {TMP}")

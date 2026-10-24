@@ -1,5 +1,5 @@
 // App shell: cache-first (updated in background). /img/*: cache-first, stored on first fetch. /api/*, /export/*: network only.
-const SHELL = 'wv-shell-v2', IMG = 'wv-img-v1';
+const SHELL = 'wv-shell-v3', IMG = 'wv-img-v2';
 const ASSETS = ['/', '/index.html', '/app.js', '/style.css', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/adjudicate.html', '/adjudicate.js'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(SHELL).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![SHELL, IMG].includes(k)).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

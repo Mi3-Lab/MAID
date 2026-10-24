@@ -79,7 +79,23 @@ def in_use_images(evdir):
     return use
 
 # ---------------------------------------------------------------- per-image record
-def build_record(c, lic, cache):
+def load_blur():
+    """data/blur_manifest.jsonl (scripts/auto_blur.py): only images listed there were actually face-blurred + EXIF-stripped."""
+    p = ROOT / "data" / "blur_manifest.jsonl"; m = {}
+    if p.exists():
+        for line in open(p, encoding="utf-8"):
+            if line.strip(): r = json.loads(line); m[r["image_id"]] = r
+    return m
+
+def modifications(planned, b):
+    """Claim only what was done. `planned` is LICENSES_draft.csv's text (e.g. 'resized; faces blurred; EXIF stripped (planned)')."""
+    if b is None:
+        return ("resized" if "resized" in planned else ""), "pending"
+    det = f"automatic, {b.get('detector', '?')} {b.get('version', '')}".strip()
+    if b["n_faces"]: return f"resized; faces blurred ({b['n_faces']} detected, {det}); EXIF stripped", "done"
+    return f"resized; EXIF stripped (automatic face-blur pass found no faces, {det})", "no_faces_found"
+
+def build_record(c, lic, cache, blur=None):
     iid = c["candidate_id"]; src = c["source"]; spdx = c["license"]
     title = lic.get("title") or c["title"]; creator = lic.get("creator") or c["creator"]
     url = c["source_page_url"]; lurl = c["license_url"]
@@ -139,13 +155,13 @@ def build_record(c, lic, cache):
         credit = f'"{ttl}" by {who}, {src_name}, {lic_part}, {url}'
     if src == "openverse" and ce.get("attribution"):                      # Openverse's own TASL string
         credit = ce["attribution"].rstrip(".") + f". Source: {url}"
-    mods = (lic.get("modifications") or "").replace(" (planned)", "")
+    mods, blur_status = modifications(lic.get("modifications") or "", (blur or {}).get(iid))
     if needs_attribution(spdx) and mods: credit += f". Modified: {mods}"
     if "-SA-" in (spdx or ""): notes.append("ShareAlike: the modified image must be redistributed under the same licence")
     return {"image_id": iid, "source": src, "title": ttl, "creator": creator, "source_url": url, "license": spdx,
             "license_url": lurl, "required_credit_text": credit, "author_specified_credit": exact,
             "special_requirement": "yes" if flags else "no", "special_flags": ";".join(dict.fromkeys(flags)),
-            "special_note": " | ".join(notes), "usable": usable, "modifications": mods,
+            "special_note": " | ".join(notes), "usable": usable, "modifications": mods, "face_blur": blur_status,
             "date_accessed": lic.get("date_accessed") or c.get("access_date", ""), "in_use": "no", "in_use_by": ""}
 
 def is_special(r):   # ShareAlike note alone is not "special"
@@ -217,6 +233,8 @@ def write_md(path, rows, date):
          "[`attributions.csv`](attributions.csv) has a ready-made line for each image.", "",
          "- **CC BY / CC BY-SA (all versions):** credit is required. We resize, blur faces and strip EXIF, so the credit must "
          "also say the image was modified (CC 4.0 requires indicating changes; 2.x/3.0 require crediting adaptations). "
+         "Face blurring is listed only for images that scripts/auto_blur.py actually processed (column `face_blur`: "
+         "done / no_faces_found / pending; boxes in data/blur_manifest.jsonl); pending images must be blurred before release. "
          "The credit lines below already include `Modified: ...`.",
          "- **CC BY-SA:** the modified image must be redistributed under the same licence (ShareAlike). Keep each image's own licence in the release.",
          "- **CC0 / Public Domain Mark:** no credit is legally required; we credit anyway.",
@@ -260,10 +278,10 @@ if __name__ == "__main__":
     cp = ROOT / "data" / "attribution_cache.json"
     cache = json.load(open(cp, encoding="utf-8"))["items"] if cp.exists() else {}
     if not cache: print("WARN: no attribution cache; Commons-specific requirements cannot be checked", file=sys.stderr)
-    use = in_use_images(a.events)
+    use = in_use_images(a.events); blur = load_blur()
     rows = []
     for c in cands:
-        r = build_record(c, lics.get(c["candidate_id"], {}), cache)
+        r = build_record(c, lics.get(c["candidate_id"], {}), cache, blur)
         if c["candidate_id"] in use: r["in_use"] = "yes"; r["in_use_by"] = ";".join(use[c["candidate_id"]])
         rows.append(r)
     dates = [v.get("fetched") for v in cache.values() if v.get("source") == "commons" and v.get("fetched")]
@@ -272,6 +290,6 @@ if __name__ == "__main__":
         w = csv.DictWriter(fh, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
     write_md(out / "ATTRIBUTIONS.md", rows, date); write_bib(out / "attributions.bib", rows, date)
     print(json.dumps({"candidates": len(rows), "in_use": sum(r["in_use"] == "yes" for r in rows),
-                      "special": sum(is_special(r) for r in rows),
+                      "special": sum(is_special(r) for r in rows), "face_blur": dict(Counter(r["face_blur"] for r in rows)),
                       "not_usable_or_review": dict(Counter(r["usable"] for r in rows if r["usable"] != "yes")),
                       "flags": dict(Counter(f.split(":")[0] if not f.startswith("restriction") else f for r in rows for f in r["special_flags"].split(";") if f))}))

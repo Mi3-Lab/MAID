@@ -55,13 +55,58 @@ Pages:
   | Enter | Done, then next image |
   | ← / → or p / n | previous / next image |
   | e, then 1–6 | exclude with that reason |
-  | f | face-blur flag |
+  | f | face-blur flag (a face is still recognisable) |
+  | r | Review auto labels on/off |
+  | a | (review) confirm all suggestions, then next |
+  | o | (review) face-blur boxes overlay |
   | b | bbox mode |
   | Backspace | clear bboxes |
   | ? | help |
 * **Corrections.** *My images* lists everything you have labelled; open any of them to change a field. Your newest
   event wins, but only for *you*.
 * **Independence.** Annotators never see each other's labels.
+
+## Review auto labels (machine pre-labels)
+* **What it is.** `scripts/auto_annotate.py` pre-labels every local image with a local open-weights model (zero-shot
+  SigLIP 2, `google/siglip2-so400m-patch14-224`, Apache-2.0; optional device boxes from OWLv2
+  `google/owlv2-base-patch16-ensemble`, Apache-2.0). Everything runs on the machine itself; no image or candidate list
+  is sent to any hosted API. Output: `annotations/auto/<model_tag>.jsonl` (per image and field: value, confidence, probs;
+  screening scores; boxes) plus `<model_tag>.meta.json` (models, revisions, licences, prompts, thresholds, runs).
+  It is incremental (embedding cache in `var/auto_cache/`), so re-running only processes new images:
+  `pip install -r requirements-auto.txt` then `python scripts/auto_annotate.py [--limit N] [--detect] [--eval]`.
+* **The model is not an annotator.** Its file is a separate source: it never appears in `annotations/events/`,
+  never counts towards the 2-annotator consensus, kappa or `labels.csv`, and never excludes an image. Screening
+  flags (likely child / clinical setting / not a photo / visible face) are suggestions for the human only.
+  `derived/auto_vs_human.json` reports model-vs-human agreement per field as a separate metric (all done human
+  labels, split into *independent* labels and labels made in review mode, plus acceptance rates of suggestions).
+* **In the app.** Press **Review auto labels** (or `r`). Suggestions show as orange dashed options with the model's
+  confidence (`AI: manual 87%`). `a` or Enter confirms every remaining suggestion as *your* label and moves on; fix a
+  field first with ↑/↓ and 1–9. Images with a ⚠ screening flag need a second `a` (or exclude with `e`). `Shift+B`
+  accepts the model's device boxes, `o` toggles the face-blur boxes. Queue order: lowest confidence first (default),
+  untyped wheelchairs first, or random. Images you have already done are skipped and images that already have one
+  human label come first, so pairs form. Review batches (with their suggestions) are cached for offline work.
+* **Provenance.** Review-mode events are normal events under your name with extra keys
+  `source: "auto_review"`, `model_tag`, `suggested` (the model's value) and `confidence`, so we can always tell
+  confirmed-from-suggestion labels apart (anchoring bias) — and `auto_vs_human.json` does.
+* **Server.** It loads `annotations/auto/*.jsonl` at startup and reloads whenever the files change (e.g. after the
+  sync task's `git pull`). `WV_AUTO_DIR` / `WV_AUTO_MODEL` override the folder / active model. Endpoints:
+  `GET /api/auto`, `GET /api/auto/{image_id}`, `GET /api/review/assign?annotator=&n=30&order=lowconf|wheelchair|random`.
+
+## Face blurring
+* `scripts/auto_blur.py` detects faces with **OpenCV YuNet** (`models/face_detection_yunet_2023mar.onnx`, MIT licence,
+  committed; ~230 kB) tuned for recall: score ≥ 0.35 for small faces (≥ 0.72 for boxes wider than 6% of the image, which
+  removed hands/balls/wheels), the image at 1×/2×/3× plus mirrored, merged with NMS. Each face is covered by a padded
+  box (hair, ears, chin), pixelated to ~5 cells and Gaussian-blurred, so it is not recoverable.
+* **Originals are never modified.** Blurred copies (re-encoded, no EXIF) go to `images_blurred/<id>.jpg`, which, like
+  `images/`, is not in git. `data/blur_manifest.jsonl` (committed) logs per image: source checksum, number of faces,
+  boxes and scores, detector, model checksum, thresholds, blur method and version. Resumable; re-running only does new
+  or changed images. `pip install -r requirements-blur.txt` (OpenCV only), then `python scripts/auto_blur.py`.
+* The server serves the blurred copy wherever one exists, so annotators see what will be released. If a face is still
+  recognisable, press `f` (*face blur missed*); in review mode the detector's face boxes are drawn in magenta (`o`).
+* `derived/attributions.csv` lists "faces blurred" as a modification only for images actually processed
+  (column `face_blur`: done / no_faces_found / pending).
+* On the laptop: `powershell -ExecutionPolicy Bypass -File scripts\windows\blur.ps1` (reuses the committed boxes when
+  the image checksum matches; new detections go to the ignored `var\blur_manifest_local.jsonl`).
 
 ## Data model and consensus
 * **Events.** Every edit is one event: `{uuid, image_id, annotator, field, value, ts, device_id, kind}`.

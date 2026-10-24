@@ -1,0 +1,6 @@
+# Optional: the machine pre-labeller (scripts/auto_annotate.py). Not needed by the server, the app, CI or the laptop.
+# CPU wheels: pip install -r requirements-auto.txt --extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.4
+transformers>=4.56
+numpy
+pillow>=10

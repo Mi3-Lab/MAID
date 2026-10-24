@@ -9,7 +9,14 @@
 3. **Only touch your own file.** Your annotator id (the name you type in the app, lower-cased) is your file name.
    Adjudicators write adjudication events (`"kind": "adjudication"`) into *their own* file too.
 4. **No images in git.** Images are fetched by `scripts/fetch_images.py` into the ignored `images/` folder.
-5. Don't look at other annotators' labels before you finish yours (the app never shows them to you); disagreements are
+5. **Machine labels are not annotations.** `annotations/auto/*.jsonl` (from `scripts/auto_annotate.py`) is a separate
+   machine source: never copy it into `annotations/events/`, and never use a model tag as an annotator name
+   (`build_derived.py` rejects it). Confirming suggestions in *Review auto labels* mode writes *your* events with
+   `source: "auto_review"` provenance; that is fine, but label honestly — fix anything the model got wrong, and
+   prefer normal mode when you want an independent label. Screening flags never exclude an image by themselves.
+6. **Faces.** Annotate on the face-blurred copies the app shows; press `f` whenever a face is still recognisable.
+   Never commit images, blurred or not (`images/`, `images_blurred/` are ignored).
+7. Don't look at other annotators' labels before you finish yours (the app never shows them to you); disagreements are
    resolved in the adjudicator view (`/adjudicate.html`).
 
 ## Workflow: one branch per annotator, PRs into `main`
@@ -42,5 +49,5 @@ safe. Renaming or removing options makes old events fail validation, so add a mi
 ## Tests
 ```bash
 pip install -r requirements-dev.txt && python -m playwright install chromium
-python tests/test_e2e.py         # spins up its own server on :8812 with a temp DB
+python tests/test_e2e.py         # spins up its own server on :8812 with a temp DB (incl. review mode + blurred images)
 ```

@@ -22,3 +22,8 @@ main{display:flex;gap:12px;padding:10px;height:calc(100vh - 44px)}
 .tag{font-size:11px;padding:0 5px;border-radius:3px;background:#ddd}.tag.done{background:#27ae60;color:#fff}.tag.excl{background:#c0392b;color:#fff}
 #pos{font-weight:700}
 .opt.sel kbd{background:transparent;color:#fff;border-color:#ffffff88}
+.opt.ai{border:2px dashed #ff8c00;background:#fff4e5}.opt.ai .conf,.opt .conf{color:#b35c00;font-size:10px}
+.aiv{margin-left:auto;font-size:11px;color:#b35c00;background:#fff4e5;border-radius:3px;padding:0 5px}.aiv.ok{color:#1e7d3a;background:#e6f5ea}.aiv.fixed{color:#8e44ad;background:#f3e8f8}
+#aibanner{border:1px solid #ff8c00;background:#fff8ee;border-radius:5px;padding:6px;margin:6px 0;font-size:12px}
+#aibanner .risk{color:#b00020;margin-top:4px}label.ai{outline:2px dashed #ff8c00;border-radius:3px;padding:0 3px}
+.tag.ai{background:#ff8c00;color:#fff}body.review header{background:#7a3e00}#rorder{font:inherit;padding:3px}

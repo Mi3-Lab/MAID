@@ -15,6 +15,11 @@ CANDS = Path(os.environ.get("WV_CANDIDATES", ROOT / "data" / "candidates.csv"))
 IMAGE_DIR = Path(os.environ.get("WV_IMAGE_DIR", ROOT / "images"))          # <image_id>.jpg, filled by scripts/fetch_images.py
 CACHE_DIR = Path(os.environ.get("WV_CACHE_DIR", ROOT / "var" / "imgcache"))
 EXPORT_DIR = Path(os.environ.get("WV_EXPORT_DIR", ROOT / "var" / "exports"))
+AUTO_DIR = Path(os.environ.get("WV_AUTO_DIR", ROOT / "annotations" / "auto"))     # machine suggestions (never human events)
+AUTO_MODEL = os.environ.get("WV_AUTO_MODEL", "").strip()                          # default: newest annotations/auto/*.jsonl
+BLUR_DIR = Path(os.environ.get("WV_BLUR_DIR", ROOT / "images_blurred"))            # scripts/auto_blur.py output (originals untouched)
+BLUR_MANIFESTS = [Path(p) for p in os.environ.get("WV_BLUR_MANIFESTS", "").split(os.pathsep) if p] or \
+                 [ROOT / "data" / "blur_manifest.jsonl", ROOT / "var" / "blur_manifest_local.jsonl"]
 PROXY = os.environ.get("WV_IMAGE_PROXY", "1") == "1"          # fetch missing images (e.g. Commons) from image_url and cache them
 ASSIGN_NO_IMAGE = os.environ.get("WV_ASSIGN_WITHOUT_LOCAL_IMAGE", "0") == "1"  # default: only assign images we can already serve
 UA = {"User-Agent": "WheelViewAnnotate/0.1 (UC Merced Mi3 Lab; research dataset annotation)"}
@@ -32,16 +37,34 @@ with db() as c:
     c.executescript("""
     CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT UNIQUE NOT NULL, image_id TEXT NOT NULL,
         annotator TEXT NOT NULL, field TEXT NOT NULL, value TEXT, ts TEXT NOT NULL, device_id TEXT NOT NULL, kind TEXT NOT NULL,
-        received_at TEXT NOT NULL);
+        received_at TEXT NOT NULL, prov TEXT);
     CREATE INDEX IF NOT EXISTS ev_ann ON events(annotator, seq);
     CREATE INDEX IF NOT EXISTS ev_img ON events(image_id);
     CREATE TABLE IF NOT EXISTS assignments(image_id TEXT NOT NULL, annotator TEXT NOT NULL, assigned_at TEXT NOT NULL, round INTEGER NOT NULL,
         PRIMARY KEY(image_id, annotator));
     """)
+    if "prov" not in [r[1] for r in c.execute("PRAGMA table_info(events)")]:
+        c.execute("ALTER TABLE events ADD COLUMN prov TEXT")      # migration: review-mode provenance
 
 def row_event(r):
-    return {"seq": r["seq"], "uuid": r["uuid"], "image_id": r["image_id"], "annotator": r["annotator"], "field": r["field"],
-            "value": json.loads(r["value"]), "ts": r["ts"], "device_id": r["device_id"], "kind": r["kind"]}
+    e = {"seq": r["seq"], "uuid": r["uuid"], "image_id": r["image_id"], "annotator": r["annotator"], "field": r["field"],
+         "value": json.loads(r["value"]), "ts": r["ts"], "device_id": r["device_id"], "kind": r["kind"]}
+    if r["prov"]: e.update(json.loads(r["prov"]))
+    return e
+
+# ---------- machine suggestions: annotations/auto/*.jsonl, reloaded whenever the files change (e.g. after git pull) ----------
+_AUTO = {"sig": None, "data": {}, "active": ""}
+def auto_state():
+    try: files = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in AUTO_DIR.glob("*.jsonl"))
+    except OSError: files = []
+    if files != _AUTO["sig"]:
+        data = wvcore.load_auto(AUTO_DIR)
+        newest = max(files, key=lambda f: f[1])[0][:-6] if files else ""
+        _AUTO.update(sig=files, data=data, active=AUTO_MODEL if AUTO_MODEL in data else newest)
+    return _AUTO
+
+def auto_rec(i, tag=None):
+    st = auto_state(); return st["data"].get(tag or st["active"], {}).get(i)
 
 def all_events(c):
     return [row_event(r) for r in c.execute("SELECT * FROM events ORDER BY seq")]
@@ -54,15 +77,43 @@ def insert_events(evs):
             e, why = wvcore.validate(ev)
             if not e: rej.append({"uuid": ev.get("uuid") if isinstance(ev, dict) else None, "reason": why}); continue
             if e["image_id"] not in CANDIDATES: rej.append({"uuid": e["uuid"], "reason": "unknown image_id"}); continue
-            cur = c.execute("INSERT OR IGNORE INTO events(uuid,image_id,annotator,field,value,ts,device_id,kind,received_at) VALUES(?,?,?,?,?,?,?,?,?)",
-                            (e["uuid"], e["image_id"], e["annotator"], e["field"], json.dumps(e["value"]), e["ts"], e["device_id"], e["kind"], now))
+            pv = wvcore.prov_of(e)
+            cur = c.execute("INSERT OR IGNORE INTO events(uuid,image_id,annotator,field,value,ts,device_id,kind,received_at,prov) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                            (e["uuid"], e["image_id"], e["annotator"], e["field"], json.dumps(e["value"]), e["ts"], e["device_id"], e["kind"], now,
+                             json.dumps(pv, sort_keys=True) if pv else None))
             (acc if cur.rowcount else dup).append(e["uuid"])
     return {"accepted": acc, "duplicate": dup, "rejected": rej}
 
+_BLUR = {"sig": None, "data": {}}
+def blur_state():
+    """Face boxes per image from the blur manifest(s); reloaded when the files change (git pull / a new auto_blur run)."""
+    sig = []
+    for p in BLUR_MANIFESTS:
+        try: st = p.stat(); sig.append((str(p), st.st_mtime_ns, st.st_size))
+        except OSError: pass
+    if sig != _BLUR["sig"]:
+        d = {}
+        for p in BLUR_MANIFESTS:
+            if p.exists():
+                for line in open(p, encoding="utf-8"):
+                    if line.strip():
+                        try: r = json.loads(line); d[r["image_id"]] = r
+                        except Exception: pass
+        _BLUR.update(sig=sig, data=d)
+    return _BLUR["data"]
+
+def blurred_image(i):
+    p = BLUR_DIR / f"{i}.jpg"
+    return p if p.exists() else None
+
 def image_meta(i):
-    r = CANDIDATES[i]
-    return {k: r.get(k, "") for k in ("candidate_id", "source", "proposed_class", "title", "creator", "license", "license_url",
-                                      "source_page_url", "needs_visual_screen", "screen_reasons")} | {"image_id": i, "img": f"/img/{i}"}
+    r = CANDIDATES[i]; b = blurred_image(i); rec = blur_state().get(i) if b else None
+    m = {k: r.get(k, "") for k in ("candidate_id", "source", "proposed_class", "title", "creator", "license", "license_url",
+                                   "source_page_url", "needs_visual_screen", "screen_reasons")} | {"image_id": i, "img": f"/img/{i}"}
+    if b:   # distinct URL so clients that cached the original fetch the blurred copy
+        m |= {"img": f"/img/{i}?b={(rec or {}).get('version', '1')}", "blurred": True,
+              "faces": [f["box"] + [f.get("score", 0)] for f in (rec or {}).get("faces", [])], "blur_detector": (rec or {}).get("detector", "")}
+    return m
 
 def local_image(i):
     for p in (IMAGE_DIR / f"{i}.jpg", CACHE_DIR / f"{i}.jpg"):
@@ -130,7 +181,9 @@ async def unlock(req: Request):
 @app.get("/api/health")
 def health():
     with db() as c: n = c.execute("SELECT COUNT(*) FROM events").fetchone()[0]
-    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "images_ready": images_ready()}
+    a = auto_state()
+    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "images_ready": images_ready(),
+           "features": ["review", "blur"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "models": {t: len(r) for t, r in a["data"].items()}}}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
 
@@ -196,6 +249,70 @@ def assign(annotator: str, n: int = Query(30, ge=1, le=200)):
                 c.execute("INSERT OR IGNORE INTO assignments VALUES(?,?,?,?)", (i, ann, now, rnd)); out.append(i)
     return {"annotator": ann, "images": [image_meta(i) for i in out[:max(n, len(mine_open))]]}
 
+@app.get("/api/auto")
+def auto_info():
+    a = auto_state(); meta = {}
+    for t in a["data"]:
+        mf = AUTO_DIR / f"{t}.meta.json"
+        if mf.exists():
+            try: m = json.load(open(mf, encoding="utf-8")); meta[t] = {k: m.get(k) for k in ("classifier", "detector", "prompt_version", "images", "generated_at", "screening_thresholds")}
+            except Exception: pass
+    return {"active": a["active"], "models": {t: len(r) for t, r in a["data"].items()}, "meta": meta}
+
+@app.get("/api/auto/{image_id}")
+def auto_one(image_id: str, model_tag: str | None = None):
+    r = auto_rec(image_id, model_tag)
+    if not r: raise HTTPException(404, "no machine suggestion for this image")
+    return r
+
+def conf_key(rec):   # "lowest confidence first" uses the device_type confidence (the field that matters most)
+    return rec["suggestions"].get("device_type", {}).get("confidence", 1.0)
+
+REVIEW_ORDERS = ("lowconf", "wheelchair", "random")
+
+@app.get("/api/review/assign")
+def review_assign(annotator: str, n: int = Query(30, ge=1, le=200), order: str = "lowconf", model_tag: str | None = None):
+    """A batch for 'Review auto labels': images WITH machine suggestions, skipping images this annotator has done.
+    Pair formation first (needs-third, then needs-a-second-human), then fresh images, each tier in the chosen order.
+    Uses the same assignments table as /api/assign, so review and normal batches never hand out a 3rd/4th label
+    by accident. Every image comes with its suggestion record (cached by the client for offline review)."""
+    ann = wvcore.slug(annotator)
+    if not ann or ann != annotator: raise HTTPException(400, "annotator must be a slug (lowercase, a-z0-9._-)")
+    if order not in REVIEW_ORDERS: raise HTTPException(400, f"order must be one of {REVIEW_ORDERS}")
+    if not images_ready(): raise HTTPException(503, "server is still downloading images; try again in a minute")
+    a = auto_state(); tag = model_tag or a["active"]; recs = a["data"].get(tag, {})
+    if not recs: raise HTTPException(404, "no machine suggestions available on this server (annotations/auto is empty)")
+    maxn = wvcore.SCHEMA["max_annotators_per_image"]; base = wvcore.SCHEMA["annotators_per_image"]
+    def key(i):
+        if order == "lowconf": return (conf_key(recs[i]), order_key(i))
+        if order == "wheelchair": return (CANDIDATES[i].get("proposed_class") != "wheelchair_unspecified", conf_key(recs[i]), order_key(i))
+        return (order_key(i),)
+    with LOCK, db() as c:
+        st = statuses(c)
+        asg = {}
+        for r in c.execute("SELECT image_id, annotator FROM assignments"): asg.setdefault(r[0], set()).add(r[1])
+        mine_done = {i for i, s in st.items() if ann in s["done"]}
+        ok = lambda i: i in recs and i not in mine_done and (ASSIGN_NO_IMAGE or local_image(i) is not None)
+        third = [i for i, s in st.items() if s["status"] == "needs_third_annotator" and ann not in asg.get(i, set()) and len(asg.get(i, set())) < maxn]
+        # a second human: someone else already finished (or holds) it, it still needs another label, and it is not mine
+        second = [i for i in recs if ann not in asg.get(i, set()) and 0 < len(asg.get(i, set()) | set(st.get(i, {}).get("done", []))) < base]
+        # finished-by-someone first (a pair completes as soon as I am done), then merely held by someone
+        # (an image someone finished still counts even if another person holds it but never finished: up to maxn holders)
+        dn = lambda i: set(st.get(i, {}).get("done", []))
+        done_one = [i for i in recs if ann not in asg.get(i, set()) and 0 < len(dn(i)) < base and len(asg.get(i, set()) | dn(i)) < maxn]
+        held = [i for i in second if not dn(i)]
+        mine_open = [i for i, s in asg.items() if ann in s]
+        fresh = [i for i in recs if i not in asg and not st.get(i, {}).get("done")]
+        out, now = [], time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        for pool, rnd in ((third, 3), (done_one, 2), (held, 2), (mine_open, 0), (fresh, 1)):
+            for i in sorted(pool, key=key):
+                if len(out) >= n: break
+                if i in out or not ok(i): continue
+                if rnd: c.execute("INSERT OR IGNORE INTO assignments VALUES(?,?,?,?)", (i, ann, now, rnd))
+                out.append(i)
+    return {"annotator": ann, "model_tag": tag, "order": order,
+            "images": [image_meta(i) | {"auto": recs[i]} for i in out]}
+
 @app.get("/api/conflicts")
 def conflicts():
     with db() as c: st = statuses(c)
@@ -209,23 +326,23 @@ def conflicts():
 @app.get("/api/stats")
 def stats():
     with db() as c: evs = all_events(c)
-    stat, k, prog = wvcore.materialize(evs, CANDIDATES, EXPORT_DIR)
+    stat, k, prog = wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"])
     with db() as c: prog["assignments"] = c.execute("SELECT COUNT(*) FROM assignments").fetchone()[0]
     return {"progress": prog, "kappa": k}
 
 @app.get("/export/{name}")
 def export(name: str):
-    allowed = {"labels.csv", "per_annotator_labels.csv", "adjudication_needed.csv", "kappa.json", "progress.json"}
+    allowed = {"labels.csv", "per_annotator_labels.csv", "adjudication_needed.csv", "kappa.json", "progress.json", "auto_vs_human.json"}
     if name not in allowed: raise HTTPException(404)
     with db() as c: evs = all_events(c)
-    wvcore.materialize(evs, CANDIDATES, EXPORT_DIR)
+    wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"])
     return FileResponse(EXPORT_DIR / name, media_type="text/csv" if name.endswith(".csv") else "application/json",
                         headers={"Cache-Control": "no-store"})
 
 @app.get("/img/{image_id}")
 def img(image_id: str):
     if image_id not in CANDIDATES: raise HTTPException(404)
-    p = local_image(image_id)
+    p = blurred_image(image_id) or local_image(image_id)      # annotators see the face-blurred release copy when one exists
     if p: return FileResponse(p, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=604800"})
     if not PROXY: raise HTTPException(404, "image not available locally (proxy disabled)")
     url = CANDIDATES[image_id].get("image_url") or ""

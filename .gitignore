@@ -23,3 +23,5 @@ __pycache__/
 # secrets / local-only
 ACCESS_CODE.txt
 .space-build/
+# face-blurred release copies (scripts/auto_blur.py); like images/, never committed
+images_blurred/

@@ -15,6 +15,11 @@ KEYS = ["uuid", "image_id", "annotator", "field", "value", "ts", "device_id", "k
 def con(db):
     c = sqlite3.connect(db); c.row_factory = sqlite3.Row; return c
 
+def migrate(c):
+    """Add the optional `prov` column (review-mode provenance) to older DBs. Safe while the server runs."""
+    cols = [r[1] for r in c.execute("PRAGMA table_info(events)")]
+    if cols and "prov" not in cols: c.execute("ALTER TABLE events ADD COLUMN prov TEXT")
+
 def existing_uuids(fn):
     s = set()
     if os.path.exists(fn):
@@ -27,6 +32,7 @@ def existing_uuids(fn):
 def export(db, evdir, only=None):
     os.makedirs(evdir, exist_ok=True); n = 0
     with con(db) as c:
+        migrate(c)
         anns = [r[0] for r in c.execute("SELECT DISTINCT annotator FROM events ORDER BY annotator")]
         for a in anns:
             if only and a != only: continue
@@ -36,6 +42,7 @@ def export(db, evdir, only=None):
             with open(fn, "a", encoding="utf-8", newline="\n") as fh:
                 for r in new:
                     e = {k: r[k] for k in KEYS}; e["value"] = json.loads(e["value"])
+                    if r["prov"]: e.update(json.loads(r["prov"]))
                     fh.write(json.dumps(e, sort_keys=True, separators=(",", ":")) + "\n"); n += 1
     return n
 
@@ -45,13 +52,16 @@ def import_(db, evdir):
     with con(db) as c:
         c.execute("""CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT UNIQUE NOT NULL, image_id TEXT NOT NULL,
             annotator TEXT NOT NULL, field TEXT NOT NULL, value TEXT, ts TEXT NOT NULL, device_id TEXT NOT NULL, kind TEXT NOT NULL, received_at TEXT NOT NULL)""")
+        migrate(c)
         for fn in sorted(glob.glob(os.path.join(evdir, "*.jsonl"))):
             for line in open(fn, encoding="utf-8"):
                 if not line.strip(): continue
                 e, why = wvcore.validate(json.loads(line))
                 if not e or e["annotator"] != Path(fn).stem: bad += 1; continue
-                cur = c.execute("INSERT OR IGNORE INTO events(uuid,image_id,annotator,field,value,ts,device_id,kind,received_at) VALUES(?,?,?,?,?,?,?,?,?)",
-                                (e["uuid"], e["image_id"], e["annotator"], e["field"], json.dumps(e["value"]), e["ts"], e["device_id"], e["kind"], now))
+                pv = wvcore.prov_of(e)
+                cur = c.execute("INSERT OR IGNORE INTO events(uuid,image_id,annotator,field,value,ts,device_id,kind,received_at,prov) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                                (e["uuid"], e["image_id"], e["annotator"], e["field"], json.dumps(e["value"]), e["ts"], e["device_id"], e["kind"], now,
+                                 json.dumps(pv, sort_keys=True) if pv else None))
                 added += cur.rowcount
     return added, bad
 

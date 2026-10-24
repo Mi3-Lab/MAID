@@ -10,6 +10,12 @@ FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}
 COMPARE = [f["name"] for f in SCHEMA["fields"] if f.get("compare")] + ["exclude"]
 ALL_FIELDS = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status"]
 EVENT_KEYS = ["uuid", "image_id", "annotator", "field", "value", "ts", "device_id", "kind"]
+# Optional provenance on HUMAN events made in review mode ("model-suggested, human-confirmed/corrected").
+# source: "auto_review"; model_tag: which machine suggestion file; suggested: the model's value for this field (or null);
+# confidence: the model's confidence for that value. Absent on ordinary events (old lines stay byte-identical).
+PROV_KEYS = ["source", "model_tag", "suggested", "confidence"]
+PROV_SOURCES = ("auto_review",)
+TAG_RE = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
 UUID_RE = re.compile(r"^[0-9a-fA-F-]{8,64}$")
 ID_RE = re.compile(r"^wv_\d{6}$")
 
@@ -45,7 +51,20 @@ def validate(ev):
     else:
         return None, "unknown field"
     if e["kind"] == "adjudication" and f not in COMPARE + ["face_blur_missed"]: return None, "field not adjudicable"
+    if ev.get("source") is not None or ev.get("model_tag") is not None:
+        if ev.get("source") not in PROV_SOURCES: return None, "bad source"
+        if not isinstance(ev.get("model_tag"), str) or not TAG_RE.match(ev["model_tag"]): return None, "bad model_tag"
+        sv, cf = ev.get("suggested"), ev.get("confidence")
+        if sv is not None and not isinstance(sv, (str, bool)): return None, "bad suggested"
+        if isinstance(sv, str) and len(sv) > 40: return None, "bad suggested"
+        if cf is not None and (isinstance(cf, bool) or not isinstance(cf, (int, float)) or not 0 <= cf <= 1): return None, "bad confidence"
+        if e["kind"] != "label": return None, "provenance only on label events"
+        e.update({"source": ev["source"], "model_tag": ev["model_tag"], "suggested": sv, "confidence": cf})
     return e, None
+
+def prov_of(e):
+    """Provenance dict of an event (or None) — what the DB stores in its `prov` column."""
+    return {k: e[k] for k in PROV_KEYS if k in e} if e.get("source") else None
 
 def fold(events):
     """Latest value per (image, annotator, field) for labels and per (image, field) for adjudications.
@@ -125,8 +144,10 @@ def load_candidates(path):
     with open(path, newline="", encoding="utf-8") as fh:
         return {r["candidate_id"]: r for r in csv.DictReader(fh)}
 
-def materialize(events, cands, outdir):
-    """Write labels.csv, per_annotator_labels.csv, adjudication_needed.csv, kappa.json, progress.json."""
+def materialize(events, cands, outdir, auto=None):
+    """Write labels.csv, per_annotator_labels.csv, adjudication_needed.csv, kappa.json, progress.json
+    (+ auto_vs_human.json when machine suggestions are given). Machine suggestions NEVER enter labels/kappa:
+    they are not events, only humans' events are folded."""
     os.makedirs(outdir, exist_ok=True)
     per, adjv = fold(events)
     imgs = sorted(set(per) | {k[0] for k in adjv})
@@ -153,15 +174,94 @@ def materialize(events, cands, outdir):
     k = kappa(per)
     json.dump(k, open(os.path.join(outdir, "kappa.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
     prog = progress(events, cands, stat)
+    if auto is not None:
+        json.dump(auto_agreement(per, auto, events, stat), open(os.path.join(outdir, "auto_vs_human.json"), "w", encoding="utf-8", newline="\n"),
+                  indent=1, sort_keys=True)
     json.dump(prog, open(os.path.join(outdir, "progress.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
     return stat, k, prog
 
 def progress(events, cands, stat):
-    by_ann = Counter(); done_by_ann = Counter()
+    by_ann = Counter(); done_by_ann = Counter(); rev_by_ann = Counter()
     for e in events:
         if e["kind"] == "label": by_ann[e["annotator"]] += 1
+        if e.get("source") == "auto_review": rev_by_ann[e["annotator"]] += 1
     for i, s in stat.items():
         for a in s["done"]: done_by_ann[a] += 1
     return {"candidates": len(cands), "images_touched": len(stat),
             "status_counts": dict(Counter(s["status"] for s in stat.values())),
-            "events": len(events), "events_by_annotator": dict(by_ann), "images_done_by_annotator": dict(done_by_ann)}
+            "events": len(events), "events_by_annotator": dict(by_ann), "images_done_by_annotator": dict(done_by_ann),
+            "auto_review_events_by_annotator": dict(rev_by_ann)}
+
+# ---------- machine suggestions (annotations/auto/<model_tag>.jsonl) ----------
+SCREEN_TO_HUMAN = {"child": "child", "clinical_setting": "clinical_setting", "not_a_photo": "not_a_photo"}
+
+def load_auto(autodir):
+    """{model_tag: {image_id: record}} from annotations/auto/*.jsonl (machine source; never events)."""
+    out = {}
+    if not autodir or not os.path.isdir(autodir): return out
+    for fn in sorted(os.listdir(autodir)):
+        if not fn.endswith(".jsonl"): continue
+        tag = fn[:-6]; recs = {}
+        for line in open(os.path.join(autodir, fn), encoding="utf-8"):
+            if not line.strip(): continue
+            try: r = json.loads(line)
+            except json.JSONDecodeError: continue
+            if isinstance(r, dict) and isinstance(r.get("image_id"), str) and isinstance(r.get("suggestions"), dict): recs[r["image_id"]] = r
+        out[tag] = recs
+    return out
+
+def _agree(pairs):
+    n = len(pairs)
+    return {"n": n, "accuracy": round(sum(a == b for a, b in pairs) / n, 4) if n else None, "kappa": cohen(pairs),
+            "confusion": {f"{h}|{m}": c for (h, m), c in sorted(Counter(pairs).items())}}
+
+def auto_agreement(per, auto, events=None, stat=None):
+    """Model-vs-human agreement per field, kept SEPARATE from human inter-annotator kappa.
+    pairs = (human value, model value) over every 'done' human label that is not excluded by that human.
+    `independent` uses only human labels made without seeing the suggestions (no auto_review provenance on that
+    image), `reviewed` only those made in review mode (anchored, so expect higher agreement)."""
+    reviewed = set()
+    for e in events or []:
+        if e.get("source") == "auto_review":
+            reviewed.add((e["image_id"], e["annotator"], e.get("model_tag")))
+    fl = {}
+    for e in sorted(events or [], key=lambda e: (e["ts"], e["uuid"])):   # latest prov per (img, ann, field)
+        if e.get("source") == "auto_review" and e["field"] in FIELD_OPTS: fl[(e["image_id"], e["annotator"], e["field"])] = e
+    res = {}
+    for tag, recs in sorted(auto.items()):
+        r = {"images_with_suggestions": len(recs), "fields": {}, "screening": {}}
+        for f in FIELD_OPTS:
+            allp, ind, rev, fin = [], [], [], []
+            for img, anns in per.items():
+                if img not in recs or f not in recs[img]["suggestions"]: continue
+                mv = recs[img]["suggestions"][f]["value"]
+                for a, fv in anns.items():
+                    if fv.get("_status") != "done" or fv.get("exclude") or fv.get(f) is None: continue
+                    p = (fv[f], mv); allp.append(p)
+                    (rev if (img, a, tag) in reviewed else ind).append(p)
+                if stat and img in stat and stat[img]["fields"].get(f, ("", ""))[1] in ("consensus", "majority", "adjudicated"):
+                    fin.append((stat[img]["fields"][f][0], mv))
+            r["fields"][f] = {"all_done_human_labels": _agree(allp), "independent": _agree(ind), "reviewed": _agree(rev),
+                              "vs_final_labels": _agree(fin)}
+        for k in ("child", "clinical_setting", "not_a_photo", "visible_face"):
+            tp = fp = fn = tn = 0
+            for img, anns in per.items():
+                if img not in recs: continue
+                flag = k in (recs[img].get("flags") or [])
+                for a, fv in anns.items():
+                    if fv.get("_status") != "done": continue
+                    h = bool(fv.get("face_blur_missed")) if k == "visible_face" else fv.get("exclude") == SCREEN_TO_HUMAN[k]
+                    tp += flag and h; fp += flag and not h; fn += (not flag) and h; tn += (not flag) and not h
+            r["screening"][k] = {"human_proxy": "face_blur_missed" if k == "visible_face" else f"exclude={SCREEN_TO_HUMAN[k]}",
+                                 "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+                                 "recall": round(tp / (tp + fn), 4) if tp + fn else None,
+                                 "precision": round(tp / (tp + fp), 4) if tp + fp else None}
+        acc = defaultdict(lambda: [0, 0])
+        for (img, a, f), e in fl.items():
+            if e.get("model_tag") != tag or e.get("suggested") is None: continue
+            fv = per.get(img, {}).get(a, {})
+            if fv.get("_status") != "done": continue
+            acc[f][1] += 1; acc[f][0] += fv.get(f) == e["suggested"]
+        r["review_acceptance"] = {f: {"n": t, "accepted": k, "rate": round(k / t, 4) if t else None} for f, (k, t) in sorted(acc.items())}
+        res[tag] = r
+    return res
