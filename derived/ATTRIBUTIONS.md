@@ -13,7 +13,7 @@ Every image in the release and every image shown in the paper gets a credit line
 - **Paper:** cite the sources with `\cite{wikimediacommons, openverse, kuznetsova2020openimages, openimagesv7}` from [`attributions.bib`](attributions.bib). Any single image reproduced in a figure needs its own credit line in the caption (cite its `wv_` key).
 - **Open Images V7:** annotations are CC BY 4.0 (Google LLC); images are listed as CC BY 2.0 and credited to their Flickr authors.
 
-Candidates: **7377**. Images in use (labelled and not excluded by at least one annotator): **73**. Images with special requirements: **350**. Rows needing review or not usable: **13**.
+Candidates: **7377**. Images in use (labelled and not excluded by at least one annotator): **74**. Images with special requirements: **350**. Rows needing review or not usable: **13**.
 
 ## Rows that need review or cannot be used
 
@@ -2065,7 +2065,7 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 
 ## Images currently in use
 
-73 images. This list grows automatically as people label.
+74 images. This list grows automatically as people label.
 
 | image_id | title | author | license | source | special | credit line |
 |---|---|---|---|---|---|---|
@@ -2095,6 +2095,7 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 | wv_000276 | Hiking the Rocky Point Trail | GlacierNPS | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/43288043@N04/52180588339) | no | "Hiking the Rocky Point Trail" by GlacierNPS is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/43288043@N04/52180588339 |
 | wv_000286 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212256726) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212256726 |
 | wv_000287 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52211251117) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52211251117 |
+| wv_000288 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52201038024) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52201038024 |
 | wv_000291 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212277768) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212277768 |
 | wv_000292 | Hiking the Rocky Point Trail | GlacierNPS | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/43288043@N04/52180587794) | no | "Hiking the Rocky Point Trail" by GlacierNPS is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/43288043@N04/52180587794 |
 | wv_000293 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212742805) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212742805 |
@@ -2153,7 +2154,7 @@ All 7377 candidates, with credit lines, are in [`attributions.csv`](attributions
 | CC-BY-SA-4.0 | 1085 | 0 |
 | CC-BY-SA-3.0 | 471 | 0 |
 | CC-BY-SA-2.0 | 429 | 0 |
-| LicenseRef-PDM-1.0 | 317 | 44 |
+| LicenseRef-PDM-1.0 | 317 | 45 |
 | CC0-1.0 | 305 | 0 |
 | CC-BY-4.0 | 149 | 0 |
 | CC-BY-SA-3.0-DE | 74 | 0 |
