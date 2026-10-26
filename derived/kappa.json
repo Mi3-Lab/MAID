@@ -1,82 +1,82 @@
 {
  "device_type": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.7831,
-    "n": 32
+    "kappa": 0.7618,
+    "n": 52
    }
   },
-  "pooled_kappa": 0.7831
+  "pooled_kappa": 0.7618
  },
  "exclude": {
-  "n_items": 81,
+  "n_items": 129,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.4849,
-    "n": 81
+    "kappa": 0.4156,
+    "n": 129
    }
   },
-  "pooled_kappa": 0.4849
+  "pooled_kappa": 0.4156
  },
  "lighting": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.8209,
-    "n": 32
+    "kappa": 0.7746,
+    "n": 52
    }
   },
-  "pooled_kappa": 0.8209
+  "pooled_kappa": 0.7746
  },
  "occlusion": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.0361,
-    "n": 32
+    "kappa": 0.0278,
+    "n": 52
    }
   },
-  "pooled_kappa": 0.0361
+  "pooled_kappa": 0.0278
  },
  "occupied": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
     "kappa": 1.0,
-    "n": 32
+    "n": 52
    }
   },
   "pooled_kappa": 1.0
  },
  "propulsion": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.7607,
-    "n": 32
+    "kappa": 0.7374,
+    "n": 52
    }
   },
-  "pooled_kappa": 0.7607
+  "pooled_kappa": 0.7374
  },
  "setting": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.6464,
-    "n": 32
+    "kappa": 0.6636,
+    "n": 52
    }
   },
-  "pooled_kappa": 0.6464
+  "pooled_kappa": 0.6636
  },
  "viewpoint": {
-  "n_items": 32,
+  "n_items": 52,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.511,
-    "n": 32
+    "kappa": 0.5491,
+    "n": 52
    }
   },
-  "pooled_kappa": 0.511
+  "pooled_kappa": 0.5491
  }
 }
