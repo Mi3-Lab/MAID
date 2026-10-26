@@ -3,22 +3,22 @@
   "fields": {
    "device_type": {
     "all_done_human_labels": {
-     "accuracy": 0.7632,
+     "accuracy": 0.7443,
      "confusion": {
-      "lookalike|lookalike": 7,
+      "lookalike|lookalike": 9,
       "lookalike|powered": 2,
-      "manual|manual": 58,
-      "manual|other_aid": 5,
-      "manual|powered": 17,
-      "other_aid|manual": 4,
-      "other_aid|other_aid": 2,
-      "other_aid|powered": 5,
+      "manual|manual": 69,
+      "manual|other_aid": 6,
+      "manual|powered": 22,
+      "other_aid|manual": 5,
+      "other_aid|other_aid": 3,
+      "other_aid|powered": 9,
       "powered|manual": 4,
-      "powered|powered": 78,
+      "powered|powered": 82,
       "unclear|powered": 8
      },
-     "kappa": 0.6053,
-     "n": 190
+     "kappa": 0.5852,
+     "n": 219
     },
     "independent": {
      "accuracy": 0.7671,
@@ -35,22 +35,22 @@
      "n": 73
     },
     "reviewed": {
-     "accuracy": 0.7607,
+     "accuracy": 0.7329,
      "confusion": {
-      "lookalike|lookalike": 7,
+      "lookalike|lookalike": 9,
       "lookalike|powered": 2,
-      "manual|manual": 33,
-      "manual|other_aid": 3,
-      "manual|powered": 11,
-      "other_aid|manual": 2,
-      "other_aid|other_aid": 2,
-      "other_aid|powered": 3,
+      "manual|manual": 44,
+      "manual|other_aid": 4,
+      "manual|powered": 16,
+      "other_aid|manual": 3,
+      "other_aid|other_aid": 3,
+      "other_aid|powered": 7,
       "powered|manual": 4,
-      "powered|powered": 47,
+      "powered|powered": 51,
       "unclear|powered": 3
      },
-     "kappa": 0.6096,
-     "n": 117
+     "kappa": 0.5788,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.902,
@@ -67,20 +67,20 @@
    },
    "lighting": {
     "all_done_human_labels": {
-     "accuracy": 0.9524,
+     "accuracy": 0.9495,
      "confusion": {
-      "daylight|daylight": 63,
-      "daylight|indoor": 3,
+      "daylight|daylight": 74,
+      "daylight|indoor": 4,
       "daylight|shade": 2,
-      "indoor|indoor": 114,
+      "indoor|indoor": 128,
       "indoor|shade": 1,
-      "low_light|low_light": 1,
+      "low_light|low_light": 2,
       "shade|daylight": 2,
-      "shade|indoor": 1,
-      "shade|shade": 2
+      "shade|indoor": 2,
+      "shade|shade": 3
      },
-     "kappa": 0.9039,
-     "n": 189
+     "kappa": 0.9005,
+     "n": 218
     },
     "independent": {
      "accuracy": 0.8889,
@@ -97,15 +97,18 @@
      "n": 72
     },
     "reviewed": {
-     "accuracy": 0.9915,
+     "accuracy": 0.9795,
      "confusion": {
-      "daylight|daylight": 43,
-      "indoor|indoor": 71,
+      "daylight|daylight": 54,
+      "daylight|indoor": 1,
+      "indoor|indoor": 85,
       "indoor|shade": 1,
-      "shade|shade": 2
+      "low_light|low_light": 1,
+      "shade|indoor": 1,
+      "shade|shade": 3
      },
-     "kappa": 0.9826,
-     "n": 117
+     "kappa": 0.9596,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.9423,
@@ -121,20 +124,20 @@
    },
    "occlusion": {
     "all_done_human_labels": {
-     "accuracy": 0.6421,
+     "accuracy": 0.6712,
      "confusion": {
-      "heavy|heavy": 24,
-      "heavy|none": 2,
+      "heavy|heavy": 29,
+      "heavy|none": 3,
       "heavy|partial": 1,
       "none|heavy": 20,
-      "none|none": 45,
-      "none|partial": 35,
-      "partial|heavy": 7,
+      "none|none": 58,
+      "none|partial": 37,
+      "partial|heavy": 8,
       "partial|none": 3,
-      "partial|partial": 53
+      "partial|partial": 60
      },
-     "kappa": 0.4643,
-     "n": 190
+     "kappa": 0.5036,
+     "n": 219
     },
     "independent": {
      "accuracy": 0.2329,
@@ -151,20 +154,20 @@
      "n": 73
     },
     "reviewed": {
-     "accuracy": 0.8974,
+     "accuracy": 0.8904,
      "confusion": {
-      "heavy|heavy": 24,
-      "heavy|none": 1,
+      "heavy|heavy": 29,
+      "heavy|none": 2,
       "heavy|partial": 1,
       "none|heavy": 2,
-      "none|none": 34,
-      "none|partial": 2,
-      "partial|heavy": 4,
+      "none|none": 47,
+      "none|partial": 4,
+      "partial|heavy": 5,
       "partial|none": 2,
-      "partial|partial": 47
+      "partial|partial": 54
      },
-     "kappa": 0.8414,
-     "n": 117
+     "kappa": 0.8315,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.44,
@@ -181,15 +184,15 @@
    },
    "occupied": {
     "all_done_human_labels": {
-     "accuracy": 0.9737,
+     "accuracy": 0.9726,
      "confusion": {
-      "no|no": 12,
-      "no|yes": 4,
+      "no|no": 16,
+      "no|yes": 5,
       "yes|no": 1,
-      "yes|yes": 173
+      "yes|yes": 197
      },
-     "kappa": 0.8135,
-     "n": 190
+     "kappa": 0.8273,
+     "n": 219
     },
     "independent": {
      "accuracy": 0.9589,
@@ -202,15 +205,15 @@
      "n": 73
     },
     "reviewed": {
-     "accuracy": 0.9829,
+     "accuracy": 0.9795,
      "confusion": {
-      "no|no": 11,
-      "no|yes": 1,
+      "no|no": 15,
+      "no|yes": 2,
       "yes|no": 1,
-      "yes|yes": 104
+      "yes|yes": 128
      },
-     "kappa": 0.9071,
-     "n": 117
+     "kappa": 0.8975,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.9615,
@@ -226,20 +229,21 @@
    },
    "propulsion": {
     "all_done_human_labels": {
-     "accuracy": 0.8263,
+     "accuracy": 0.8356,
      "confusion": {
-      "attendant|not_applicable": 4,
+      "attendant|attendant": 1,
+      "attendant|not_applicable": 6,
       "attendant|self": 1,
-      "not_applicable|attendant": 1,
-      "not_applicable|not_applicable": 114,
+      "not_applicable|attendant": 2,
+      "not_applicable|not_applicable": 132,
       "not_applicable|self": 5,
       "self|attendant": 2,
       "self|not_applicable": 13,
-      "self|self": 43,
+      "self|self": 50,
       "unclear|not_applicable": 7
      },
-     "kappa": 0.6242,
-     "n": 190
+     "kappa": 0.6468,
+     "n": 219
     },
     "independent": {
      "accuracy": 0.7534,
@@ -258,17 +262,19 @@
      "n": 73
     },
     "reviewed": {
-     "accuracy": 0.8718,
+     "accuracy": 0.8767,
      "confusion": {
-      "attendant|not_applicable": 3,
-      "not_applicable|not_applicable": 75,
+      "attendant|attendant": 1,
+      "attendant|not_applicable": 5,
+      "not_applicable|attendant": 1,
+      "not_applicable|not_applicable": 93,
       "not_applicable|self": 1,
       "self|not_applicable": 10,
-      "self|self": 27,
+      "self|self": 34,
       "unclear|not_applicable": 1
      },
-     "kappa": 0.702,
-     "n": 117
+     "kappa": 0.7207,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.9608,
@@ -284,25 +290,26 @@
    },
    "setting": {
     "all_done_human_labels": {
-     "accuracy": 0.3421,
+     "accuracy": 0.3699,
      "confusion": {
-      "curb|curb": 2,
+      "curb|curb": 4,
       "curb|vehicle": 1,
-      "indoor|indoor": 9,
-      "indoor|other": 32,
+      "indoor|indoor": 14,
+      "indoor|other": 37,
       "indoor|sidewalk": 2,
-      "indoor|vehicle": 58,
+      "indoor|vehicle": 60,
       "other|indoor": 1,
-      "other|other": 42,
+      "other|other": 48,
       "other|sidewalk": 2,
-      "other|vehicle": 15,
+      "other|vehicle": 19,
       "sidewalk|curb": 4,
-      "sidewalk|sidewalk": 7,
-      "sidewalk|vehicle": 10,
-      "vehicle|vehicle": 5
+      "sidewalk|other": 1,
+      "sidewalk|sidewalk": 9,
+      "sidewalk|vehicle": 11,
+      "vehicle|vehicle": 6
      },
-     "kappa": 0.2072,
-     "n": 190
+     "kappa": 0.231,
+     "n": 219
     },
     "independent": {
      "accuracy": 0.2877,
@@ -322,24 +329,25 @@
      "n": 73
     },
     "reviewed": {
-     "accuracy": 0.3761,
+     "accuracy": 0.411,
      "confusion": {
-      "curb|curb": 2,
-      "indoor|indoor": 6,
-      "indoor|other": 19,
+      "curb|curb": 4,
+      "indoor|indoor": 11,
+      "indoor|other": 24,
       "indoor|sidewalk": 1,
-      "indoor|vehicle": 30,
+      "indoor|vehicle": 32,
       "other|indoor": 1,
-      "other|other": 25,
+      "other|other": 31,
       "other|sidewalk": 1,
-      "other|vehicle": 9,
+      "other|vehicle": 13,
       "sidewalk|curb": 4,
-      "sidewalk|sidewalk": 6,
-      "sidewalk|vehicle": 8,
-      "vehicle|vehicle": 5
+      "sidewalk|other": 1,
+      "sidewalk|sidewalk": 8,
+      "sidewalk|vehicle": 9,
+      "vehicle|vehicle": 6
      },
-     "kappa": 0.244,
-     "n": 117
+     "kappa": 0.2747,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.2941,
@@ -361,26 +369,26 @@
    },
    "viewpoint": {
     "all_done_human_labels": {
-     "accuracy": 0.6632,
+     "accuracy": 0.6712,
      "confusion": {
-      "front|front": 89,
+      "front|front": 103,
       "front|side": 1,
       "front|three-quarter": 4,
       "rear|front": 8,
-      "rear|rear": 17,
-      "rear|side": 1,
+      "rear|rear": 19,
+      "rear|side": 2,
       "rear|three-quarter": 1,
-      "side|front": 30,
-      "side|rear": 5,
-      "side|side": 18,
-      "side|three-quarter": 7,
+      "side|front": 34,
+      "side|rear": 6,
+      "side|side": 21,
+      "side|three-quarter": 8,
       "three-quarter|front": 5,
       "three-quarter|rear": 1,
-      "three-quarter|side": 1,
-      "three-quarter|three-quarter": 2
+      "three-quarter|side": 2,
+      "three-quarter|three-quarter": 4
      },
-     "kappa": 0.4392,
-     "n": 190
+     "kappa": 0.456,
+     "n": 219
     },
     "independent": {
      "accuracy": 0.5205,
@@ -402,23 +410,25 @@
      "n": 73
     },
     "reviewed": {
-     "accuracy": 0.7521,
+     "accuracy": 0.7466,
      "confusion": {
-      "front|front": 59,
+      "front|front": 73,
       "front|side": 1,
       "front|three-quarter": 2,
       "rear|front": 5,
-      "rear|rear": 13,
-      "side|front": 13,
-      "side|rear": 2,
-      "side|side": 14,
-      "side|three-quarter": 3,
+      "rear|rear": 15,
+      "rear|side": 1,
+      "side|front": 17,
+      "side|rear": 3,
+      "side|side": 17,
+      "side|three-quarter": 4,
       "three-quarter|front": 2,
       "three-quarter|rear": 1,
-      "three-quarter|three-quarter": 2
+      "three-quarter|side": 1,
+      "three-quarter|three-quarter": 4
      },
-     "kappa": 0.5752,
-     "n": 117
+     "kappa": 0.5728,
+     "n": 146
     },
     "vs_final_labels": {
      "accuracy": 0.62,
@@ -440,76 +450,76 @@
   "images_with_suggestions": 4849,
   "review_acceptance": {
    "device_type": {
-    "accepted": 88,
-    "n": 117,
-    "rate": 0.7521
+    "accepted": 106,
+    "n": 146,
+    "rate": 0.726
    },
    "lighting": {
-    "accepted": 116,
-    "n": 117,
-    "rate": 0.9915
+    "accepted": 143,
+    "n": 146,
+    "rate": 0.9795
    },
    "occlusion": {
-    "accepted": 105,
-    "n": 117,
-    "rate": 0.8974
+    "accepted": 130,
+    "n": 146,
+    "rate": 0.8904
    },
    "occupied": {
-    "accepted": 114,
-    "n": 117,
-    "rate": 0.9744
+    "accepted": 142,
+    "n": 146,
+    "rate": 0.9726
    },
    "propulsion": {
-    "accepted": 102,
-    "n": 117,
-    "rate": 0.8718
+    "accepted": 128,
+    "n": 146,
+    "rate": 0.8767
    },
    "setting": {
-    "accepted": 44,
-    "n": 117,
-    "rate": 0.3761
+    "accepted": 60,
+    "n": 146,
+    "rate": 0.411
    },
    "viewpoint": {
-    "accepted": 88,
-    "n": 117,
-    "rate": 0.7521
+    "accepted": 109,
+    "n": 146,
+    "rate": 0.7466
    }
   },
   "screening": {
    "child": {
-    "fn": 8,
-    "fp": 15,
+    "fn": 11,
+    "fp": 20,
     "human_proxy": "exclude=child",
-    "precision": 0.6429,
-    "recall": 0.7714,
-    "tn": 432,
-    "tp": 27
+    "precision": 0.6923,
+    "recall": 0.8036,
+    "tn": 497,
+    "tp": 45
    },
    "clinical_setting": {
     "fn": 0,
-    "fp": 117,
+    "fp": 126,
     "human_proxy": "exclude=clinical_setting",
-    "precision": 0.0085,
+    "precision": 0.0079,
     "recall": 1.0,
-    "tn": 364,
+    "tn": 446,
     "tp": 1
    },
    "not_a_photo": {
-    "fn": 217,
+    "fn": 252,
     "fp": 1,
     "human_proxy": "exclude=not_a_photo",
-    "precision": 0.9,
-    "recall": 0.0398,
-    "tn": 255,
-    "tp": 9
+    "precision": 0.9167,
+    "recall": 0.0418,
+    "tn": 309,
+    "tp": 11
    },
    "visible_face": {
     "fn": 40,
-    "fp": 124,
+    "fp": 146,
     "human_proxy": "face_blur_missed",
-    "precision": 0.1842,
+    "precision": 0.1609,
     "recall": 0.4118,
-    "tn": 290,
+    "tn": 359,
     "tp": 28
    }
   }
