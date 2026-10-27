@@ -13,7 +13,7 @@ Every image in the release and every image shown in the paper gets a credit line
 - **Paper:** cite the sources with `\cite{wikimediacommons, openverse, kuznetsova2020openimages, openimagesv7}` from [`attributions.bib`](attributions.bib). Any single image reproduced in a figure needs its own credit line in the caption (cite its `wv_` key).
 - **Open Images V7:** annotations are CC BY 4.0 (Google LLC); images are listed as CC BY 2.0 and credited to their Flickr authors.
 
-Candidates: **7377**. Images in use (labelled and not excluded by at least one annotator): **200**. Images with special requirements: **350**. Rows needing review or not usable: **13**.
+Candidates: **7377**. Images in use (labelled and not excluded by at least one annotator): **203**. Images with special requirements: **350**. Rows needing review or not usable: **13**.
 
 ## Rows that need review or cannot be used
 
@@ -2065,7 +2065,7 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 
 ## Images currently in use
 
-200 images. This list grows automatically as people label.
+203 images. This list grows automatically as people label.
 
 | image_id | title | author | license | source | special | credit line |
 |---|---|---|---|---|---|---|
@@ -2148,6 +2148,8 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 | wv_002088 | 2021 National Veterans Wheelchair Games | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/51616296970) | no | "2021 National Veterans Wheelchair Games" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/51616296970 |
 | wv_002104 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212768352) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212768352 |
 | wv_002109 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52199119168) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52199119168 |
+| wv_002123 | 2021 National Veterans Wheelchair Games | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/51615436811) | no | "2021 National Veterans Wheelchair Games" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/51615436811 |
+| wv_002127 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52201312213) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52201312213 |
 | wv_002129 | Bus captain pushing wheelchair passenger up the bus ramp | Jnzl's Photos | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/102748040@N03/54519279755) | no | "Bus captain pushing wheelchair passenger up the bus ramp" by Jnzl's Photos is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/. Source: https://www.flickr.com/photos/102748040@N03/54519279755. Modified: resized; faces blurred (14 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_002133 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52201937670) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52201937670 |
 | wv_002134 | 2021 National Veterans Wheelchair Games | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/51614593862) | no | "2021 National Veterans Wheelchair Games" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/51614593862 |
@@ -2170,6 +2172,7 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 | wv_002392 | Wheelchair Accessible | Carlos Martinez | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/kumanday/276903088) | no | "Wheelchair Accessible" by Carlos Martinez, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/kumanday/276903088. Modified: resized; faces blurred (1 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_002414 | March against Monsanto/TTIP, Birmingham | Global Justice Now | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/wdm/14483028249) | no | "March against Monsanto/TTIP, Birmingham" by Global Justice Now, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/wdm/14483028249. Modified: resized; faces blurred (7 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_002430 | DSC_9652 | marksontok | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/mark233/12576703013) | no | "DSC_9652" by marksontok, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/mark233/12576703013. Modified: resized; faces blurred (14 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
+| wv_002446 | MTI Automotive Egypt \| JLR Family Day Event \| Cars & Cigars | Jaguar MENA | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/jaguarcarsmena/8876113850) | no | "MTI Automotive Egypt \| JLR Family Day Event \| Cars & Cigars" by Jaguar MENA, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/jaguarcarsmena/8876113850. Modified: resized; faces blurred (5 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_002453 | England 2002 004 | Sean Hayford Oleary | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/sdho/67018895) | no | "England 2002 004" by Sean Hayford Oleary, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/sdho/67018895. Modified: resized; faces blurred (5 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_002457 | IMG_9544 | Gaël Marziou | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/gmarziou/5704211237) | no | "IMG_9544" by Gaël Marziou, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/gmarziou/5704211237. Modified: resized; faces blurred (11 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_002464 | BODYTRAFFIC | U.S. Embassy Tel Aviv | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/usembassyta/22053067535) | no | "BODYTRAFFIC" by U.S. Embassy Tel Aviv, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/usembassyta/22053067535. Modified: resized; faces blurred (11 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
@@ -2276,11 +2279,11 @@ All 7377 candidates, with credit lines, are in [`attributions.csv`](attributions
 
 | license | all candidates | in use |
 |---|---|---|
-| CC-BY-2.0 | 4453 | 131 |
+| CC-BY-2.0 | 4453 | 132 |
 | CC-BY-SA-4.0 | 1085 | 0 |
 | CC-BY-SA-3.0 | 471 | 0 |
 | CC-BY-SA-2.0 | 429 | 0 |
-| LicenseRef-PDM-1.0 | 317 | 59 |
+| LicenseRef-PDM-1.0 | 317 | 61 |
 | CC0-1.0 | 305 | 10 |
 | CC-BY-4.0 | 149 | 0 |
 | CC-BY-SA-3.0-DE | 74 | 0 |

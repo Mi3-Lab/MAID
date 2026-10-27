@@ -1,23 +1,23 @@
 {
  "auto_review_events_by_annotator": {
-  "samir": 2290,
+  "samir": 2342,
   "shaaz": 240
  },
  "candidates": 7377,
- "events": 4393,
+ "events": 4445,
  "events_by_annotator": {
   "deploytest": 8,
-  "samir": 2883,
+  "samir": 2935,
   "shaaz": 1396
  },
  "images_done_by_annotator": {
-  "samir": 527,
+  "samir": 533,
   "shaaz": 130
  },
- "images_touched": 532,
+ "images_touched": 537,
  "status_counts": {
   "final": 117,
-  "in_progress": 403,
+  "in_progress": 408,
   "needs_third_annotator": 12
  }
 }
