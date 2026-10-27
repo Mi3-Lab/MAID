@@ -259,7 +259,7 @@ wv_002104,shaaz,manual,yes,self,heavy,front,indoor,indoor,,,"[[0.0051, 0.6041, 0
 wv_002109,samir,other_aid,yes,not_applicable,heavy,front,indoor,other,,,"[[0.299, 0.4522, 0.3698, 0.5386]]",done
 wv_002109,shaaz,,,,,,,,not_a_photo,,,done
 wv_002123,samir,manual,yes,self,partial,side,daylight,other,,,,done
-wv_002127,samir,powered,yes,not_applicable,partial,front,indoor,indoor,,,,done
+wv_002127,samir,powered,yes,not_applicable,partial,front,indoor,indoor,,,[],done
 wv_002129,samir,powered,yes,not_applicable,none,front,daylight,vehicle,,,,done
 wv_002129,shaaz,manual,yes,attendant,none,side,daylight,vehicle,,,"[[0.3134, 0.5914, 0.3492, 0.255]]",done
 wv_002132,samir,,,,,,,,not_a_photo,,,done

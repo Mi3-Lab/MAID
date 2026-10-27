@@ -1,13 +1,13 @@
 {
  "auto_review_events_by_annotator": {
-  "samir": 2342,
+  "samir": 2344,
   "shaaz": 240
  },
  "candidates": 7377,
- "events": 4445,
+ "events": 4447,
  "events_by_annotator": {
   "deploytest": 8,
-  "samir": 2935,
+  "samir": 2937,
   "shaaz": 1396
  },
  "images_done_by_annotator": {
