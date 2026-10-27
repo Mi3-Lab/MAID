@@ -1,0 +1,255 @@
+# HUMAN-FLAGGED: labeled images a labeler excluded (typed, or accepted the model flag with a keypress) that the child/stroller/no-device pass had also caught
+# one image id per line ('# ...' = reason/scores); read by server/main.py and scripts/build_*.py.
+# Removed entirely (files stay on disk). Restores in the app's Removed review (/removed.html) override this list.
+wv_000228  # human_exclude: license_concern (adjudicated); child: siglip child 0.48; stroller: siglip stroller 0.67
+wv_000245  # human_exclude: not_a_photo (typed); child: auto child flag 0.24; no_device: siglip presence 0.05, top=x_text, owl max 0.00
+wv_000248  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.02, top=x_text, owl max 0.00
+wv_000249  # human_exclude: not_a_photo (adjudicated); child: siglip child 0.95, siglip child sigmoid 0.07
+wv_000258  # human_exclude: license_concern (adjudicated); child: siglip child 0.64, auto child flag 0.19; stroller: siglip stroller 0.97
+wv_000267  # human_exclude: not_a_photo (adjudicated); child: siglip child 0.57
+wv_000270  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.02, top=x_vehicle, owl max 0.00
+wv_000271  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.01, top=x_vehicle, owl max 0.00
+wv_000273  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.10, top=x_text, owl max 0.00
+wv_000279  # human_exclude: not_a_photo (adjudicated); child: siglip child 0.73
+wv_000282  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.02, top=x_vehicle, owl max 0.00
+wv_000283  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.03, top=x_vehicle, owl max 0.00
+wv_000285  # human_exclude: not_a_photo (typed); child: auto child flag 0.16; no_device: siglip presence 0.02, top=x_text, owl max 0.00
+wv_000288  # human_exclude: clinical_setting (adjudicated); child: auto child flag 0.13
+wv_000298  # human_exclude: license_concern (adjudicated); child: siglip child 0.53; stroller: siglip stroller 0.84
+wv_000299  # human_exclude: not_a_photo (adjudicated); child: auto child flag 0.13; no_device: siglip presence 0.03, top=x_text, owl max 0.00
+wv_000302  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.02, top=x_scene, owl max 0.00
+wv_000340  # human_exclude: child (review_keypress); child: auto child flag 0.31, human child exclude
+wv_000368  # human_exclude: child (review_keypress); child: siglip child 0.96, auto child flag 0.93, human child exclude
+wv_000375  # human_exclude: not_a_photo (typed); child: siglip child 0.50
+wv_001975  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.03, top=x_vehicle, owl max 0.00
+wv_001997  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.02, top=x_vehicle, owl max 0.00
+wv_002011  # human_exclude: not_a_photo (adjudicated); child: siglip child sigmoid 0.03
+wv_002062  # human_exclude: child (adjudicated); child: siglip child 0.66, siglip child sigmoid 0.02, auto child flag 0.11, human child exclude; stroller: owlv2 stroller box 0.46
+wv_002065  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.05, top=x_people, owl max 0.14
+wv_002199  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.02, top=x_vehicle, owl max 0.00
+wv_002346  # human_exclude: child (review_keypress); child: auto child flag 0.90, human child exclude
+wv_002373  # human_exclude: child (review_keypress); child: auto child flag 0.21, human child exclude
+wv_002421  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.97, siglip child sigmoid 0.05, auto child flag 0.99; stroller: siglip stroller 0.31
+wv_002449  # human_exclude: child (review_keypress); child: siglip child 0.86, auto child flag 0.56, human child exclude
+wv_002477  # human_exclude: child (review_keypress); child: siglip child 0.48, siglip child sigmoid 0.03, auto child flag 0.45, human child exclude
+wv_002612  # human_exclude: child (review_keypress); child: siglip child 0.86, auto child flag 0.49, human child exclude; stroller: siglip stroller 0.35
+wv_002692  # human_exclude: child (review_keypress); child: siglip child 0.85, auto child flag 0.39, human child exclude
+wv_002767  # human_exclude: child (review_keypress); child: auto child flag 0.13, human child exclude
+wv_002852  # human_exclude: child (review_keypress); child: siglip child 0.59, auto child flag 0.37, human child exclude
+wv_002863  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.43, auto child flag 0.33; stroller: siglip stroller 0.54
+wv_002864  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.59
+wv_002951  # human_exclude: child (review_keypress); child: siglip child 0.90, auto child flag 0.66, human child exclude
+wv_002986  # human_exclude: child (review_keypress); child: siglip child 0.43, human child exclude
+wv_003094  # human_exclude: not_a_photo (review_keypress); stroller: siglip stroller 0.79
+wv_003165  # human_exclude: not_a_photo (typed); child: auto child flag 0.50; stroller: siglip stroller 0.70
+wv_003224  # human_exclude: child (review_keypress); child: human child exclude
+wv_003241  # human_exclude: child (typed); child: auto child flag 0.42, human child exclude
+wv_003255  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.41
+wv_003309  # human_exclude: child (review_keypress); child: siglip child 0.72, auto child flag 0.71, human child exclude
+wv_003334  # human_exclude: child (review_keypress); child: siglip child 0.42, human child exclude
+wv_004252  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.01, top=x_scene, owl max 0.00
+wv_004260  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.07, top=x_scene, owl max 0.00
+wv_004315  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.42
+wv_004321  # human_exclude: not_a_photo (review_keypress); child: siglip child sigmoid 0.06
+wv_004360  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.91, auto child flag 0.85; stroller: siglip stroller 0.42
+wv_004364  # human_exclude: not_a_photo (typed); child: siglip child 0.64, auto child flag 0.10
+wv_004390  # human_exclude: child (review_keypress); child: siglip child 0.70, auto child flag 0.82, human child exclude
+wv_004472  # human_exclude: not_a_photo (typed); child: siglip child 0.45; no_device: siglip presence 0.07, top=x_people, owl max 0.00
+wv_004485  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.00, top=x_scene, owl max 0.00
+wv_004493  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.05, top=x_scene, owl max 0.15
+wv_004497  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.08, top=x_room, owl max 0.14
+wv_004501  # human_exclude: not_a_photo (typed); child: siglip child 0.73, auto child flag 0.61
+wv_004524  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.09, top=x_people, owl max 0.00
+wv_004534  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.09, top=x_scene, owl max 0.00
+wv_004535  # human_exclude: child (review_keypress); child: human child exclude; stroller: siglip stroller 0.74
+wv_004546  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.02, top=x_scene, owl max 0.00
+wv_004560  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.50, auto child flag 0.14
+wv_004586  # human_exclude: not_a_photo (typed); child: auto child flag 0.31
+wv_004628  # human_exclude: not_a_photo (review_keypress); stroller: owlv2 stroller box 0.32
+wv_004634  # human_exclude: not_a_photo (typed); child: siglip child 0.60, auto child flag 0.53
+wv_004640  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.02, top=x_scene, owl max 0.10
+wv_004641  # human_exclude: not_a_photo (review_keypress); child: auto child flag 0.19; no_device: siglip presence 0.08, top=x_misc, owl max 0.00
+wv_004688  # human_exclude: not_a_photo (typed); child: siglip child 1.00, siglip child sigmoid 0.11, auto child flag 0.99; stroller: siglip stroller 0.71
+wv_004700  # human_exclude: child (review_keypress); child: siglip child 1.00, siglip child sigmoid 0.26, auto child flag 0.99, human child exclude; stroller: siglip stroller 0.86
+wv_004730  # human_exclude: not_a_photo (typed); child: siglip child sigmoid 0.06; stroller: proposed_class lookalike_stroller
+wv_004738  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.61; stroller: proposed_class lookalike_stroller
+wv_004740  # human_exclude: not_a_photo (typed); child: siglip child 0.76; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.03, top=x_people, owl max 0.00
+wv_004741  # human_exclude: not_a_photo (typed); stroller: proposed_class lookalike_stroller
+wv_004747  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.94; stroller: proposed_class lookalike_stroller
+wv_004749  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.59, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004751  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.86; stroller: proposed_class lookalike_stroller
+wv_004755  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.48; stroller: proposed_class lookalike_stroller
+wv_004756  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.63, auto child flag 0.19; stroller: proposed_class lookalike_stroller
+wv_004758  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.72; stroller: proposed_class lookalike_stroller
+wv_004794  # human_exclude: not_a_photo (typed); child: siglip child 0.95, auto child flag 0.17; stroller: proposed_class lookalike_stroller
+wv_004801  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.57; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.10, top=x_people, owl max 0.00
+wv_004808  # human_exclude: not_a_photo (typed); child: siglip child 0.60; stroller: proposed_class lookalike_stroller
+wv_004826  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.58; stroller: proposed_class lookalike_stroller
+wv_004854  # human_exclude: not_a_photo (typed); child: siglip child 0.64; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.09, top=x_people, owl max 0.00
+wv_004855  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.66, auto child flag 0.10; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004863  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.83; stroller: proposed_class lookalike_stroller
+wv_004866  # human_exclude: not_a_photo (typed); child: siglip child 0.94, auto child flag 0.24; stroller: proposed_class lookalike_stroller
+wv_004870  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.66; stroller: proposed_class lookalike_stroller
+wv_004871  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.87, auto child flag 0.19; stroller: proposed_class lookalike_stroller
+wv_004877  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.85; stroller: proposed_class lookalike_stroller
+wv_004880  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.88, auto child flag 0.13; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004888  # human_exclude: child (review_keypress); child: siglip child 0.49, auto child flag 0.64, human child exclude; stroller: proposed_class lookalike_stroller
+wv_004899  # human_exclude: child (typed); child: auto child flag 0.53, human child exclude; stroller: proposed_class lookalike_stroller
+wv_004903  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.50; stroller: proposed_class lookalike_stroller
+wv_004906  # human_exclude: not_a_photo (typed); child: siglip child 0.94, auto child flag 0.21; stroller: proposed_class lookalike_stroller
+wv_004907  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004913  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.78, auto child flag 0.11; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004916  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_004947  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004955  # human_exclude: identifiable_person (review_keypress); child: siglip child 0.78; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004986  # human_exclude: child (review_keypress); child: human child exclude; stroller: proposed_class lookalike_stroller
+wv_004991  # human_exclude: child (typed); child: siglip child 0.99, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_004992  # human_exclude: child (review_keypress); child: siglip child 0.44, auto child flag 0.43, human child exclude; stroller: proposed_class lookalike_stroller
+wv_004997  # human_exclude: child (review_keypress); child: siglip child 0.98, siglip child sigmoid 0.02, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005000  # human_exclude: child (review_keypress); child: siglip child 0.41, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005015  # human_exclude: child (review_keypress); child: siglip child 1.00, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005027  # human_exclude: not_a_photo (typed); child: siglip child 0.80, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005028  # human_exclude: child (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.06, auto child flag 1.00, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005050  # human_exclude: child (review_keypress); child: siglip child 1.00, siglip child sigmoid 0.08, auto child flag 1.00, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.87
+wv_005058  # human_exclude: child (review_keypress); child: siglip child 0.81, auto child flag 0.76, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005070  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.46
+wv_005077  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.42; stroller: proposed_class lookalike_stroller
+wv_005093  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.98, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005101  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.58, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.76
+wv_005103  # human_exclude: child (review_keypress); child: siglip child 1.00, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005116  # human_exclude: child (typed); child: siglip child 0.95, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.64
+wv_005117  # human_exclude: not_a_photo (typed); child: siglip child 0.64, auto child flag 0.10; stroller: proposed_class lookalike_stroller, siglip stroller 0.89
+wv_005127  # human_exclude: child (review_keypress); child: siglip child 0.93, auto child flag 0.89, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005133  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.48; stroller: proposed_class lookalike_stroller, siglip stroller 0.41
+wv_005141  # human_exclude: child (review_keypress); child: siglip child 0.79, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005149  # human_exclude: not_a_photo (typed); child: siglip child 0.93, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005157  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.93, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005161  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005165  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.56, auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.38
+wv_005171  # human_exclude: child (typed); child: auto child flag 0.13, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.36
+wv_005179  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005182  # human_exclude: child (review_keypress); child: siglip child 1.00, siglip child sigmoid 0.07, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.85
+wv_005200  # human_exclude: child (review_keypress); child: siglip child 0.91, auto child flag 0.92, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005202  # human_exclude: child (review_keypress); child: siglip child 1.00, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.74
+wv_005214  # human_exclude: child (review_keypress); child: siglip child 0.80, auto child flag 0.77, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005224  # human_exclude: child (review_keypress); child: siglip child 0.46, auto child flag 0.63, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005230  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.89, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.51
+wv_005238  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005240  # human_exclude: child (review_keypress); child: auto child flag 0.19, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.36
+wv_005244  # human_exclude: child (typed); child: siglip child 0.86, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005251  # human_exclude: child (review_keypress); child: siglip child 0.64, auto child flag 0.71, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005252  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005259  # human_exclude: child (typed); child: siglip child 0.96, auto child flag 0.95, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005268  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005269  # human_exclude: child (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005272  # human_exclude: not_a_photo (typed); stroller: proposed_class lookalike_stroller
+wv_005273  # human_exclude: child (review_keypress); child: siglip child 0.57, auto child flag 0.30, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.65
+wv_005274  # human_exclude: child (review_keypress); child: siglip child 0.61, auto child flag 0.59, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005278  # human_exclude: child (review_keypress); child: siglip child 0.95, auto child flag 0.95, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005297  # human_exclude: child (review_keypress); child: siglip child 0.71, auto child flag 0.34, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005301  # human_exclude: child (review_keypress); child: siglip child 0.94, auto child flag 0.63, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.80
+wv_005309  # human_exclude: child (review_keypress); child: siglip child 0.73, auto child flag 0.87, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005315  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005316  # human_exclude: not_a_photo (typed); child: siglip child 0.79, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005318  # human_exclude: not_a_photo (typed); child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005323  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005330  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.98, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005331  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.95, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005347  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005362  # human_exclude: child (review_keypress); child: siglip child 0.73, auto child flag 0.17, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005367  # human_exclude: child (review_keypress); child: siglip child 0.87, auto child flag 0.84, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005368  # human_exclude: child (review_keypress); child: siglip child 1.00, siglip child sigmoid 0.04, auto child flag 1.00, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005380  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005399  # human_exclude: not_a_photo (typed); stroller: proposed_class lookalike_stroller
+wv_005400  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.42; stroller: proposed_class lookalike_stroller
+wv_005404  # human_exclude: child (review_keypress); child: siglip child 0.94, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005409  # human_exclude: child (review_keypress); child: siglip child 0.79, auto child flag 0.62, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.89
+wv_005418  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005425  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.88, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005439  # human_exclude: not_a_photo (review_keypress); child: auto child flag 0.77; stroller: proposed_class lookalike_stroller
+wv_005444  # human_exclude: child (review_keypress); child: siglip child 1.00, siglip child sigmoid 0.03, auto child flag 1.00, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005448  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005449  # human_exclude: child (review_keypress); child: siglip child 0.96, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.36
+wv_005457  # human_exclude: not_a_photo (typed); child: siglip child 0.70, auto child flag 0.16; stroller: proposed_class lookalike_stroller, siglip stroller 0.76
+wv_005465  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005468  # human_exclude: not_a_photo (typed); child: siglip child 0.51, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005469  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005476  # human_exclude: not_a_photo (typed); child: siglip child 0.99, siglip child sigmoid 0.10, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005480  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.50, auto child flag 0.56; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005506  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.77, auto child flag 0.30; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005518  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.94, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005520  # human_exclude: not_a_photo (typed); child: siglip child 0.93, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005521  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.95, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005526  # human_exclude: child (review_keypress); child: siglip child 0.93, auto child flag 0.80, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005534  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005560  # human_exclude: child (review_keypress); child: siglip child 0.95, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005565  # human_exclude: child (review_keypress); child: siglip child 0.96, auto child flag 0.68, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005570  # human_exclude: child (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005590  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005600  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005632  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005633  # human_exclude: child (review_keypress); child: siglip child 0.94, auto child flag 0.54, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005642  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005643  # human_exclude: child (review_keypress); child: human child exclude; stroller: proposed_class lookalike_stroller
+wv_005655  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005658  # human_exclude: not_a_photo (typed); child: siglip child 0.71, auto child flag 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005664  # human_exclude: child (review_keypress); child: siglip child 1.00, siglip child sigmoid 0.02, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.42
+wv_005665  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005671  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005672  # human_exclude: child (typed); child: siglip child 0.73, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005692  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005695  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005720  # human_exclude: not_a_photo (review_keypress); stroller: proposed_class lookalike_stroller
+wv_005728  # human_exclude: child (review_keypress); child: siglip child 0.68, auto child flag 0.60, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005736  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.77, auto child flag 0.42; stroller: proposed_class lookalike_stroller, siglip stroller 0.68
+wv_005744  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005745  # human_exclude: child (review_keypress); child: auto child flag 0.18, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005751  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.87, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005754  # human_exclude: child (review_keypress); child: siglip child 0.59, auto child flag 0.61, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005755  # human_exclude: child (review_keypress); child: siglip child 0.82, auto child flag 0.84, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005756  # human_exclude: child (typed); child: siglip child 0.84, auto child flag 0.84, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005765  # human_exclude: not_a_photo (typed); child: siglip child 0.99, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005767  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.95, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.44
+wv_005784  # human_exclude: child (review_keypress); child: siglip child 0.80, auto child flag 0.66, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005805  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.92, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005809  # human_exclude: child (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005820  # human_exclude: child (review_keypress); child: siglip child 0.96, auto child flag 0.89, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005825  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.97, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005826  # human_exclude: not_a_photo (typed); stroller: proposed_class lookalike_stroller
+wv_005836  # human_exclude: child (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 0.98, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005860  # human_exclude: child (review_keypress); child: siglip child 0.95, auto child flag 0.96, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005868  # human_exclude: child (review_keypress); child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.99, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005876  # human_exclude: child (review_keypress); child: siglip child 0.93, auto child flag 0.90, human child exclude; stroller: proposed_class lookalike_stroller
+wv_005895  # human_exclude: child (review_keypress); child: siglip child 0.97, auto child flag 0.90, human child exclude; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005943  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.59
+wv_005984  # human_exclude: not_a_photo (review_keypress); child: auto child flag 0.36
+wv_006028  # human_exclude: not_a_photo (typed); child: auto child flag 0.34
+wv_006104  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.10, top=x_scene, owl max 0.00
+wv_006159  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.71, auto child flag 0.44
+wv_006170  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.91, auto child flag 0.97
+wv_006205  # human_exclude: child (review_keypress); child: siglip child 0.99, auto child flag 0.99, human child exclude
+wv_006238  # human_exclude: child (typed); child: siglip child 1.00, auto child flag 0.97, human child exclude
+wv_006241  # human_exclude: child (review_keypress); child: siglip child 0.98, auto child flag 0.93, human child exclude
+wv_006263  # human_exclude: not_a_photo (typed); child: siglip child 0.44, auto child flag 0.14
+wv_006266  # human_exclude: child (review_keypress); child: siglip child 1.00, auto child flag 0.97, human child exclude
+wv_006325  # human_exclude: not_a_photo (review_keypress); child: auto child flag 0.44
+wv_006328  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.72, auto child flag 0.47
+wv_006330  # human_exclude: not_a_photo (review_keypress); child: auto child flag 0.68
+wv_006349  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.44, auto child flag 0.75
+wv_006368  # human_exclude: child (review_keypress); child: siglip child 0.92, auto child flag 0.97, human child exclude
+wv_006402  # human_exclude: child (review_keypress); child: siglip child 0.81, auto child flag 0.94, human child exclude
+wv_006449  # human_exclude: child (review_keypress); child: human child exclude
+wv_006492  # human_exclude: child (review_keypress); child: siglip child 0.79, auto child flag 0.77, human child exclude
+wv_006536  # human_exclude: not_a_photo (typed); child: siglip child 1.00, auto child flag 0.99
+wv_006560  # human_exclude: child (review_keypress); child: siglip child 1.00, auto child flag 0.97, human child exclude
+wv_006731  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.02, top=x_people, owl max 0.00
+wv_006738  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.05, top=x_people, owl max 0.15
+wv_006777  # human_exclude: not_a_photo (review_keypress); no_device: siglip presence 0.02, top=x_people, owl max 0.00
+wv_006802  # human_exclude: not_a_photo (typed); no_device: siglip presence 0.10, top=x_people, owl max 0.14
+wv_006967  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.85, auto child flag 0.42
+wv_006983  # human_exclude: child (typed); child: siglip child 0.44, auto child flag 0.65, human child exclude
+wv_006996  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.44
+wv_007047  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.76
+wv_007088  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.44, auto child flag 0.12
+wv_007179  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.45, auto child flag 0.22
+wv_007298  # human_exclude: not_a_photo (review_keypress); child: siglip child 0.42

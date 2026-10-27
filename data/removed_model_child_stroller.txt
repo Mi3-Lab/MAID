@@ -1,0 +1,1584 @@
+# MODEL-BASED (unlabeled images only): child (siglip child>=0.4 / sigmoid>=0.02 / auto flag>=0.1) or stroller (proposed_class, siglip>=0.25 or OWLv2 stroller box>=0.3)
+# one image id per line ('# ...' = reason/scores); read by server/main.py and scripts/build_*.py.
+# Removed entirely (files stay on disk). Restores in the app's Removed review (/removed.html) override this list.
+wv_000310  # child: siglip child sigmoid 0.03, auto child flag 0.40
+wv_000316  # child: siglip child 0.41
+wv_000327  # child: auto child flag 0.80
+wv_000342  # child: siglip child 0.90, siglip child sigmoid 0.03, auto child flag 0.57
+wv_000344  # child: siglip child 0.69, auto child flag 0.45; stroller: siglip stroller 0.38
+wv_000355  # child: siglip child 0.51
+wv_000365  # child: auto child flag 0.22
+wv_000369  # child: siglip child 0.93, auto child flag 0.61
+wv_000376  # child: siglip child 0.44; stroller: siglip stroller 0.38
+wv_000381  # child: siglip child 0.43, auto child flag 0.38
+wv_000395  # child: siglip child 0.43
+wv_000410  # child: siglip child 0.64, auto child flag 0.24
+wv_000422  # child: siglip child 0.60
+wv_000428  # child: siglip child 0.62, siglip child sigmoid 0.06, auto child flag 0.42
+wv_000430  # child: auto child flag 0.10
+wv_000431  # child: siglip child 0.81, auto child flag 0.65
+wv_000432  # child: siglip child 0.93, auto child flag 0.52
+wv_000436  # child: siglip child 0.48
+wv_000440  # child: siglip child 0.74
+wv_001977  # stroller: owlv2 stroller box 0.59
+wv_001993  # child: auto child flag 0.24
+wv_002015  # stroller: owlv2 stroller box 0.39
+wv_002037  # child: siglip child 0.43
+wv_002043  # stroller: owlv2 stroller box 0.41
+wv_002044  # child: siglip child 0.87
+wv_002054  # child: siglip child 0.47; no_device: siglip presence 0.10, top=x_nature, owl max 0.00
+wv_002063  # child: siglip child 0.59
+wv_002068  # stroller: owlv2 stroller box 0.41
+wv_002069  # child: siglip child 0.42
+wv_002072  # child: siglip child 0.40
+wv_002076  # child: siglip child 0.45
+wv_002102  # stroller: siglip stroller 0.39
+wv_002114  # stroller: owlv2 stroller box 0.58
+wv_002136  # child: siglip child 0.91
+wv_002143  # child: siglip child 0.42
+wv_002145  # stroller: owlv2 stroller box 0.47
+wv_002153  # child: siglip child 0.45
+wv_002155  # child: siglip child 0.87, auto child flag 0.38
+wv_002161  # child: siglip child 0.66
+wv_002163  # child: siglip child 0.55
+wv_002168  # child: siglip child 0.44
+wv_002182  # stroller: owlv2 stroller box 0.39
+wv_002184  # child: siglip child 0.84
+wv_002186  # stroller: owlv2 stroller box 0.50
+wv_002194  # child: auto child flag 0.11
+wv_002198  # stroller: owlv2 stroller box 0.50
+wv_002207  # child: siglip child 0.75, auto child flag 0.75
+wv_002210  # child: auto child flag 0.15
+wv_002211  # stroller: owlv2 stroller box 0.42
+wv_002215  # stroller: owlv2 stroller box 0.42
+wv_002216  # stroller: owlv2 stroller box 0.50
+wv_002218  # stroller: owlv2 stroller box 0.42
+wv_002225  # stroller: owlv2 stroller box 0.50
+wv_002230  # child: auto child flag 0.17
+wv_002231  # child: siglip child sigmoid 0.04
+wv_002232  # stroller: owlv2 stroller box 0.76
+wv_002236  # child: siglip child 0.90, auto child flag 0.44
+wv_002238  # child: siglip child 0.89, siglip child sigmoid 0.07, auto child flag 0.64; stroller: siglip stroller 0.33
+wv_002247  # child: siglip child 0.77
+wv_002250  # stroller: owlv2 stroller box 0.38
+wv_002257  # stroller: owlv2 stroller box 0.57
+wv_002259  # child: siglip child sigmoid 0.03; stroller: owlv2 stroller box 0.45
+wv_002268  # child: siglip child 0.65, siglip child sigmoid 0.02
+wv_002275  # child: siglip child 0.85, auto child flag 0.76
+wv_002294  # child: siglip child 0.45
+wv_002295  # child: auto child flag 0.16
+wv_002302  # child: siglip child 0.61
+wv_002308  # child: siglip child 0.61; stroller: siglip stroller 0.70
+wv_002312  # child: auto child flag 0.12
+wv_002315  # child: siglip child sigmoid 0.03
+wv_002323  # child: siglip child 0.65, auto child flag 0.24
+wv_002328  # child: siglip child 0.53, auto child flag 0.45
+wv_002333  # child: siglip child 0.68, auto child flag 0.76
+wv_002344  # child: siglip child 0.70, siglip child sigmoid 0.02
+wv_002345  # child: siglip child 0.46
+wv_002347  # child: auto child flag 0.13
+wv_002349  # child: siglip child 0.75
+wv_002350  # child: siglip child sigmoid 0.09, auto child flag 0.20
+wv_002372  # child: siglip child 0.53, siglip child sigmoid 0.04
+wv_002377  # child: auto child flag 0.14
+wv_002378  # child: siglip child 0.84, auto child flag 0.75
+wv_002380  # child: siglip child 0.68
+wv_002383  # child: auto child flag 0.19
+wv_002384  # child: siglip child 0.44
+wv_002398  # child: siglip child 0.44, auto child flag 0.10
+wv_002402  # child: auto child flag 0.51
+wv_002410  # child: siglip child 0.45, auto child flag 0.53
+wv_002413  # child: siglip child 0.77
+wv_002423  # child: siglip child sigmoid 0.06, auto child flag 0.10
+wv_002426  # child: siglip child 0.89, auto child flag 0.73
+wv_002431  # child: auto child flag 0.14
+wv_002434  # child: auto child flag 0.15
+wv_002436  # stroller: siglip stroller 0.30
+wv_002440  # child: siglip child 0.60, auto child flag 0.41
+wv_002442  # child: auto child flag 0.19
+wv_002469  # child: auto child flag 0.41; stroller: siglip stroller 0.35
+wv_002485  # child: siglip child 0.87, auto child flag 0.13
+wv_002488  # child: siglip child 0.99, auto child flag 0.91
+wv_002490  # child: siglip child 0.78, auto child flag 0.72
+wv_002498  # child: siglip child 0.75, auto child flag 0.32
+wv_002503  # child: auto child flag 0.66
+wv_002509  # child: auto child flag 0.17
+wv_002522  # child: siglip child 0.99, auto child flag 1.00; stroller: siglip stroller 0.99
+wv_002527  # child: siglip child 0.87, auto child flag 0.77
+wv_002533  # child: siglip child 0.85
+wv_002540  # child: siglip child 0.73, auto child flag 0.26
+wv_002542  # child: auto child flag 0.23
+wv_002559  # child: siglip child 0.83, auto child flag 0.17
+wv_002560  # child: siglip child 0.91, auto child flag 0.58
+wv_002561  # child: siglip child 0.70, auto child flag 0.33
+wv_002575  # child: auto child flag 0.16
+wv_002578  # child: auto child flag 0.12
+wv_002594  # child: siglip child 0.52
+wv_002602  # child: siglip child sigmoid 0.02
+wv_002619  # child: siglip child 0.52
+wv_002625  # child: siglip child 0.70
+wv_002628  # stroller: siglip stroller 0.44
+wv_002636  # child: auto child flag 0.17
+wv_002638  # child: siglip child 0.64
+wv_002640  # child: siglip child sigmoid 0.12
+wv_002641  # child: siglip child 0.65
+wv_002646  # child: auto child flag 0.10
+wv_002650  # child: siglip child 0.71
+wv_002651  # child: siglip child 0.98, auto child flag 0.86
+wv_002656  # stroller: siglip stroller 0.61
+wv_002659  # child: siglip child 0.62, auto child flag 0.11
+wv_002673  # child: siglip child 0.45
+wv_002681  # child: siglip child 0.44
+wv_002686  # child: siglip child 0.91, siglip child sigmoid 0.07, auto child flag 0.92
+wv_002694  # child: siglip child 0.91, auto child flag 0.44
+wv_002695  # child: siglip child 0.60, auto child flag 0.57; stroller: siglip stroller 0.80
+wv_002705  # child: siglip child 0.77, auto child flag 0.23
+wv_002715  # child: auto child flag 0.28
+wv_002724  # child: siglip child 0.93, auto child flag 0.93
+wv_002733  # child: auto child flag 0.12
+wv_002735  # child: siglip child 0.47, auto child flag 0.76
+wv_002736  # child: siglip child 0.99, siglip child sigmoid 0.09, auto child flag 0.99; stroller: siglip stroller 0.90
+wv_002747  # child: siglip child 0.70, auto child flag 0.13
+wv_002748  # child: siglip child 0.93, auto child flag 0.71
+wv_002750  # child: auto child flag 0.24
+wv_002752  # child: auto child flag 0.55
+wv_002753  # child: siglip child 0.43, auto child flag 0.38
+wv_002776  # child: siglip child 0.57
+wv_002781  # child: auto child flag 0.65
+wv_002789  # child: siglip child 0.93, auto child flag 0.72
+wv_002791  # child: auto child flag 0.60
+wv_002792  # child: siglip child 0.51, auto child flag 0.25
+wv_002807  # child: auto child flag 0.55
+wv_002809  # child: siglip child 0.63
+wv_002816  # child: siglip child 0.72, auto child flag 0.21
+wv_002830  # child: auto child flag 0.14
+wv_002836  # child: siglip child 0.54, auto child flag 0.14
+wv_002844  # child: siglip child 0.69, auto child flag 0.95
+wv_002856  # child: siglip child 0.52, siglip child sigmoid 0.03
+wv_002860  # child: auto child flag 0.15
+wv_002862  # child: siglip child 0.47, auto child flag 0.25
+wv_002870  # child: siglip child 0.61, auto child flag 0.29
+wv_002877  # child: siglip child 0.61, auto child flag 0.39
+wv_002886  # child: siglip child 0.70, auto child flag 0.75; stroller: siglip stroller 0.79
+wv_002888  # child: auto child flag 0.95
+wv_002901  # child: siglip child 0.45
+wv_002902  # child: auto child flag 0.19
+wv_002906  # child: siglip child 0.66, auto child flag 0.41
+wv_002914  # child: auto child flag 0.33
+wv_002915  # child: siglip child 0.48, siglip child sigmoid 0.02
+wv_002920  # child: siglip child 0.82, auto child flag 0.58
+wv_002923  # child: siglip child 0.43
+wv_002934  # child: siglip child 0.78, auto child flag 0.90
+wv_002941  # child: siglip child 0.78, auto child flag 0.67
+wv_002946  # child: siglip child 0.47, auto child flag 0.11
+wv_002949  # child: siglip child 0.77, auto child flag 0.89
+wv_002963  # child: siglip child 0.71, auto child flag 0.77
+wv_002966  # child: siglip child 0.84
+wv_002970  # child: siglip child 0.85, auto child flag 0.84
+wv_002972  # child: siglip child 0.48
+wv_002979  # child: auto child flag 0.13
+wv_002982  # child: auto child flag 0.19
+wv_002984  # child: siglip child 0.57, auto child flag 0.49; stroller: siglip stroller 0.26
+wv_002997  # child: auto child flag 0.12
+wv_002998  # stroller: siglip stroller 0.42
+wv_003004  # child: siglip child 0.44, auto child flag 0.15
+wv_003008  # child: siglip child 0.45, auto child flag 0.73
+wv_003028  # child: siglip child 0.42, auto child flag 0.21
+wv_003033  # child: siglip child 0.53
+wv_003034  # child: siglip child 0.42, auto child flag 0.29
+wv_003036  # child: siglip child 0.55, auto child flag 0.12; stroller: siglip stroller 0.55
+wv_003044  # child: auto child flag 0.10
+wv_003060  # child: auto child flag 0.14
+wv_003062  # child: siglip child 0.51, auto child flag 0.22
+wv_003089  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.98
+wv_003090  # child: siglip child 0.91, auto child flag 0.89
+wv_003093  # child: siglip child 0.55
+wv_003114  # child: siglip child 0.49, auto child flag 0.97; stroller: siglip stroller 0.61
+wv_003118  # child: auto child flag 0.26
+wv_003121  # child: siglip child 0.72, auto child flag 0.61; stroller: siglip stroller 0.55
+wv_003128  # child: auto child flag 0.39
+wv_003157  # child: siglip child 0.86, auto child flag 0.45
+wv_003158  # child: siglip child 0.53, auto child flag 0.28
+wv_003183  # stroller: siglip stroller 0.42
+wv_003188  # child: auto child flag 0.36; stroller: siglip stroller 0.86
+wv_003196  # child: siglip child 0.61
+wv_003203  # child: siglip child 0.43; stroller: siglip stroller 0.33
+wv_003205  # child: siglip child 0.45
+wv_003232  # child: auto child flag 0.34
+wv_003233  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.82
+wv_003239  # child: siglip child 0.70, auto child flag 0.31
+wv_003259  # child: siglip child 0.86, auto child flag 0.75
+wv_003263  # child: siglip child 0.85, siglip child sigmoid 0.05, auto child flag 0.61
+wv_003273  # stroller: siglip stroller 0.72
+wv_003276  # child: auto child flag 0.11
+wv_003285  # stroller: siglip stroller 0.32
+wv_003294  # child: siglip child 0.97, siglip child sigmoid 0.10, auto child flag 0.87
+wv_003296  # child: siglip child 0.49, auto child flag 0.17
+wv_003297  # child: siglip child 0.56
+wv_003303  # child: siglip child 0.51
+wv_003308  # child: siglip child 0.76, auto child flag 0.14
+wv_003314  # child: auto child flag 0.18
+wv_003315  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.98; stroller: siglip stroller 0.98
+wv_003322  # child: siglip child 0.58
+wv_003325  # child: siglip child 0.78, auto child flag 0.95
+wv_003328  # child: siglip child 0.81, auto child flag 0.88
+wv_003331  # child: siglip child 0.87, auto child flag 0.92; stroller: siglip stroller 0.62
+wv_003346  # child: siglip child 0.60, siglip child sigmoid 0.02
+wv_003347  # child: siglip child 0.49
+wv_003359  # child: siglip child 0.64, auto child flag 0.17
+wv_003362  # child: siglip child 0.59, auto child flag 0.57
+wv_003366  # child: siglip child 0.57
+wv_003367  # child: auto child flag 0.14
+wv_003369  # child: siglip child 0.50, auto child flag 0.73
+wv_003382  # child: auto child flag 0.62
+wv_003384  # child: siglip child 0.54, auto child flag 0.55
+wv_003392  # child: auto child flag 0.18
+wv_003393  # child: siglip child 0.41
+wv_003397  # child: auto child flag 0.16
+wv_003402  # child: siglip child 0.70, auto child flag 0.12
+wv_003410  # child: siglip child 0.84, auto child flag 0.43
+wv_003413  # child: siglip child 0.48; stroller: siglip stroller 0.45
+wv_003417  # child: siglip child sigmoid 0.09
+wv_003423  # child: siglip child 0.84, auto child flag 0.17; stroller: siglip stroller 0.39
+wv_003425  # child: auto child flag 0.23
+wv_003426  # child: siglip child 0.89, siglip child sigmoid 0.05, auto child flag 0.76
+wv_003429  # child: siglip child 0.64, auto child flag 0.75; stroller: siglip stroller 0.34
+wv_003434  # child: auto child flag 0.25
+wv_003438  # child: siglip child 0.49, auto child flag 0.27
+wv_003446  # child: auto child flag 0.59
+wv_003448  # child: auto child flag 0.25
+wv_003451  # child: siglip child 0.48
+wv_003454  # child: siglip child 0.77, auto child flag 0.66; stroller: siglip stroller 0.89
+wv_004244  # child: siglip child sigmoid 0.02
+wv_004249  # child: siglip child 0.41
+wv_004262  # child: siglip child 0.54
+wv_004263  # child: siglip child 0.45, auto child flag 0.15
+wv_004265  # child: siglip child 0.55, auto child flag 0.79
+wv_004266  # child: auto child flag 0.13
+wv_004267  # child: siglip child 0.82
+wv_004270  # child: siglip child 0.45, auto child flag 0.23
+wv_004271  # child: auto child flag 0.15
+wv_004276  # child: siglip child 0.42
+wv_004280  # child: auto child flag 0.21
+wv_004286  # child: siglip child 0.44
+wv_004293  # child: siglip child 0.52, auto child flag 0.80
+wv_004294  # child: siglip child 0.53
+wv_004296  # child: siglip child 0.44
+wv_004301  # child: siglip child 0.74; stroller: siglip stroller 0.27
+wv_004302  # child: siglip child 0.40
+wv_004310  # child: siglip child 0.65, auto child flag 0.48
+wv_004318  # child: siglip child 0.53
+wv_004322  # child: siglip child sigmoid 0.04
+wv_004327  # child: siglip child 0.72
+wv_004334  # child: siglip child 0.73; stroller: siglip stroller 0.28
+wv_004335  # child: siglip child 0.44
+wv_004341  # child: siglip child 0.68, auto child flag 0.31
+wv_004344  # child: auto child flag 0.19
+wv_004346  # child: siglip child 0.99, auto child flag 0.97; stroller: siglip stroller 0.52
+wv_004350  # stroller: siglip stroller 0.26
+wv_004355  # child: siglip child 0.95, auto child flag 0.94; stroller: siglip stroller 0.76
+wv_004370  # child: siglip child 0.70; stroller: siglip stroller 0.64
+wv_004372  # child: auto child flag 0.10
+wv_004377  # child: siglip child 0.52
+wv_004396  # child: siglip child 0.57
+wv_004402  # child: siglip child 0.43, auto child flag 0.28
+wv_004416  # child: siglip child 0.59
+wv_004417  # child: siglip child 0.67, auto child flag 0.57
+wv_004421  # child: siglip child 0.52
+wv_004427  # child: siglip child 0.60
+wv_004431  # child: auto child flag 0.11
+wv_004451  # child: siglip child 0.85
+wv_004456  # child: siglip child 0.76, auto child flag 0.19
+wv_004458  # child: siglip child 0.52
+wv_004480  # child: auto child flag 0.20
+wv_004481  # child: siglip child 0.53, auto child flag 0.26; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004483  # child: auto child flag 0.16
+wv_004487  # child: siglip child 0.43, auto child flag 0.10
+wv_004488  # child: auto child flag 0.12
+wv_004500  # child: auto child flag 0.15
+wv_004506  # child: auto child flag 0.22
+wv_004508  # child: auto child flag 0.30
+wv_004509  # child: siglip child 0.48
+wv_004511  # child: auto child flag 0.15
+wv_004525  # stroller: siglip stroller 0.26
+wv_004528  # child: auto child flag 0.32
+wv_004529  # child: auto child flag 0.13
+wv_004537  # child: siglip child 0.40, auto child flag 0.28; no_device: siglip presence 0.04, top=x_people, owl max 0.12
+wv_004542  # child: siglip child 0.57
+wv_004543  # child: siglip child sigmoid 0.02
+wv_004545  # child: siglip child 0.43
+wv_004547  # child: siglip child 0.59, auto child flag 0.26
+wv_004551  # child: siglip child 0.52, auto child flag 0.15
+wv_004558  # child: siglip child 0.43
+wv_004562  # stroller: owlv2 stroller box 0.56
+wv_004573  # child: siglip child 0.44
+wv_004576  # child: siglip child 0.41; no_device: siglip presence 0.10, top=x_room, owl max 0.00
+wv_004580  # child: auto child flag 0.42
+wv_004585  # child: siglip child 0.47; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004595  # child: siglip child 0.78, siglip child sigmoid 0.03
+wv_004596  # child: auto child flag 0.15; no_device: siglip presence 0.00, top=x_nature, owl max 0.00
+wv_004598  # child: siglip child 0.52
+wv_004600  # child: siglip child 0.88, siglip child sigmoid 0.02
+wv_004612  # child: auto child flag 0.13; stroller: owlv2 stroller box 0.41; no_device: siglip presence 0.07, top=x_people, owl max 0.13
+wv_004613  # child: siglip child 0.46, auto child flag 0.10
+wv_004624  # child: siglip child 0.54; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004631  # child: auto child flag 0.11
+wv_004636  # child: auto child flag 0.53; no_device: siglip presence 0.03, top=x_text, owl max 0.00
+wv_004647  # stroller: owlv2 stroller box 0.59; no_device: siglip presence 0.03, top=x_scene, owl max 0.15
+wv_004651  # child: auto child flag 0.23
+wv_004656  # child: siglip child 0.54
+wv_004664  # child: siglip child 0.84, auto child flag 0.76
+wv_004666  # child: auto child flag 0.56
+wv_004667  # child: siglip child 1.00, auto child flag 1.00; stroller: siglip stroller 0.54
+wv_004672  # child: siglip child 0.56, auto child flag 0.37; stroller: siglip stroller 0.35
+wv_004673  # child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.98; stroller: siglip stroller 0.41
+wv_004674  # child: siglip child 1.00, auto child flag 0.99; stroller: siglip stroller 0.70
+wv_004677  # child: siglip child 0.43
+wv_004678  # child: siglip child 0.99, auto child flag 0.99; stroller: siglip stroller 0.27
+wv_004681  # child: siglip child 1.00, siglip child sigmoid 0.13, auto child flag 1.00; stroller: siglip stroller 0.56
+wv_004690  # child: siglip child 0.53, auto child flag 0.30; stroller: siglip stroller 0.56
+wv_004695  # child: siglip child 1.00, siglip child sigmoid 0.06, auto child flag 0.99; stroller: siglip stroller 0.53
+wv_004696  # child: siglip child 1.00, siglip child sigmoid 0.02, auto child flag 0.99; stroller: siglip stroller 0.74
+wv_004705  # child: siglip child 0.45
+wv_004706  # child: siglip child 0.45, siglip child sigmoid 0.02, auto child flag 0.38
+wv_004713  # child: siglip child 0.97, auto child flag 0.91; stroller: siglip stroller 0.76
+wv_004716  # child: siglip child 1.00, auto child flag 0.98; stroller: siglip stroller 0.63
+wv_004718  # child: siglip child 1.00, siglip child sigmoid 0.10, auto child flag 0.99; stroller: siglip stroller 0.83
+wv_004722  # child: siglip child 0.86, siglip child sigmoid 0.09; stroller: proposed_class lookalike_stroller
+wv_004723  # child: siglip child 0.89, auto child flag 0.61; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_004724  # child: siglip child 0.99, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_004725  # child: siglip child 0.61; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.09, top=x_people, owl max 0.00
+wv_004726  # child: siglip child 0.99, auto child flag 0.17; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.13
+wv_004727  # child: siglip child 0.94; stroller: proposed_class lookalike_stroller
+wv_004728  # child: siglip child 0.87, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004729  # child: siglip child 0.67, auto child flag 0.37; stroller: proposed_class lookalike_stroller
+wv_004731  # child: auto child flag 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 0.81
+wv_004732  # child: siglip child 0.63; stroller: proposed_class lookalike_stroller
+wv_004733  # child: siglip child 0.85; stroller: proposed_class lookalike_stroller
+wv_004734  # child: siglip child 0.44; stroller: proposed_class lookalike_stroller
+wv_004735  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller
+wv_004736  # child: siglip child 0.55, auto child flag 0.62; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_004737  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004739  # child: siglip child 0.92; stroller: proposed_class lookalike_stroller
+wv_004742  # child: siglip child 0.67; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004743  # child: siglip child 0.54; stroller: proposed_class lookalike_stroller
+wv_004744  # stroller: proposed_class lookalike_stroller
+wv_004745  # child: siglip child 0.54; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004746  # child: siglip child 0.71; stroller: proposed_class lookalike_stroller
+wv_004748  # child: siglip child 0.66; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.09, top=x_people, owl max 0.00
+wv_004750  # child: siglip child 0.71, auto child flag 0.23; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.10, top=x_people, owl max 0.00
+wv_004752  # child: siglip child 0.92, auto child flag 0.17; stroller: proposed_class lookalike_stroller
+wv_004753  # child: siglip child 0.87, auto child flag 0.66; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_004754  # child: siglip child 0.73; stroller: proposed_class lookalike_stroller
+wv_004757  # child: siglip child 0.60; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004759  # stroller: proposed_class lookalike_stroller
+wv_004760  # child: siglip child sigmoid 0.10; stroller: proposed_class lookalike_stroller
+wv_004761  # child: siglip child 0.46, auto child flag 0.14; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004762  # child: siglip child 0.82; stroller: proposed_class lookalike_stroller
+wv_004763  # child: siglip child 0.63; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004764  # child: siglip child 0.45, auto child flag 0.29; stroller: proposed_class lookalike_stroller
+wv_004765  # child: siglip child 0.83; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.02, top=x_people, owl max 0.00
+wv_004766  # child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004767  # child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004768  # child: auto child flag 0.22; stroller: proposed_class lookalike_stroller, siglip stroller 0.39
+wv_004769  # child: siglip child 0.79; stroller: proposed_class lookalike_stroller
+wv_004770  # child: siglip child 0.49, auto child flag 0.10; stroller: proposed_class lookalike_stroller
+wv_004771  # child: siglip child 0.59, auto child flag 0.29; stroller: proposed_class lookalike_stroller, siglip stroller 0.71
+wv_004772  # child: siglip child 0.80, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004773  # child: siglip child 0.54; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004774  # stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.03, top=x_people, owl max 0.00
+wv_004775  # stroller: proposed_class lookalike_stroller
+wv_004776  # child: siglip child 0.77; stroller: proposed_class lookalike_stroller
+wv_004777  # child: siglip child 0.47; stroller: proposed_class lookalike_stroller
+wv_004778  # child: siglip child 0.45; stroller: proposed_class lookalike_stroller
+wv_004779  # child: auto child flag 0.56; stroller: proposed_class lookalike_stroller
+wv_004780  # child: siglip child 0.54; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.03, top=x_people, owl max 0.00
+wv_004781  # child: siglip child sigmoid 0.05; stroller: proposed_class lookalike_stroller
+wv_004782  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller
+wv_004783  # child: siglip child 0.93; stroller: proposed_class lookalike_stroller
+wv_004784  # child: siglip child 0.74, auto child flag 0.20; stroller: proposed_class lookalike_stroller
+wv_004785  # child: siglip child 0.84; stroller: proposed_class lookalike_stroller
+wv_004786  # child: siglip child 0.86; stroller: proposed_class lookalike_stroller
+wv_004787  # child: siglip child 0.50; stroller: proposed_class lookalike_stroller
+wv_004788  # stroller: proposed_class lookalike_stroller
+wv_004789  # child: siglip child 0.55; stroller: proposed_class lookalike_stroller
+wv_004790  # child: siglip child 0.66; stroller: proposed_class lookalike_stroller, owlv2 stroller box 0.50; no_device: siglip presence 0.02, top=x_people, owl max 0.15
+wv_004791  # child: siglip child 0.50; stroller: proposed_class lookalike_stroller
+wv_004792  # child: siglip child 0.62; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004793  # child: siglip child 0.49, auto child flag 0.17; stroller: proposed_class lookalike_stroller
+wv_004795  # child: siglip child 0.71, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004796  # child: siglip child 0.82, auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_004797  # child: siglip child 0.53; stroller: proposed_class lookalike_stroller
+wv_004798  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004799  # stroller: proposed_class lookalike_stroller
+wv_004800  # child: siglip child 0.57; stroller: proposed_class lookalike_stroller
+wv_004802  # stroller: proposed_class lookalike_stroller
+wv_004803  # child: siglip child 0.76; stroller: proposed_class lookalike_stroller
+wv_004804  # stroller: proposed_class lookalike_stroller
+wv_004805  # child: siglip child 0.52; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004806  # child: auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_004807  # stroller: proposed_class lookalike_stroller
+wv_004809  # stroller: proposed_class lookalike_stroller
+wv_004810  # stroller: proposed_class lookalike_stroller
+wv_004811  # child: siglip child 0.92, auto child flag 0.23; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.07, top=x_people, owl max 0.00
+wv_004812  # child: siglip child 0.79; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.09, top=x_people, owl max 0.11
+wv_004813  # child: siglip child 0.77, auto child flag 0.54; stroller: proposed_class lookalike_stroller
+wv_004814  # child: siglip child 0.91; stroller: proposed_class lookalike_stroller
+wv_004815  # child: auto child flag 0.16; stroller: proposed_class lookalike_stroller
+wv_004816  # child: siglip child 0.91, auto child flag 0.42; stroller: proposed_class lookalike_stroller, siglip stroller 0.28
+wv_004817  # stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.11
+wv_004818  # stroller: proposed_class lookalike_stroller
+wv_004819  # child: siglip child 0.84; stroller: proposed_class lookalike_stroller
+wv_004820  # stroller: proposed_class lookalike_stroller
+wv_004821  # child: siglip child 0.82; stroller: proposed_class lookalike_stroller
+wv_004822  # child: siglip child 0.94; stroller: proposed_class lookalike_stroller
+wv_004823  # stroller: proposed_class lookalike_stroller
+wv_004824  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004825  # child: siglip child 0.78, auto child flag 0.13; stroller: proposed_class lookalike_stroller
+wv_004827  # stroller: proposed_class lookalike_stroller
+wv_004828  # child: siglip child 0.77, auto child flag 0.27; stroller: proposed_class lookalike_stroller
+wv_004829  # child: siglip child 0.93; stroller: proposed_class lookalike_stroller
+wv_004830  # child: siglip child 0.45, auto child flag 0.14; stroller: proposed_class lookalike_stroller
+wv_004831  # stroller: proposed_class lookalike_stroller
+wv_004832  # child: siglip child 0.74, auto child flag 0.13; stroller: proposed_class lookalike_stroller
+wv_004833  # stroller: proposed_class lookalike_stroller
+wv_004834  # child: siglip child 0.93; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.09, top=x_people, owl max 0.00
+wv_004835  # child: siglip child 0.87; stroller: proposed_class lookalike_stroller
+wv_004836  # child: siglip child 0.94, auto child flag 0.14; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.04, top=x_people, owl max 0.00
+wv_004837  # child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.82
+wv_004838  # child: siglip child 0.54, siglip child sigmoid 0.03; stroller: proposed_class lookalike_stroller
+wv_004839  # child: siglip child 0.64; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004840  # child: siglip child 0.92; stroller: proposed_class lookalike_stroller
+wv_004841  # child: siglip child 0.51; stroller: proposed_class lookalike_stroller
+wv_004842  # child: siglip child 0.62, auto child flag 0.16; stroller: proposed_class lookalike_stroller
+wv_004843  # child: siglip child 0.74, auto child flag 0.16; stroller: proposed_class lookalike_stroller
+wv_004844  # child: siglip child 0.98; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.07, top=x_people, owl max 0.00
+wv_004845  # child: siglip child 0.47, auto child flag 0.10; stroller: proposed_class lookalike_stroller
+wv_004846  # stroller: proposed_class lookalike_stroller
+wv_004847  # stroller: proposed_class lookalike_stroller
+wv_004848  # child: siglip child 0.96; stroller: proposed_class lookalike_stroller
+wv_004849  # stroller: proposed_class lookalike_stroller, siglip stroller 0.37
+wv_004850  # child: siglip child 0.85; stroller: proposed_class lookalike_stroller
+wv_004851  # child: siglip child 0.79; stroller: proposed_class lookalike_stroller
+wv_004852  # child: siglip child 0.73, auto child flag 0.12; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004853  # child: siglip child 0.85; stroller: proposed_class lookalike_stroller
+wv_004856  # child: siglip child 0.50, auto child flag 0.60; stroller: proposed_class lookalike_stroller, siglip stroller 0.36
+wv_004857  # child: auto child flag 0.51; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_004858  # child: siglip child 0.75; stroller: proposed_class lookalike_stroller
+wv_004859  # child: siglip child sigmoid 0.02; stroller: proposed_class lookalike_stroller
+wv_004860  # child: auto child flag 0.17; stroller: proposed_class lookalike_stroller
+wv_004861  # child: siglip child 0.94; stroller: proposed_class lookalike_stroller
+wv_004862  # child: siglip child 0.74; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004864  # child: auto child flag 0.35; stroller: proposed_class lookalike_stroller
+wv_004865  # child: siglip child 0.93, auto child flag 0.38; stroller: proposed_class lookalike_stroller
+wv_004867  # stroller: proposed_class lookalike_stroller
+wv_004868  # child: siglip child 0.84, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 0.80
+wv_004869  # child: siglip child 0.43; stroller: proposed_class lookalike_stroller
+wv_004872  # child: siglip child 0.68; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.07, top=x_people, owl max 0.00
+wv_004873  # child: siglip child 0.86; stroller: proposed_class lookalike_stroller
+wv_004874  # child: siglip child 0.81, auto child flag 0.32; stroller: proposed_class lookalike_stroller
+wv_004875  # child: siglip child 0.78; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.09, top=x_people, owl max 0.00
+wv_004876  # child: siglip child 0.50; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.00
+wv_004878  # child: siglip child 0.71, auto child flag 0.15; stroller: proposed_class lookalike_stroller
+wv_004879  # child: siglip child 0.76; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.07, top=x_people, owl max 0.10
+wv_004881  # child: siglip child 0.57; stroller: proposed_class lookalike_stroller
+wv_004882  # child: siglip child 0.98, auto child flag 0.17; stroller: proposed_class lookalike_stroller
+wv_004883  # child: siglip child 0.95; stroller: proposed_class lookalike_stroller
+wv_004884  # child: siglip child 0.68; stroller: proposed_class lookalike_stroller
+wv_004885  # child: siglip child 0.84; stroller: proposed_class lookalike_stroller
+wv_004886  # child: siglip child 0.87; stroller: proposed_class lookalike_stroller
+wv_004887  # stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_004889  # child: siglip child 0.78; stroller: proposed_class lookalike_stroller
+wv_004890  # child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004891  # child: siglip child 0.90, auto child flag 0.56; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_004892  # child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004893  # child: siglip child 0.56, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004894  # child: siglip child 0.61; stroller: proposed_class lookalike_stroller
+wv_004895  # stroller: proposed_class lookalike_stroller
+wv_004896  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004897  # child: siglip child 0.55; stroller: proposed_class lookalike_stroller
+wv_004898  # stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.02, top=x_nature, owl max 0.00
+wv_004900  # child: siglip child 0.48, auto child flag 0.13; stroller: proposed_class lookalike_stroller
+wv_004901  # stroller: proposed_class lookalike_stroller
+wv_004902  # child: siglip child 0.57, auto child flag 0.41; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_004904  # child: auto child flag 0.22; stroller: proposed_class lookalike_stroller
+wv_004905  # child: siglip child 0.94, auto child flag 0.23; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.08, top=x_people, owl max 0.12
+wv_004908  # child: siglip child 0.84; stroller: proposed_class lookalike_stroller
+wv_004909  # stroller: proposed_class lookalike_stroller
+wv_004910  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004911  # child: siglip child 0.46, siglip child sigmoid 0.24; stroller: proposed_class lookalike_stroller
+wv_004912  # child: siglip child 0.78; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.07, top=x_people, owl max 0.00
+wv_004914  # child: siglip child 0.44, auto child flag 0.11; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004915  # child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004917  # child: siglip child 0.83; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004918  # child: siglip child sigmoid 0.09; stroller: proposed_class lookalike_stroller
+wv_004919  # stroller: proposed_class lookalike_stroller
+wv_004920  # child: siglip child 0.61; stroller: proposed_class lookalike_stroller
+wv_004921  # child: siglip child sigmoid 0.02; stroller: proposed_class lookalike_stroller
+wv_004922  # child: siglip child 1.00, siglip child sigmoid 0.07, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_004923  # child: siglip child 0.87; stroller: proposed_class lookalike_stroller
+wv_004924  # child: siglip child 0.65; stroller: proposed_class lookalike_stroller
+wv_004925  # child: siglip child 0.70; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004926  # child: siglip child 0.98; stroller: proposed_class lookalike_stroller
+wv_004927  # child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.74
+wv_004928  # child: siglip child 0.61; stroller: proposed_class lookalike_stroller
+wv_004929  # child: siglip child 0.94, auto child flag 0.31; stroller: proposed_class lookalike_stroller, siglip stroller 0.39
+wv_004930  # child: siglip child 0.56, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004931  # child: siglip child 0.84; stroller: proposed_class lookalike_stroller
+wv_004932  # child: siglip child 0.85; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004933  # child: siglip child 0.78; stroller: proposed_class lookalike_stroller
+wv_004934  # child: siglip child 0.64; stroller: proposed_class lookalike_stroller
+wv_004935  # stroller: proposed_class lookalike_stroller
+wv_004936  # child: siglip child 0.78; stroller: proposed_class lookalike_stroller
+wv_004937  # child: siglip child 0.70, siglip child sigmoid 0.02; stroller: proposed_class lookalike_stroller
+wv_004938  # child: siglip child 0.50; stroller: proposed_class lookalike_stroller
+wv_004939  # stroller: proposed_class lookalike_stroller
+wv_004940  # child: siglip child 0.56, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_004941  # child: siglip child 0.80; stroller: proposed_class lookalike_stroller
+wv_004942  # child: siglip child 0.62, auto child flag 0.18; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_004943  # stroller: proposed_class lookalike_stroller
+wv_004944  # child: siglip child 0.50; stroller: proposed_class lookalike_stroller
+wv_004945  # child: siglip child 0.65, auto child flag 0.16; stroller: proposed_class lookalike_stroller
+wv_004946  # child: siglip child sigmoid 0.03; stroller: proposed_class lookalike_stroller
+wv_004948  # child: siglip child 0.45; stroller: proposed_class lookalike_stroller
+wv_004949  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_004950  # child: siglip child 0.84, auto child flag 0.55; stroller: proposed_class lookalike_stroller, siglip stroller 0.83
+wv_004951  # child: siglip child 0.48; stroller: proposed_class lookalike_stroller
+wv_004952  # stroller: proposed_class lookalike_stroller
+wv_004953  # child: siglip child 0.95; stroller: proposed_class lookalike_stroller
+wv_004954  # child: siglip child 0.62; stroller: proposed_class lookalike_stroller
+wv_004956  # child: siglip child 0.63; stroller: proposed_class lookalike_stroller
+wv_004957  # child: siglip child 0.75; stroller: proposed_class lookalike_stroller
+wv_004958  # child: siglip child 0.72; stroller: proposed_class lookalike_stroller
+wv_004959  # child: siglip child 0.55; stroller: proposed_class lookalike_stroller
+wv_004960  # child: siglip child 0.76; stroller: proposed_class lookalike_stroller
+wv_004961  # child: siglip child 0.94, auto child flag 0.15; stroller: proposed_class lookalike_stroller
+wv_004962  # stroller: proposed_class lookalike_stroller
+wv_004963  # child: siglip child 0.53; stroller: proposed_class lookalike_stroller
+wv_004964  # child: siglip child 0.93; stroller: proposed_class lookalike_stroller; no_device: siglip presence 0.10, top=x_people, owl max 0.00
+wv_004965  # child: siglip child 0.92; stroller: proposed_class lookalike_stroller
+wv_004966  # child: siglip child 0.96, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.89
+wv_004967  # child: siglip child 0.75, auto child flag 0.37; stroller: proposed_class lookalike_stroller
+wv_004968  # child: siglip child 0.57; stroller: proposed_class lookalike_stroller
+wv_004969  # child: siglip child sigmoid 0.05; stroller: proposed_class lookalike_stroller
+wv_004970  # child: siglip child 0.73; stroller: proposed_class lookalike_stroller
+wv_004971  # child: siglip child 0.91, auto child flag 0.23; stroller: proposed_class lookalike_stroller
+wv_004972  # child: siglip child 0.71, auto child flag 0.51; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_004973  # stroller: proposed_class lookalike_stroller
+wv_004974  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004975  # child: auto child flag 0.59; stroller: proposed_class lookalike_stroller, siglip stroller 0.34
+wv_004976  # child: siglip child 0.96, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.51
+wv_004977  # child: siglip child 0.92, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_004978  # child: auto child flag 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_004979  # child: siglip child 0.99, siglip child sigmoid 0.08, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_004980  # child: siglip child 0.68, auto child flag 0.49; stroller: proposed_class lookalike_stroller, siglip stroller 0.87
+wv_004981  # stroller: proposed_class lookalike_stroller
+wv_004982  # child: siglip child 0.64, auto child flag 0.31; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_004983  # child: siglip child 0.69; stroller: proposed_class lookalike_stroller
+wv_004984  # child: siglip child 0.93, auto child flag 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_004985  # child: siglip child 0.99, siglip child sigmoid 0.08, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_004987  # child: siglip child 0.73, auto child flag 0.40; stroller: proposed_class lookalike_stroller
+wv_004988  # child: auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_004989  # child: siglip child 0.79, auto child flag 0.36; stroller: proposed_class lookalike_stroller
+wv_004990  # child: siglip child 0.93, auto child flag 0.73; stroller: proposed_class lookalike_stroller, siglip stroller 0.48
+wv_004993  # child: siglip child 0.73, auto child flag 0.68; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_004994  # child: siglip child 0.91, siglip child sigmoid 0.03, auto child flag 0.32; stroller: proposed_class lookalike_stroller
+wv_004995  # child: auto child flag 0.81; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_004996  # stroller: proposed_class lookalike_stroller
+wv_004998  # stroller: proposed_class lookalike_stroller
+wv_004999  # child: siglip child 0.94, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005001  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005002  # stroller: proposed_class lookalike_stroller
+wv_005003  # child: siglip child 0.95, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005004  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005005  # child: siglip child 0.54, auto child flag 0.50; stroller: proposed_class lookalike_stroller, siglip stroller 0.79
+wv_005006  # child: siglip child 1.00, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005007  # child: siglip child 0.95, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005008  # child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.60
+wv_005009  # stroller: proposed_class lookalike_stroller
+wv_005010  # child: siglip child 0.96, siglip child sigmoid 0.03, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005011  # child: siglip child 0.76, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005012  # child: siglip child 0.64, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.34
+wv_005013  # child: siglip child 0.85, auto child flag 0.65; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005014  # stroller: proposed_class lookalike_stroller
+wv_005016  # child: auto child flag 0.68; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005017  # child: siglip child 0.99, siglip child sigmoid 0.16, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005018  # child: siglip child 0.99, siglip child sigmoid 0.08, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005019  # stroller: proposed_class lookalike_stroller
+wv_005020  # child: auto child flag 0.12; stroller: proposed_class lookalike_stroller, siglip stroller 0.37
+wv_005021  # child: siglip child 0.93, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005022  # child: siglip child 0.83, auto child flag 0.58; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005023  # child: siglip child 0.40, auto child flag 0.17; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005024  # stroller: proposed_class lookalike_stroller
+wv_005025  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005026  # stroller: proposed_class lookalike_stroller
+wv_005029  # child: siglip child 0.67, auto child flag 0.40; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005030  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005031  # child: siglip child 0.87, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 0.74
+wv_005032  # child: siglip child 0.99, siglip child sigmoid 0.18, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005033  # child: siglip child 0.98, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005034  # child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005035  # child: siglip child 0.49, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005036  # child: siglip child 0.99, siglip child sigmoid 0.13, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005037  # child: siglip child 1.00, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.77
+wv_005038  # stroller: proposed_class lookalike_stroller, siglip stroller 0.56
+wv_005039  # child: siglip child 1.00, siglip child sigmoid 0.07, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.53
+wv_005040  # child: siglip child 0.42, auto child flag 0.34; stroller: proposed_class lookalike_stroller
+wv_005041  # child: siglip child 0.85, auto child flag 0.75; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005042  # child: siglip child 0.95, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 0.25
+wv_005043  # child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005044  # child: siglip child 0.60, auto child flag 0.13; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005045  # stroller: proposed_class lookalike_stroller
+wv_005046  # child: siglip child 0.84, auto child flag 0.44; stroller: proposed_class lookalike_stroller, siglip stroller 0.80
+wv_005047  # child: siglip child 0.96, siglip child sigmoid 0.03, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005048  # child: siglip child 0.67, auto child flag 0.22; stroller: proposed_class lookalike_stroller, siglip stroller 0.35
+wv_005049  # stroller: proposed_class lookalike_stroller
+wv_005051  # child: siglip child 0.44, auto child flag 0.44; stroller: proposed_class lookalike_stroller, siglip stroller 0.82
+wv_005052  # child: siglip child 0.99, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005053  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005054  # child: siglip child 0.51; stroller: proposed_class lookalike_stroller
+wv_005055  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005056  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005057  # child: siglip child 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005059  # child: siglip child 0.86, auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 0.71
+wv_005060  # child: siglip child 0.97, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005061  # child: siglip child 0.60, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005062  # child: siglip child 0.96, siglip child sigmoid 0.08, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005063  # child: siglip child 1.00, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005064  # child: siglip child 0.96, siglip child sigmoid 0.02, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005065  # child: siglip child 0.90, auto child flag 0.50; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005066  # child: siglip child 0.87, auto child flag 0.54; stroller: proposed_class lookalike_stroller, siglip stroller 0.34
+wv_005067  # child: siglip child 0.70, auto child flag 0.34; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005068  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005069  # child: siglip child 0.85, auto child flag 0.68; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005071  # child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005072  # stroller: proposed_class lookalike_stroller, siglip stroller 0.84
+wv_005073  # child: siglip child 0.89, auto child flag 0.19; stroller: proposed_class lookalike_stroller, siglip stroller 0.28
+wv_005074  # child: siglip child 0.96, siglip child sigmoid 0.05, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.75
+wv_005075  # child: siglip child 0.79, auto child flag 0.46; stroller: proposed_class lookalike_stroller
+wv_005076  # child: siglip child 1.00, siglip child sigmoid 0.06, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.77
+wv_005078  # child: siglip child 0.82, auto child flag 0.37; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005079  # child: siglip child 0.89, auto child flag 0.73; stroller: proposed_class lookalike_stroller
+wv_005080  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005081  # child: siglip child 0.97, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005082  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005083  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005084  # child: siglip child 0.73, auto child flag 0.26; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005086  # child: siglip child 0.96, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005087  # child: siglip child 0.99, siglip child sigmoid 0.14, auto child flag 0.98; stroller: proposed_class lookalike_stroller
+wv_005088  # child: siglip child 0.96, auto child flag 0.81; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005089  # child: siglip child 0.90, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005090  # child: siglip child 0.95, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005091  # child: siglip child 0.95, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.75
+wv_005092  # child: siglip child 0.96, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005094  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005095  # child: auto child flag 0.33; stroller: proposed_class lookalike_stroller, siglip stroller 0.28
+wv_005096  # child: siglip child 0.94, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005097  # child: siglip child 0.85, auto child flag 0.58; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005098  # stroller: proposed_class lookalike_stroller
+wv_005099  # child: auto child flag 0.25; stroller: proposed_class lookalike_stroller
+wv_005100  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005102  # child: auto child flag 0.11; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005104  # child: siglip child 0.60, auto child flag 0.24; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005105  # child: siglip child 0.93, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.84
+wv_005106  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005107  # child: siglip child 0.80, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005108  # child: siglip child 0.86, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005109  # child: siglip child 0.84, auto child flag 0.43; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005110  # child: siglip child 0.69, auto child flag 0.23; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005111  # child: siglip child 0.92, auto child flag 0.81; stroller: proposed_class lookalike_stroller, siglip stroller 0.87
+wv_005112  # stroller: proposed_class lookalike_stroller
+wv_005113  # child: siglip child 0.99, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.89
+wv_005114  # child: siglip child 0.44, auto child flag 0.29; stroller: proposed_class lookalike_stroller
+wv_005115  # child: siglip child 0.94, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005118  # stroller: proposed_class lookalike_stroller
+wv_005119  # child: siglip child 0.99, siglip child sigmoid 0.12, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005120  # child: siglip child 0.86, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005121  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005122  # child: siglip child 0.47, auto child flag 0.10; stroller: proposed_class lookalike_stroller
+wv_005123  # stroller: proposed_class lookalike_stroller
+wv_005124  # child: siglip child 0.50; stroller: proposed_class lookalike_stroller
+wv_005125  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005126  # child: siglip child 0.85, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005128  # child: siglip child 0.83, auto child flag 0.69; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005129  # stroller: proposed_class lookalike_stroller
+wv_005130  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005131  # child: siglip child 0.97, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005132  # child: siglip child 0.67, auto child flag 0.50; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005134  # stroller: proposed_class lookalike_stroller
+wv_005135  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005136  # child: siglip child 0.73, auto child flag 0.25; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005137  # child: siglip child 0.90, auto child flag 0.73; stroller: proposed_class lookalike_stroller
+wv_005138  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005139  # child: siglip child 0.96, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005140  # child: siglip child 1.00, siglip child sigmoid 0.09, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.42
+wv_005142  # child: siglip child 0.92, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005143  # child: siglip child 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005144  # child: siglip child 0.99, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005145  # child: siglip child 0.50, auto child flag 0.36; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005146  # child: siglip child 0.65, auto child flag 0.20; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005147  # child: siglip child 0.84, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.79
+wv_005148  # child: siglip child 0.74, auto child flag 0.18; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005150  # stroller: proposed_class lookalike_stroller
+wv_005151  # child: siglip child 0.99, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005152  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005153  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005154  # child: siglip child 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 0.71
+wv_005155  # stroller: proposed_class lookalike_stroller
+wv_005156  # child: siglip child 0.86, auto child flag 0.49; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005158  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005159  # child: siglip child 0.98, siglip child sigmoid 0.03, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.72
+wv_005160  # stroller: proposed_class lookalike_stroller
+wv_005162  # child: siglip child 0.57, auto child flag 0.24; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005163  # child: siglip child 0.99, siglip child sigmoid 0.10, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005164  # child: siglip child 0.86, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005166  # child: siglip child 0.98, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005167  # child: siglip child 0.99, siglip child sigmoid 0.08, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005168  # child: siglip child 0.81, auto child flag 0.25; stroller: proposed_class lookalike_stroller
+wv_005169  # stroller: proposed_class lookalike_stroller
+wv_005170  # child: siglip child 0.99, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005172  # child: siglip child 0.56, auto child flag 0.31; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005173  # child: siglip child 0.90, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005174  # child: siglip child 0.80, auto child flag 0.46; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005175  # child: siglip child 0.71, auto child flag 0.55; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005176  # child: siglip child 0.82, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005177  # child: siglip child 0.80, auto child flag 0.70; stroller: proposed_class lookalike_stroller, siglip stroller 0.56
+wv_005178  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005180  # child: siglip child 0.67, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005181  # child: auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.65
+wv_005183  # child: siglip child 0.96, auto child flag 0.42; stroller: proposed_class lookalike_stroller, siglip stroller 0.54
+wv_005184  # child: siglip child 0.59, auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005185  # child: siglip child 1.00, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005186  # child: auto child flag 0.39; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005187  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller, siglip stroller 0.76
+wv_005188  # child: siglip child 0.88, auto child flag 0.69; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005189  # stroller: proposed_class lookalike_stroller
+wv_005190  # child: siglip child 0.96, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005191  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.79
+wv_005192  # child: siglip child 0.98, siglip child sigmoid 0.03, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005193  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005194  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005195  # child: siglip child 0.53, auto child flag 0.36; stroller: proposed_class lookalike_stroller
+wv_005196  # child: siglip child 0.86, auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.78
+wv_005197  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005198  # child: siglip child 0.66, auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005199  # child: siglip child 0.75, auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_005201  # child: siglip child 0.76, siglip child sigmoid 0.05, auto child flag 0.25; stroller: proposed_class lookalike_stroller, siglip stroller 0.49
+wv_005203  # stroller: proposed_class lookalike_stroller
+wv_005204  # stroller: proposed_class lookalike_stroller
+wv_005205  # child: siglip child 0.99, siglip child sigmoid 0.09, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005206  # child: siglip child 0.85, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005207  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005208  # child: siglip child 0.84, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005209  # stroller: proposed_class lookalike_stroller
+wv_005210  # child: siglip child 0.69, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005211  # child: auto child flag 0.32; stroller: proposed_class lookalike_stroller, siglip stroller 0.45
+wv_005212  # child: siglip child 0.91, auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.30
+wv_005213  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005215  # child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005216  # child: siglip child 0.92, auto child flag 0.42; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005217  # child: siglip child 0.91, auto child flag 0.75; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005218  # child: siglip child 0.70, auto child flag 0.81; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005219  # child: siglip child 0.99, siglip child sigmoid 0.08, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.72
+wv_005220  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005221  # child: siglip child 0.97, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.80
+wv_005222  # child: siglip child 0.72, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005223  # child: siglip child 0.78, auto child flag 0.25; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005225  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005226  # child: siglip child 0.95, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005227  # child: siglip child 0.93, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005228  # child: siglip child 0.92, auto child flag 0.96; stroller: proposed_class lookalike_stroller
+wv_005229  # child: siglip child 0.98, auto child flag 0.77; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005231  # child: siglip child 0.52, auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005232  # stroller: proposed_class lookalike_stroller
+wv_005233  # stroller: proposed_class lookalike_stroller
+wv_005234  # stroller: proposed_class lookalike_stroller, siglip stroller 0.26
+wv_005235  # child: siglip child 0.97, siglip child sigmoid 0.03, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005236  # stroller: proposed_class lookalike_stroller
+wv_005237  # child: siglip child 0.91, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005239  # child: siglip child 0.96, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005241  # child: siglip child 0.74; stroller: proposed_class lookalike_stroller
+wv_005242  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005243  # child: siglip child 0.88, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.75
+wv_005245  # child: siglip child 0.52, auto child flag 0.28; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005246  # child: siglip child 0.98, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005247  # child: siglip child 0.96, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005248  # child: auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_005249  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005250  # child: siglip child 0.96, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005253  # child: siglip child 0.62, auto child flag 0.75; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005254  # child: siglip child 0.68, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005255  # child: siglip child 0.99, siglip child sigmoid 0.09, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005256  # child: siglip child 0.64, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005257  # child: siglip child 0.94, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005258  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005260  # child: siglip child 0.57, auto child flag 0.43; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005261  # child: siglip child 0.78, auto child flag 0.62; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005262  # child: siglip child 0.82, auto child flag 0.68; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005263  # child: siglip child 0.82, auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005264  # child: siglip child 0.96, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005265  # child: siglip child 0.60, auto child flag 0.17; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005266  # stroller: proposed_class lookalike_stroller
+wv_005267  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005270  # child: siglip child 0.99, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005271  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005275  # child: siglip child 0.98, siglip child sigmoid 0.04, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005276  # child: siglip child 0.51, auto child flag 0.19; stroller: proposed_class lookalike_stroller
+wv_005277  # child: auto child flag 0.59; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005279  # child: siglip child 0.92, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005280  # child: siglip child 0.81, auto child flag 0.48; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005281  # child: siglip child 0.89, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005282  # stroller: proposed_class lookalike_stroller
+wv_005283  # child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005284  # stroller: proposed_class lookalike_stroller
+wv_005285  # child: siglip child 0.82, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.42
+wv_005286  # child: siglip child 0.67, auto child flag 0.47; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005287  # child: siglip child 0.50, auto child flag 0.30; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005288  # child: siglip child 0.58, auto child flag 0.48; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005289  # child: siglip child 0.97, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005290  # child: siglip child 0.70, auto child flag 0.29; stroller: proposed_class lookalike_stroller
+wv_005291  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005292  # child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005293  # child: siglip child 0.82, auto child flag 0.50; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005294  # child: siglip child 0.98, auto child flag 0.91; stroller: proposed_class lookalike_stroller
+wv_005295  # child: siglip child 0.87, auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005296  # child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005298  # child: siglip child 0.44, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005299  # child: auto child flag 0.14; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005300  # stroller: proposed_class lookalike_stroller
+wv_005302  # child: auto child flag 0.34; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005303  # child: siglip child 0.98, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005304  # child: siglip child 0.87, siglip child sigmoid 0.02, auto child flag 0.22; stroller: proposed_class lookalike_stroller
+wv_005305  # child: siglip child 0.66, auto child flag 0.38; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005306  # stroller: proposed_class lookalike_stroller
+wv_005307  # child: siglip child 0.96, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005308  # child: siglip child 0.43, auto child flag 0.29; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005310  # child: siglip child 0.95, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005311  # child: siglip child 0.73, auto child flag 0.32; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005312  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005313  # child: siglip child 0.98, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005314  # child: siglip child 0.99, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005317  # child: auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_005319  # child: siglip child 0.73, auto child flag 0.22; stroller: proposed_class lookalike_stroller
+wv_005320  # child: siglip child 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.77
+wv_005321  # child: siglip child 0.56, auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005322  # child: siglip child 0.76, auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.28
+wv_005324  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005325  # child: siglip child 0.58; stroller: proposed_class lookalike_stroller
+wv_005326  # child: siglip child 0.94, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005327  # child: siglip child 0.92, auto child flag 0.56; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005328  # child: siglip child 0.86, siglip child sigmoid 0.06; stroller: proposed_class lookalike_stroller
+wv_005329  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005332  # child: auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.31
+wv_005333  # stroller: proposed_class lookalike_stroller
+wv_005334  # child: siglip child 0.82, auto child flag 0.71; stroller: proposed_class lookalike_stroller, siglip stroller 0.40
+wv_005335  # child: siglip child 0.72, auto child flag 0.47; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005336  # child: siglip child 0.99, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005337  # child: siglip child 1.00, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005338  # stroller: proposed_class lookalike_stroller
+wv_005339  # child: siglip child 0.58, auto child flag 0.29; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005340  # stroller: proposed_class lookalike_stroller
+wv_005341  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005342  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005343  # child: siglip child 0.46, auto child flag 0.37; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005344  # child: siglip child 1.00, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005345  # child: siglip child 0.72, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005346  # child: siglip child 0.94, siglip child sigmoid 0.03, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005348  # child: siglip child 0.87, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005349  # child: siglip child 0.86, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 0.54
+wv_005350  # child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.75
+wv_005351  # child: siglip child 0.84, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005352  # child: siglip child 0.72, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005353  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005354  # stroller: proposed_class lookalike_stroller, siglip stroller 0.74
+wv_005355  # child: auto child flag 0.55; stroller: proposed_class lookalike_stroller, siglip stroller 0.40
+wv_005356  # child: auto child flag 0.49; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005357  # child: siglip child 0.70, auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005358  # child: siglip child 0.97, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005359  # child: siglip child 0.97, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005360  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005361  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller, siglip stroller 0.47
+wv_005363  # child: siglip child 0.75, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005364  # child: siglip child 0.69, auto child flag 0.13; stroller: proposed_class lookalike_stroller
+wv_005365  # child: siglip child 0.92, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005366  # child: siglip child 0.99, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005369  # child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005370  # child: siglip child 0.66, auto child flag 0.24; stroller: proposed_class lookalike_stroller, siglip stroller 0.75
+wv_005371  # child: siglip child 0.87, auto child flag 0.46; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005372  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005373  # child: siglip child 1.00, siglip child sigmoid 0.27, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005374  # stroller: proposed_class lookalike_stroller, siglip stroller 0.32
+wv_005375  # child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005376  # child: siglip child 0.97, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005377  # child: siglip child 0.96, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005378  # child: siglip child 0.98, auto child flag 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005379  # child: siglip child 0.67, auto child flag 0.52; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005381  # child: siglip child 0.68; stroller: proposed_class lookalike_stroller, siglip stroller 0.59
+wv_005382  # child: siglip child 0.57, auto child flag 0.66; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005383  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005384  # child: siglip child 0.94, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005385  # child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005386  # child: siglip child 0.99, auto child flag 0.90; stroller: proposed_class lookalike_stroller
+wv_005387  # child: siglip child 0.77, auto child flag 0.32; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005388  # child: siglip child 0.84, auto child flag 0.20; stroller: proposed_class lookalike_stroller
+wv_005389  # child: siglip child 0.51, auto child flag 0.13; stroller: proposed_class lookalike_stroller
+wv_005390  # stroller: proposed_class lookalike_stroller
+wv_005391  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005392  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005393  # child: siglip child 0.81, auto child flag 0.67; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005394  # child: siglip child 0.93, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005395  # child: siglip child 0.93, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005396  # child: siglip child 0.98, siglip child sigmoid 0.03, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005397  # stroller: proposed_class lookalike_stroller
+wv_005398  # stroller: proposed_class lookalike_stroller
+wv_005401  # stroller: proposed_class lookalike_stroller
+wv_005402  # child: siglip child 0.49, auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005403  # stroller: proposed_class lookalike_stroller
+wv_005405  # child: siglip child 0.72, auto child flag 0.70; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005406  # child: auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_005407  # child: siglip child 0.94, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005408  # child: auto child flag 0.12; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005410  # child: siglip child 0.99, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005411  # child: siglip child 0.56, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005412  # child: siglip child 0.45, auto child flag 0.28; stroller: proposed_class lookalike_stroller
+wv_005413  # child: siglip child 0.99, siglip child sigmoid 0.10, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005414  # child: siglip child 0.96, siglip child sigmoid 0.07, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.79
+wv_005415  # child: siglip child 0.60; stroller: proposed_class lookalike_stroller
+wv_005416  # child: auto child flag 0.10; stroller: proposed_class lookalike_stroller, siglip stroller 0.48
+wv_005417  # child: siglip child 0.98, siglip child sigmoid 0.03, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005419  # child: siglip child 0.61, auto child flag 0.37; stroller: proposed_class lookalike_stroller, siglip stroller 0.75
+wv_005420  # child: siglip child 0.83, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005421  # child: siglip child 0.78, auto child flag 0.67; stroller: proposed_class lookalike_stroller
+wv_005422  # stroller: proposed_class lookalike_stroller
+wv_005423  # child: siglip child 0.78, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005424  # child: siglip child 0.97, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005426  # child: siglip child 0.92, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005427  # stroller: proposed_class lookalike_stroller
+wv_005428  # child: siglip child 0.61, auto child flag 0.67; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005429  # child: siglip child 0.98, siglip child sigmoid 0.13, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005430  # stroller: proposed_class lookalike_stroller, siglip stroller 0.64
+wv_005431  # child: siglip child 0.88, auto child flag 0.43; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005432  # stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005433  # child: siglip child 0.54, auto child flag 0.25; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005434  # child: siglip child 0.85, auto child flag 0.42; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005435  # child: siglip child 0.52, auto child flag 0.14; stroller: proposed_class lookalike_stroller, siglip stroller 0.37
+wv_005436  # child: siglip child 0.87, auto child flag 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005437  # child: siglip child 0.97, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005438  # child: siglip child 0.42, auto child flag 0.18; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005440  # child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005441  # child: siglip child 0.50, auto child flag 0.18; stroller: proposed_class lookalike_stroller
+wv_005442  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005443  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005445  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005446  # child: siglip child 0.69, auto child flag 0.43; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005447  # child: siglip child 1.00, siglip child sigmoid 0.03, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005450  # stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005451  # stroller: proposed_class lookalike_stroller
+wv_005452  # child: siglip child 0.98, siglip child sigmoid 0.02, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005453  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005454  # child: siglip child 0.70, auto child flag 0.20; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005455  # stroller: proposed_class lookalike_stroller
+wv_005456  # child: siglip child 1.00, siglip child sigmoid 0.03, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005458  # child: siglip child 0.75; stroller: proposed_class lookalike_stroller
+wv_005459  # stroller: proposed_class lookalike_stroller
+wv_005460  # child: siglip child 0.71, auto child flag 0.54; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005461  # child: siglip child 0.92, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.84
+wv_005462  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005463  # child: siglip child 0.51, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_005464  # child: siglip child 0.87, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005466  # child: siglip child 0.95, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005467  # child: siglip child 0.79, auto child flag 0.43; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005470  # child: siglip child 0.79, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005471  # child: siglip child 0.67; stroller: proposed_class lookalike_stroller
+wv_005472  # stroller: proposed_class lookalike_stroller
+wv_005473  # child: siglip child 0.91, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005474  # stroller: proposed_class lookalike_stroller
+wv_005475  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005477  # child: siglip child 0.93, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005478  # child: siglip child 0.95, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005479  # stroller: proposed_class lookalike_stroller, siglip stroller 0.63
+wv_005481  # child: siglip child 0.52; stroller: proposed_class lookalike_stroller, siglip stroller 0.89
+wv_005482  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005483  # child: siglip child 0.83, auto child flag 0.49; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005485  # child: siglip child 0.77, siglip child sigmoid 0.03, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005486  # child: siglip child 0.90, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005487  # child: auto child flag 0.38; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005488  # child: auto child flag 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005489  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005490  # child: siglip child 0.85, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005491  # child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005492  # child: siglip child 0.87, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005493  # stroller: proposed_class lookalike_stroller
+wv_005494  # child: siglip child 0.98, siglip child sigmoid 0.06, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005495  # child: siglip child 0.77, auto child flag 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005496  # child: siglip child 0.83, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005497  # child: siglip child 0.83, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005498  # stroller: proposed_class lookalike_stroller
+wv_005499  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005500  # child: siglip child 0.99, siglip child sigmoid 0.10, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005501  # child: auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 0.84
+wv_005502  # child: siglip child 0.97, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005503  # stroller: proposed_class lookalike_stroller, siglip stroller 0.32
+wv_005504  # child: siglip child 0.41, auto child flag 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005505  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005507  # stroller: proposed_class lookalike_stroller, siglip stroller 0.29
+wv_005508  # child: siglip child 0.53, auto child flag 0.49; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005509  # child: siglip child 0.91, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005510  # child: siglip child 0.66, auto child flag 0.26; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005511  # child: siglip child 0.95, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005512  # child: auto child flag 0.73; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005513  # child: siglip child 0.97, siglip child sigmoid 0.02, auto child flag 0.81; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005514  # child: siglip child 0.76, auto child flag 0.53; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005515  # child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005516  # stroller: proposed_class lookalike_stroller
+wv_005517  # child: auto child flag 0.38; stroller: proposed_class lookalike_stroller
+wv_005519  # child: siglip child 0.91, siglip child sigmoid 0.08, auto child flag 0.56; stroller: proposed_class lookalike_stroller, siglip stroller 0.28
+wv_005522  # child: siglip child 0.50, auto child flag 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 0.38
+wv_005523  # child: siglip child 0.93, auto child flag 0.67; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005524  # child: siglip child 0.91, auto child flag 0.68; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005525  # child: siglip child 0.93, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005527  # child: siglip child 0.93, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005528  # stroller: proposed_class lookalike_stroller
+wv_005529  # child: siglip child 0.83, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005530  # child: siglip child 0.98, siglip child sigmoid 0.02, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005531  # child: siglip child 0.50, auto child flag 0.45; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005532  # child: siglip child 0.92, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.56
+wv_005533  # stroller: proposed_class lookalike_stroller
+wv_005535  # child: siglip child 0.93, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005536  # child: siglip child 0.89, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005537  # child: siglip child 0.71, auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005538  # child: siglip child 0.94, auto child flag 0.81; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005539  # child: siglip child 0.68, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005540  # child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005541  # child: siglip child 1.00, siglip child sigmoid 0.08, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005542  # child: siglip child 0.89, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005543  # child: siglip child 0.44; stroller: proposed_class lookalike_stroller
+wv_005544  # child: siglip child 0.76, auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005545  # stroller: proposed_class lookalike_stroller
+wv_005546  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005547  # child: siglip child 0.65, auto child flag 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005548  # child: siglip child 1.00, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005549  # child: siglip child 0.60, auto child flag 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005550  # child: siglip child 0.90, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005551  # child: siglip child 0.93, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005552  # child: siglip child 0.86, auto child flag 0.88; stroller: proposed_class lookalike_stroller
+wv_005553  # child: siglip child 0.92, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005554  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005555  # child: siglip child 0.92, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005556  # child: siglip child 0.99, auto child flag 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005557  # child: siglip child 0.97, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005558  # child: siglip child 0.98, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005559  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005561  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005562  # child: siglip child 0.88, auto child flag 0.73; stroller: proposed_class lookalike_stroller
+wv_005563  # child: siglip child 0.78, auto child flag 0.73; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005564  # stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005566  # child: siglip child 0.96, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005567  # child: siglip child 0.63, auto child flag 0.30; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005568  # child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005569  # child: siglip child 0.99, siglip child sigmoid 0.09, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005571  # child: auto child flag 0.21; stroller: proposed_class lookalike_stroller
+wv_005572  # child: siglip child 0.90, auto child flag 0.11; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005573  # stroller: proposed_class lookalike_stroller
+wv_005574  # child: siglip child 0.80, auto child flag 0.34; stroller: proposed_class lookalike_stroller, siglip stroller 0.83
+wv_005575  # child: siglip child 0.58, auto child flag 0.24; stroller: proposed_class lookalike_stroller
+wv_005576  # child: auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_005577  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005578  # child: siglip child 0.92, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005579  # child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005580  # child: siglip child 0.95, siglip child sigmoid 0.08, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005581  # child: siglip child 0.85, auto child flag 0.22; stroller: proposed_class lookalike_stroller
+wv_005582  # child: auto child flag 0.22; stroller: proposed_class lookalike_stroller, siglip stroller 0.79
+wv_005583  # child: siglip child 0.92, auto child flag 0.67; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005584  # child: siglip child 0.86, auto child flag 0.39; stroller: proposed_class lookalike_stroller, siglip stroller 0.71
+wv_005585  # stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005586  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005587  # child: siglip child 0.65, auto child flag 0.69; stroller: proposed_class lookalike_stroller, siglip stroller 0.62
+wv_005588  # child: siglip child 1.00, auto child flag 0.97; stroller: proposed_class lookalike_stroller
+wv_005589  # child: siglip child 0.76, auto child flag 0.67; stroller: proposed_class lookalike_stroller, siglip stroller 0.31
+wv_005591  # child: siglip child 0.42, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005592  # child: siglip child 0.83, siglip child sigmoid 0.03, auto child flag 0.11; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005593  # child: siglip child 0.99, siglip child sigmoid 0.12, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005594  # child: siglip child 0.80, auto child flag 0.45; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005595  # child: siglip child 0.83, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005596  # stroller: proposed_class lookalike_stroller
+wv_005597  # stroller: proposed_class lookalike_stroller
+wv_005598  # stroller: proposed_class lookalike_stroller, siglip stroller 0.52
+wv_005599  # child: siglip child 0.40, auto child flag 0.47; stroller: proposed_class lookalike_stroller
+wv_005601  # child: siglip child 0.87, auto child flag 0.56; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005602  # child: auto child flag 0.48; stroller: proposed_class lookalike_stroller, siglip stroller 0.69
+wv_005603  # child: siglip child 0.95, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005604  # child: siglip child 0.45, auto child flag 0.29; stroller: proposed_class lookalike_stroller
+wv_005605  # child: siglip child 0.46; stroller: proposed_class lookalike_stroller
+wv_005606  # child: siglip child 0.96, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005607  # child: siglip child 0.92, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.65
+wv_005608  # child: siglip child 0.95, auto child flag 0.69; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005609  # child: siglip child 0.89, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005610  # child: siglip child 0.93, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005611  # child: auto child flag 0.44; stroller: proposed_class lookalike_stroller
+wv_005612  # stroller: proposed_class lookalike_stroller
+wv_005613  # child: siglip child 0.96, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005614  # child: siglip child 0.95, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005615  # child: siglip child 1.00, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005616  # child: siglip child 0.95, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005617  # child: siglip child 0.97, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005618  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005619  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005620  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005621  # child: siglip child 0.97, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005622  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005623  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005624  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005625  # child: siglip child 0.59, auto child flag 0.38; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005626  # child: auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_005627  # child: siglip child 0.41, auto child flag 0.31; stroller: proposed_class lookalike_stroller
+wv_005628  # child: siglip child 0.97, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005629  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005630  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005631  # child: siglip child 0.93, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005634  # child: auto child flag 0.38; stroller: proposed_class lookalike_stroller, siglip stroller 0.87
+wv_005635  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005636  # stroller: proposed_class lookalike_stroller
+wv_005637  # stroller: proposed_class lookalike_stroller
+wv_005638  # child: siglip child 0.91, auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005639  # child: siglip child 0.46, auto child flag 0.35; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005640  # child: siglip child 0.69, auto child flag 0.34; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005641  # child: siglip child 0.70, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005644  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.76
+wv_005645  # child: siglip child 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005646  # child: siglip child 0.90, auto child flag 0.77; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005647  # child: siglip child 0.74, auto child flag 0.52; stroller: proposed_class lookalike_stroller
+wv_005648  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005649  # child: siglip child 0.80, auto child flag 0.52; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005650  # child: siglip child 0.92, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005651  # child: siglip child 0.41; stroller: proposed_class lookalike_stroller
+wv_005652  # child: siglip child 1.00, siglip child sigmoid 0.12, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.61
+wv_005653  # stroller: proposed_class lookalike_stroller
+wv_005654  # stroller: proposed_class lookalike_stroller
+wv_005656  # child: siglip child 0.99, siglip child sigmoid 0.08, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005657  # child: siglip child 0.99, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.86
+wv_005659  # child: siglip child 0.94, siglip child sigmoid 0.03, auto child flag 0.53; stroller: proposed_class lookalike_stroller
+wv_005660  # child: siglip child 0.91, auto child flag 0.67; stroller: proposed_class lookalike_stroller, siglip stroller 0.62
+wv_005661  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005662  # stroller: proposed_class lookalike_stroller
+wv_005663  # child: siglip child 0.91, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005666  # child: auto child flag 0.77; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005667  # child: siglip child 0.86, auto child flag 0.25; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005668  # child: siglip child 0.95, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005669  # child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005670  # child: siglip child 0.95, auto child flag 0.65; stroller: proposed_class lookalike_stroller
+wv_005673  # child: siglip child 0.95, auto child flag 0.45; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005674  # stroller: proposed_class lookalike_stroller
+wv_005675  # stroller: proposed_class lookalike_stroller
+wv_005676  # child: siglip child 0.77, auto child flag 0.38; stroller: proposed_class lookalike_stroller
+wv_005677  # child: siglip child 0.96, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005678  # stroller: proposed_class lookalike_stroller
+wv_005679  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005680  # child: siglip child 0.95, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005681  # child: siglip child 0.84, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005682  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005683  # child: siglip child 0.61, auto child flag 0.21; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005684  # child: siglip child 0.91, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.48
+wv_005685  # child: siglip child 0.87, auto child flag 0.69; stroller: proposed_class lookalike_stroller, siglip stroller 0.69
+wv_005686  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005687  # stroller: proposed_class lookalike_stroller, siglip stroller 0.60
+wv_005688  # child: siglip child 0.59, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005689  # child: siglip child 0.92, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005690  # child: siglip child 0.81, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005691  # child: siglip child 0.91, auto child flag 0.75; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005693  # stroller: proposed_class lookalike_stroller
+wv_005694  # child: siglip child 0.69, auto child flag 0.16; stroller: proposed_class lookalike_stroller, siglip stroller 0.40
+wv_005696  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005697  # child: siglip child 0.68, auto child flag 0.74; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005698  # child: siglip child 0.81, auto child flag 0.34; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005699  # child: siglip child 0.50, auto child flag 0.24; stroller: proposed_class lookalike_stroller, siglip stroller 0.66
+wv_005700  # child: auto child flag 0.20; stroller: proposed_class lookalike_stroller
+wv_005701  # child: auto child flag 0.60; stroller: proposed_class lookalike_stroller
+wv_005702  # child: siglip child 0.59; stroller: proposed_class lookalike_stroller
+wv_005703  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005704  # child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005705  # child: siglip child 0.73, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005706  # child: siglip child 0.46; stroller: proposed_class lookalike_stroller
+wv_005707  # stroller: proposed_class lookalike_stroller
+wv_005708  # child: siglip child 0.43, auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.49
+wv_005709  # child: auto child flag 0.26; stroller: proposed_class lookalike_stroller, siglip stroller 0.30
+wv_005710  # child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005711  # child: siglip child 0.99, siglip child sigmoid 0.06, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005712  # child: auto child flag 0.15; stroller: proposed_class lookalike_stroller
+wv_005713  # child: siglip child 0.45; stroller: proposed_class lookalike_stroller
+wv_005714  # stroller: proposed_class lookalike_stroller
+wv_005715  # child: siglip child 0.74, auto child flag 0.24; stroller: proposed_class lookalike_stroller
+wv_005716  # child: siglip child 0.98, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005717  # child: siglip child 0.79, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005718  # stroller: proposed_class lookalike_stroller
+wv_005719  # child: siglip child 0.46; stroller: proposed_class lookalike_stroller, siglip stroller 0.30
+wv_005721  # child: siglip child 0.83, auto child flag 0.49; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005722  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005723  # child: siglip child 0.96, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005724  # child: siglip child 0.99, siglip child sigmoid 0.03, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005725  # stroller: proposed_class lookalike_stroller
+wv_005726  # child: siglip child 0.97, siglip child sigmoid 0.02, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.44
+wv_005727  # child: siglip child 0.86, siglip child sigmoid 0.04; stroller: proposed_class lookalike_stroller
+wv_005729  # child: siglip child 0.90, auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005730  # child: siglip child 0.59, auto child flag 0.83; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005731  # child: siglip child 0.84, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005732  # child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005733  # child: auto child flag 0.50; stroller: proposed_class lookalike_stroller
+wv_005734  # child: siglip child 0.79, auto child flag 0.55; stroller: proposed_class lookalike_stroller, siglip stroller 0.90
+wv_005735  # child: siglip child 0.91, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005737  # stroller: proposed_class lookalike_stroller
+wv_005738  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.79
+wv_005739  # child: siglip child 0.95, auto child flag 0.45; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005740  # child: siglip child 0.98, siglip child sigmoid 0.03, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005741  # child: siglip child 0.66, auto child flag 0.21; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005742  # child: siglip child 0.98, auto child flag 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 0.76
+wv_005743  # child: auto child flag 0.30; stroller: proposed_class lookalike_stroller
+wv_005746  # child: siglip child 0.61, auto child flag 0.54; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005747  # child: siglip child 0.94, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005748  # child: siglip child 0.63, auto child flag 0.54; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005749  # child: siglip child 0.88, siglip child sigmoid 0.03, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.50
+wv_005750  # stroller: proposed_class lookalike_stroller
+wv_005752  # child: siglip child 1.00, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005753  # child: siglip child 0.40; stroller: proposed_class lookalike_stroller
+wv_005757  # stroller: proposed_class lookalike_stroller
+wv_005758  # stroller: proposed_class lookalike_stroller
+wv_005759  # stroller: proposed_class lookalike_stroller
+wv_005760  # stroller: proposed_class lookalike_stroller
+wv_005761  # child: siglip child 0.91, auto child flag 0.58; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005762  # child: siglip child 0.79, auto child flag 0.38; stroller: proposed_class lookalike_stroller, siglip stroller 0.88
+wv_005763  # child: siglip child 0.94, auto child flag 0.61; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005764  # stroller: proposed_class lookalike_stroller, siglip stroller 0.42
+wv_005766  # child: siglip child 0.90, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_005768  # child: siglip child 0.95, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005769  # child: siglip child 0.65, auto child flag 0.25; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005770  # child: siglip child 0.42, auto child flag 0.70; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005771  # child: siglip child 0.45, siglip child sigmoid 0.03; stroller: proposed_class lookalike_stroller, siglip stroller 0.82
+wv_005772  # stroller: proposed_class lookalike_stroller
+wv_005773  # child: siglip child 0.51, auto child flag 0.39; stroller: proposed_class lookalike_stroller
+wv_005774  # child: siglip child 0.83, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.82
+wv_005775  # child: siglip child 0.43, auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005776  # child: siglip child 0.48; stroller: proposed_class lookalike_stroller, siglip stroller 0.57
+wv_005777  # child: siglip child 0.88, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.68
+wv_005778  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005779  # stroller: proposed_class lookalike_stroller
+wv_005780  # child: siglip child 0.99, siglip child sigmoid 0.06, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005781  # child: siglip child 0.53, auto child flag 0.23; stroller: proposed_class lookalike_stroller
+wv_005782  # stroller: proposed_class lookalike_stroller
+wv_005783  # child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005785  # child: siglip child 0.53, auto child flag 0.52; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005786  # child: siglip child 0.98, siglip child sigmoid 0.02, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005787  # child: siglip child 0.72, auto child flag 0.40; stroller: proposed_class lookalike_stroller
+wv_005788  # stroller: proposed_class lookalike_stroller
+wv_005789  # stroller: proposed_class lookalike_stroller
+wv_005790  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005791  # child: siglip child 0.86, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005792  # child: siglip child 0.91, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005793  # child: siglip child 0.85, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005794  # child: siglip child 0.98, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005795  # stroller: proposed_class lookalike_stroller, siglip stroller 0.85
+wv_005796  # child: siglip child 0.69, auto child flag 0.65; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005797  # child: auto child flag 0.54; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005798  # child: siglip child 0.71, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005799  # child: siglip child 0.93, auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005800  # child: auto child flag 0.24; stroller: proposed_class lookalike_stroller, siglip stroller 0.95
+wv_005801  # child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005802  # stroller: proposed_class lookalike_stroller
+wv_005803  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005804  # child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005806  # stroller: proposed_class lookalike_stroller
+wv_005807  # child: siglip child 0.48, auto child flag 0.15; stroller: proposed_class lookalike_stroller
+wv_005808  # child: siglip child 0.50, auto child flag 0.41; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005810  # stroller: proposed_class lookalike_stroller
+wv_005811  # child: siglip child 0.98, siglip child sigmoid 0.03, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005812  # child: siglip child 0.74, auto child flag 0.50; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005813  # child: siglip child 0.94, auto child flag 0.82; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005814  # child: siglip child 0.89, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005815  # child: siglip child 0.42; stroller: proposed_class lookalike_stroller
+wv_005816  # child: siglip child 0.94, auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 0.82
+wv_005817  # child: siglip child 0.68; stroller: proposed_class lookalike_stroller
+wv_005818  # child: siglip child 0.71; stroller: proposed_class lookalike_stroller
+wv_005819  # stroller: proposed_class lookalike_stroller
+wv_005821  # child: siglip child 0.81, auto child flag 0.37; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005822  # stroller: proposed_class lookalike_stroller
+wv_005823  # child: siglip child 0.79, auto child flag 0.16; stroller: proposed_class lookalike_stroller, siglip stroller 0.84
+wv_005824  # stroller: proposed_class lookalike_stroller
+wv_005827  # child: siglip child 0.72; stroller: proposed_class lookalike_stroller
+wv_005828  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005829  # child: siglip child 0.96, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005830  # child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005831  # child: siglip child 0.96, siglip child sigmoid 0.05, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005832  # child: siglip child 0.97, siglip child sigmoid 0.04, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005833  # child: siglip child 0.96, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005834  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005835  # stroller: proposed_class lookalike_stroller, siglip stroller 0.29
+wv_005837  # child: siglip child 0.96, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.62
+wv_005838  # child: auto child flag 0.30; stroller: proposed_class lookalike_stroller
+wv_005839  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005840  # child: siglip child 0.93, auto child flag 0.75; stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005841  # child: siglip child 0.95, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005842  # child: siglip child 0.87, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005843  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005844  # child: siglip child 0.49, auto child flag 0.24; stroller: proposed_class lookalike_stroller, siglip stroller 0.92
+wv_005845  # child: siglip child 0.93, auto child flag 0.83; stroller: proposed_class lookalike_stroller
+wv_005846  # stroller: proposed_class lookalike_stroller
+wv_005847  # stroller: proposed_class lookalike_stroller
+wv_005848  # child: siglip child 0.87, auto child flag 0.86; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005849  # child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005850  # child: auto child flag 0.27; stroller: proposed_class lookalike_stroller, siglip stroller 0.31
+wv_005851  # child: siglip child 0.99, siglip child sigmoid 0.06, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.97
+wv_005852  # child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.66
+wv_005853  # child: siglip child 0.79, auto child flag 0.19; stroller: proposed_class lookalike_stroller
+wv_005854  # child: siglip child 0.75, auto child flag 0.12; stroller: proposed_class lookalike_stroller, siglip stroller 0.91
+wv_005855  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005856  # child: auto child flag 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005857  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005858  # stroller: proposed_class lookalike_stroller, siglip stroller 0.93
+wv_005859  # child: siglip child 0.70; stroller: proposed_class lookalike_stroller
+wv_005861  # child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005862  # child: auto child flag 0.14; stroller: proposed_class lookalike_stroller
+wv_005863  # child: siglip child 0.53, auto child flag 0.19; stroller: proposed_class lookalike_stroller, siglip stroller 0.36
+wv_005864  # stroller: proposed_class lookalike_stroller, siglip stroller 0.48
+wv_005865  # child: siglip child 0.87, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.94
+wv_005866  # child: siglip child 0.62, auto child flag 0.43; stroller: proposed_class lookalike_stroller, siglip stroller 0.98
+wv_005867  # stroller: proposed_class lookalike_stroller
+wv_005869  # child: siglip child 0.51, auto child flag 0.97; stroller: proposed_class lookalike_stroller
+wv_005870  # child: siglip child 0.98, auto child flag 0.91; stroller: proposed_class lookalike_stroller, siglip stroller 0.28
+wv_005871  # stroller: proposed_class lookalike_stroller
+wv_005872  # child: auto child flag 0.21; stroller: proposed_class lookalike_stroller
+wv_005873  # child: siglip child 0.67, auto child flag 0.12; stroller: proposed_class lookalike_stroller
+wv_005874  # child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005875  # child: siglip child 0.86, auto child flag 0.89; stroller: proposed_class lookalike_stroller
+wv_005877  # child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005878  # child: siglip child 0.56, auto child flag 0.54; stroller: proposed_class lookalike_stroller, siglip stroller 1.00
+wv_005879  # child: siglip child 0.97, auto child flag 0.78; stroller: proposed_class lookalike_stroller
+wv_005880  # child: siglip child 0.97, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005881  # stroller: proposed_class lookalike_stroller
+wv_005882  # child: siglip child 0.96, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005883  # child: siglip child 0.99, siglip child sigmoid 0.15, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005884  # child: siglip child 0.62, auto child flag 0.29; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005885  # child: siglip child 1.00, siglip child sigmoid 0.14, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.78
+wv_005886  # child: auto child flag 0.18; stroller: proposed_class lookalike_stroller
+wv_005887  # stroller: proposed_class lookalike_stroller
+wv_005888  # child: siglip child 0.80, auto child flag 0.75; stroller: proposed_class lookalike_stroller, siglip stroller 0.96
+wv_005889  # child: siglip child 0.75, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005890  # child: auto child flag 0.11; stroller: proposed_class lookalike_stroller
+wv_005891  # child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005892  # child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.89
+wv_005893  # child: siglip child 0.83, auto child flag 0.23; stroller: proposed_class lookalike_stroller, siglip stroller 0.58
+wv_005894  # stroller: proposed_class lookalike_stroller
+wv_005896  # child: siglip child 0.97, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99
+wv_005907  # child: auto child flag 0.23
+wv_005912  # child: auto child flag 0.10
+wv_005916  # child: siglip child 0.63
+wv_005920  # child: siglip child 0.46
+wv_005927  # stroller: siglip stroller 0.33
+wv_005933  # child: siglip child 0.64
+wv_005936  # child: siglip child 0.97, auto child flag 0.97
+wv_005952  # child: siglip child 0.42, auto child flag 0.21
+wv_005956  # child: auto child flag 0.30
+wv_005959  # child: siglip child 0.59, auto child flag 0.16
+wv_005973  # child: siglip child 0.48, auto child flag 0.39
+wv_005982  # stroller: owlv2 stroller box 0.37
+wv_005995  # child: siglip child 0.64, auto child flag 0.16; no_device: siglip presence 0.07, top=x_people, owl max 0.00
+wv_005997  # child: auto child flag 0.32
+wv_006001  # child: siglip child 0.61, auto child flag 0.18; no_device: siglip presence 0.07, top=x_nature, owl max 0.12
+wv_006009  # child: siglip child 0.94, auto child flag 0.76; no_device: siglip presence 0.00, top=x_nature, owl max 0.00
+wv_006016  # child: siglip child 0.62
+wv_006024  # child: auto child flag 0.15
+wv_006025  # child: siglip child 0.44
+wv_006027  # child: siglip child 0.60, auto child flag 0.71
+wv_006029  # child: siglip child 0.56, auto child flag 0.30
+wv_006032  # child: siglip child 0.46
+wv_006033  # child: auto child flag 0.11
+wv_006046  # child: siglip child 0.92, auto child flag 0.11
+wv_006051  # child: siglip child 0.71, auto child flag 0.15; no_device: siglip presence 0.06, top=x_people, owl max 0.00
+wv_006052  # child: siglip child 0.44, auto child flag 0.11
+wv_006070  # child: siglip child 0.44, auto child flag 0.12
+wv_006076  # child: auto child flag 0.17
+wv_006078  # child: siglip child 0.60, auto child flag 0.14
+wv_006092  # child: auto child flag 0.33
+wv_006094  # child: siglip child 0.65, auto child flag 0.13
+wv_006100  # child: siglip child 0.59
+wv_006102  # child: siglip child 0.54; stroller: siglip stroller 0.50
+wv_006103  # child: auto child flag 0.21
+wv_006107  # child: auto child flag 0.16
+wv_006108  # stroller: siglip stroller 0.37
+wv_006110  # child: siglip child 0.92, auto child flag 0.91
+wv_006122  # child: auto child flag 0.32
+wv_006129  # child: auto child flag 0.40
+wv_006135  # child: auto child flag 0.35
+wv_006140  # child: siglip child 0.98, auto child flag 0.81
+wv_006142  # child: siglip child 0.71
+wv_006147  # child: siglip child 0.99, auto child flag 0.92
+wv_006161  # child: siglip child 0.95, auto child flag 0.85
+wv_006162  # child: siglip child 0.66, auto child flag 0.18
+wv_006168  # child: siglip child 0.54, auto child flag 0.46
+wv_006169  # child: siglip child 0.47
+wv_006174  # child: siglip child 1.00, auto child flag 0.99
+wv_006177  # child: siglip child 0.62, auto child flag 0.13
+wv_006183  # child: siglip child 0.64
+wv_006185  # child: siglip child 1.00, siglip child sigmoid 0.12, auto child flag 0.99
+wv_006188  # child: siglip child 0.52
+wv_006197  # child: auto child flag 0.33
+wv_006199  # child: siglip child 0.99, auto child flag 0.96
+wv_006204  # child: auto child flag 0.11
+wv_006206  # child: siglip child 0.81
+wv_006210  # child: siglip child 1.00, auto child flag 0.99
+wv_006213  # child: siglip child sigmoid 0.04
+wv_006216  # child: auto child flag 0.33
+wv_006218  # child: siglip child 0.99, siglip child sigmoid 0.06, auto child flag 0.99
+wv_006223  # child: siglip child 0.99, auto child flag 0.99
+wv_006224  # child: siglip child 0.49; stroller: siglip stroller 0.42
+wv_006225  # child: siglip child 0.53
+wv_006226  # child: siglip child 0.96, auto child flag 0.90
+wv_006228  # child: siglip child 0.75, auto child flag 0.48
+wv_006230  # child: auto child flag 0.20
+wv_006232  # child: siglip child 0.93, auto child flag 0.59
+wv_006233  # child: siglip child 0.86, auto child flag 0.36
+wv_006235  # child: siglip child 0.87, auto child flag 0.94
+wv_006248  # child: siglip child 0.59
+wv_006254  # child: siglip child 0.81, auto child flag 0.44
+wv_006255  # child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 0.99
+wv_006261  # child: siglip child 0.98, auto child flag 0.90
+wv_006262  # child: auto child flag 0.35; stroller: siglip stroller 0.55
+wv_006264  # child: auto child flag 0.12
+wv_006269  # child: siglip child 0.94, auto child flag 0.89
+wv_006271  # child: auto child flag 0.63
+wv_006273  # child: siglip child 0.53, auto child flag 0.85
+wv_006283  # child: siglip child 0.88, auto child flag 0.71
+wv_006284  # stroller: siglip stroller 0.47
+wv_006292  # child: siglip child 0.83, auto child flag 0.47
+wv_006296  # child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.96
+wv_006298  # child: siglip child 0.99, auto child flag 0.98
+wv_006299  # child: siglip child 0.90, auto child flag 0.60
+wv_006303  # child: siglip child 0.97, auto child flag 0.94; stroller: siglip stroller 0.39
+wv_006306  # child: siglip child 0.99, auto child flag 0.98
+wv_006307  # child: siglip child 0.42
+wv_006311  # stroller: siglip stroller 0.44
+wv_006314  # child: auto child flag 0.12
+wv_006321  # child: auto child flag 0.16
+wv_006323  # child: auto child flag 0.38
+wv_006331  # child: siglip child 0.96, auto child flag 0.34
+wv_006341  # child: siglip child 0.97, auto child flag 0.92
+wv_006345  # child: siglip child 0.99, auto child flag 0.96
+wv_006346  # child: auto child flag 0.37
+wv_006347  # child: siglip child 0.48, auto child flag 0.47
+wv_006350  # child: auto child flag 0.20
+wv_006354  # child: siglip child 1.00, auto child flag 0.99
+wv_006356  # child: siglip child 0.93, auto child flag 0.67
+wv_006358  # child: siglip child 0.55
+wv_006360  # child: siglip child 1.00, auto child flag 0.98
+wv_006361  # child: siglip child 0.53, auto child flag 0.34
+wv_006369  # child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 0.97
+wv_006377  # child: auto child flag 0.30
+wv_006381  # child: siglip child 1.00, siglip child sigmoid 0.03, auto child flag 0.97; stroller: siglip stroller 0.34
+wv_006382  # child: auto child flag 0.22
+wv_006390  # child: siglip child 0.40, auto child flag 0.66
+wv_006400  # child: siglip child 0.73, auto child flag 0.22
+wv_006421  # child: siglip child 0.91, auto child flag 0.89
+wv_006423  # child: siglip child 0.99, auto child flag 0.98
+wv_006424  # child: siglip child 0.55, auto child flag 0.63
+wv_006425  # child: siglip child 0.99, auto child flag 0.94
+wv_006426  # child: siglip child 0.76
+wv_006433  # child: siglip child 0.69, auto child flag 0.34
+wv_006434  # child: siglip child 0.68, auto child flag 0.30
+wv_006438  # child: siglip child 1.00, auto child flag 0.98
+wv_006439  # child: siglip child 0.65, auto child flag 0.59
+wv_006442  # child: auto child flag 0.39
+wv_006444  # child: siglip child 0.97, auto child flag 0.71
+wv_006450  # child: auto child flag 0.10
+wv_006463  # child: siglip child 1.00, auto child flag 0.98
+wv_006474  # child: siglip child 0.99, auto child flag 0.96
+wv_006478  # child: auto child flag 0.34
+wv_006480  # child: auto child flag 0.20
+wv_006482  # child: siglip child 0.69
+wv_006483  # child: siglip child 0.91, auto child flag 0.87
+wv_006487  # child: siglip child 0.62, auto child flag 0.11
+wv_006491  # child: siglip child 0.85
+wv_006494  # child: siglip child 0.73, auto child flag 0.44
+wv_006496  # child: siglip child 0.41
+wv_006498  # child: siglip child 1.00, siglip child sigmoid 0.02, auto child flag 0.97
+wv_006513  # child: siglip child 0.99, auto child flag 0.99
+wv_006515  # child: auto child flag 0.31
+wv_006518  # child: siglip child 0.99, auto child flag 0.98
+wv_006519  # child: siglip child 0.78
+wv_006526  # child: siglip child 0.99, auto child flag 0.98
+wv_006527  # child: siglip child 0.77, auto child flag 0.13
+wv_006530  # child: siglip child 0.99, auto child flag 0.97
+wv_006537  # child: siglip child 0.99, auto child flag 0.98
+wv_006543  # child: siglip child 0.41
+wv_006550  # child: siglip child 0.94, auto child flag 0.47
+wv_006551  # child: siglip child 0.99, auto child flag 0.98
+wv_006553  # child: siglip child 0.62
+wv_006554  # child: siglip child 0.66, auto child flag 0.68
+wv_006567  # child: siglip child 0.63
+wv_006568  # child: siglip child 0.99, auto child flag 0.95
+wv_006580  # child: siglip child 0.99, auto child flag 0.99
+wv_006591  # child: siglip child 0.99, auto child flag 0.96
+wv_006595  # child: auto child flag 0.38
+wv_006604  # child: siglip child 0.99, auto child flag 0.99; stroller: siglip stroller 0.25
+wv_006608  # child: siglip child 0.97, auto child flag 0.94
+wv_006609  # child: siglip child 0.61, auto child flag 0.69
+wv_006614  # child: auto child flag 0.32
+wv_006615  # child: siglip child 1.00, auto child flag 0.99
+wv_006619  # child: siglip child 0.98, auto child flag 0.98
+wv_006620  # child: siglip child 0.98, auto child flag 0.95
+wv_006633  # stroller: owlv2 stroller box 0.66; no_device: siglip presence 0.05, top=x_people, owl max 0.12
+wv_006644  # child: siglip child 0.51; no_device: siglip presence 0.01, top=x_people, owl max 0.00
+wv_006715  # child: auto child flag 0.22
+wv_006723  # child: siglip child 0.41
+wv_006746  # child: auto child flag 0.10
+wv_006747  # child: siglip child 0.49; no_device: siglip presence 0.06, top=x_people, owl max 0.14
+wv_006750  # child: siglip child 0.69; stroller: siglip stroller 0.39
+wv_006766  # child: siglip child 0.78; stroller: siglip stroller 0.37
+wv_006767  # child: auto child flag 0.37
+wv_006769  # child: siglip child 0.50, siglip child sigmoid 0.04
+wv_006788  # child: siglip child sigmoid 0.03
+wv_006794  # child: auto child flag 0.21
+wv_006797  # child: auto child flag 0.16
+wv_006825  # child: siglip child 0.59; no_device: siglip presence 0.00, top=x_people, owl max 0.11
+wv_006828  # child: auto child flag 0.20
+wv_006832  # child: siglip child 0.48; no_device: siglip presence 0.00, top=x_people, owl max 0.00
+wv_006843  # child: siglip child 0.44
+wv_006844  # stroller: owlv2 stroller box 0.56
+wv_006864  # child: siglip child 0.62
+wv_006868  # child: siglip child 0.78, auto child flag 0.61
+wv_006873  # child: siglip child 0.84, auto child flag 0.55
+wv_006884  # child: siglip child 0.51
+wv_006895  # child: siglip child 0.92, auto child flag 0.91
+wv_006906  # child: siglip child 0.66
+wv_006909  # child: siglip child 0.90, auto child flag 0.14
+wv_006912  # child: siglip child sigmoid 0.03
+wv_006916  # child: auto child flag 0.11
+wv_006928  # child: siglip child 0.61
+wv_006933  # child: siglip child 0.55, auto child flag 0.22
+wv_006946  # child: siglip child 0.51
+wv_006985  # child: siglip child 0.49, auto child flag 0.58
+wv_006987  # child: siglip child 0.42
+wv_006989  # child: siglip child 0.97, siglip child sigmoid 0.12, auto child flag 0.98
+wv_007005  # child: siglip child sigmoid 0.04
+wv_007033  # child: auto child flag 0.23
+wv_007092  # child: siglip child 0.59
+wv_007093  # child: siglip child 0.45
+wv_007099  # child: siglip child 0.52
+wv_007104  # child: siglip child 0.78, auto child flag 0.31
+wv_007107  # child: auto child flag 0.10
+wv_007110  # child: siglip child 0.47
+wv_007132  # child: siglip child 0.47
+wv_007136  # child: siglip child 0.43
+wv_007158  # child: siglip child 0.61, auto child flag 0.13
+wv_007159  # child: siglip child 0.69, auto child flag 0.32
+wv_007181  # child: siglip child 0.52
+wv_007204  # child: auto child flag 0.34
+wv_007207  # child: siglip child 0.99, auto child flag 0.99
+wv_007210  # child: siglip child 0.45
+wv_007228  # child: siglip child 0.62
+wv_007297  # child: siglip child 0.57
+wv_007352  # child: auto child flag 0.34
+wv_007353  # child: siglip child 0.92, auto child flag 0.90
+wv_007356  # child: auto child flag 0.11
+wv_007371  # stroller: proposed_class multi:powered_wheelchair|lookalike_stroller; no_device: siglip presence 0.03, top=x_vehicle, owl max 0.12
+wv_007373  # child: siglip child 0.44, auto child flag 0.94
+wv_007377  # child: siglip child 0.97, auto child flag 0.79; stroller: proposed_class multi:other_aid_rollator_walker|lookalike_stroller, siglip stroller 0.96
+wv_007378  # child: auto child flag 0.10; stroller: proposed_class multi:other_aid_rollator_walker|lookalike_stroller; no_device: siglip presence 0.05, top=x_people, owl max 0.00
+wv_007380  # child: siglip child 1.00, siglip child sigmoid 0.04, auto child flag 1.00; stroller: proposed_class multi:other_aid_rollator_walker|lookalike_stroller, siglip stroller 0.70

@@ -18,6 +18,7 @@ PROV_SOURCES = ("auto_review",)
 TAG_RE = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
 UUID_RE = re.compile(r"^[0-9a-fA-F-]{8,64}$")
 ID_RE = re.compile(r"^wv_\d{6}$")
+REMOVAL_ACTIONS = ("restore", "confirm_removed")   # kind=removal events (never folded into labels)
 
 def slug(name):
     s = re.sub(r"[^a-z0-9._-]+", "-", (name or "").strip().lower()).strip("-.")
@@ -33,10 +34,16 @@ def validate(ev):
     if not isinstance(e["uuid"], str) or not UUID_RE.match(e["uuid"]): return None, "bad uuid"
     if not isinstance(e["image_id"], str) or not ID_RE.match(e["image_id"]): return None, "bad image_id"
     if not e["annotator"] or slug(e["annotator"]) != e["annotator"]: return None, "annotator must be a slug"
-    if e["kind"] not in ("label", "adjudication"): return None, "bad kind"
+    if e["kind"] not in ("label", "adjudication", "removal"): return None, "bad kind"
     if not isinstance(e["ts"], str) or len(e["ts"]) < 19: return None, "bad ts"
     if not isinstance(e["device_id"], str) or not e["device_id"]: return None, "bad device_id"
     f, v = e["field"], e["value"]
+    if e["kind"] == "removal" or f == "removal":   # 'Removed' review: a human restores / confirms a blocklisted image
+        if e["kind"] != "removal" or f != "removal": return None, "removal events need kind=removal and field=removal"
+        if not (isinstance(v, dict) and set(v) <= {"action", "list", "reason"} and v.get("action") in REMOVAL_ACTIONS
+                and all(isinstance(v.get(k, ""), str) and len(v.get(k, "")) <= 400 for k in ("list", "reason"))): return None, "bad removal value"
+        if ev.get("source") is not None or ev.get("model_tag") is not None: return None, "provenance only on label events"
+        return e, None
     if f in FIELD_OPTS:
         if v is not None and v not in FIELD_OPTS[f]: return None, f"bad value for {f}"
     elif f == "exclude":
@@ -71,6 +78,7 @@ def fold(events):
     Ordering: client ts, then uuid (deterministic tie-break). Nothing is ever overwritten across annotators."""
     lab, adj = {}, {}
     for e in events:
+        if e["kind"] == "removal": continue        # removal-review decisions are not labels (see removal_decisions)
         key = (e["ts"], e["uuid"])
         if e["kind"] == "adjudication":
             k = (e["image_id"], e["field"])
@@ -142,16 +150,34 @@ def kappa(per):
 
 BLOCKLIST_GLOB = "removed_*.txt"   # data/removed_*.txt: image ids removed entirely (never served, assigned or exported)
 
-def load_blocklist(datadir):
-    """Union of image ids in data/removed_*.txt (one id per line; '#' comments). Files are lists, images stay on disk."""
-    out = set()
+def load_blocklist_entries(datadir):
+    """{image_id: [(file name, inline '# reason' comment), ...]} from data/removed_*.txt (one id per line)."""
+    out = {}
     if not datadir or not os.path.isdir(datadir): return out
     for fn in sorted(os.listdir(datadir)):
         if fn.startswith("removed_") and fn.endswith(".txt"):
             for line in open(os.path.join(datadir, fn), encoding="utf-8"):
-                t = line.split("#", 1)[0].strip()
-                if ID_RE.match(t): out.add(t)
+                t, _, c = line.partition("#"); t = t.strip()
+                if ID_RE.match(t): out.setdefault(t, []).append((fn, c.strip()))
     return out
+
+def load_blocklist(datadir):
+    """Union of image ids in data/removed_*.txt (one id per line; '#' comments). Files are lists, images stay on disk.
+    Use effective_blocklist() to honour human 'restore' decisions from the Removed review."""
+    return set(load_blocklist_entries(datadir))
+
+def removal_decisions(events):
+    """Latest human decision per image from the Removed review (kind=removal events): {image_id: (action, annotator, ts)}."""
+    best = {}
+    for e in events:
+        if e.get("kind") != "removal" or not isinstance(e.get("value"), dict): continue
+        k = (e["ts"], e["uuid"])
+        if e["image_id"] not in best or k > best[e["image_id"]][0]: best[e["image_id"]] = (k, e["value"].get("action"), e["annotator"])
+    return {i: (a, who, k[0]) for i, (k, a, who) in best.items()}
+
+def effective_blocklist(datadir, events):
+    """Blocklist files minus images a human restored (latest removal decision == 'restore')."""
+    return load_blocklist(datadir) - {i for i, d in removal_decisions(events).items() if d[0] == "restore"}
 
 def load_candidates(path):
     with open(path, newline="", encoding="utf-8") as fh:

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WheelView - Removed review</title><link rel="stylesheet" href="/style.css">
+<style>
+main{display:flex;gap:14px;padding:10px;flex-wrap:wrap}#view{flex:1;min-width:300px}
+#pic{max-width:100%;max-height:70vh;object-fit:contain;background:#222;display:block}
+#side{width:340px;font-size:13px}#side .k{color:#66707a;font-size:12px}#reason{white-space:pre-wrap;word-break:break-word;background:#fff;padding:6px;border-radius:4px}
+.st-restore{background:#27ae60;color:#fff}.st-confirm_removed{background:#c0392b;color:#fff}.st-undecided{background:#ddd}
+.bar button{margin:4px 4px 0 0;padding:6px 10px}#msg{min-height:1.2em}
+</style></head><body>
+<header><b>WheelView - Removed review</b><span class="grow"></span>
+<label>Reviewer <input id="who" placeholder="your name" size="10"></label>
+<select id="rule" title="Filter by rule"><option value="">all rules</option><option value="child">child</option><option value="stroller">stroller</option>
+<option value="no_device">no device</option><option value="human_exclude">human exclude</option></select>
+<select id="status" title="Filter by decision"><option value="undecided">undecided</option><option value="">all</option>
+<option value="restore">restored</option><option value="confirm_removed">confirmed removed</option></select>
+<span id="counts" class="pill"></span><a href="/">Annotate</a><a href="/adjudicate.html">Adjudicate</a></header>
+<main><div id="view"><img id="pic" alt="blurred image"><div id="nopic" class="muted" hidden>No blurred copy for this image (originals are never shown here).</div></div>
+<div id="side"><div><b id="iid"></b> <span id="pos" class="muted"></span> <span id="st" class="tag"></span></div>
+<div class="k">rules</div><div id="rules"></div>
+<div class="k">reason / scores</div><div id="reason"></div>
+<div class="k">weak class / source</div><div id="meta"></div><div class="k" id="dec"></div>
+<div class="bar"><button id="bRestore"><kbd>R</kbd> Restore</button><button id="bConfirm"><kbd>X</kbd> Keep removed</button>
+<button id="bPrev"><kbd>&larr;</kbd> Prev</button><button id="bNext"><kbd>&rarr;</kbd> Skip</button></div>
+<div id="msg" class="muted"></div>
+<p class="muted">Keys: <kbd>R</kbd> restore (back into the labeling queue), <kbd>X</kbd> confirm removal, <kbd>&rarr;</kbd>/<kbd>Space</kbd>/<kbd>J</kbd> skip,
+<kbd>&larr;</kbd>/<kbd>K</kbd> previous. Pressing the other key later reverses a decision (latest wins). Every decision is an append-only event under your name.
+Only face-blurred copies are shown.</p></div></main>
+<script src="/removed.js"></script></body></html>

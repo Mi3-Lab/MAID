@@ -1,7 +1,13 @@
-﻿"""Triage of the v1 candidate pool (local only; images never leave this machine).
+"""Triage of the v1 candidate pool (local only; images never leave this machine).
 Inputs: var/triage/features.csv (scripts/triage_features.py), var/wheelview.db (read-only) or annotations/events,
 annotations/auto/*.jsonl, data/candidates.csv, data/license_audit_v1.csv.
-Outputs: data/removed_child_stroller.txt, data/removed_no_device.txt, data/no_device_uncertain.txt, data/v1_triage.csv,
+Policy (samir, 2026-10-27): "Do not interfere with anything unless I had already flagged it."
+  * LABELED images (any human label/adjudication event from samir or shaaz) are never blocked or dropped by a model rule.
+    They are dropped / stay blocked only on a human exclude (typed, or a model flag the labeler accepted with a keypress).
+    Model concerns go into the model_warning column; license problems into license_warning (decision keep_flagged_license).
+  * UNLABELED images keep the model-based removals (child / stroller / no device), written to data/removed_model_*.txt.
+Outputs: data/removed_model_child_stroller.txt, data/removed_model_no_device.txt, data/removed_human_exclude.txt,
+data/no_device_uncertain.txt, data/v1_triage.csv,
 var/triage/summary.json (+ var/triage/owl_needed.txt for the optional OWLv2 confirm pass)."""
 import csv, json, os, sqlite3, sys, collections, argparse
 from pathlib import Path
@@ -39,10 +45,10 @@ def main():
     owl_local = {}
     if (OUT / "owl.jsonl").exists():
         for l in open(OUT / "owl.jsonl", encoding="utf-8"): r = json.loads(l); owl_local[r["image_id"]] = r
-    evs, evsrc = load_events(); evs = [e for e in evs if e["annotator"] in LABELERS]
+    evs, evsrc = load_events(); evs = [e for e in evs if e["annotator"] in LABELERS and e["kind"] in ("label", "adjudication")]
     per, adjv = wvcore.fold(evs)
     done = {i for i, anns in per.items() if any(fv.get("_status") == "done" for fv in anns.values())}
-    labeled = done | set(audit)
+    labeled = {e["image_id"] for e in evs} | set(audit)     # any human label/adjudication event
     st = {i: wvcore.image_status(i, per, adjv) for i in labeled}
     # exclude provenance: latest exclude event per (image, annotator)
     lastex = {}
@@ -110,78 +116,106 @@ def main():
             unsure.add(i)
     (OUT / "owl_needed.txt").write_text("\n".join(owl_needed) + "\n")
     unsure -= nodev | cs
-    # ---------------------------------------------------------------- labeled set decisions
+    # ---------------------------------------------------------------- labeled set: human labels only
+    def human_ex(i):
+        """(exclude reasons a labeler set, how). Latest value per annotator; review-mode keypress acceptances count. Adjudication overrides."""
+        if (i, "exclude") in adjv:
+            v = adjv[(i, "exclude")][0]; return ({v} if v and v != "none" else set()), "adjudicated"
+        rs = {fv.get("exclude") for fv in per.get(i, {}).values() if fv.get("exclude") not in (None, "", "none")}
+        if not rs: return set(), ""
+        srcs = {lastex.get((i, an, "label"), {}).get("source") for an, fv in per.get(i, {}).items() if fv.get("exclude") in rs}
+        return rs, ("typed" if any(x != "auto_review" for x in srcs) else "review_keypress")
+    def livebad(live): return live.startswith("changed:") and any(x in live for x in ("ALL-RIGHTS", "-NC", "-ND")) or "login_required" in live
+    def lic_issues(i):
+        au = audit.get(i, {}); lic = au.get("status", "not_audited"); live = au.get("live_check", ""); rsn = au.get("reason", ""); out = []
+        if lic == "needs_ross": out.append("needs_ross: " + rsn)
+        if lic == "exclude" and not rsn.startswith("labeler-excluded"): out.append("audit exclude: " + rsn)
+        if livebad(live): out.append("live license now " + live)
+        if rsn.startswith("same Flickr uploader"): out.append("antefixus21 uploader (6 of their images license-excluded)")
+        if lic == "not_audited": out.append("not license-audited (labeled after the audit)")
+        return out
+    def model_warn(i):
+        if i not in S: return ["no local image (model checks not run)"]
+        s = S[i]; w = []
+        cm = [x for x in why.get(i, []) if "child" in x and not x.startswith("human")]
+        if cm: w.append("child: " + ", ".join(cm))
+        sm = [x for x in why.get(i, []) if "stroller" in x]
+        if sm: w.append("stroller: " + ", ".join(sm))
+        if i in nodev: w.append(f"no_device: presence {s['dev']:.2f}, top={s['top']}")
+        elif i in unsure_all: w.append(f"device_unsure: presence {s['dev']:.2f}")
+        if s["photo"] <= TH["photo_drop"]: w.append(f"low_photo_score {s['photo']:.2f}")
+        boxes = [b for bl in st[i]["bboxes"].values() for b in bl]; W, H = int(cands[i]["width"] or 0), int(cands[i]["height"] or 0)
+        if boxes and W and H:
+            big = max(min(b[2] * W, b[3] * H) for b in boxes)
+            if big < TH["small_px"]: w.append(f"small_box {big:.0f}px")
+        hd = human_dev(i); sg = (auto.get(i, {}).get("suggestions") or {}).get("device_type") or {}
+        if hd and len(st[i]["done"]) == 1 and sg.get("confidence", 0) >= TH["model_conf"] and sg.get("value") != hd:
+            w.append(f"model_disagrees: {sg['value']} ({sg['confidence']:.2f}) vs single label {hd}")
+        return w
+    unsure_all = set(unsure)
     rows = []
     for i in sorted(labeled):
-        rs, how, src = ex_info(i); hd = human_dev(i); au = audit.get(i, {}); lic = au.get("status", "not_audited")
-        s = S.get(i, {}); notes = []
+        rs, how = human_ex(i); hd = human_dev(i); au = audit.get(i, {}); lic = au.get("status", "not_audited")
+        li = lic_issues(i); mw = model_warn(i); notes = []
         if lic == "ok_with_note": notes.append("license note: " + au.get("reason", ""))
         if st[i]["face_blur_missed"]: notes.append("labeler flagged a missed face blur")
-        live = au.get("live_check", "")
-        livebad = live.startswith("changed:") and any(x in live for x in ("ALL-RIGHTS", "-NC", "-ND")) or "login_required" in live
-        d = None
-        if i not in local: d = ("drop", "no local image")
-        elif i in child: d = ("drop", "child (rule 1): " + "; ".join(x for x in why[i] if "stroller" not in x and "no device" not in x))
-        elif i in stroller: d = ("drop", "stroller (rule 1): " + "; ".join(x for x in why[i] if "stroller" in x))
-        elif i in nodev: d = ("drop", "no device (rule 2)")
-        elif lic == "needs_ross": d = ("drop", "license needs_ross")
-        elif livebad: d = ("drop", f"live license now {live}")
-        elif "license_concern" in rs and src == "human": d = ("drop", "human license_concern exclude")
-        elif "identifiable_person" in rs or "clinical_setting" in rs or "license_concern" in rs:
-            r0 = "/".join(sorted(rs - {"not_a_photo"}))
-            d = ("drop", f"human {r0} exclude ({how})") if src == "human" else ("user_decides", f"{r0} exclude accepted from model flag ({how}); borderline consent case")
-        if d is None and "not_a_photo" in rs:
-            ps = s["photo"]; kt = TH["photo_keep_human"] if src == "human" else TH["photo_keep"]
-            real_dev = hd in ("manual", "powered", "other_aid", "lookalike")
-            if ps <= TH["photo_drop"]: d = ("drop", f"not_a_photo confirmed (photo_score {ps:.2f}{', cut-out' if s['cut'] else ''}{', flat graphic' if s['flat'] else ''})")
-            elif not real_dev and s["dev"] < TH["dev_unsure"]: d = ("drop", f"not_a_photo exclude upheld: real photo but no clear device (presence {s['dev']:.2f})")
-            elif ps < kt: d = ("user_decides", f"not_a_photo exclude ({src}) but photo check ambiguous ({ps:.2f})")
-            elif real_dev: notes.append(f"recovered_not_a_photo (exclude {src}, photo_score {ps:.2f})")
-            elif s["dev"] >= TH["recover_dev"]: d = ("user_decides", f"not_a_photo exclude ({src}): real photo ({ps:.2f}) with likely {s['top']} (presence {s['dev']:.2f}), needs device_type"); notes.append("recovered_not_a_photo")
-            else: d = ("drop", f"not_a_photo exclude upheld: real photo, device unclear (presence {s['dev']:.2f})")
-        if d is None and lic == "exclude" and not rs and au.get("reason", "").startswith("labeler-excluded"): notes.append("audit listed as labeler-excluded but current labels have no exclude")
-        if d is None and lic == "not_audited": d = ("user_decides", "labeled after the license audit; not audited")
-        if d is None and hd in (None, "", "unclear"): d = ("user_decides", f"device_type {'conflict/unclear' if hd else 'missing'}")
-        if d is None:
-            boxes = [b for bl in st[i]["bboxes"].values() for b in bl]; W, H = int(cands[i]["width"] or 0), int(cands[i]["height"] or 0)
-            if boxes and W and H:
-                big = max(min(b[2] * W, b[3] * H) for b in boxes)
-                if big < TH["small_px"]: d = ("drop", f"device too small ({big:.0f}px shorter side)")
-            elif not boxes: notes.append("no bbox")
-        if d is None and au.get("reason", "").startswith("same Flickr uploader"): d = ("user_decides", "antefixus21 uploader (6 of their images excluded for license)")
-        if d is None and len(st[i]["done"]) == 1 and ("device_type" not in {f for (ii, f) in adjv if ii == i}):
-            sg = (auto.get(i, {}).get("suggestions") or {}).get("device_type") or {}
-            if sg.get("confidence", 0) >= TH["model_conf"] and sg.get("value") != hd: d = ("user_decides", f"single label {hd} vs model {sg['value']} ({sg['confidence']:.2f})")
-        if d is None and st[i]["face_blur_missed"]: d = ("user_decides", "labeler flagged a missed face blur")
-        if d is None: d = ("keep", "allowed license, no exclude, real photo, device labeled")
-        rows.append(dict(image_id=i, decision=d[0], reason=d[1], device_type=hd or "", license_status=lic, exclude_source=src,
-                         photo_score=f"{s['photo']:.3f}" if s else "", notes="; ".join(notes)))
+        if lic == "exclude" and not rs and au.get("reason", "").startswith("labeler-excluded"): notes.append("audit listed as labeler-excluded but current labels have no exclude")
+        if rs: d = ("drop", f"human exclude: {'/'.join(sorted(rs))} ({how})")
+        elif not st[i]["done"]: d = ("needs_label", "labeling not finished (no annotator marked it done)")
+        elif hd in (None, "", "unclear"): d = ("needs_label", f"device_type {'conflict/unclear' if hd else 'missing'} in the human labels")
+        elif li: d = ("keep_flagged_license", "human-approved; license warning for samir")
+        else: d = ("keep", "human-approved with device_type, no human exclude")
+        s0 = S.get(i)
+        rows.append(dict(image_id=i, decision=d[0], reason=d[1], device_type=hd or "", license_status=lic, exclude_source=how,
+                         model_warning="; ".join(mw), license_warning="; ".join(li), photo_score=f"{s0['photo']:.3f}" if s0 else "", notes="; ".join(notes)))
     with open(DATA / "v1_triage.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
-    hdr = lambda t: f"# {t}\n# one image id per line; read by server/main.py and scripts/build_*.py (removed entirely; files stay on disk)\n"
-    (DATA / "removed_child_stroller.txt").write_text(hdr(f"child (any score over child>={TH['child']} / sigmoid>={TH['child_sig']} / auto>={TH['child_auto']} / human child exclude) or stroller (proposed_class or siglip>={TH['stroller']} or OWLv2 stroller box>=0.3); +{len(nonlocal_str)} non-local stroller-class candidates")
-        + "\n".join(sorted(cs | set(nonlocal_str))) + "\n", encoding="utf-8")
-    (DATA / "removed_no_device.txt").write_text(hdr(f"no wheelchair/aid/look-alike: siglip2 device presence <{TH['dev_absent']}, no OWLv2 box >={TH['owl']}, no human device label, not an OpenImages-verified label")
-        + "\n".join(sorted(nodev - cs)) + "\n", encoding="utf-8")
-    (DATA / "no_device_uncertain.txt").write_text(f"# device presence unsure (siglip2 presence <{TH['dev_unsure']} but not removable); kept in the queue\n"
+    # ---------------------------------------------------------------- blocklists
+    def segs(i):
+        out = []
+        cm = [x for x in why.get(i, []) if "child" in x]; sm = [x for x in why.get(i, []) if "stroller" in x]
+        if i in child: out.append("child: " + ", ".join(cm))
+        if i in stroller or i in nonlocal_str: out.append("stroller: " + (", ".join(sm) or "proposed_class stroller"))
+        if i in nodev and i in S: out.append(f"no_device: siglip presence {S[i]['dev']:.2f}, top={S[i]['top']}, owl max {S[i]['owl_dev']:.2f}")
+        return out
+    line = lambda i, extra=(): f"{i}  # " + "; ".join(list(extra) + segs(i))
+    hdr = lambda t: f"# {t}\n# one image id per line ('# ...' = reason/scores); read by server/main.py and scripts/build_*.py.\n# Removed entirely (files stay on disk). Restores in the app's Removed review (/removed.html) override this list.\n"
+    model_cs = sorted((cs | set(nonlocal_str)) - labeled); model_nd = sorted((nodev - cs) - labeled)
+    prev_blocked_lab = (cs | nodev | set(nonlocal_str)) & labeled
+    hum = sorted(i for i in prev_blocked_lab if human_ex(i)[0]); restored_lab = sorted(prev_blocked_lab - set(hum))
+    (DATA / "removed_model_child_stroller.txt").write_text(hdr(f"MODEL-BASED (unlabeled images only): child (siglip child>={TH['child']} / sigmoid>={TH['child_sig']} / auto flag>={TH['child_auto']}) or stroller (proposed_class, siglip>={TH['stroller']} or OWLv2 stroller box>=0.3)")
+        + "\n".join(line(i) for i in model_cs) + "\n", encoding="utf-8")
+    (DATA / "removed_model_no_device.txt").write_text(hdr(f"MODEL-BASED (unlabeled images only): no wheelchair/aid/look-alike: siglip2 device presence <{TH['dev_absent']}, no OWLv2 box >={TH['owl']}, not an OpenImages-verified label")
+        + "\n".join(line(i) for i in model_nd) + "\n", encoding="utf-8")
+    (DATA / "removed_human_exclude.txt").write_text(hdr("HUMAN-FLAGGED: labeled images a labeler excluded (typed, or accepted the model flag with a keypress) that the child/stroller/no-device pass had also caught")
+        + "\n".join(line(i, ["human_exclude: " + "/".join(sorted(human_ex(i)[0])) + f" ({human_ex(i)[1]})"]) for i in hum) + "\n", encoding="utf-8")
+    for old in ("removed_child_stroller.txt", "removed_no_device.txt"):
+        if (DATA / old).exists(): (DATA / old).unlink()
+    (DATA / "no_device_uncertain.txt").write_text(f"# device presence unsure (siglip2 presence <{TH['dev_unsure']} but not removable); kept in the queue. Informational only.\n"
         + "\n".join(sorted(unsure)) + "\n", encoding="utf-8")
     # ---------------------------------------------------------------- summary
-    removed = cs | nodev; keep = [r for r in rows if r["decision"] == "keep"]; ud = [r for r in rows if r["decision"] == "user_decides"]
+    removed = set(model_cs) | set(model_nd) | set(hum)
+    kept = [r for r in rows if r["decision"] in ("keep", "keep_flagged_license")]
     pool = collections.Counter(cands[i]["proposed_class"] for i in local - removed)
+    wcount = lambda key: sum(key in r["model_warning"] for r in kept)
     summ = dict(evsrc=evsrc, thresholds=TH, labeled=len(labeled), decisions=dict(collections.Counter(r["decision"] for r in rows)),
-        child=len(child), stroller=len(stroller), child_and_stroller=len(child & stroller), stroller_nonlocal=len(nonlocal_str),
-        nodev_raw=len(nodev), nodev_overlap_child_stroller=len(nodev & cs), nodev_only=len(nodev - cs), uncertain=len(unsure), owl_needed=len(owl_needed),
-        removed_local=len(removed), removed_labeled=len(removed & labeled), removed_unlabeled=len(removed - labeled),
-        child_labeled=len(child & labeled), stroller_labeled=len(stroller & labeled), nodev_labeled=len((nodev - cs) & labeled),
+        restored_labeled=len(restored_lab), human_excluded_still_blocked=len(hum),
+        model_child_stroller=len(model_cs), model_no_device=len(model_nd), blocked_total=len(removed),
+        model_child=len((child - labeled)), model_stroller=len((stroller | set(nonlocal_str)) - labeled), model_child_and_stroller=len((child & stroller) - labeled),
+        model_nodev_raw=len(nodev - labeled), uncertain=len(unsure),
         remaining_pool=len(local - removed), remaining_by_class=dict(pool.most_common()),
         lookalike_pool_after=sum(v for k, v in pool.items() if k.startswith("lookalike")),
-        keep=len(keep), keep_by_class=dict(collections.Counter(r["device_type"] for r in keep)),
-        keep_if_all_ud=len(keep) + len(ud), keep_if_all_ud_by_class=dict(collections.Counter((r["device_type"] or "?") for r in keep + ud)),
-        recovered_not_a_photo=sum("recovered_not_a_photo" in r["notes"] for r in rows),
-        recovered_kept=sum("recovered_not_a_photo" in r["notes"] and r["decision"] == "keep" for r in rows),
-        not_a_photo_total=sum(1 for i in labeled if "not_a_photo" in ex_info(i)[0]),
-        drop_reasons=dict(collections.Counter(r["reason"].split(":")[0].split(" (")[0] for r in rows if r["decision"] == "drop")),
-        ud_reasons=dict(collections.Counter(r["reason"].split(" (")[0][:60] for r in ud)))
+        keep=sum(r["decision"] == "keep" for r in rows), keep_flagged_license=sum(r["decision"] == "keep_flagged_license" for r in rows),
+        kept_by_class=dict(collections.Counter(r["device_type"] for r in kept)),
+        keep_only_by_class=dict(collections.Counter(r["device_type"] for r in rows if r["decision"] == "keep")),
+        kept_with_model_warning=sum(bool(r["model_warning"]) for r in kept),
+        kept_warn_child=wcount("child:"), kept_warn_stroller=wcount("stroller:"), kept_warn_child_or_stroller=sum(("child:" in r["model_warning"]) or ("stroller:" in r["model_warning"]) for r in kept),
+        kept_warn_no_device=wcount("no_device:"), kept_warn_device_unsure=wcount("device_unsure"), kept_warn_low_photo=wcount("low_photo"),
+        kept_warn_small_box=wcount("small_box"), kept_warn_model_disagrees=wcount("model_disagrees"),
+        kept_with_license_warning=sum(bool(r["license_warning"]) for r in kept), kept_face_blur_flag=sum("missed face blur" in r["notes"] for r in kept),
+        drop_reasons=dict(collections.Counter(r["reason"] for r in rows if r["decision"] == "drop")),
+        needs_label_reasons=dict(collections.Counter(r["reason"] for r in rows if r["decision"] == "needs_label")),
+        license_warnings=dict(collections.Counter(x.split(":")[0].split(" (")[0][:40] for r in rows for x in r["license_warning"].split("; ") if x)))
     json.dump(summ, open(OUT / "summary.json", "w"), indent=1); print(json.dumps(summ, indent=1))
 def calib(S, st, ex_info, human_dev, labeled, cands, local):
     import statistics

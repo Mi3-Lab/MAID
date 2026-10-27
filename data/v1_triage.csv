@@ -1,745 +1,745 @@
-image_id,decision,reason,device_type,license_status,exclude_source,photo_score,notes
-wv_000076,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.37),,exclude,human,0.370,
-wv_000077,drop,not_a_photo confirmed (photo_score 0.17),,exclude,human,0.171,
-wv_000223,drop,"not_a_photo confirmed (photo_score 0.15, cut-out, flat graphic)",,exclude,human,0.150,
-wv_000224,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",,exclude,human,0.150,
-wv_000225,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.47),,exclude,human,0.469,
-wv_000226,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",powered,exclude,human,0.150,
-wv_000227,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.01),,exclude,human,0.655,
-wv_000228,drop,child (rule 1): siglip child 0.48,powered,exclude,human,0.898,
-wv_000229,drop,child (rule 1): siglip child 0.41,unclear,ok,none,0.988,labeler flagged a missed face blur
-wv_000230,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.77),,exclude,human,0.772,
-wv_000231,drop,human license_concern exclude,powered,exclude,human,0.825,
-wv_000232,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.66),,exclude,human,0.658,
-wv_000233,user_decides,labeler flagged a missed face blur,powered,ok,none,0.953,labeler flagged a missed face blur
-wv_000234,user_decides,labeler flagged a missed face blur,powered,ok,none,0.925,labeler flagged a missed face blur
-wv_000235,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.618,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
-wv_000236,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.27),,exclude,human,0.404,
-wv_000237,user_decides,labeler flagged a missed face blur,powered,ok,none,0.952,labeler flagged a missed face blur
-wv_000238,user_decides,"not_a_photo exclude (human): real photo (0.94) with likely wheelchair (presence 0.98), needs device_type",,exclude,human,0.943,recovered_not_a_photo
-wv_000239,user_decides,labeler flagged a missed face blur,powered,ok,none,0.921,labeler flagged a missed face blur
-wv_000240,user_decides,labeler flagged a missed face blur,powered,ok,none,0.939,labeler flagged a missed face blur
-wv_000241,user_decides,labeler flagged a missed face blur,powered,ok,none,0.924,labeler flagged a missed face blur
-wv_000242,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.912,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release; labeler flagged a missed face blur
-wv_000243,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.979,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release; labeler flagged a missed face blur
-wv_000244,user_decides,labeler flagged a missed face blur,powered,ok,none,0.872,labeler flagged a missed face blur
-wv_000245,drop,child (rule 1): auto child flag 0.24,,exclude,human,0.182,
-wv_000246,user_decides,labeler flagged a missed face blur,powered,ok,none,0.956,labeler flagged a missed face blur
-wv_000247,user_decides,labeler flagged a missed face blur,powered,ok,none,0.877,labeler flagged a missed face blur
-wv_000248,drop,no device (rule 2),,exclude,human,0.361,
-wv_000249,drop,child (rule 1): siglip child 0.95; siglip child sigmoid 0.07,unclear,exclude,human,0.959,labeler flagged a missed face blur
-wv_000250,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.974,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release; no bbox
-wv_000251,user_decides,labeler flagged a missed face blur,other_aid,ok,none,0.969,labeler flagged a missed face blur
-wv_000252,user_decides,labeler flagged a missed face blur,powered,ok,none,0.945,labeler flagged a missed face blur
-wv_000253,user_decides,labeler flagged a missed face blur,other_aid,ok,none,0.940,labeler flagged a missed face blur
-wv_000254,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.989,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
-wv_000255,drop,"not_a_photo confirmed (photo_score 0.04, cut-out, flat graphic)",,exclude,human,0.044,
-wv_000256,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.73),powered,exclude,human,0.733,
-wv_000257,user_decides,labeler flagged a missed face blur,powered,ok,none,0.919,labeler flagged a missed face blur
-wv_000258,drop,child (rule 1): siglip child 0.64; auto child flag 0.19,powered,exclude,human,0.913,
-wv_000259,drop,human license_concern exclude,,exclude,human,0.150,
-wv_000260,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.812,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
-wv_000261,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.83),,exclude,human,0.830,
-wv_000262,user_decides,labeler flagged a missed face blur,powered,ok,none,0.950,labeler flagged a missed face blur
-wv_000263,user_decides,labeler flagged a missed face blur,powered,ok,none,0.817,labeler flagged a missed face blur
-wv_000264,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.81),,exclude,human,0.810,
-wv_000265,user_decides,labeler flagged a missed face blur,powered,ok,none,0.825,labeler flagged a missed face blur
-wv_000266,drop,not_a_photo confirmed (photo_score 0.03),powered,exclude,human,0.028,
-wv_000267,drop,child (rule 1): siglip child 0.57,unclear,exclude,human,0.929,labeler flagged a missed face blur
-wv_000268,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.78),,exclude,human,0.784,
-wv_000269,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.981,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
-wv_000270,drop,no device (rule 2),,exclude,human,0.863,
-wv_000271,drop,no device (rule 2),,exclude,human,0.967,
-wv_000272,user_decides,labeler flagged a missed face blur,powered,ok,none,0.942,labeler flagged a missed face blur
-wv_000273,drop,no device (rule 2),,exclude,human,0.047,
-wv_000274,user_decides,labeler flagged a missed face blur,powered,ok,none,0.866,labeler flagged a missed face blur
-wv_000275,user_decides,labeler flagged a missed face blur,powered,ok,none,0.953,labeler flagged a missed face blur
-wv_000276,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.986,
-wv_000277,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.962,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release; no bbox
-wv_000278,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.84),,exclude,human,0.835,
-wv_000279,drop,child (rule 1): siglip child 0.73,,exclude,human,0.979,
-wv_000280,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.976,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
-wv_000281,user_decides,antefixus21 uploader (6 of their images excluded for license),powered,ok_with_note,none,0.992,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
-wv_000282,drop,no device (rule 2),,exclude,human,0.933,
-wv_000283,drop,no device (rule 2),,exclude,human,0.584,
-wv_000284,drop,human license_concern exclude,powered,exclude,human,0.889,labeler flagged a missed face blur
-wv_000285,drop,child (rule 1): auto child flag 0.16,,exclude,human,0.184,
-wv_000286,user_decides,device_type conflict/unclear,unclear,ok,none,0.944,labeler flagged a missed face blur
-wv_000287,user_decides,labeler flagged a missed face blur,powered,ok,none,0.941,labeler flagged a missed face blur
-wv_000288,drop,child (rule 1): auto child flag 0.13,manual,exclude,human,0.921,labeler flagged a missed face blur
-wv_000289,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.75),,exclude,human,0.750,
-wv_000290,drop,not_a_photo confirmed (photo_score 0.14),,exclude,human,0.144,
-wv_000291,user_decides,labeler flagged a missed face blur,powered,ok,none,0.906,labeler flagged a missed face blur
-wv_000292,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.968,
-wv_000293,drop,child (rule 1): siglip child 0.93; auto child flag 0.21,powered,ok,none,0.971,labeler flagged a missed face blur
-wv_000294,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.37)",,exclude,human,0.936,
-wv_000295,user_decides,labeler flagged a missed face blur,powered,ok,none,0.926,labeler flagged a missed face blur
-wv_000296,drop,child (rule 1): siglip child 0.72; auto child flag 0.17,powered,ok,none,0.980,labeler flagged a missed face blur
-wv_000297,user_decides,"not_a_photo exclude (human): real photo (0.92) with likely office (presence 1.00), needs device_type",,exclude,human,0.919,recovered_not_a_photo
-wv_000298,drop,child (rule 1): siglip child 0.53,unclear,exclude,human,0.883,
-wv_000299,drop,child (rule 1): auto child flag 0.13,,exclude,human,0.263,
-wv_000300,drop,child (rule 1): siglip child 0.57,powered,ok,none,0.921,labeler flagged a missed face blur
-wv_000301,user_decides,"not_a_photo exclude (human): real photo (0.97) with likely cane (presence 0.89), needs device_type",,exclude,human,0.969,recovered_not_a_photo
-wv_000302,drop,no device (rule 2),,exclude,human,0.795,
-wv_000303,user_decides,labeler flagged a missed face blur,powered,ok,none,0.979,labeler flagged a missed face blur
-wv_000311,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.997,
-wv_000323,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.989,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_000329,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.973,
-wv_000334,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.947,
-wv_000339,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.43)",,exclude,human,0.992,
-wv_000340,drop,child (rule 1): auto child flag 0.31; human child exclude,,exclude,auto_review,0.980,
-wv_000343,drop,child (rule 1): siglip child 0.46,powered,ok,none,0.991,
-wv_000356,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.967,
-wv_000360,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.972,
-wv_000362,user_decides,labeler flagged a missed face blur,powered,ok,none,0.979,labeler flagged a missed face blur
-wv_000368,drop,child (rule 1): siglip child 0.96; auto child flag 0.93; human child exclude,,exclude,auto_review,0.960,
-wv_000371,drop,child (rule 1): auto child flag 0.10,powered,ok_with_note,none,0.821,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit; labeler flagged a missed face blur
-wv_000375,drop,child (rule 1): siglip child 0.50,,exclude,human,0.985,
-wv_000378,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.981,
-wv_000383,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.980,
-wv_000385,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.892,
-wv_000386,user_decides,labeler flagged a missed face blur,powered,ok,none,0.934,labeler flagged a missed face blur
-wv_000398,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.986,
-wv_000403,drop,child (rule 1): auto child flag 0.15,powered,ok,none,0.958,
-wv_000407,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.989,
-wv_000409,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.494,
-wv_000413,keep,"allowed license, no exclude, real photo, device labeled",powered,ok_with_note,none,0.992,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_000415,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.994,
-wv_000425,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.992,
-wv_000437,user_decides,labeler flagged a missed face blur,powered,ok,none,0.994,labeler flagged a missed face blur
-wv_001960,user_decides,labeler flagged a missed face blur,manual,ok,none,0.977,labeler flagged a missed face blur
-wv_001961,user_decides,labeler flagged a missed face blur,manual,ok,none,0.977,labeler flagged a missed face blur
-wv_001962,user_decides,labeler flagged a missed face blur,powered,ok,none,0.896,labeler flagged a missed face blur
-wv_001963,user_decides,"not_a_photo exclude (human): real photo (0.98) with likely cane (presence 0.88), needs device_type",,exclude,human,0.982,recovered_not_a_photo
-wv_001964,drop,child (rule 1): siglip child 0.74,manual,ok,none,0.976,labeler flagged a missed face blur
-wv_001965,user_decides,labeler flagged a missed face blur,manual,ok,none,0.962,labeler flagged a missed face blur
-wv_001966,user_decides,labeler flagged a missed face blur,manual,ok,none,0.963,labeler flagged a missed face blur
-wv_001967,user_decides,labeler flagged a missed face blur,manual,ok,none,0.949,labeler flagged a missed face blur
-wv_001968,drop,child (rule 1): auto child flag 0.12,manual,ok,none,0.972,labeler flagged a missed face blur
-wv_001969,drop,human identifiable_person exclude (adjudicated),manual,exclude,human,0.978,labeler flagged a missed face blur
-wv_001970,user_decides,labeler flagged a missed face blur,manual,ok,none,0.934,labeler flagged a missed face blur
-wv_001971,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.947,
-wv_001972,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.00),,exclude,human,0.882,
-wv_001973,user_decides,labeler flagged a missed face blur,manual,ok,none,0.977,labeler flagged a missed face blur
-wv_001974,user_decides,labeler flagged a missed face blur,manual,ok,none,0.972,labeler flagged a missed face blur
-wv_001975,drop,no device (rule 2),,exclude,human,0.910,
-wv_001976,user_decides,labeler flagged a missed face blur,manual,ok,none,0.955,labeler flagged a missed face blur
-wv_001997,drop,no device (rule 2),,exclude,auto_review,0.941,
-wv_001998,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.977,no bbox
-wv_001999,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.975,
-wv_002011,drop,child (rule 1): siglip child sigmoid 0.03,manual,exclude,human,0.981,
-wv_002018,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.979,no bbox
-wv_002022,user_decides,"not_a_photo exclude (human): real photo (0.97) with likely cane (presence 0.61), needs device_type",unclear,exclude,human,0.967,recovered_not_a_photo
-wv_002039,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.940,no bbox
-wv_002047,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.965,no bbox
-wv_002056,user_decides,"not_a_photo exclude (auto_review): real photo (0.95) with likely wheelchair (presence 0.99), needs device_type",,exclude,auto_review,0.953,recovered_not_a_photo
-wv_002057,user_decides,"not_a_photo exclude (auto_review): real photo (0.90) with likely wheelchair (presence 0.88), needs device_type",unclear,exclude,auto_review,0.898,recovered_not_a_photo
-wv_002059,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.960,no bbox
-wv_002062,drop,child (rule 1): siglip child 0.66; siglip child sigmoid 0.02; auto child flag 0.11; human child exclude,manual,exclude,human,0.150,labeler flagged a missed face blur
-wv_002064,keep,"allowed license, no exclude, real photo, device labeled",powered,exclude,human,0.917,"recovered_not_a_photo (exclude human, photo_score 0.92)"
-wv_002065,drop,no device (rule 2),,exclude,auto_review,0.985,
-wv_002066,user_decides,"not_a_photo exclude (auto_review): real photo (0.87) with likely wheelchair (presence 0.99), needs device_type",,exclude,auto_review,0.868,recovered_not_a_photo
-wv_002067,keep,"allowed license, no exclude, real photo, device labeled",manual,exclude,human,0.921,"recovered_not_a_photo (exclude human, photo_score 0.92)"
-wv_002075,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.917,no bbox
-wv_002077,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.943,
-wv_002079,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely cane (presence 0.96), needs device_type",,exclude,auto_review,0.968,recovered_not_a_photo
-wv_002084,drop,child (rule 1): siglip child 0.59,manual,ok,none,0.938,
-wv_002088,user_decides,labeler flagged a missed face blur,manual,ok,none,0.942,labeler flagged a missed face blur
-wv_002090,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.34),,exclude,auto_review,0.876,
-wv_002091,user_decides,"not_a_photo exclude (auto_review): real photo (0.98) with likely cane (presence 0.89), needs device_type",,exclude,auto_review,0.976,recovered_not_a_photo
-wv_002094,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely wheelchair (presence 0.99), needs device_type",,exclude,auto_review,0.972,recovered_not_a_photo
-wv_002099,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.947,no bbox
-wv_002104,keep,"allowed license, no exclude, real photo, device labeled",manual,exclude,human,0.979,"recovered_not_a_photo (exclude human, photo_score 0.98)"
-wv_002109,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.941,
-wv_002119,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.844,no bbox
-wv_002121,drop,stroller (rule 1): owlv2 stroller box 0.33,manual,ok,none,0.899,
-wv_002123,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.955,no bbox
-wv_002127,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.840,no bbox
-wv_002129,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.951,
-wv_002132,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.78),,exclude,auto_review,0.780,
-wv_002133,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.941,no bbox
-wv_002134,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.946,no bbox
-wv_002139,user_decides,"not_a_photo exclude (human): real photo (0.91) with likely wheelchair (presence 0.97), needs device_type",unclear,exclude,human,0.913,recovered_not_a_photo
-wv_002148,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.06),,exclude,auto_review,0.831,
-wv_002151,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.32),,exclude,auto_review,0.321,
-wv_002152,keep,"allowed license, no exclude, real photo, device labeled",manual,exclude,human,0.982,"recovered_not_a_photo (exclude human, photo_score 0.98)"
-wv_002157,user_decides,"not_a_photo exclude (auto_review): real photo (0.86) with likely wheelchair (presence 0.98), needs device_type",,exclude,auto_review,0.860,recovered_not_a_photo
-wv_002158,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.984,
-wv_002170,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.88),,exclude,human,0.878,
-wv_002171,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.958,no bbox
-wv_002179,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.972,no bbox
-wv_002188,user_decides,labeler flagged a missed face blur,manual,ok,none,0.932,labeler flagged a missed face blur
-wv_002190,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.67),,exclude,auto_review,0.671,
-wv_002197,drop,child (rule 1): siglip child 0.66,manual,ok,none,0.929,
-wv_002199,drop,no device (rule 2),,exclude,auto_review,0.925,
-wv_002204,user_decides,"not_a_photo exclude (auto_review): real photo (0.94) with likely wheelchair (presence 0.98), needs device_type",,exclude,auto_review,0.938,recovered_not_a_photo
-wv_002212,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.979,no bbox
-wv_002214,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.869,no bbox
-wv_002245,user_decides,labeler flagged a missed face blur,manual,ok,none,0.987,labeler flagged a missed face blur; no bbox
-wv_002248,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.759,no bbox
-wv_002264,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.993,
-wv_002282,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.987,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_002285,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.971,no bbox
-wv_002289,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.994,
-wv_002320,drop,child (rule 1): auto child flag 0.62,manual,ok,none,0.952,
-wv_002342,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.750,
-wv_002346,drop,child (rule 1): auto child flag 0.90; human child exclude,,exclude,auto_review,0.971,
-wv_002348,user_decides,labeler flagged a missed face blur,manual,ok,none,0.992,labeler flagged a missed face blur
-wv_002354,user_decides,single label other_aid vs model manual (0.91),other_aid,ok,none,0.925,
-wv_002373,drop,child (rule 1): auto child flag 0.21; human child exclude,,exclude,auto_review,0.986,
-wv_002374,keep,"allowed license, no exclude, real photo, device labeled",powered,ok_with_note,none,0.982,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_002376,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.899,
-wv_002390,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.988,
-wv_002392,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.987,
-wv_002414,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.989,
-wv_002421,drop,child (rule 1): siglip child 0.97; siglip child sigmoid 0.05; auto child flag 0.99,,exclude,auto_review,0.992,
-wv_002427,drop,child (rule 1): siglip child 0.52,manual,ok,none,0.990,
-wv_002430,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.995,
-wv_002446,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.978,
-wv_002449,drop,child (rule 1): siglip child 0.86; auto child flag 0.56; human child exclude,,exclude,auto_review,0.986,
-wv_002453,drop,child (rule 1): auto child flag 0.30,manual,ok_with_note,none,0.987,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_002457,drop,child (rule 1): siglip child 0.87,manual,ok,none,0.905,
-wv_002464,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.980,license note: photo URL changed to https://www.flickr.com/photos/usembassyjlm/22053067535/; FYI Flickr display name now 'U.S. Embassy Jerusalem' (recorded creator 'U.S. Embassy Tel Aviv')
-wv_002467,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.992,
-wv_002472,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.946,
-wv_002474,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.50)",,exclude,auto_review,0.982,
-wv_002477,drop,child (rule 1): siglip child 0.48; siglip child sigmoid 0.03; auto child flag 0.45; human child exclude,,exclude,auto_review,0.150,
-wv_002502,user_decides,labeler flagged a missed face blur,manual,ok_with_note,none,0.928,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit; labeler flagged a missed face blur
-wv_002505,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.961,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit; no bbox
-wv_002506,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.972,
-wv_002512,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.975,
-wv_002517,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.989,
-wv_002524,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.957,
-wv_002530,user_decides,single label manual vs model powered (0.91),manual,ok,none,0.953,
-wv_002544,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.977,
-wv_002545,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.03),,exclude,human,0.820,
-wv_002554,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.982,
-wv_002570,drop,child (rule 1): siglip child sigmoid 0.02; auto child flag 0.22,manual,ok,none,0.971,labeler flagged a missed face blur
-wv_002576,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.912,no bbox
-wv_002582,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.991,
-wv_002590,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.994,
-wv_002611,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.970,
-wv_002612,drop,child (rule 1): siglip child 0.86; auto child flag 0.49; human child exclude,,exclude,auto_review,0.916,
-wv_002615,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.994,
-wv_002617,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.983,
-wv_002622,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",,exclude,auto_review,0.150,
-wv_002627,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.896,
-wv_002629,drop,license needs_ross,manual,needs_ross,none,0.980,
-wv_002633,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.965,
-wv_002642,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.23),,exclude,auto_review,0.997,
-wv_002655,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.953,
-wv_002658,drop,license needs_ross,manual,needs_ross,none,0.990,
-wv_002663,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.74),,exclude,human,0.745,
-wv_002672,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.989,
-wv_002680,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.970,no bbox
-wv_002687,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.893,
-wv_002690,drop,child (rule 1): auto child flag 0.18,manual,ok_with_note,none,0.990,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_002692,drop,child (rule 1): siglip child 0.85; auto child flag 0.39; human child exclude,,exclude,auto_review,0.985,
-wv_002720,user_decides,"not_a_photo exclude (human): real photo (0.98) with likely wheelchair (presence 0.99), needs device_type",,exclude,human,0.982,recovered_not_a_photo
-wv_002726,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.963,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit; no bbox
-wv_002734,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.989,
-wv_002767,drop,child (rule 1): auto child flag 0.13; human child exclude,,exclude,auto_review,0.992,
-wv_002778,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.971,
-wv_002779,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.903,
-wv_002780,drop,child (rule 1): siglip child 0.80,manual,needs_ross,none,0.989,labeler flagged a missed face blur
-wv_002784,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.921,
-wv_002787,user_decides,license_concern exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.845,
-wv_002793,user_decides,clinical_setting exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.917,
-wv_002795,user_decides,device_type conflict/unclear,unclear,ok,none,0.989,
-wv_002797,user_decides,labeler flagged a missed face blur,manual,ok,none,0.886,labeler flagged a missed face blur
-wv_002803,drop,child (rule 1): auto child flag 0.33,powered,ok,none,0.878,
-wv_002812,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok_with_note,none,0.996,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_002824,drop,child (rule 1): siglip child 0.71; auto child flag 0.16,manual,ok,none,0.930,
-wv_002837,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.891,
-wv_002839,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.911,
-wv_002840,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely wheelchair (presence 0.89), needs device_type",,exclude,auto_review,0.972,recovered_not_a_photo
-wv_002846,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.984,
-wv_002850,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.994,
-wv_002852,drop,child (rule 1): siglip child 0.59; auto child flag 0.37; human child exclude,,exclude,auto_review,0.990,
-wv_002854,drop,child (rule 1): siglip child 0.73,manual,ok,none,0.985,
-wv_002855,user_decides,labeler flagged a missed face blur,manual,ok,none,0.964,labeler flagged a missed face blur; no bbox
-wv_002863,drop,child (rule 1): siglip child 0.43; auto child flag 0.33,,exclude,auto_review,0.999,
-wv_002864,drop,child (rule 1): siglip child 0.59,,exclude,auto_review,0.988,
-wv_002889,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.949,
-wv_002892,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.948,
-wv_002895,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.981,
-wv_002898,user_decides,single label other_aid vs model manual (0.94),other_aid,ok,none,0.951,
-wv_002903,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.952,
-wv_002905,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.908,
-wv_002932,drop,license needs_ross,powered,needs_ross,none,0.993,
-wv_002947,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.974,
-wv_002950,user_decides,"not_a_photo exclude (human): real photo (0.98) with likely wheelchair (presence 1.00), needs device_type",,exclude,human,0.981,recovered_not_a_photo
-wv_002951,drop,child (rule 1): siglip child 0.90; auto child flag 0.66; human child exclude,,exclude,auto_review,0.974,
-wv_002952,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.912,
-wv_002954,drop,license needs_ross,manual,needs_ross,none,0.929,
-wv_002974,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely wheelchair (presence 1.00), needs device_type",,exclude,auto_review,0.972,recovered_not_a_photo
-wv_002975,drop,child (rule 1): siglip child 0.50; auto child flag 0.13,powered,ok,none,0.976,
-wv_002986,drop,child (rule 1): siglip child 0.43; human child exclude,,exclude,auto_review,0.949,
-wv_002988,drop,child (rule 1): siglip child 0.63,powered,ok,none,0.961,
-wv_002996,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.979,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003017,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.985,
-wv_003019,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.807,
-wv_003025,drop,child (rule 1): siglip child 0.90; auto child flag 0.38,manual,ok,none,0.985,
-wv_003027,drop,license needs_ross,manual,needs_ross,none,0.970,labeler flagged a missed face blur
-wv_003031,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.976,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003035,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.958,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003045,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.980,
-wv_003049,user_decides,"not_a_photo exclude (human): real photo (0.96) with likely wheelchair (presence 0.99), needs device_type",,exclude,human,0.961,recovered_not_a_photo
-wv_003056,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.883,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003057,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.763,no bbox
-wv_003071,user_decides,"not_a_photo exclude (human): real photo (0.94) with likely wheelchair (presence 0.99), needs device_type",,exclude,human,0.938,recovered_not_a_photo
-wv_003080,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.974,
-wv_003094,drop,stroller (rule 1): siglip stroller 0.79,,exclude,auto_review,0.087,
-wv_003113,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.941,
-wv_003117,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.911,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003126,drop,child (rule 1): auto child flag 0.13,manual,ok,none,0.936,
-wv_003129,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.777,
-wv_003133,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.994,
-wv_003137,user_decides,"not_a_photo exclude (human): real photo (0.97) with likely wheelchair (presence 1.00), needs device_type",,exclude,human,0.971,recovered_not_a_photo
-wv_003138,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.06),,exclude,auto_review,0.980,
-wv_003144,user_decides,device_type conflict/unclear,unclear,ok,none,0.974,labeler flagged a missed face blur
-wv_003162,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.974,
-wv_003165,drop,child (rule 1): auto child flag 0.50,,exclude,human,0.969,
-wv_003169,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.19),,exclude,auto_review,0.952,
-wv_003174,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.942,
-wv_003175,user_decides,labeler flagged a missed face blur,manual,ok,none,0.983,labeler flagged a missed face blur
-wv_003181,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.994,
-wv_003191,drop,live license now login_required,,exclude,human,0.981,
-wv_003201,user_decides,labeler flagged a missed face blur,manual,ok,none,0.955,labeler flagged a missed face blur; no bbox
-wv_003202,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.07),,exclude,auto_review,0.845,
-wv_003206,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.911,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003211,user_decides,"not_a_photo exclude (auto_review): real photo (0.92) with likely wheelchair (presence 1.00), needs device_type",,exclude,auto_review,0.925,recovered_not_a_photo
-wv_003218,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.990,
-wv_003221,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.986,no bbox
-wv_003224,drop,child (rule 1): human child exclude,,exclude,auto_review,0.996,
-wv_003229,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.969,
-wv_003241,drop,child (rule 1): auto child flag 0.42; human child exclude,manual,exclude,human,0.990,labeler flagged a missed face blur
-wv_003250,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.971,
-wv_003252,drop,child (rule 1): siglip child 0.63,manual,ok,none,0.977,
-wv_003253,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.971,
-wv_003254,drop,child (rule 1): siglip child 0.45; auto child flag 0.36,manual,ok,none,0.975,
-wv_003255,drop,child (rule 1): siglip child 0.41,,exclude,auto_review,0.911,
-wv_003264,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.957,no bbox
-wv_003267,drop,child (rule 1): siglip child 0.59; auto child flag 0.15,manual,ok,none,0.994,
-wv_003269,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.935,
-wv_003290,drop,child (rule 1): auto child flag 0.12,manual,ok,none,0.977,
-wv_003291,user_decides,labeler flagged a missed face blur,manual,ok,none,0.936,labeler flagged a missed face blur
-wv_003299,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.875,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003309,drop,child (rule 1): siglip child 0.72; auto child flag 0.71; human child exclude,,exclude,auto_review,0.999,
-wv_003316,drop,license needs_ross,manual,needs_ross,none,0.944,
-wv_003320,drop,child (rule 1): siglip child 0.56; auto child flag 0.45,manual,ok,none,0.964,
-wv_003332,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.985,
-wv_003334,drop,child (rule 1): siglip child 0.42; human child exclude,,exclude,auto_review,0.988,
-wv_003344,user_decides,labeler flagged a missed face blur,manual,ok,none,0.903,labeler flagged a missed face blur
-wv_003363,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.00),,exclude,auto_review,0.997,
-wv_003371,keep,"allowed license, no exclude, real photo, device labeled",manual,ok_with_note,none,0.988,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_003383,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.985,
-wv_003386,user_decides,"not_a_photo exclude (auto_review): real photo (0.99) with likely wheelchair (presence 0.98), needs device_type",,exclude,auto_review,0.994,recovered_not_a_photo
-wv_003394,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.941,
-wv_003406,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.992,
-wv_003418,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.927,no bbox
-wv_003421,user_decides,"not_a_photo exclude (human): real photo (0.97) with likely wheelchair (presence 0.62), needs device_type",,exclude,human,0.973,recovered_not_a_photo
-wv_003432,drop,child (rule 1): auto child flag 0.34,manual,ok,none,0.978,
-wv_003437,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.974,
-wv_003442,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.992,no bbox
-wv_003443,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.990,
-wv_003444,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.976,
-wv_004252,drop,no device (rule 2),,exclude,auto_review,0.536,
-wv_004260,drop,no device (rule 2),,exclude,auto_review,0.987,
-wv_004261,user_decides,"not_a_photo exclude (auto_review): real photo (0.86) with likely scooter (presence 0.95), needs device_type",,exclude,auto_review,0.859,recovered_not_a_photo
-wv_004272,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.69),,exclude,human,0.691,
-wv_004275,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.69),,exclude,auto_review,0.687,
-wv_004284,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.989,
-wv_004285,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.38)",,exclude,auto_review,0.977,
-wv_004287,user_decides,single label lookalike vs model powered (0.98),lookalike,ok,none,0.883,no bbox
-wv_004288,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.90),,exclude,human,0.898,
-wv_004291,user_decides,"not_a_photo exclude (auto_review): real photo (0.99) with likely scooter (presence 0.86), needs device_type",,exclude,auto_review,0.992,recovered_not_a_photo
-wv_004307,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.05),,exclude,auto_review,0.947,
-wv_004315,drop,child (rule 1): siglip child 0.42,,exclude,auto_review,0.975,
-wv_004319,drop,child (rule 1): siglip child 0.49; auto child flag 0.16,lookalike,ok,none,0.904,
-wv_004321,drop,child (rule 1): siglip child sigmoid 0.06,,exclude,auto_review,0.990,
-wv_004343,user_decides,"not_a_photo exclude (auto_review): real photo (0.83) with likely scooter (presence 0.99), needs device_type",,exclude,auto_review,0.826,recovered_not_a_photo
-wv_004348,user_decides,single label other_aid vs model powered (0.97),other_aid,ok,none,0.968,
-wv_004360,drop,child (rule 1): siglip child 0.91; auto child flag 0.85,,exclude,auto_review,0.947,
-wv_004364,drop,child (rule 1): siglip child 0.64; auto child flag 0.10,,exclude,human,0.978,
-wv_004378,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.995,
-wv_004380,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.976,
-wv_004383,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.988,
-wv_004384,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.990,
-wv_004390,drop,child (rule 1): siglip child 0.70; auto child flag 0.82; human child exclude,,exclude,auto_review,0.905,
-wv_004391,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.986,
-wv_004398,user_decides,single label other_aid vs model powered (0.96),other_aid,ok,none,0.915,
-wv_004408,drop,child (rule 1): siglip child 0.44,other_aid,ok_with_note,none,0.981,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_004420,drop,child (rule 1): siglip child 0.51,other_aid,ok,none,0.976,
-wv_004426,user_decides,single label other_aid vs model powered (0.99),other_aid,ok_with_note,none,0.977,license note: live license CC0-1.0 differs but is equally/less restrictive than recorded CC-BY-2.0
-wv_004437,user_decides,"not_a_photo exclude (human): real photo (0.98) with likely scooter (presence 1.00), needs device_type",,exclude,human,0.976,recovered_not_a_photo
-wv_004439,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.981,
-wv_004447,user_decides,single label other_aid vs model powered (0.93),other_aid,ok,none,0.943,
-wv_004454,user_decides,single label other_aid vs model powered (0.97),other_aid,ok,none,0.991,
-wv_004459,user_decides,single label other_aid vs model powered (0.96),other_aid,ok,none,0.974,
-wv_004463,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",,exclude,auto_review,0.150,
-wv_004472,drop,child (rule 1): siglip child 0.45,,exclude,human,0.926,
-wv_004485,drop,no device (rule 2),,exclude,human,0.906,
-wv_004490,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.56)",,exclude,auto_review,0.938,
-wv_004493,drop,no device (rule 2),,exclude,auto_review,0.790,
-wv_004497,drop,no device (rule 2),,exclude,auto_review,0.446,
-wv_004501,drop,child (rule 1): siglip child 0.73; auto child flag 0.61,,exclude,human,0.918,
-wv_004519,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.951,no bbox
-wv_004524,drop,no device (rule 2),,exclude,auto_review,0.988,
-wv_004527,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.11),,exclude,auto_review,0.343,
-wv_004534,drop,no device (rule 2),,exclude,auto_review,0.921,
-wv_004535,drop,child (rule 1): human child exclude,,exclude,auto_review,0.871,
-wv_004546,drop,no device (rule 2),,exclude,auto_review,0.975,
-wv_004560,drop,child (rule 1): siglip child 0.50; auto child flag 0.14,,exclude,auto_review,0.945,
-wv_004586,drop,child (rule 1): auto child flag 0.31,,exclude,human,0.856,
-wv_004592,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.02),,exclude,human,0.819,
-wv_004594,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.11),,exclude,auto_review,0.942,
-wv_004599,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",,exclude,human,0.150,
-wv_004628,drop,stroller (rule 1): owlv2 stroller box 0.32,,exclude,auto_review,0.893,
-wv_004634,drop,child (rule 1): siglip child 0.60; auto child flag 0.53,,exclude,human,0.898,
-wv_004640,drop,no device (rule 2),,exclude,auto_review,0.978,
-wv_004641,drop,child (rule 1): auto child flag 0.19,,exclude,auto_review,0.219,
-wv_004658,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.965,
-wv_004671,user_decides,"not_a_photo exclude (human): real photo (0.98) with likely walker (presence 1.00), needs device_type",,exclude,human,0.982,recovered_not_a_photo
-wv_004688,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.11; auto child flag 0.99,,exclude,human,0.948,
-wv_004691,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.928,
-wv_004700,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.26; auto child flag 0.99; human child exclude,,exclude,auto_review,0.973,
-wv_004703,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.964,
-wv_004709,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.982,
-wv_004715,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok_with_note,none,0.985,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_004730,drop,child (rule 1): siglip child sigmoid 0.06,,exclude,human,0.949,
-wv_004738,drop,child (rule 1): siglip child 0.61,,exclude,auto_review,0.978,
-wv_004740,drop,child (rule 1): siglip child 0.76,,exclude,human,0.932,
-wv_004741,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,human,0.947,
-wv_004747,drop,child (rule 1): siglip child 0.94,,exclude,auto_review,0.961,
-wv_004749,drop,child (rule 1): siglip child 0.59; auto child flag 0.12,,exclude,auto_review,0.970,
-wv_004751,drop,child (rule 1): siglip child 0.86,,exclude,auto_review,0.948,
-wv_004755,drop,child (rule 1): siglip child 0.48,,exclude,auto_review,0.854,
-wv_004756,drop,child (rule 1): siglip child 0.63; auto child flag 0.19,,exclude,auto_review,0.928,
-wv_004758,drop,child (rule 1): siglip child 0.72,,exclude,auto_review,0.970,
-wv_004794,drop,child (rule 1): siglip child 0.95; auto child flag 0.17,,exclude,human,0.948,
-wv_004801,drop,child (rule 1): siglip child 0.57,,exclude,auto_review,0.978,
-wv_004808,drop,child (rule 1): siglip child 0.60,,exclude,human,0.973,
-wv_004826,drop,child (rule 1): siglip child 0.58,,exclude,auto_review,0.962,
-wv_004854,drop,child (rule 1): siglip child 0.64,,exclude,human,0.936,
-wv_004855,drop,child (rule 1): siglip child 0.66; auto child flag 0.10,,exclude,auto_review,0.980,
-wv_004863,drop,child (rule 1): siglip child 0.83,,exclude,auto_review,0.983,
-wv_004866,drop,child (rule 1): siglip child 0.94; auto child flag 0.24,,exclude,human,0.846,
-wv_004870,drop,child (rule 1): siglip child 0.66,,exclude,auto_review,0.976,
-wv_004871,drop,child (rule 1): siglip child 0.87; auto child flag 0.19,,exclude,auto_review,0.975,
-wv_004877,drop,child (rule 1): siglip child 0.85,,exclude,auto_review,0.979,
-wv_004880,drop,child (rule 1): siglip child 0.88; auto child flag 0.13,,exclude,auto_review,0.980,
-wv_004888,drop,child (rule 1): siglip child 0.49; auto child flag 0.64; human child exclude,,exclude,auto_review,0.965,
-wv_004899,drop,child (rule 1): auto child flag 0.53; human child exclude,,exclude,human,0.969,
-wv_004903,drop,child (rule 1): siglip child 0.50,,exclude,auto_review,0.966,
-wv_004906,drop,child (rule 1): siglip child 0.94; auto child flag 0.21,,exclude,human,0.977,
-wv_004907,drop,child (rule 1): siglip child 0.65,,exclude,auto_review,0.975,
-wv_004913,drop,child (rule 1): siglip child 0.78; auto child flag 0.11,,exclude,auto_review,0.978,
-wv_004916,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.976,
-wv_004947,drop,child (rule 1): siglip child 0.69,,exclude,auto_review,0.982,
-wv_004955,drop,child (rule 1): siglip child 0.78,,exclude,auto_review,0.977,
-wv_004986,drop,child (rule 1): human child exclude,,exclude,auto_review,0.983,
-wv_004991,drop,child (rule 1): siglip child 0.99; auto child flag 0.96; human child exclude,,exclude,human,0.963,
-wv_004992,drop,child (rule 1): siglip child 0.44; auto child flag 0.43; human child exclude,,exclude,auto_review,0.993,
-wv_004997,drop,child (rule 1): siglip child 0.98; siglip child sigmoid 0.02; auto child flag 0.96; human child exclude,,exclude,auto_review,0.970,
-wv_005000,drop,child (rule 1): siglip child 0.41; human child exclude,,exclude,auto_review,0.960,
-wv_005015,drop,child (rule 1): siglip child 1.00; auto child flag 0.96; human child exclude,,exclude,auto_review,0.970,
-wv_005027,drop,child (rule 1): siglip child 0.80; auto child flag 0.79,,exclude,human,0.991,
-wv_005028,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.06; auto child flag 1.00; human child exclude,,exclude,auto_review,0.987,
-wv_005050,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.08; auto child flag 1.00; human child exclude,,exclude,auto_review,0.981,
-wv_005058,drop,child (rule 1): siglip child 0.81; auto child flag 0.76; human child exclude,,exclude,auto_review,0.947,
-wv_005070,drop,child (rule 1): siglip child 0.99; auto child flag 0.97; human child exclude,,exclude,auto_review,0.996,
-wv_005077,drop,child (rule 1): siglip child 0.42,,exclude,auto_review,0.982,
-wv_005093,drop,child (rule 1): siglip child 0.98; auto child flag 0.98; human child exclude,,exclude,auto_review,0.937,
-wv_005101,drop,child (rule 1): siglip child 0.58; auto child flag 0.72,,exclude,auto_review,0.150,
-wv_005103,drop,child (rule 1): siglip child 1.00; auto child flag 0.99; human child exclude,,exclude,auto_review,0.976,
-wv_005116,drop,child (rule 1): siglip child 0.95; auto child flag 0.96; human child exclude,,exclude,human,0.997,
-wv_005117,drop,child (rule 1): siglip child 0.64; auto child flag 0.10,,exclude,human,0.989,
-wv_005127,drop,child (rule 1): siglip child 0.93; auto child flag 0.89; human child exclude,,exclude,auto_review,0.899,
-wv_005133,drop,child (rule 1): siglip child 0.48,,exclude,auto_review,0.940,
-wv_005141,drop,child (rule 1): siglip child 0.79; human child exclude,,exclude,auto_review,0.995,
-wv_005149,drop,child (rule 1): siglip child 0.93; auto child flag 0.94,,exclude,human,0.986,
-wv_005157,drop,child (rule 1): siglip child 0.97; auto child flag 0.93; human child exclude,,exclude,auto_review,0.944,
-wv_005161,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.917,
-wv_005165,drop,child (rule 1): siglip child 0.56; auto child flag 0.57,,exclude,auto_review,0.150,
-wv_005171,drop,child (rule 1): auto child flag 0.13; human child exclude,,exclude,human,0.974,
-wv_005179,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.984,
-wv_005182,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.07; auto child flag 0.99; human child exclude,,exclude,auto_review,0.974,
-wv_005200,drop,child (rule 1): siglip child 0.91; auto child flag 0.92; human child exclude,,exclude,auto_review,0.969,
-wv_005202,drop,child (rule 1): siglip child 1.00; auto child flag 0.99; human child exclude,,exclude,auto_review,0.989,
-wv_005214,drop,child (rule 1): siglip child 0.80; auto child flag 0.77; human child exclude,,exclude,auto_review,0.965,
-wv_005224,drop,child (rule 1): siglip child 0.46; auto child flag 0.63; human child exclude,,exclude,auto_review,0.871,
-wv_005230,drop,child (rule 1): siglip child 0.98; auto child flag 0.89; human child exclude,,exclude,auto_review,0.987,
-wv_005238,drop,child (rule 1): siglip child 0.99; auto child flag 0.97; human child exclude,,exclude,auto_review,0.893,
-wv_005240,drop,child (rule 1): auto child flag 0.19; human child exclude,,exclude,auto_review,0.985,
-wv_005244,drop,child (rule 1): siglip child 0.86; auto child flag 0.96; human child exclude,,exclude,human,0.977,
-wv_005251,drop,child (rule 1): siglip child 0.64; auto child flag 0.71; human child exclude,,exclude,auto_review,0.777,
-wv_005252,drop,child (rule 1): siglip child 0.98; auto child flag 0.99; human child exclude,,exclude,auto_review,0.983,
-wv_005259,drop,child (rule 1): siglip child 0.96; auto child flag 0.95; human child exclude,,exclude,human,0.982,
-wv_005268,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.961,
-wv_005269,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.02; auto child flag 0.98; human child exclude,,exclude,auto_review,0.969,
-wv_005272,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,human,0.991,
-wv_005273,drop,child (rule 1): siglip child 0.57; auto child flag 0.30; human child exclude,,exclude,auto_review,0.975,
-wv_005274,drop,child (rule 1): siglip child 0.61; auto child flag 0.59; human child exclude,,exclude,auto_review,0.897,
-wv_005278,drop,child (rule 1): siglip child 0.95; auto child flag 0.95; human child exclude,,exclude,auto_review,0.978,
-wv_005297,drop,child (rule 1): siglip child 0.71; auto child flag 0.34; human child exclude,,exclude,auto_review,0.990,
-wv_005301,drop,child (rule 1): siglip child 0.94; auto child flag 0.63; human child exclude,,exclude,auto_review,0.990,
-wv_005309,drop,child (rule 1): siglip child 0.73; auto child flag 0.87; human child exclude,,exclude,auto_review,0.989,
-wv_005315,drop,child (rule 1): siglip child 0.99; auto child flag 0.96; human child exclude,,exclude,auto_review,0.964,
-wv_005316,drop,child (rule 1): siglip child 0.79; auto child flag 0.64,,exclude,human,0.859,
-wv_005318,drop,child (rule 1): siglip child 0.98; auto child flag 0.95,,exclude,human,0.969,
-wv_005323,drop,child (rule 1): siglip child 0.99; auto child flag 0.97; human child exclude,,exclude,auto_review,0.972,
-wv_005330,drop,child (rule 1): siglip child 0.99; auto child flag 0.98; human child exclude,,exclude,auto_review,0.953,
-wv_005331,drop,child (rule 1): siglip child 0.99; auto child flag 0.95; human child exclude,,exclude,auto_review,0.963,
-wv_005347,drop,child (rule 1): siglip child 0.99; auto child flag 0.99; human child exclude,,exclude,auto_review,0.930,
-wv_005362,drop,child (rule 1): siglip child 0.73; auto child flag 0.17; human child exclude,,exclude,auto_review,0.962,
-wv_005367,drop,child (rule 1): siglip child 0.87; auto child flag 0.84; human child exclude,,exclude,auto_review,0.991,
-wv_005368,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.04; auto child flag 1.00; human child exclude,,exclude,auto_review,0.990,
-wv_005380,drop,child (rule 1): siglip child 0.98; auto child flag 0.96; human child exclude,,exclude,auto_review,0.983,
-wv_005399,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,human,0.976,
-wv_005400,drop,child (rule 1): siglip child 0.42,,exclude,auto_review,0.998,
-wv_005404,drop,child (rule 1): siglip child 0.94; auto child flag 0.97; human child exclude,,exclude,auto_review,0.975,
-wv_005409,drop,child (rule 1): siglip child 0.79; auto child flag 0.62; human child exclude,,exclude,auto_review,0.973,
-wv_005418,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.973,
-wv_005425,drop,child (rule 1): siglip child 0.97; auto child flag 0.88; human child exclude,,exclude,auto_review,0.983,
-wv_005439,drop,child (rule 1): auto child flag 0.77,,exclude,auto_review,0.990,
-wv_005444,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.03; auto child flag 1.00; human child exclude,,exclude,auto_review,0.979,
-wv_005448,drop,child (rule 1): siglip child 0.99; auto child flag 0.99; human child exclude,,exclude,auto_review,0.950,
-wv_005449,drop,child (rule 1): siglip child 0.96; auto child flag 0.96; human child exclude,,exclude,auto_review,0.995,
-wv_005457,drop,child (rule 1): siglip child 0.70; auto child flag 0.16,,exclude,human,0.992,
-wv_005465,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.02; auto child flag 0.96,,exclude,auto_review,0.955,
-wv_005468,drop,child (rule 1): siglip child 0.51; auto child flag 0.72,,exclude,human,0.792,
-wv_005469,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.998,
-wv_005476,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.10; auto child flag 0.98,,exclude,human,0.986,
-wv_005480,drop,child (rule 1): siglip child 0.50; auto child flag 0.56,,exclude,auto_review,0.776,
-wv_005484,drop,child (rule 1): siglip child 0.66; auto child flag 0.61,lookalike,ok_with_note,none,0.732,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
-wv_005506,drop,child (rule 1): siglip child 0.77; auto child flag 0.30,,exclude,auto_review,0.975,
-wv_005518,drop,child (rule 1): siglip child 0.97; auto child flag 0.94; human child exclude,,exclude,auto_review,0.983,
-wv_005520,drop,child (rule 1): siglip child 0.93; auto child flag 0.85,,exclude,human,0.985,
-wv_005521,drop,child (rule 1): siglip child 0.97; auto child flag 0.95; human child exclude,,exclude,auto_review,0.961,
-wv_005526,drop,child (rule 1): siglip child 0.93; auto child flag 0.80; human child exclude,,exclude,auto_review,0.992,
-wv_005534,drop,child (rule 1): siglip child 0.99; auto child flag 0.96; human child exclude,,exclude,auto_review,0.936,
-wv_005560,drop,child (rule 1): siglip child 0.95; auto child flag 0.97; human child exclude,,exclude,auto_review,0.950,
-wv_005565,drop,child (rule 1): siglip child 0.96; auto child flag 0.68; human child exclude,,exclude,auto_review,0.994,
-wv_005570,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.02; auto child flag 0.97; human child exclude,,exclude,auto_review,0.956,
-wv_005590,drop,child (rule 1): siglip child 0.98; auto child flag 0.97; human child exclude,,exclude,auto_review,0.984,
-wv_005600,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.962,
-wv_005632,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.969,
-wv_005633,drop,child (rule 1): siglip child 0.94; auto child flag 0.54; human child exclude,,exclude,auto_review,0.989,
-wv_005642,drop,child (rule 1): siglip child 0.98; auto child flag 0.99; human child exclude,,exclude,auto_review,0.905,
-wv_005643,drop,child (rule 1): human child exclude,,exclude,auto_review,0.989,
-wv_005655,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.870,
-wv_005658,drop,child (rule 1): siglip child 0.71; auto child flag 0.78,,exclude,human,0.237,
-wv_005664,drop,child (rule 1): siglip child 1.00; siglip child sigmoid 0.02; auto child flag 0.99; human child exclude,,exclude,auto_review,0.980,
-wv_005665,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.982,
-wv_005671,drop,child (rule 1): siglip child 0.97; auto child flag 0.97; human child exclude,,exclude,auto_review,0.981,
-wv_005672,drop,child (rule 1): siglip child 0.73; human child exclude,,exclude,human,0.993,
-wv_005692,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.950,
-wv_005695,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.979,
-wv_005720,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,auto_review,0.996,
-wv_005728,drop,child (rule 1): siglip child 0.68; auto child flag 0.60; human child exclude,,exclude,auto_review,0.859,
-wv_005736,drop,child (rule 1): siglip child 0.77; auto child flag 0.42,,exclude,auto_review,0.387,
-wv_005744,drop,child (rule 1): siglip child 0.99; auto child flag 0.99; human child exclude,,exclude,auto_review,0.973,
-wv_005745,drop,child (rule 1): auto child flag 0.18; human child exclude,,exclude,auto_review,0.986,
-wv_005751,drop,child (rule 1): siglip child 0.97; auto child flag 0.87; human child exclude,,exclude,auto_review,0.949,
-wv_005754,drop,child (rule 1): siglip child 0.59; auto child flag 0.61; human child exclude,,exclude,auto_review,0.930,
-wv_005755,drop,child (rule 1): siglip child 0.82; auto child flag 0.84; human child exclude,,exclude,auto_review,0.981,
-wv_005756,drop,child (rule 1): siglip child 0.84; auto child flag 0.84; human child exclude,,exclude,human,0.906,
-wv_005765,drop,child (rule 1): siglip child 0.99; auto child flag 1.00,,exclude,human,0.969,
-wv_005767,drop,child (rule 1): siglip child 0.98; auto child flag 0.95; human child exclude,,exclude,auto_review,0.989,
-wv_005784,drop,child (rule 1): siglip child 0.80; auto child flag 0.66; human child exclude,,exclude,auto_review,0.922,
-wv_005805,drop,child (rule 1): siglip child 0.92; auto child flag 0.95,,exclude,auto_review,0.987,
-wv_005809,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.05; auto child flag 0.99; human child exclude,,exclude,auto_review,0.941,
-wv_005820,drop,child (rule 1): siglip child 0.96; auto child flag 0.89; human child exclude,,exclude,auto_review,0.957,
-wv_005825,drop,child (rule 1): siglip child 0.98; auto child flag 0.97; human child exclude,,exclude,auto_review,0.954,
-wv_005826,drop,stroller (rule 1): proposed_class lookalike_stroller,,exclude,human,0.905,
-wv_005836,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.07; auto child flag 0.98; human child exclude,,exclude,auto_review,0.966,
-wv_005860,drop,child (rule 1): siglip child 0.95; auto child flag 0.96; human child exclude,,exclude,auto_review,0.957,
-wv_005868,drop,child (rule 1): siglip child 0.99; siglip child sigmoid 0.04; auto child flag 0.99; human child exclude,,exclude,auto_review,0.946,
-wv_005876,drop,child (rule 1): siglip child 0.93; auto child flag 0.90; human child exclude,,exclude,auto_review,0.955,
-wv_005895,drop,child (rule 1): siglip child 0.97; auto child flag 0.90; human child exclude,,exclude,auto_review,0.986,
-wv_005909,user_decides,"not_a_photo exclude (auto_review): real photo (0.82) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.820,recovered_not_a_photo
-wv_005915,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.68),,exclude,human,0.680,
-wv_005917,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.76),,exclude,auto_review,0.761,
-wv_005932,user_decides,"not_a_photo exclude (auto_review): real photo (0.89) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.890,recovered_not_a_photo
-wv_005943,drop,child (rule 1): siglip child 0.59,,exclude,auto_review,0.966,
-wv_005984,drop,child (rule 1): auto child flag 0.36,,exclude,auto_review,0.973,
-wv_005989,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.47),,exclude,auto_review,0.467,
-wv_005990,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",,exclude,auto_review,0.150,
-wv_006012,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.66),,exclude,auto_review,0.663,
-wv_006022,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.52),,exclude,auto_review,0.524,
-wv_006028,drop,child (rule 1): auto child flag 0.34,,exclude,human,0.787,
-wv_006035,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.10),,exclude,auto_review,0.996,
-wv_006050,user_decides,"not_a_photo exclude (auto_review): real photo (0.85) with likely cart (presence 0.99), needs device_type",,exclude,auto_review,0.850,recovered_not_a_photo
-wv_006053,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.10),,exclude,human,0.991,
-wv_006061,user_decides,"not_a_photo exclude (auto_review): real photo (0.93) with likely cart (presence 0.99), needs device_type",,exclude,auto_review,0.930,recovered_not_a_photo
-wv_006062,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.823,
-wv_006063,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.79),,exclude,auto_review,0.789,
-wv_006077,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.20),,exclude,auto_review,0.972,
-wv_006085,keep,"allowed license, no exclude, real photo, device labeled",lookalike,ok_with_note,none,0.956,license note: Flickr photo deleted; license as recorded by Openverse at collection (CC grants are irrevocable) but source link is dead for credit; no bbox
-wv_006087,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.11),,exclude,auto_review,0.991,
-wv_006104,drop,no device (rule 2),,exclude,auto_review,0.036,
-wv_006121,user_decides,"not_a_photo exclude (auto_review): real photo (0.98) with likely cart (presence 0.77), needs device_type",,exclude,auto_review,0.985,recovered_not_a_photo
-wv_006123,user_decides,"not_a_photo exclude (auto_review): real photo (0.99) with likely wheelchair (presence 0.72), needs device_type",,exclude,auto_review,0.995,recovered_not_a_photo
-wv_006128,user_decides,"not_a_photo exclude (auto_review): real photo (0.92) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.923,recovered_not_a_photo
-wv_006138,user_decides,"not_a_photo exclude (auto_review): real photo (0.89) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.888,recovered_not_a_photo
-wv_006143,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.75),,exclude,auto_review,0.748,
-wv_006157,keep,"allowed license, no exclude, real photo, device labeled",lookalike,ok,none,0.704,no bbox
-wv_006159,drop,child (rule 1): siglip child 0.71; auto child flag 0.44,,exclude,auto_review,0.912,
-wv_006170,drop,child (rule 1): siglip child 0.91; auto child flag 0.97,,exclude,auto_review,0.967,
-wv_006171,drop,child (rule 1): siglip child 0.92; auto child flag 0.81,lookalike,ok,none,0.869,
-wv_006181,user_decides,"not_a_photo exclude (auto_review): real photo (0.91) with likely cart (presence 0.99), needs device_type",,exclude,auto_review,0.907,recovered_not_a_photo
-wv_006194,user_decides,"not_a_photo exclude (auto_review): real photo (0.92) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.920,recovered_not_a_photo
-wv_006201,user_decides,"not_a_photo exclude (auto_review): real photo (0.95) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.953,recovered_not_a_photo
-wv_006205,drop,child (rule 1): siglip child 0.99; auto child flag 0.99; human child exclude,,exclude,auto_review,0.954,
-wv_006214,drop,live license now changed:CC-BY-NC-SA-2.0,,exclude,human,0.918,
-wv_006219,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.75),,exclude,auto_review,0.754,
-wv_006222,keep,"allowed license, no exclude, real photo, device labeled",lookalike,ok,none,0.538,no bbox
-wv_006229,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.43),,exclude,human,0.426,
-wv_006237,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.62),,exclude,human,0.615,
-wv_006238,drop,child (rule 1): siglip child 1.00; auto child flag 0.97; human child exclude,lookalike,exclude,human,0.974,
-wv_006241,drop,child (rule 1): siglip child 0.98; auto child flag 0.93; human child exclude,,exclude,auto_review,0.932,
-wv_006247,user_decides,"not_a_photo exclude (auto_review): real photo (0.88) with likely cart (presence 0.98), needs device_type",,exclude,auto_review,0.882,recovered_not_a_photo
-wv_006250,user_decides,"not_a_photo exclude (auto_review): real photo (0.96) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.960,recovered_not_a_photo
-wv_006251,user_decides,"not_a_photo exclude (auto_review): real photo (0.87) with likely cart (presence 0.97), needs device_type",,exclude,auto_review,0.866,recovered_not_a_photo
-wv_006258,keep,"allowed license, no exclude, real photo, device labeled",other_aid,ok,none,0.972,
-wv_006263,drop,child (rule 1): siglip child 0.44; auto child flag 0.14,,exclude,human,0.968,
-wv_006265,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.62),,exclude,auto_review,0.619,
-wv_006266,drop,child (rule 1): siglip child 1.00; auto child flag 0.97; human child exclude,,exclude,auto_review,0.906,
-wv_006274,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.76),,exclude,auto_review,0.765,
-wv_006282,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.72),,exclude,human,0.723,
-wv_006300,drop,child (rule 1): auto child flag 0.65,lookalike,ok,none,0.764,
-wv_006309,user_decides,"not_a_photo exclude (auto_review): real photo (0.93) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.925,recovered_not_a_photo
-wv_006325,drop,child (rule 1): auto child flag 0.44,,exclude,auto_review,0.846,
-wv_006326,drop,live license now changed:ALL-RIGHTS-RESERVED,,exclude,auto_review,0.860,
-wv_006328,drop,child (rule 1): siglip child 0.72; auto child flag 0.47,,exclude,auto_review,0.736,
-wv_006330,drop,child (rule 1): auto child flag 0.68,,exclude,auto_review,0.537,
-wv_006337,drop,live license now changed:CC-BY-NC-SA-2.0,,exclude,auto_review,0.848,
-wv_006349,drop,child (rule 1): siglip child 0.44; auto child flag 0.75,,exclude,auto_review,0.755,
-wv_006368,drop,child (rule 1): siglip child 0.92; auto child flag 0.97; human child exclude,,exclude,auto_review,0.933,
-wv_006374,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.71),,exclude,human,0.707,
-wv_006402,drop,child (rule 1): siglip child 0.81; auto child flag 0.94; human child exclude,,exclude,auto_review,0.832,
-wv_006406,drop,live license now changed:CC-BY-NC-SA-2.0,,exclude,auto_review,0.640,
-wv_006410,user_decides,"not_a_photo exclude (auto_review): real photo (0.84) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.842,recovered_not_a_photo
-wv_006418,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.78),,exclude,auto_review,0.778,
-wv_006422,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.51),,exclude,auto_review,0.515,
-wv_006449,drop,child (rule 1): human child exclude,,exclude,auto_review,0.880,
-wv_006461,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.75),,exclude,human,0.754,
-wv_006470,drop,not_a_photo confirmed (photo_score 0.30),,exclude,human,0.295,
-wv_006477,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.61),,exclude,auto_review,0.610,
-wv_006485,user_decides,"not_a_photo exclude (auto_review): real photo (0.91) with likely cart (presence 0.93), needs device_type",,exclude,auto_review,0.905,recovered_not_a_photo
-wv_006490,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.968,recovered_not_a_photo
-wv_006492,drop,child (rule 1): siglip child 0.79; auto child flag 0.77; human child exclude,,exclude,auto_review,0.915,
-wv_006501,keep,"allowed license, no exclude, real photo, device labeled",lookalike,ok,none,0.864,no bbox
-wv_006511,user_decides,"not_a_photo exclude (auto_review): real photo (0.91) with likely cart (presence 1.00), needs device_type",,exclude,auto_review,0.914,recovered_not_a_photo
-wv_006520,user_decides,"not_a_photo exclude (human): real photo (0.97) with likely cart (presence 1.00), needs device_type",,exclude,human,0.972,recovered_not_a_photo
-wv_006536,drop,child (rule 1): siglip child 1.00; auto child flag 0.99,,exclude,human,0.969,
-wv_006545,drop,not_a_photo confirmed (photo_score 0.21),,exclude,auto_review,0.206,
-wv_006549,drop,license needs_ross,other_aid,needs_ross,none,0.884,
-wv_006560,drop,child (rule 1): siglip child 1.00; auto child flag 0.97; human child exclude,,exclude,auto_review,0.950,
-wv_006562,keep,"allowed license, no exclude, real photo, device labeled",lookalike,ok_with_note,none,0.953,license note: photo URL changed to https://www.flickr.com/photos/kentuckyguard/11340541276/; no bbox
-wv_006576,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.70),,exclude,auto_review,0.703,
-wv_006590,drop,not_a_photo confirmed (photo_score 0.21),,exclude,auto_review,0.211,
-wv_006611,keep,"allowed license, no exclude, real photo, device labeled",lookalike,ok,none,0.891,no bbox
-wv_006616,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.34),,exclude,human,0.337,
-wv_006637,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.964,
-wv_006651,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.982,
-wv_006655,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.19),,exclude,auto_review,0.714,
-wv_006663,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.965,
-wv_006670,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.00),,exclude,human,0.955,
-wv_006677,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.858,
-wv_006680,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.903,
-wv_006683,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.10),,exclude,auto_review,0.695,
-wv_006686,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.721,
-wv_006695,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.02),,exclude,auto_review,0.971,
-wv_006712,keep,"allowed license, no exclude, real photo, device labeled",manual,ok,none,0.984,
-wv_006720,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.965,
-wv_006731,drop,no device (rule 2),,exclude,auto_review,0.932,
-wv_006732,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.02),,exclude,auto_review,0.970,
-wv_006737,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.01),,exclude,auto_review,0.955,
-wv_006738,drop,no device (rule 2),,exclude,auto_review,0.817,
-wv_006741,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.28),,exclude,auto_review,0.949,
-wv_006743,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.46)",,exclude,auto_review,0.974,
-wv_006748,user_decides,"not_a_photo exclude (auto_review): real photo (0.90) with likely x_vehicle (presence 0.90), needs device_type",,exclude,auto_review,0.902,recovered_not_a_photo
-wv_006756,drop,live license now changed:CC-BY-NC-ND-2.0,,exclude,auto_review,0.800,
-wv_006768,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.71),,exclude,human,0.705,
-wv_006770,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.32),,exclude,auto_review,0.631,
-wv_006775,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.58),,exclude,auto_review,0.577,
-wv_006777,drop,no device (rule 2),,exclude,auto_review,0.958,
-wv_006782,user_decides,identifiable_person exclude accepted from model flag (single); borderline consent case,,exclude,auto_review,0.964,
-wv_006802,drop,no device (rule 2),,exclude,human,0.948,
-wv_006803,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.11),,exclude,human,0.491,
-wv_006806,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.25),,exclude,auto_review,0.946,
-wv_006812,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.46)",,exclude,human,0.923,
-wv_006815,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.15),,exclude,human,0.950,
-wv_006831,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.35),,exclude,auto_review,0.993,
-wv_006834,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.04),,exclude,auto_review,0.862,
-wv_006859,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.08),,exclude,auto_review,0.879,
-wv_006867,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely office (presence 0.93), needs device_type",,exclude,auto_review,0.972,recovered_not_a_photo
-wv_006871,keep,"allowed license, no exclude, real photo, device labeled",lookalike,exclude,auto_review,0.951,"recovered_not_a_photo (exclude auto_review, photo_score 0.95)"
-wv_006875,user_decides,"not_a_photo exclude (auto_review): real photo (0.87) with likely office (presence 0.63), needs device_type",,exclude,auto_review,0.869,recovered_not_a_photo
-wv_006889,user_decides,"not_a_photo exclude (auto_review): real photo (0.84) with likely office (presence 0.62), needs device_type",,exclude,auto_review,0.838,recovered_not_a_photo
-wv_006893,keep,"allowed license, no exclude, real photo, device labeled",powered,exclude,auto_review,0.954,"recovered_not_a_photo (exclude auto_review, photo_score 0.95); no bbox"
-wv_006905,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.39)",,exclude,auto_review,0.965,
-wv_006907,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.59)",,exclude,auto_review,0.931,
-wv_006914,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.05),,exclude,auto_review,0.864,
-wv_006924,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.31),,exclude,auto_review,0.966,
-wv_006949,drop,live license now login_required,,exclude,auto_review,0.680,
-wv_006965,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.41),,exclude,human,0.406,
-wv_006967,drop,child (rule 1): siglip child 0.85; auto child flag 0.42,,exclude,auto_review,0.969,
-wv_006969,drop,live license now changed:CC-BY-NC-ND-2.0,,exclude,auto_review,0.975,
-wv_006972,user_decides,"not_a_photo exclude (auto_review): real photo (0.98) with likely office (presence 0.67), needs device_type",,exclude,auto_review,0.979,recovered_not_a_photo
-wv_006979,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.56),,exclude,auto_review,0.557,
-wv_006983,drop,child (rule 1): siglip child 0.44; auto child flag 0.65; human child exclude,,exclude,human,0.962,
-wv_006991,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.71),,exclude,auto_review,0.706,
-wv_006993,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.71),,exclude,auto_review,0.711,
-wv_006995,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.32),,exclude,auto_review,0.970,
-wv_006996,drop,child (rule 1): siglip child 0.44,,exclude,auto_review,0.950,
-wv_007007,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.15),,exclude,auto_review,0.952,
-wv_007019,user_decides,"not_a_photo exclude (auto_review): real photo (0.88) with likely office (presence 0.81), needs device_type",,exclude,auto_review,0.876,recovered_not_a_photo
-wv_007020,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.19),,exclude,auto_review,0.907,
-wv_007021,keep,"allowed license, no exclude, real photo, device labeled",powered,ok,none,0.983,no bbox
-wv_007026,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.85),,exclude,human,0.849,
-wv_007032,user_decides,"not_a_photo exclude (auto_review): real photo (0.86) with likely office (presence 0.77), needs device_type",,exclude,auto_review,0.857,recovered_not_a_photo
-wv_007044,drop,"not_a_photo confirmed (photo_score 0.15, flat graphic)",,exclude,auto_review,0.150,
-wv_007047,drop,child (rule 1): siglip child 0.76,,exclude,auto_review,0.915,
-wv_007052,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.55)",,exclude,auto_review,0.934,
-wv_007065,user_decides,"not_a_photo exclude (auto_review): real photo (0.96) with likely office (presence 0.89), needs device_type",,exclude,auto_review,0.956,recovered_not_a_photo
-wv_007073,drop,"not_a_photo exclude upheld: real photo, device unclear (presence 0.39)",,exclude,human,0.931,
-wv_007083,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.13),,exclude,auto_review,0.824,
-wv_007088,drop,child (rule 1): siglip child 0.44; auto child flag 0.12,,exclude,auto_review,0.964,
-wv_007097,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.57),,exclude,human,0.568,
-wv_007098,user_decides,"not_a_photo exclude (auto_review): real photo (0.92) with likely office (presence 0.91), needs device_type",,exclude,auto_review,0.916,recovered_not_a_photo
-wv_007112,user_decides,"not_a_photo exclude (auto_review): real photo (0.84) with likely office (presence 0.94), needs device_type",,exclude,auto_review,0.843,recovered_not_a_photo
-wv_007118,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.79),,exclude,auto_review,0.786,
-wv_007119,user_decides,not_a_photo exclude (human) but photo check ambiguous (0.70),,exclude,human,0.698,
-wv_007142,user_decides,"not_a_photo exclude (auto_review): real photo (0.89) with likely office (presence 0.92), needs device_type",,exclude,auto_review,0.889,recovered_not_a_photo
-wv_007151,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely office (presence 0.96), needs device_type",,exclude,auto_review,0.965,recovered_not_a_photo
-wv_007154,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.59),,exclude,auto_review,0.591,
-wv_007155,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.62),,exclude,auto_review,0.620,
-wv_007163,user_decides,"not_a_photo exclude (human): real photo (0.98) with likely office (presence 0.86), needs device_type",,exclude,human,0.978,recovered_not_a_photo
-wv_007166,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.78),,exclude,auto_review,0.784,
-wv_007170,drop,"not_a_photo confirmed (photo_score 0.02, cut-out, flat graphic)",,exclude,auto_review,0.016,
-wv_007171,user_decides,"not_a_photo exclude (auto_review): real photo (0.85) with likely office (presence 0.97), needs device_type",,exclude,auto_review,0.854,recovered_not_a_photo
-wv_007172,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.33),,exclude,auto_review,0.325,
-wv_007176,user_decides,"not_a_photo exclude (auto_review): real photo (0.89) with likely office (presence 0.99), needs device_type",,exclude,auto_review,0.890,recovered_not_a_photo
-wv_007177,user_decides,"not_a_photo exclude (auto_review): real photo (0.96) with likely office (presence 1.00), needs device_type",,exclude,auto_review,0.961,recovered_not_a_photo
-wv_007179,drop,child (rule 1): siglip child 0.45; auto child flag 0.22,,exclude,auto_review,0.720,
-wv_007189,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely office (presence 1.00), needs device_type",,exclude,auto_review,0.966,recovered_not_a_photo
-wv_007196,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.46),,exclude,auto_review,0.465,
-wv_007212,user_decides,"not_a_photo exclude (auto_review): real photo (0.86) with likely office (presence 0.96), needs device_type",,exclude,auto_review,0.863,recovered_not_a_photo
-wv_007230,user_decides,"not_a_photo exclude (human): real photo (0.93) with likely office (presence 0.95), needs device_type",,exclude,human,0.928,recovered_not_a_photo
-wv_007232,user_decides,"not_a_photo exclude (auto_review): real photo (0.97) with likely office (presence 0.69), needs device_type",,exclude,auto_review,0.967,recovered_not_a_photo
-wv_007244,user_decides,"not_a_photo exclude (auto_review): real photo (0.95) with likely office (presence 1.00), needs device_type",,exclude,auto_review,0.948,recovered_not_a_photo
-wv_007245,drop,not_a_photo exclude upheld: real photo but no clear device (presence 0.06),,exclude,auto_review,0.962,
-wv_007260,user_decides,"not_a_photo exclude (auto_review): real photo (0.86) with likely office (presence 0.92), needs device_type",,exclude,auto_review,0.856,recovered_not_a_photo
-wv_007267,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.70),,exclude,auto_review,0.703,
-wv_007271,user_decides,"not_a_photo exclude (auto_review): real photo (0.96) with likely office (presence 0.91), needs device_type",,exclude,auto_review,0.960,recovered_not_a_photo
-wv_007275,user_decides,"not_a_photo exclude (auto_review): real photo (0.93) with likely office (presence 0.98), needs device_type",,exclude,auto_review,0.932,recovered_not_a_photo
-wv_007293,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.70),,exclude,auto_review,0.697,
-wv_007295,drop,human license_concern exclude,,exclude,human,0.972,
-wv_007296,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.60),,exclude,auto_review,0.601,
-wv_007298,drop,child (rule 1): siglip child 0.42,,exclude,auto_review,0.860,
-wv_007329,drop,not_a_photo confirmed (photo_score 0.27),,exclude,auto_review,0.273,
-wv_007343,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.49),,exclude,auto_review,0.489,
-wv_007347,user_decides,not_a_photo exclude (auto_review) but photo check ambiguous (0.37),,exclude,auto_review,0.373,
+image_id,decision,reason,device_type,license_status,exclude_source,model_warning,license_warning,photo_score,notes
+wv_000076,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.370,
+wv_000077,drop,human exclude: not_a_photo (typed),,exclude,typed,low_photo_score 0.17,,0.171,
+wv_000223,drop,human exclude: not_a_photo (typed),,exclude,typed,low_photo_score 0.15,,0.150,
+wv_000224,drop,human exclude: not_a_photo (typed),,exclude,typed,device_unsure: presence 0.28; low_photo_score 0.15,,0.150,
+wv_000225,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.469,
+wv_000226,drop,human exclude: not_a_photo (adjudicated),powered,exclude,adjudicated,low_photo_score 0.15,,0.150,
+wv_000227,drop,human exclude: not_a_photo (adjudicated),,exclude,adjudicated,,,0.655,
+wv_000228,drop,human exclude: license_concern (adjudicated),powered,exclude,adjudicated,child: siglip child 0.48; stroller: siglip stroller 0.67,,0.898,
+wv_000229,needs_label,device_type conflict/unclear in the human labels,unclear,ok,adjudicated,child: siglip child 0.41,,0.988,labeler flagged a missed face blur
+wv_000230,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.772,
+wv_000231,drop,human exclude: license_concern (adjudicated),powered,exclude,adjudicated,,,0.825,
+wv_000232,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.658,
+wv_000233,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.953,labeler flagged a missed face blur
+wv_000234,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.925,labeler flagged a missed face blur
+wv_000235,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.618,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000236,drop,human exclude: not_a_photo (typed),,exclude,typed,device_unsure: presence 0.27,,0.404,
+wv_000237,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.952,labeler flagged a missed face blur
+wv_000238,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.943,
+wv_000239,keep,"human-approved with device_type, no human exclude",powered,ok,adjudicated,,,0.921,labeler flagged a missed face blur
+wv_000240,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.939,labeler flagged a missed face blur
+wv_000241,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.924,labeler flagged a missed face blur
+wv_000242,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.912,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release; labeler flagged a missed face blur
+wv_000243,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.979,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release; labeler flagged a missed face blur
+wv_000244,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.872,labeler flagged a missed face blur
+wv_000245,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: auto child flag 0.24; no_device: presence 0.05, top=x_text; low_photo_score 0.18",,0.182,
+wv_000246,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.956,labeler flagged a missed face blur
+wv_000247,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.877,labeler flagged a missed face blur
+wv_000248,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.02, top=x_text",,0.361,
+wv_000249,drop,human exclude: not_a_photo (adjudicated),unclear,exclude,adjudicated,"child: siglip child 0.95, siglip child sigmoid 0.07",,0.959,labeler flagged a missed face blur
+wv_000250,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.974,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000251,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.969,labeler flagged a missed face blur
+wv_000252,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.945,labeler flagged a missed face blur
+wv_000253,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.940,labeler flagged a missed face blur
+wv_000254,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.989,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000255,drop,human exclude: not_a_photo (typed),,exclude,typed,low_photo_score 0.04,,0.044,
+wv_000256,drop,human exclude: not_a_photo (adjudicated),powered,exclude,adjudicated,,,0.733,
+wv_000257,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.919,labeler flagged a missed face blur
+wv_000258,drop,human exclude: license_concern (adjudicated),powered,exclude,adjudicated,"child: siglip child 0.64, auto child flag 0.19; stroller: siglip stroller 0.97",,0.913,
+wv_000259,drop,human exclude: license_concern (adjudicated),,exclude,adjudicated,low_photo_score 0.15,,0.150,
+wv_000260,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.812,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000261,drop,human exclude: not_a_photo (adjudicated),,exclude,adjudicated,,,0.830,
+wv_000262,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.950,labeler flagged a missed face blur
+wv_000263,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.817,labeler flagged a missed face blur
+wv_000264,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.810,
+wv_000265,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.825,labeler flagged a missed face blur
+wv_000266,drop,human exclude: not_a_photo (adjudicated),powered,exclude,adjudicated,low_photo_score 0.03,,0.028,
+wv_000267,drop,human exclude: not_a_photo (adjudicated),unclear,exclude,adjudicated,child: siglip child 0.57,,0.929,labeler flagged a missed face blur
+wv_000268,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.784,
+wv_000269,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.981,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000270,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.02, top=x_vehicle",,0.863,
+wv_000271,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.01, top=x_vehicle",,0.967,
+wv_000272,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.942,labeler flagged a missed face blur
+wv_000273,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.10, top=x_text; low_photo_score 0.05",,0.047,
+wv_000274,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.866,labeler flagged a missed face blur
+wv_000275,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.953,labeler flagged a missed face blur
+wv_000276,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.986,
+wv_000277,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.962,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000278,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.835,
+wv_000279,drop,human exclude: not_a_photo (adjudicated),,exclude,adjudicated,child: siglip child 0.73,,0.979,
+wv_000280,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.976,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000281,keep_flagged_license,human-approved; license warning for samir,powered,ok_with_note,adjudicated,,antefixus21 uploader (6 of their images license-excluded),0.992,license note: same Flickr uploader as 6 images the labelers excluded for license_concern; these look like the uploader's own photos (CC0) but eyeball before release
+wv_000282,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.02, top=x_vehicle",,0.933,
+wv_000283,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.03, top=x_vehicle",,0.584,
+wv_000284,drop,human exclude: license_concern (adjudicated),powered,exclude,adjudicated,,,0.889,labeler flagged a missed face blur
+wv_000285,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: auto child flag 0.16; no_device: presence 0.02, top=x_text; low_photo_score 0.18",,0.184,
+wv_000286,needs_label,device_type conflict/unclear in the human labels,unclear,ok,adjudicated,,,0.944,labeler flagged a missed face blur
+wv_000287,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.941,labeler flagged a missed face blur
+wv_000288,drop,human exclude: clinical_setting (adjudicated),manual,exclude,adjudicated,child: auto child flag 0.13,,0.921,labeler flagged a missed face blur
+wv_000289,drop,human exclude: not_a_photo (adjudicated),,exclude,adjudicated,,,0.750,
+wv_000290,drop,human exclude: not_a_photo (typed),,exclude,typed,low_photo_score 0.14,,0.144,
+wv_000291,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.906,labeler flagged a missed face blur
+wv_000292,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.968,
+wv_000293,keep,"human-approved with device_type, no human exclude",powered,ok,,"child: siglip child 0.93, auto child flag 0.21",,0.971,labeler flagged a missed face blur
+wv_000294,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.936,
+wv_000295,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.926,labeler flagged a missed face blur
+wv_000296,keep,"human-approved with device_type, no human exclude",powered,ok,,"child: siglip child 0.72, auto child flag 0.17",,0.980,labeler flagged a missed face blur
+wv_000297,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.919,
+wv_000298,drop,human exclude: license_concern (adjudicated),unclear,exclude,adjudicated,child: siglip child 0.53; stroller: siglip stroller 0.84,,0.883,
+wv_000299,drop,human exclude: not_a_photo (adjudicated),,exclude,adjudicated,"child: auto child flag 0.13; no_device: presence 0.03, top=x_text; low_photo_score 0.26",,0.263,
+wv_000300,keep,"human-approved with device_type, no human exclude",powered,ok,,child: siglip child 0.57,,0.921,labeler flagged a missed face blur
+wv_000301,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.969,
+wv_000302,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.02, top=x_scene",,0.795,
+wv_000303,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.979,labeler flagged a missed face blur
+wv_000311,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.997,
+wv_000323,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.989,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_000329,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.973,
+wv_000334,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.947,
+wv_000339,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.992,
+wv_000340,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: auto child flag 0.31,,0.980,
+wv_000343,keep,"human-approved with device_type, no human exclude",powered,ok,,child: siglip child 0.46,,0.991,
+wv_000356,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.967,
+wv_000360,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.972,
+wv_000362,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.979,labeler flagged a missed face blur
+wv_000368,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.96, auto child flag 0.93",,0.960,
+wv_000371,keep,"human-approved with device_type, no human exclude",powered,ok_with_note,,child: auto child flag 0.10,,0.821,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit; labeler flagged a missed face blur
+wv_000375,drop,human exclude: not_a_photo (typed),,exclude,typed,child: siglip child 0.50,,0.985,
+wv_000378,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.981,
+wv_000383,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.980,
+wv_000385,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.892,
+wv_000386,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.934,labeler flagged a missed face blur
+wv_000398,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.986,
+wv_000403,keep,"human-approved with device_type, no human exclude",powered,ok,,child: auto child flag 0.15,,0.958,
+wv_000407,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.989,
+wv_000409,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.494,
+wv_000413,keep,"human-approved with device_type, no human exclude",powered,ok_with_note,,,,0.992,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_000415,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.994,
+wv_000425,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.992,
+wv_000437,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.994,labeler flagged a missed face blur
+wv_001960,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.977,labeler flagged a missed face blur
+wv_001961,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.977,labeler flagged a missed face blur
+wv_001962,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.896,labeler flagged a missed face blur
+wv_001963,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.982,
+wv_001964,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.74,,0.976,labeler flagged a missed face blur
+wv_001965,keep,"human-approved with device_type, no human exclude",manual,ok,adjudicated,,,0.962,labeler flagged a missed face blur
+wv_001966,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.963,labeler flagged a missed face blur
+wv_001967,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.949,labeler flagged a missed face blur
+wv_001968,keep,"human-approved with device_type, no human exclude",manual,ok,,child: auto child flag 0.12,,0.972,labeler flagged a missed face blur
+wv_001969,drop,human exclude: identifiable_person (adjudicated),manual,exclude,adjudicated,,,0.978,labeler flagged a missed face blur
+wv_001970,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.934,labeler flagged a missed face blur
+wv_001971,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.947,
+wv_001972,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.882,
+wv_001973,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.977,labeler flagged a missed face blur
+wv_001974,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.972,labeler flagged a missed face blur
+wv_001975,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.03, top=x_vehicle",,0.910,
+wv_001976,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.955,labeler flagged a missed face blur
+wv_001997,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.02, top=x_vehicle",,0.941,
+wv_001998,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.977,
+wv_001999,keep,"human-approved with device_type, no human exclude",powered,ok,adjudicated,,,0.975,
+wv_002011,drop,human exclude: not_a_photo (adjudicated),manual,exclude,adjudicated,child: siglip child sigmoid 0.03,,0.981,
+wv_002018,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.979,
+wv_002022,drop,human exclude: not_a_photo (adjudicated),unclear,exclude,adjudicated,,,0.967,
+wv_002039,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.940,
+wv_002047,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.965,
+wv_002056,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.953,
+wv_002057,drop,human exclude: not_a_photo (review_keypress),unclear,exclude,review_keypress,,,0.898,
+wv_002059,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.960,
+wv_002062,drop,human exclude: child (adjudicated),manual,exclude,adjudicated,"child: siglip child 0.66, siglip child sigmoid 0.02, auto child flag 0.11; stroller: owlv2 stroller box 0.46; low_photo_score 0.15",,0.150,labeler flagged a missed face blur
+wv_002064,drop,human exclude: not_a_photo (adjudicated),powered,exclude,adjudicated,,,0.917,
+wv_002065,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.05, top=x_people",,0.985,
+wv_002066,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.868,
+wv_002067,drop,human exclude: not_a_photo (adjudicated),manual,exclude,adjudicated,,,0.921,
+wv_002075,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.917,
+wv_002077,keep,"human-approved with device_type, no human exclude",manual,ok,adjudicated,,,0.943,
+wv_002079,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.968,
+wv_002084,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.59,,0.938,
+wv_002088,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.942,labeler flagged a missed face blur
+wv_002090,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.34,,0.876,
+wv_002091,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.976,
+wv_002094,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.972,
+wv_002099,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.947,
+wv_002104,drop,human exclude: not_a_photo (adjudicated),manual,exclude,adjudicated,,,0.979,
+wv_002109,keep,"human-approved with device_type, no human exclude",other_aid,ok,adjudicated,,,0.941,
+wv_002119,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.844,
+wv_002121,keep,"human-approved with device_type, no human exclude",manual,ok,,stroller: owlv2 stroller box 0.33,,0.899,
+wv_002123,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.955,
+wv_002127,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.840,
+wv_002129,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.951,
+wv_002132,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.780,
+wv_002133,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.941,
+wv_002134,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.946,
+wv_002139,drop,human exclude: not_a_photo (adjudicated),unclear,exclude,adjudicated,,,0.913,
+wv_002148,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.831,
+wv_002151,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.321,
+wv_002152,drop,human exclude: not_a_photo (adjudicated),manual,exclude,adjudicated,,,0.982,
+wv_002157,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.860,
+wv_002158,keep,"human-approved with device_type, no human exclude",manual,ok,adjudicated,,,0.984,
+wv_002170,drop,human exclude: not_a_photo (adjudicated),,exclude,adjudicated,,,0.878,
+wv_002171,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.958,
+wv_002179,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.972,
+wv_002188,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.932,labeler flagged a missed face blur
+wv_002190,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.671,
+wv_002197,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.66; stroller: owlv2 stroller box 0.39,,0.929,
+wv_002199,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.02, top=x_vehicle",,0.925,
+wv_002204,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.938,
+wv_002212,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.979,
+wv_002214,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.869,
+wv_002245,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.987,labeler flagged a missed face blur
+wv_002248,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.759,
+wv_002264,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.993,
+wv_002282,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.987,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002285,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.971,
+wv_002289,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.994,
+wv_002320,keep,"human-approved with device_type, no human exclude",manual,ok,,child: auto child flag 0.62,,0.952,
+wv_002342,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.750,
+wv_002346,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: auto child flag 0.90,,0.971,
+wv_002348,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.992,labeler flagged a missed face blur
+wv_002354,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: manual (0.91) vs single label other_aid,,0.925,
+wv_002373,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: auto child flag 0.21,,0.986,
+wv_002374,keep,"human-approved with device_type, no human exclude",powered,ok_with_note,,,,0.982,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002376,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.899,
+wv_002390,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.988,
+wv_002392,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.987,
+wv_002414,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.989,
+wv_002421,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, siglip child sigmoid 0.05, auto child flag 0.99; stroller: siglip stroller 0.31",,0.992,
+wv_002427,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.52,,0.990,
+wv_002430,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.995,
+wv_002446,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.978,
+wv_002449,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.86, auto child flag 0.56",,0.986,
+wv_002453,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,child: auto child flag 0.30,,0.987,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002457,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.87,,0.905,
+wv_002464,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.980,license note: photo URL changed to https://www.flickr.com/photos/usembassyjlm/22053067535/; FYI Flickr display name now 'U.S. Embassy Jerusalem' (recorded creator 'U.S. Embassy Tel Aviv')
+wv_002467,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.992,
+wv_002472,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.946,
+wv_002474,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.982,
+wv_002477,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.48, siglip child sigmoid 0.03, auto child flag 0.45; low_photo_score 0.15",,0.150,
+wv_002502,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.928,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit; labeler flagged a missed face blur
+wv_002505,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.961,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002506,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.972,
+wv_002512,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.975,
+wv_002517,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.989,
+wv_002524,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.957,
+wv_002530,keep,"human-approved with device_type, no human exclude",manual,ok,,model_disagrees: powered (0.91) vs single label manual,,0.953,
+wv_002544,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.977,
+wv_002545,drop,human exclude: not_a_photo (typed),,exclude,typed,device_unsure: presence 0.03,,0.820,
+wv_002554,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.982,
+wv_002570,keep,"human-approved with device_type, no human exclude",manual,ok,,"child: siglip child sigmoid 0.02, auto child flag 0.22",,0.971,labeler flagged a missed face blur
+wv_002576,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.912,
+wv_002582,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.991,
+wv_002590,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.994,
+wv_002611,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.970,
+wv_002612,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.86, auto child flag 0.49; stroller: siglip stroller 0.35",,0.916,
+wv_002615,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.994,
+wv_002617,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.983,
+wv_002622,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.15,,0.150,
+wv_002627,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.896,
+wv_002629,keep_flagged_license,human-approved; license warning for samir,manual,needs_ross,,,needs_ross: live license now ALL-RIGHTS-RESERVED (recorded CC-BY-2.0 at collection); CC grants are irrevocable but uploader changed terms; live license now changed:ALL-RIGHTS-RESERVED,0.980,
+wv_002633,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.965,
+wv_002642,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.23,,0.997,
+wv_002655,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.953,
+wv_002658,keep_flagged_license,human-approved; license warning for samir,manual,needs_ross,,,needs_ross: Flickr page now login-only (made private or safety-restricted); license cannot be re-verified and content may be flagged restricted; live license now login_required,0.990,
+wv_002663,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.745,
+wv_002672,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.989,
+wv_002680,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.970,
+wv_002687,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.893,
+wv_002690,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,child: auto child flag 0.18,,0.990,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002692,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.85, auto child flag 0.39",,0.985,
+wv_002720,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.982,
+wv_002726,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.963,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002734,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.989,
+wv_002767,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: auto child flag 0.13,live license now changed:ALL-RIGHTS-RESERVED,0.992,
+wv_002778,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.971,
+wv_002779,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.903,
+wv_002780,keep_flagged_license,human-approved; license warning for samir,manual,needs_ross,,child: siglip child 0.80,needs_ross: live license now ALL-RIGHTS-RESERVED (recorded CC-BY-2.0 at collection); CC grants are irrevocable but uploader changed terms; FYI Flickr display name now 'Nazareth University' (recorded creator 'Nazareth College'); live license now changed:ALL-RIGHTS-RESERVED,0.989,labeler flagged a missed face blur
+wv_002784,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.921,
+wv_002787,drop,human exclude: license_concern (review_keypress),,exclude,review_keypress,device_unsure: presence 0.30,,0.845,
+wv_002793,drop,human exclude: clinical_setting (review_keypress),,exclude,review_keypress,,,0.917,
+wv_002795,needs_label,device_type conflict/unclear in the human labels,unclear,ok,,,,0.989,
+wv_002797,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.886,labeler flagged a missed face blur
+wv_002803,keep,"human-approved with device_type, no human exclude",powered,ok,,child: auto child flag 0.33,,0.878,
+wv_002812,keep,"human-approved with device_type, no human exclude",other_aid,ok_with_note,,,,0.996,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_002824,keep,"human-approved with device_type, no human exclude",manual,ok,,"child: siglip child 0.71, auto child flag 0.16",,0.930,
+wv_002837,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.891,
+wv_002839,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.911,
+wv_002840,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.972,
+wv_002846,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.984,
+wv_002850,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.994,
+wv_002852,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.59, auto child flag 0.37",,0.990,
+wv_002854,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.73,,0.985,
+wv_002855,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.964,labeler flagged a missed face blur
+wv_002863,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.43, auto child flag 0.33; stroller: siglip stroller 0.54",,0.999,
+wv_002864,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.59,,0.988,
+wv_002889,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.949,
+wv_002892,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.948,
+wv_002895,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.981,
+wv_002898,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: manual (0.94) vs single label other_aid,,0.951,
+wv_002903,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.952,
+wv_002905,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.908,
+wv_002932,keep_flagged_license,human-approved; license warning for samir,powered,needs_ross,,,needs_ross: live license now CC-BY-NC-2.0 (recorded CC-BY-2.0 at collection); CC grants are irrevocable but uploader changed terms; live license now changed:CC-BY-NC-2.0,0.993,
+wv_002947,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.974,
+wv_002950,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.981,
+wv_002951,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.90, auto child flag 0.66",,0.974,
+wv_002952,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.912,
+wv_002954,keep_flagged_license,human-approved; license warning for samir,manual,needs_ross,,,needs_ross: Flickr page now login-only (made private or safety-restricted); license cannot be re-verified and content may be flagged restricted; live license now login_required,0.929,
+wv_002974,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.972,
+wv_002975,keep,"human-approved with device_type, no human exclude",powered,ok,,"child: siglip child 0.50, auto child flag 0.13",,0.976,
+wv_002986,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: siglip child 0.43,,0.949,
+wv_002988,keep,"human-approved with device_type, no human exclude",powered,ok,,child: siglip child 0.63,,0.961,
+wv_002996,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.979,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003017,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.985,
+wv_003019,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.807,
+wv_003025,keep,"human-approved with device_type, no human exclude",manual,ok,,"child: siglip child 0.90, auto child flag 0.38",,0.985,
+wv_003027,keep_flagged_license,human-approved; license warning for samir,manual,needs_ross,,,needs_ross: Flickr page now login-only (made private or safety-restricted); license cannot be re-verified and content may be flagged restricted; live license now login_required,0.970,labeler flagged a missed face blur
+wv_003031,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.976,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003035,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.958,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003045,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.980,
+wv_003049,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.961,
+wv_003056,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.883,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003057,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.763,
+wv_003071,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.938,
+wv_003080,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.974,
+wv_003094,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: siglip stroller 0.79; low_photo_score 0.09,,0.087,
+wv_003113,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.941,
+wv_003117,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.911,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003126,keep,"human-approved with device_type, no human exclude",manual,ok,,child: auto child flag 0.13,,0.936,
+wv_003129,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.777,
+wv_003133,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.994,
+wv_003137,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.971,
+wv_003138,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.06,,0.980,
+wv_003144,needs_label,device_type conflict/unclear in the human labels,unclear,ok,,model_disagrees: powered (0.93) vs single label unclear,,0.974,labeler flagged a missed face blur
+wv_003162,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.974,
+wv_003165,drop,human exclude: not_a_photo (typed),,exclude,typed,child: auto child flag 0.50; stroller: siglip stroller 0.70,,0.969,
+wv_003169,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.19,,0.952,
+wv_003174,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.942,
+wv_003175,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.983,labeler flagged a missed face blur
+wv_003181,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.994,
+wv_003191,drop,human exclude: not_a_photo (typed),,exclude,typed,,live license now login_required,0.981,
+wv_003201,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.955,labeler flagged a missed face blur
+wv_003202,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.07,,0.845,
+wv_003206,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.911,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003211,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.925,
+wv_003218,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.990,
+wv_003221,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.986,
+wv_003224,drop,human exclude: child (review_keypress),,exclude,review_keypress,,,0.996,
+wv_003229,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.969,
+wv_003241,drop,human exclude: child (typed),manual,exclude,typed,child: auto child flag 0.42,,0.990,labeler flagged a missed face blur
+wv_003250,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.971,
+wv_003252,keep,"human-approved with device_type, no human exclude",manual,ok,,child: siglip child 0.63,,0.977,
+wv_003253,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.971,
+wv_003254,keep,"human-approved with device_type, no human exclude",manual,ok,,"child: siglip child 0.45, auto child flag 0.36",,0.975,
+wv_003255,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.41,,0.911,
+wv_003264,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.957,
+wv_003267,keep,"human-approved with device_type, no human exclude",manual,ok,,"child: siglip child 0.59, auto child flag 0.15",,0.994,
+wv_003269,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.935,
+wv_003290,keep,"human-approved with device_type, no human exclude",manual,ok,,child: auto child flag 0.12,,0.977,
+wv_003291,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.936,labeler flagged a missed face blur
+wv_003299,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.875,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003309,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.72, auto child flag 0.71",,0.999,
+wv_003316,keep_flagged_license,human-approved; license warning for samir,manual,needs_ross,,,needs_ross: live license now ALL-RIGHTS-RESERVED (recorded CC-BY-2.0 at collection); CC grants are irrevocable but uploader changed terms; live license now changed:ALL-RIGHTS-RESERVED,0.944,
+wv_003320,keep,"human-approved with device_type, no human exclude",manual,ok,,"child: siglip child 0.56, auto child flag 0.45",,0.964,
+wv_003332,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.985,
+wv_003334,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: siglip child 0.42,,0.988,
+wv_003344,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.903,labeler flagged a missed face blur
+wv_003363,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.00,,0.997,
+wv_003371,keep,"human-approved with device_type, no human exclude",manual,ok_with_note,,,,0.988,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_003383,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.985,
+wv_003386,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.994,
+wv_003394,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.941,
+wv_003406,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.992,
+wv_003418,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.927,
+wv_003421,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.973,
+wv_003432,keep,"human-approved with device_type, no human exclude",manual,ok,,child: auto child flag 0.34,,0.978,
+wv_003437,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.974,
+wv_003442,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.992,
+wv_003443,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.990,
+wv_003444,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.976,
+wv_004252,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.01, top=x_scene",,0.536,
+wv_004260,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.07, top=x_scene",,0.987,
+wv_004261,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.859,
+wv_004272,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.691,
+wv_004275,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.687,
+wv_004284,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.989,
+wv_004285,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.977,
+wv_004287,keep,"human-approved with device_type, no human exclude",lookalike,ok,,model_disagrees: powered (0.98) vs single label lookalike,,0.883,
+wv_004288,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.898,
+wv_004291,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.992,
+wv_004307,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.947,
+wv_004315,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.42,,0.975,
+wv_004319,keep,"human-approved with device_type, no human exclude",lookalike,ok,,"child: siglip child 0.49, auto child flag 0.16; model_disagrees: powered (0.95) vs single label lookalike",,0.904,
+wv_004321,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child sigmoid 0.06,,0.990,
+wv_004343,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.826,
+wv_004348,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: powered (0.97) vs single label other_aid,,0.968,
+wv_004360,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.91, auto child flag 0.85; stroller: siglip stroller 0.42",,0.947,
+wv_004364,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.64, auto child flag 0.10",,0.978,
+wv_004378,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.995,
+wv_004380,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.976,
+wv_004383,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.988,
+wv_004384,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.990,
+wv_004390,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.70, auto child flag 0.82",,0.905,
+wv_004391,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.986,
+wv_004398,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: powered (0.96) vs single label other_aid,,0.915,
+wv_004408,keep,"human-approved with device_type, no human exclude",other_aid,ok_with_note,,child: siglip child 0.44; model_disagrees: powered (0.98) vs single label other_aid,,0.981,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_004420,keep,"human-approved with device_type, no human exclude",other_aid,ok,,child: siglip child 0.51,,0.976,
+wv_004426,keep,"human-approved with device_type, no human exclude",other_aid,ok_with_note,,model_disagrees: powered (0.99) vs single label other_aid,,0.977,license note: live license CC0-1.0 differs but is equally/less restrictive than recorded CC-BY-2.0
+wv_004437,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.976,
+wv_004439,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.981,
+wv_004447,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: powered (0.93) vs single label other_aid,,0.943,
+wv_004454,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: powered (0.97) vs single label other_aid,,0.991,
+wv_004459,keep,"human-approved with device_type, no human exclude",other_aid,ok,,model_disagrees: powered (0.96) vs single label other_aid,,0.974,
+wv_004463,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.15,,0.150,
+wv_004472,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.45; no_device: presence 0.07, top=x_people",,0.926,
+wv_004485,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.00, top=x_scene",,0.906,
+wv_004490,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.938,
+wv_004493,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.05, top=x_scene",,0.790,
+wv_004497,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.08, top=x_room",,0.446,
+wv_004501,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.73, auto child flag 0.61",,0.918,
+wv_004519,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.951,
+wv_004524,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.09, top=x_people",,0.988,
+wv_004527,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.11,,0.343,
+wv_004534,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.09, top=x_scene",,0.921,
+wv_004535,drop,human exclude: child (review_keypress),,exclude,review_keypress,stroller: siglip stroller 0.74,,0.871,
+wv_004546,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.02, top=x_scene",,0.975,
+wv_004560,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.50, auto child flag 0.14",,0.945,
+wv_004586,drop,human exclude: not_a_photo (typed),,exclude,typed,child: auto child flag 0.31,,0.856,
+wv_004592,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.819,
+wv_004594,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.11,,0.942,
+wv_004599,drop,human exclude: not_a_photo (typed),,exclude,typed,low_photo_score 0.15,,0.150,
+wv_004628,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: owlv2 stroller box 0.32,,0.893,
+wv_004634,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.60, auto child flag 0.53",,0.898,
+wv_004640,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.02, top=x_scene",,0.978,
+wv_004641,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: auto child flag 0.19; no_device: presence 0.08, top=x_misc; low_photo_score 0.22",,0.219,
+wv_004658,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.965,
+wv_004671,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.982,
+wv_004688,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 1.00, siglip child sigmoid 0.11, auto child flag 0.99; stroller: siglip stroller 0.71",,0.948,
+wv_004691,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.928,
+wv_004700,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, siglip child sigmoid 0.26, auto child flag 0.99; stroller: siglip stroller 0.86",,0.973,
+wv_004703,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.964,
+wv_004709,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.982,
+wv_004715,keep,"human-approved with device_type, no human exclude",other_aid,ok_with_note,,,,0.985,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_004730,drop,human exclude: not_a_photo (typed),,exclude,typed,child: siglip child sigmoid 0.06; stroller: proposed_class lookalike_stroller,,0.949,
+wv_004738,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.61; stroller: proposed_class lookalike_stroller,,0.978,
+wv_004740,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.76; stroller: proposed_class lookalike_stroller; no_device: presence 0.03, top=x_people",,0.932,
+wv_004741,drop,human exclude: not_a_photo (typed),,exclude,typed,stroller: proposed_class lookalike_stroller,,0.947,
+wv_004747,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,child: siglip child 0.94; stroller: proposed_class lookalike_stroller,,0.961,
+wv_004749,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,"child: siglip child 0.59, auto child flag 0.12; stroller: proposed_class lookalike_stroller",,0.970,
+wv_004751,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.86; stroller: proposed_class lookalike_stroller,,0.948,
+wv_004755,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.48; stroller: proposed_class lookalike_stroller,,0.854,
+wv_004756,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,"child: siglip child 0.63, auto child flag 0.19; stroller: proposed_class lookalike_stroller",,0.928,
+wv_004758,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.72; stroller: proposed_class lookalike_stroller,,0.970,
+wv_004794,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.95, auto child flag 0.17; stroller: proposed_class lookalike_stroller",,0.948,
+wv_004801,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.57; stroller: proposed_class lookalike_stroller; no_device: presence 0.10, top=x_people",,0.978,
+wv_004808,drop,human exclude: not_a_photo (typed),,exclude,typed,child: siglip child 0.60; stroller: proposed_class lookalike_stroller,,0.973,
+wv_004826,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,child: siglip child 0.58; stroller: proposed_class lookalike_stroller,,0.962,
+wv_004854,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.64; stroller: proposed_class lookalike_stroller; no_device: presence 0.09, top=x_people",,0.936,
+wv_004855,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.66, auto child flag 0.10; stroller: proposed_class lookalike_stroller; no_device: presence 0.06, top=x_people",,0.980,
+wv_004863,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,child: siglip child 0.83; stroller: proposed_class lookalike_stroller,,0.983,
+wv_004866,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.94, auto child flag 0.24; stroller: proposed_class lookalike_stroller",,0.846,
+wv_004870,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,child: siglip child 0.66; stroller: proposed_class lookalike_stroller,,0.976,
+wv_004871,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.87, auto child flag 0.19; stroller: proposed_class lookalike_stroller",,0.975,
+wv_004877,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.85; stroller: proposed_class lookalike_stroller,,0.979,
+wv_004880,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.88, auto child flag 0.13; stroller: proposed_class lookalike_stroller; no_device: presence 0.05, top=x_people",,0.980,
+wv_004888,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.49, auto child flag 0.64; stroller: proposed_class lookalike_stroller",,0.965,
+wv_004899,drop,human exclude: child (typed),,exclude,typed,child: auto child flag 0.53; stroller: proposed_class lookalike_stroller,,0.969,
+wv_004903,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.50; stroller: proposed_class lookalike_stroller,,0.966,
+wv_004906,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.94, auto child flag 0.21; stroller: proposed_class lookalike_stroller",,0.977,
+wv_004907,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.65; stroller: proposed_class lookalike_stroller,,0.975,
+wv_004913,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.78, auto child flag 0.11; stroller: proposed_class lookalike_stroller; no_device: presence 0.08, top=x_people",,0.978,
+wv_004916,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.976,
+wv_004947,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.69; stroller: proposed_class lookalike_stroller,,0.982,
+wv_004955,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,"child: siglip child 0.78; stroller: proposed_class lookalike_stroller; no_device: presence 0.08, top=x_people",,0.977,
+wv_004986,drop,human exclude: child (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.983,
+wv_004991,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.963,
+wv_004992,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.44, auto child flag 0.43; stroller: proposed_class lookalike_stroller",,0.993,
+wv_004997,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, siglip child sigmoid 0.02, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.96",,0.970,
+wv_005000,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: siglip child 0.41; stroller: proposed_class lookalike_stroller,,0.960,
+wv_005015,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.96",,0.970,
+wv_005027,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.80, auto child flag 0.79; stroller: proposed_class lookalike_stroller, siglip stroller 0.92",,0.991,
+wv_005028,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.06, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.987,
+wv_005050,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, siglip child sigmoid 0.08, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.87",,0.981,
+wv_005058,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.81, auto child flag 0.76; stroller: proposed_class lookalike_stroller, siglip stroller 0.95",,0.947,
+wv_005070,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.46",,0.996,
+wv_005077,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.42; stroller: proposed_class lookalike_stroller,,0.982,
+wv_005093,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.937,
+wv_005101,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.58, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.76; low_photo_score 0.15",,0.150,
+wv_005103,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.976,
+wv_005116,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.95, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.64",,0.997,
+wv_005117,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.64, auto child flag 0.10; stroller: proposed_class lookalike_stroller, siglip stroller 0.89",,0.989,
+wv_005127,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.93, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.899,
+wv_005133,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.48; stroller: proposed_class lookalike_stroller, siglip stroller 0.41",,0.940,
+wv_005141,drop,human exclude: child (review_keypress),,exclude,review_keypress,child: siglip child 0.79; stroller: proposed_class lookalike_stroller,live license now changed:CC-BY-NC-2.0,0.995,
+wv_005149,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.93, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.986,
+wv_005157,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.93; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.944,
+wv_005161,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.917,
+wv_005165,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.56, auto child flag 0.57; stroller: proposed_class lookalike_stroller, siglip stroller 0.38; low_photo_score 0.15",,0.150,
+wv_005171,drop,human exclude: child (typed),,exclude,typed,"child: auto child flag 0.13; stroller: proposed_class lookalike_stroller, siglip stroller 0.36",,0.974,
+wv_005179,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.984,
+wv_005182,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, siglip child sigmoid 0.07, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.85",live license now changed:ALL-RIGHTS-RESERVED,0.974,
+wv_005200,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.91, auto child flag 0.92; stroller: proposed_class lookalike_stroller, siglip stroller 0.90",,0.969,
+wv_005202,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.74",,0.989,
+wv_005214,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.80, auto child flag 0.77; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.965,
+wv_005224,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.46, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.871,
+wv_005230,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 0.51",,0.987,
+wv_005238,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.893,
+wv_005240,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: auto child flag 0.19; stroller: proposed_class lookalike_stroller, siglip stroller 0.36",,0.985,
+wv_005244,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.86, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.977,
+wv_005251,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.64, auto child flag 0.71; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.777,
+wv_005252,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.97",,0.983,
+wv_005259,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.96, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.982,
+wv_005268,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.961,
+wv_005269,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.969,
+wv_005272,drop,human exclude: not_a_photo (typed),,exclude,typed,stroller: proposed_class lookalike_stroller,,0.991,
+wv_005273,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.57, auto child flag 0.30; stroller: proposed_class lookalike_stroller, siglip stroller 0.65",,0.975,
+wv_005274,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.61, auto child flag 0.59; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.897,
+wv_005278,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.95, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.978,
+wv_005297,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.71, auto child flag 0.34; stroller: proposed_class lookalike_stroller, siglip stroller 0.96",,0.990,
+wv_005301,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.94, auto child flag 0.63; stroller: proposed_class lookalike_stroller, siglip stroller 0.80",,0.990,
+wv_005309,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.73, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 0.95",,0.989,
+wv_005315,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.964,
+wv_005316,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.79, auto child flag 0.64; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.859,
+wv_005318,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.969,
+wv_005323,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.972,
+wv_005330,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.953,
+wv_005331,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.963,
+wv_005347,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.930,
+wv_005362,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.73, auto child flag 0.17; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",live license now changed:ALL-RIGHTS-RESERVED,0.962,
+wv_005367,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.87, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.991,
+wv_005368,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, siglip child sigmoid 0.04, auto child flag 1.00; stroller: proposed_class lookalike_stroller",,0.990,
+wv_005380,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.983,
+wv_005399,drop,human exclude: not_a_photo (typed),,exclude,typed,stroller: proposed_class lookalike_stroller,,0.976,
+wv_005400,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.42; stroller: proposed_class lookalike_stroller,,0.998,
+wv_005404,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.94, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.975,
+wv_005409,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.79, auto child flag 0.62; stroller: proposed_class lookalike_stroller, siglip stroller 0.89",,0.973,
+wv_005418,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,live license now login_required,0.973,
+wv_005425,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.88; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.983,
+wv_005439,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: auto child flag 0.77; stroller: proposed_class lookalike_stroller,,0.990,
+wv_005444,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, siglip child sigmoid 0.03, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.979,
+wv_005448,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.950,
+wv_005449,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.96, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.36",,0.995,
+wv_005457,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.70, auto child flag 0.16; stroller: proposed_class lookalike_stroller, siglip stroller 0.76",,0.992,
+wv_005465,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.955,
+wv_005468,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.51, auto child flag 0.72; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.792,
+wv_005469,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.998,
+wv_005476,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.99, siglip child sigmoid 0.10, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.94",,0.986,
+wv_005480,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.50, auto child flag 0.56; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.776,
+wv_005484,keep,"human-approved with device_type, no human exclude",lookalike,ok_with_note,,"child: siglip child 0.66, auto child flag 0.61; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.732,license note: Flickr photo deleted; license as recorded by Open Images at collection (CC grants are irrevocable) but source link is dead for credit
+wv_005506,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.77, auto child flag 0.30; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.975,
+wv_005518,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.94; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.983,
+wv_005520,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.93, auto child flag 0.85; stroller: proposed_class lookalike_stroller, siglip stroller 0.95",,0.985,
+wv_005521,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.961,
+wv_005526,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.93, auto child flag 0.80; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.992,
+wv_005534,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.936,
+wv_005560,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.95, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.950,
+wv_005565,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.96, auto child flag 0.68; stroller: proposed_class lookalike_stroller",,0.994,
+wv_005570,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.02, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.956,
+wv_005590,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.93",,0.984,
+wv_005600,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,live license now changed:ALL-RIGHTS-RESERVED,0.962,
+wv_005632,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.969,
+wv_005633,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.94, auto child flag 0.54; stroller: proposed_class lookalike_stroller",,0.989,
+wv_005642,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.905,
+wv_005643,drop,human exclude: child (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.989,
+wv_005655,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.870,
+wv_005658,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.71, auto child flag 0.78; stroller: proposed_class lookalike_stroller, siglip stroller 1.00; low_photo_score 0.24",,0.237,
+wv_005664,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, siglip child sigmoid 0.02, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.42",,0.980,
+wv_005665,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.982,
+wv_005671,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.981,
+wv_005672,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.73; stroller: proposed_class lookalike_stroller, siglip stroller 0.94",,0.993,
+wv_005692,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.950,
+wv_005695,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.979,
+wv_005720,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,stroller: proposed_class lookalike_stroller,,0.996,
+wv_005728,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.68, auto child flag 0.60; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.859,
+wv_005736,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.77, auto child flag 0.42; stroller: proposed_class lookalike_stroller, siglip stroller 0.68",,0.387,
+wv_005744,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.88",,0.973,
+wv_005745,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: auto child flag 0.18; stroller: proposed_class lookalike_stroller, siglip stroller 0.93",,0.986,
+wv_005751,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.87; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.949,
+wv_005754,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.59, auto child flag 0.61; stroller: proposed_class lookalike_stroller",,0.930,
+wv_005755,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.82, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.981,
+wv_005756,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.84, auto child flag 0.84; stroller: proposed_class lookalike_stroller, siglip stroller 0.98",,0.906,
+wv_005765,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.99, auto child flag 1.00; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.969,
+wv_005767,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.44",,0.989,
+wv_005784,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.80, auto child flag 0.66; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.922,
+wv_005805,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.92, auto child flag 0.95; stroller: proposed_class lookalike_stroller, siglip stroller 0.95",,0.987,
+wv_005809,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.05, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.941,
+wv_005820,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.96, auto child flag 0.89; stroller: proposed_class lookalike_stroller, siglip stroller 1.00",,0.957,
+wv_005825,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.97; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.954,
+wv_005826,drop,human exclude: not_a_photo (typed),,exclude,typed,stroller: proposed_class lookalike_stroller,,0.905,
+wv_005836,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.07, auto child flag 0.98; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.966,
+wv_005860,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.95, auto child flag 0.96; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.957,
+wv_005868,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, siglip child sigmoid 0.04, auto child flag 0.99; stroller: proposed_class lookalike_stroller, siglip stroller 0.99",,0.946,
+wv_005876,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.93, auto child flag 0.90; stroller: proposed_class lookalike_stroller",,0.955,
+wv_005895,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.97, auto child flag 0.90; stroller: proposed_class lookalike_stroller, siglip stroller 0.95",,0.986,
+wv_005909,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.820,
+wv_005915,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.680,
+wv_005917,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.761,
+wv_005932,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.890,
+wv_005943,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.59,,0.966,
+wv_005984,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: auto child flag 0.36,,0.973,
+wv_005989,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.467,
+wv_005990,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.15,,0.150,
+wv_006012,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.663,
+wv_006022,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.524,
+wv_006028,drop,human exclude: not_a_photo (typed),,exclude,typed,child: auto child flag 0.34,,0.787,
+wv_006035,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.10,,0.996,
+wv_006050,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.850,
+wv_006053,drop,human exclude: not_a_photo (typed),,exclude,typed,device_unsure: presence 0.10,,0.991,
+wv_006061,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.930,
+wv_006062,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.823,
+wv_006063,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.789,
+wv_006077,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.20,,0.972,
+wv_006085,keep,"human-approved with device_type, no human exclude",lookalike,ok_with_note,,,,0.956,license note: Flickr photo deleted; license as recorded by Openverse at collection (CC grants are irrevocable) but source link is dead for credit
+wv_006087,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.11,,0.991,
+wv_006104,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.10, top=x_scene; low_photo_score 0.04",,0.036,
+wv_006121,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.985,
+wv_006123,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.995,
+wv_006128,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.923,
+wv_006138,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.888,
+wv_006143,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.748,
+wv_006157,keep,"human-approved with device_type, no human exclude",lookalike,ok,,,,0.704,
+wv_006159,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.71, auto child flag 0.44",,0.912,
+wv_006170,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.91, auto child flag 0.97",,0.967,
+wv_006171,keep,"human-approved with device_type, no human exclude",lookalike,ok,,"child: siglip child 0.92, auto child flag 0.81",,0.869,
+wv_006181,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.907,
+wv_006194,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.920,
+wv_006201,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.953,
+wv_006205,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.99, auto child flag 0.99",,0.954,
+wv_006214,drop,human exclude: not_a_photo (typed),,exclude,typed,,live license now changed:CC-BY-NC-SA-2.0,0.918,
+wv_006219,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.754,
+wv_006222,keep,"human-approved with device_type, no human exclude",lookalike,ok,,,,0.538,
+wv_006229,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.426,
+wv_006237,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.615,
+wv_006238,drop,human exclude: child (typed),lookalike,exclude,typed,"child: siglip child 1.00, auto child flag 0.97",,0.974,
+wv_006241,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.98, auto child flag 0.93",,0.932,
+wv_006247,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.882,
+wv_006250,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.960,
+wv_006251,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.866,
+wv_006258,keep,"human-approved with device_type, no human exclude",other_aid,ok,,,,0.972,
+wv_006263,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 0.44, auto child flag 0.14",,0.968,
+wv_006265,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.619,
+wv_006266,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, auto child flag 0.97",,0.906,
+wv_006274,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.765,
+wv_006282,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.723,
+wv_006300,keep,"human-approved with device_type, no human exclude",lookalike,ok,,child: auto child flag 0.65,,0.764,
+wv_006309,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.925,
+wv_006325,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: auto child flag 0.44,,0.846,
+wv_006326,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,live license now changed:ALL-RIGHTS-RESERVED,0.860,
+wv_006328,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.72, auto child flag 0.47",,0.736,
+wv_006330,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: auto child flag 0.68,,0.537,
+wv_006337,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,live license now changed:CC-BY-NC-SA-2.0,0.848,
+wv_006349,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.44, auto child flag 0.75",,0.755,
+wv_006368,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.92, auto child flag 0.97",,0.933,
+wv_006374,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.707,
+wv_006402,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.81, auto child flag 0.94",,0.832,
+wv_006406,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,live license now changed:CC-BY-NC-SA-2.0,0.640,
+wv_006410,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.842,
+wv_006418,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.778,
+wv_006422,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.515,
+wv_006449,drop,human exclude: child (review_keypress),,exclude,review_keypress,,,0.880,
+wv_006461,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.754,
+wv_006470,drop,human exclude: not_a_photo (typed),,exclude,typed,low_photo_score 0.30,,0.295,
+wv_006477,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.610,
+wv_006485,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.905,
+wv_006490,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.968,
+wv_006492,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 0.79, auto child flag 0.77",,0.915,
+wv_006501,keep,"human-approved with device_type, no human exclude",lookalike,ok,,,,0.864,
+wv_006511,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.914,
+wv_006520,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.972,
+wv_006536,drop,human exclude: not_a_photo (typed),,exclude,typed,"child: siglip child 1.00, auto child flag 0.99",,0.969,
+wv_006545,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.21,,0.206,
+wv_006549,keep_flagged_license,human-approved; license warning for samir,other_aid,needs_ross,,model_disagrees: powered (0.93) vs single label other_aid,needs_ross: live license now CC-BY-NC-SA-2.0 (recorded CC-BY-2.0 at collection); CC grants are irrevocable but uploader changed terms; FYI Flickr display name now 'Fan of Retail' (recorded creator 'Nicholas Eckhart'); live license now changed:CC-BY-NC-SA-2.0,0.884,
+wv_006560,drop,human exclude: child (review_keypress),,exclude,review_keypress,"child: siglip child 1.00, auto child flag 0.97",,0.950,
+wv_006562,keep,"human-approved with device_type, no human exclude",lookalike,ok_with_note,,,,0.953,license note: photo URL changed to https://www.flickr.com/photos/kentuckyguard/11340541276/
+wv_006576,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.703,
+wv_006590,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.21,,0.211,
+wv_006611,keep,"human-approved with device_type, no human exclude",lookalike,ok,,,,0.891,
+wv_006616,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.337,
+wv_006637,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.964,
+wv_006651,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.982,
+wv_006655,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.19,,0.714,
+wv_006663,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.965,
+wv_006670,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.955,
+wv_006677,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.858,
+wv_006680,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.903,
+wv_006683,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.10,,0.695,
+wv_006686,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.721,
+wv_006695,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.971,
+wv_006712,keep,"human-approved with device_type, no human exclude",manual,ok,,,,0.984,
+wv_006720,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,,,0.965,
+wv_006731,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.02, top=x_people",,0.932,
+wv_006732,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.970,
+wv_006737,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.955,
+wv_006738,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.05, top=x_people",,0.817,
+wv_006741,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.28,,0.949,
+wv_006743,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.974,
+wv_006748,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.902,
+wv_006756,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.20,live license now changed:CC-BY-NC-ND-2.0,0.800,
+wv_006768,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.705,
+wv_006770,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.32,,0.631,
+wv_006775,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.577,
+wv_006777,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"no_device: presence 0.02, top=x_people",,0.958,
+wv_006782,drop,human exclude: identifiable_person (review_keypress),,exclude,review_keypress,device_unsure: presence 0.25,,0.964,
+wv_006802,drop,human exclude: not_a_photo (typed),,exclude,typed,"no_device: presence 0.10, top=x_people",,0.948,
+wv_006803,drop,human exclude: not_a_photo (typed),,exclude,typed,device_unsure: presence 0.11,,0.491,
+wv_006806,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.25,,0.946,
+wv_006812,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.923,
+wv_006815,drop,human exclude: not_a_photo (typed),,exclude,typed,device_unsure: presence 0.15,,0.950,
+wv_006831,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.35,,0.993,
+wv_006834,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.862,
+wv_006859,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.879,
+wv_006867,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.972,
+wv_006871,drop,human exclude: not_a_photo (review_keypress),lookalike,exclude,review_keypress,,,0.951,
+wv_006875,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.869,
+wv_006889,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.838,
+wv_006893,drop,human exclude: not_a_photo (review_keypress),powered,exclude,review_keypress,,,0.954,
+wv_006905,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.965,
+wv_006907,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.931,
+wv_006914,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.05,,0.864,
+wv_006924,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.31,,0.966,
+wv_006949,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,live license now login_required,0.680,
+wv_006965,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.406,
+wv_006967,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.85, auto child flag 0.42",,0.969,
+wv_006969,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,live license now changed:CC-BY-NC-ND-2.0,0.975,
+wv_006972,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.979,
+wv_006979,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.557,
+wv_006983,drop,human exclude: child (typed),,exclude,typed,"child: siglip child 0.44, auto child flag 0.65",,0.962,
+wv_006991,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.706,
+wv_006993,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.711,
+wv_006995,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.32,,0.970,
+wv_006996,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.44,,0.950,
+wv_007007,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.15,,0.952,
+wv_007019,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.876,
+wv_007020,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.19,,0.907,
+wv_007021,keep,"human-approved with device_type, no human exclude",powered,ok,,,,0.983,
+wv_007026,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.849,
+wv_007032,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.857,
+wv_007044,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.15,,0.150,
+wv_007047,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.76,,0.915,
+wv_007052,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.934,
+wv_007065,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.956,
+wv_007073,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.931,
+wv_007083,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.13,,0.824,
+wv_007088,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.44, auto child flag 0.12",,0.964,
+wv_007097,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.568,
+wv_007098,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.916,
+wv_007112,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.843,
+wv_007118,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.786,
+wv_007119,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.698,
+wv_007142,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.889,
+wv_007151,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.965,
+wv_007154,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.591,
+wv_007155,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.620,
+wv_007163,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.978,
+wv_007166,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.784,
+wv_007170,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.02,,0.016,
+wv_007171,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.854,
+wv_007172,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.325,
+wv_007176,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.890,
+wv_007177,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.961,
+wv_007179,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,"child: siglip child 0.45, auto child flag 0.22",,0.720,
+wv_007189,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.966,
+wv_007196,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.465,
+wv_007212,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.863,
+wv_007230,drop,human exclude: not_a_photo (typed),,exclude,typed,,,0.928,
+wv_007232,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.967,
+wv_007244,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.948,
+wv_007245,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,device_unsure: presence 0.06,,0.962,
+wv_007260,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.856,
+wv_007267,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.703,
+wv_007271,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.960,
+wv_007275,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.932,
+wv_007293,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.697,
+wv_007295,drop,human exclude: license_concern (typed),,exclude,typed,,,0.972,
+wv_007296,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.601,
+wv_007298,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,child: siglip child 0.42,,0.860,
+wv_007329,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,low_photo_score 0.27,,0.273,
+wv_007343,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.489,
+wv_007347,drop,human exclude: not_a_photo (review_keypress),,exclude,review_keypress,,,0.373,

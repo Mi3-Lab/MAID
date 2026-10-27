@@ -1,4 +1,4 @@
-﻿"""Local contact sheet for triage review: var/triage/contact_sheet.html (gitignored; links to ../../images_blurred, nothing is copied).
+"""Local contact sheet for triage review: var/triage/contact_sheet.html (gitignored; links to ../../images_blurred, nothing is copied).
 Sections: user_decides (grouped by reason), a sample of not_a_photo excludes recovered by the photo check, and samples of
 the child/stroller and no-device removals plus the no-device-uncertain list for spot checks."""
 import csv, html, random, collections
@@ -19,7 +19,7 @@ def main():
         sec.append((f"user_decides: {k} ({len(rs)})", [(r["image_id"], f"{r['reason']} | dev={r['device_type'] or '-'} lic={r['license_status']} {r['notes']}") for r in rs]))
     rec = [r for r in R if "recovered_not_a_photo" in r["notes"] and r["decision"] == "keep"]
     sec.insert(0, (f"not_a_photo excludes recovered to KEEP ({len(rec)})", [(r["image_id"], f"photo {r['photo_score']} | {r['device_type']} | {r['notes']}") for r in rec]))
-    for name, f, n in (("removed: child/stroller (random 60)", "removed_child_stroller.txt", 60), ("removed: no device (random 60)", "removed_no_device.txt", 60),
+    for name, f, n in (("model-removed: child/stroller (random 60)", "removed_model_child_stroller.txt", 60), ("model-removed: no device (random 60)", "removed_model_no_device.txt", 60),
                        ("kept in queue: no_device_uncertain (random 40)", "no_device_uncertain.txt", 40)):
         L = ids(DATA / f); s = random.sample(L, min(n, len(L)))
         sec.append((f"{name} of {len(L)}", [(i, "") for i in s if i in feats]))

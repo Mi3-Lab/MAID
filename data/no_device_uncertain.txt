@@ -1,4 +1,4 @@
-# device presence unsure (siglip2 presence <0.35 but not removable); kept in the queue
+# device presence unsure (siglip2 presence <0.35 but not removable); kept in the queue. Informational only.
 wv_000224
 wv_000236
 wv_000306

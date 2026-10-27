@@ -274,7 +274,8 @@ if __name__ == "__main__":
     ap.add_argument("--out", default=ROOT / "derived"); ap.add_argument("--events", default=ROOT / "annotations" / "events")
     a = ap.parse_args(); out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     import wvcore
-    blocked = wvcore.load_blocklist(os.environ.get("WV_BLOCKLIST_DIR", ROOT / "data"))      # data/removed_*.txt: removed entirely, never credited/released
+    import build_derived
+    blocked = build_derived.blocklist(build_derived.load_events(str(a.events), drop_blocked=False)[0])   # data/removed_*.txt minus human restores: never credited/released
     cands = [c for c in csv.DictReader(open(ROOT / "data" / "candidates.csv", encoding="utf-8")) if c["candidate_id"] not in blocked]
     lics = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "data" / "LICENSES_draft.csv", encoding="utf-8"))}
     cp = ROOT / "data" / "attribution_cache.json"

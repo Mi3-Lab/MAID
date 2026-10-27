@@ -1,6 +1,6 @@
 """WheelView annotation server: FastAPI + SQLite. Serves the PWA, images, the append-only event log,
 assignment (2 independent annotators, a 3rd on disagreement), adjudication and derived exports."""
-import csv, hashlib, hmac, io, json, os, sqlite3, threading, time
+import csv, hashlib, hmac, io, json, os, sqlite3, threading, time, uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 import httpx
@@ -27,13 +27,26 @@ for d in (DB_PATH.parent, CACHE_DIR, EXPORT_DIR): d.mkdir(parents=True, exist_ok
 
 CANDIDATES = wvcore.load_candidates(CANDS)
 BLOCK_DIR = Path(os.environ.get("WV_BLOCKLIST_DIR", ROOT / "data"))   # data/removed_*.txt: removed entirely (files stay on disk)
-_BLOCK = {"sig": None, "ids": set()}
-def blocked():
-    """Ids listed in data/removed_*.txt; reloaded whenever those files change (e.g. after git pull)."""
+_BLOCK = {"sig": None, "entries": {}, "ids": set(), "dec_ver": -1, "dec": {}, "eff": set()}
+_DEC_VER = [0]       # bumped whenever a kind=removal event is stored
+def block_entries():
+    """{id: [(file, reason comment)]} from data/removed_*.txt; reloaded whenever those files change (e.g. after git pull)."""
     try: sig = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in BLOCK_DIR.glob(wvcore.BLOCKLIST_GLOB))
     except OSError: sig = []
-    if sig != _BLOCK["sig"]: _BLOCK.update(sig=sig, ids=wvcore.load_blocklist(BLOCK_DIR))
-    return _BLOCK["ids"]
+    if sig != _BLOCK["sig"]:
+        ent = wvcore.load_blocklist_entries(BLOCK_DIR); _BLOCK.update(sig=sig, entries=ent, ids=set(ent), dec_ver=-1)
+    return _BLOCK["entries"]
+def removal_decisions():
+    block_entries()
+    if _BLOCK["dec_ver"] != _DEC_VER[0]:
+        ver = _DEC_VER[0]
+        with db() as c: evs = [row_event(r) for r in c.execute("SELECT * FROM events WHERE kind='removal' ORDER BY seq")]
+        dec = wvcore.removal_decisions(evs)
+        _BLOCK.update(dec=dec, eff=_BLOCK["ids"] - {i for i, d in dec.items() if d[0] == "restore"}, dec_ver=ver)
+    return _BLOCK["dec"]
+def blocked():
+    """Blocklist files minus images a human restored in the Removed review (latest decision wins)."""
+    removal_decisions(); return _BLOCK["eff"]
 LOCK = threading.Lock()
 BACKOFF = {}  # host -> unix time until which the image proxy will not contact it (after a 429)
 
@@ -90,6 +103,7 @@ def insert_events(evs):
                             (e["uuid"], e["image_id"], e["annotator"], e["field"], json.dumps(e["value"]), e["ts"], e["device_id"], e["kind"], now,
                              json.dumps(pv, sort_keys=True) if pv else None))
             (acc if cur.rowcount else dup).append(e["uuid"])
+            if cur.rowcount and e["kind"] == "removal": _DEC_VER[0] += 1
     return {"accepted": acc, "duplicate": dup, "rejected": rej}
 
 _BLUR = {"sig": None, "data": {}}
@@ -190,7 +204,8 @@ async def unlock(req: Request):
 def health():
     with db() as c: n = c.execute("SELECT COUNT(*) FROM events").fetchone()[0]
     a = auto_state()
-    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()), "images_ready": images_ready(),
+    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
+           "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
            "features": ["review", "blur"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "models": {t: len(r) for t, r in a["data"].items()}}}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -347,6 +362,61 @@ def export(name: str):
     wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"], blocked=blocked())
     return FileResponse(EXPORT_DIR / name, media_type="text/csv" if name.endswith(".csv") else "application/json",
                         headers={"Cache-Control": "no-store"})
+
+# ---------- Removed review: a human goes through blocklisted images and restores or confirms each one ----------
+RULES = ("child", "stroller", "no_device", "human_exclude")
+def entry_rules(srcs):
+    """Rule keys from the inline comments ('child: ...; stroller: ...'); falls back to the list file name."""
+    out = set()
+    for fn, c in srcs:
+        keys = {seg.split(":", 1)[0].strip() for seg in c.split(";") if ":" in seg} & set(RULES)
+        out |= keys or {fn[len("removed_"):-4]}
+    return sorted(out)
+
+@app.get("/api/removed")
+def removed_list(rule: str | None = None, status: str | None = None):
+    """Every blocklisted image with its list(s), reason/scores and the latest human decision.
+    status: undecided | restore | confirm_removed (default: all)."""
+    ent = block_entries(); dec = removal_decisions(); rows = []; counts = {"rule": {}, "status": {}}
+    for i, srcs in sorted(ent.items(), key=lambda kv: order_key(kv[0])):
+        if i not in CANDIDATES: continue
+        rules = entry_rules(srcs); d = dec.get(i); stv = d[0] if d else "undecided"
+        for r in rules: counts["rule"][r] = counts["rule"].get(r, 0) + 1
+        counts["status"][stv] = counts["status"].get(stv, 0) + 1
+        if rule and rule not in rules: continue
+        if status and status != stv: continue
+        c = CANDIDATES[i]
+        rows.append({"image_id": i, "rules": rules, "lists": [fn for fn, _ in srcs], "reason": " | ".join(x for _, x in srcs if x),
+                     "status": stv, "decided_by": d[1] if d else "", "decided_at": d[2] if d else "",
+                     "has_blurred": blurred_image(i) is not None, "proposed_class": c.get("proposed_class", ""), "source": c.get("source", ""),
+                     "title": c.get("title", ""), "img": f"/api/removed/img/{i}"})
+    return {"total": len(rows), "counts": counts, "images": rows}
+
+@app.post("/api/removed/decision")
+async def removed_decision(req: Request):
+    """{annotator, image_id, action: restore|confirm_removed} -> append-only kind=removal event (exported to
+    annotations/events/<annotator>.jsonl by scripts/sync_events.py like every other event). Latest decision wins."""
+    b = await req.json(); ann = b.get("annotator", ""); i = b.get("image_id", ""); act = b.get("action", "")
+    if not ann or wvcore.slug(ann) != ann: raise HTTPException(400, "annotator must be a slug (lowercase, a-z0-9._-)")
+    ent = block_entries()
+    if i not in ent: raise HTTPException(404, "not on a removal list")
+    if act not in wvcore.REMOVAL_ACTIONS: raise HTTPException(400, f"action must be one of {wvcore.REMOVAL_ACTIONS}")
+    srcs = ent[i]
+    ev = {"uuid": str(uuid.uuid4()), "image_id": i, "annotator": ann, "field": "removal", "kind": "removal",
+          "value": {"action": act, "list": ",".join(fn for fn, _ in srcs)[:400], "reason": " | ".join(x for _, x in srcs if x)[:400]},
+          "ts": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) + f".{int(time.time() * 1000) % 1000:03d}Z", "device_id": "removed-review-web"}
+    r = insert_events([ev])
+    if r["rejected"]: raise HTTPException(400, r["rejected"][0]["reason"])
+    d = removal_decisions().get(i)
+    return {"ok": True, "image_id": i, "status": d[0] if d else "undecided", "blocked": i in blocked(), "event": ev["uuid"]}
+
+@app.get("/api/removed/img/{image_id}")
+def removed_img(image_id: str):
+    """Face-BLURRED copy of a blocklisted image for the Removed review (access-gated). Originals are never served here."""
+    if image_id not in block_entries(): raise HTTPException(404)
+    p = blurred_image(image_id)
+    if not p: raise HTTPException(404, "no blurred copy (the unblurred original is never shown in the Removed review)")
+    return FileResponse(p, media_type="image/jpeg", headers={"Cache-Control": "private, no-store"})
 
 @app.get("/img/{image_id}")
 def img(image_id: str):
