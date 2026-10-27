@@ -322,6 +322,7 @@ wv_002390,samir,manual,yes,not_applicable,none,front,daylight,sidewalk,,,"[[0.10
 wv_002392,samir,manual,yes,self,none,side,daylight,sidewalk,,,"[[0.2125, 0.3182, 0.575, 0.6708]]",done
 wv_002414,samir,manual,yes,attendant,none,three-quarter,daylight,sidewalk,,,"[[0.4292, 0.3335, 0.4323, 0.6354]]",done
 wv_002421,samir,,,,,,,,not_a_photo,,,done
+wv_002427,samir,manual,yes,not_applicable,heavy,front,low_light,other,,,"[[0.776, 0.3672, 0.2115, 0.4769]]",done
 wv_002430,samir,manual,yes,attendant,heavy,side,daylight,other,,,"[[0.1698, 0.1401, 0.4823, 0.8506]]",done
 wv_002446,samir,manual,yes,self,none,side,daylight,vehicle,,,"[[0.1229, 0.3794, 0.2094, 0.3355]]",done
 wv_002449,samir,,,,,,,,child,,,done
@@ -350,6 +351,7 @@ wv_002611,samir,manual,yes,self,none,side,daylight,sidewalk,,,"[[0.0896, 0.3304,
 wv_002612,samir,,,,,,,,child,,,done
 wv_002615,samir,manual,yes,attendant,partial,front,shade,other,,,"[[0.1876, 0.442, 0.5035, 0.505]]",done
 wv_002617,samir,manual,yes,self,none,front,daylight,other,,,"[[0.3469, 0.4892, 0.1781, 0.316], [0.5677, 0.475, 0.2, 0.3428], [0.7698, 0.4341, 0.1417, 0.3003]]",done
+wv_002622,samir,,,,,,,,not_a_photo,,,done
 wv_002627,samir,manual,yes,self,heavy,side,daylight,other,,,"[[0.1135, 0.5833, 0.1063, 0.1936], [0.3219, 0.5802, 0.1104, 0.2404], [0.4146, 0.5864, 0.101, 0.1889], [0.751, 0.5942, 0.1385, 0.1842]]",done
 wv_002629,samir,manual,yes,attendant,partial,front,daylight,sidewalk,,,"[[0.2344, 0.5049, 0.299, 0.4507]]",done
 wv_002633,samir,manual,yes,self,heavy,side,indoor,sidewalk,,,"[[0.1271, 0.2398, 0.4531, 0.7307]]",done
@@ -367,12 +369,14 @@ wv_002726,samir,manual,yes,self,heavy,front,daylight,sidewalk,,,,done
 wv_002734,samir,manual,yes,not_applicable,partial,front,shade,other,,,"[[0.3625, 0.3689, 0.3847, 0.5406], [0.0069, 0.4772, 0.3653, 0.5156], [0.6625, 0.4209, 0.3306, 0.5552]]",done
 wv_002767,samir,,,,,,,,child,,,done
 wv_002778,samir,manual,yes,self,partial,rear,daylight,sidewalk,,,"[[0.2594, 0.014, 0.7385, 0.9597]]",done
+wv_002779,samir,manual,no,not_applicable,partial,front,indoor,indoor,,,"[[0.0861, 0.0345, 0.8403, 0.9594]]",done
 wv_002780,samir,manual,yes,not_applicable,none,side,indoor,indoor,,True,"[[0.0865, 0.4084, 0.7531, 0.4937]]",done
 wv_002784,samir,manual,yes,not_applicable,heavy,front,indoor,indoor,,,"[[0.5354, 0.5224, 0.4281, 0.4746]]",done
 wv_002787,samir,,,,,,,,license_concern,,,done
 wv_002793,samir,,,,,,,,clinical_setting,,,done
 wv_002795,samir,unclear,yes,not_applicable,partial,front,indoor,indoor,,,,done
 wv_002797,samir,manual,yes,unclear,none,side,indoor,indoor,,True,"[[0.736, 0.3594, 0.1075, 0.218]]",done
+wv_002803,samir,powered,yes,not_applicable,partial,side,indoor,indoor,,,"[[0.0601, 0.2875, 0.8998, 0.6448]]",done
 wv_002812,samir,other_aid,yes,not_applicable,none,front,indoor,indoor,,,"[[0.2396, 0.7361, 0.65, 0.2287]]",done
 wv_002824,samir,manual,yes,not_applicable,none,front,indoor,other,,,,done
 wv_002837,samir,,,,,,,,identifiable_person,,"[[0.4615, 0.5283, 0.4385, 0.4632], [0.7708, 0.4767, 0.025, 0.0219]]",done
@@ -384,6 +388,7 @@ wv_002852,samir,,,,,,,,child,,,done
 wv_002854,samir,manual,yes,self,none,front,daylight,other,,,"[[0.2472, 0.3605, 0.575, 0.6177]]",done
 wv_002855,samir,manual,yes,self,none,front,daylight,other,,True,,done
 wv_002863,samir,,,,,,,,not_a_photo,,,done
+wv_002864,samir,,,,,,,,not_a_photo,,,done
 wv_002889,samir,,,,,,,,identifiable_person,,,done
 wv_002892,samir,manual,yes,self,partial,side,indoor,indoor,,,"[[0.0552, 0.6197, 0.2833, 0.3349], [0.299, 0.6087, 0.2156, 0.2956], [0.5458, 0.6134, 0.2583, 0.3145]]",done
 wv_002895,samir,manual,yes,self,none,side,daylight,other,,,"[[0.5208, 0.2127, 0.4021, 0.6625]]",done
@@ -425,6 +430,7 @@ wv_003144,samir,unclear,yes,not_applicable,none,front,daylight,other,,True,"[[0.
 wv_003162,samir,manual,yes,self,partial,front,indoor,indoor,,,"[[0.274, 0.2044, 0.5031, 0.7331]]",done
 wv_003165,samir,,,,,,,,not_a_photo,,,done
 wv_003169,samir,,,,,,,,not_a_photo,,,done
+wv_003174,samir,manual,yes,not_applicable,partial,front,indoor,other,,,"[[0.2323, 0.4974, 0.3573, 0.484], [0.6083, 0.2757, 0.1583, 0.4699], [0.0052, 0.2273, 0.2021, 0.7713]]",done
 wv_003175,samir,manual,yes,attendant,none,front,daylight,other,,True,"[[0.4615, 0.3476, 0.449, 0.5605]]",done
 wv_003181,samir,manual,yes,not_applicable,none,side,shade,other,,,"[[0.0466, 0.4211, 0.5929, 0.4935]]",done
 wv_003191,samir,,,,,,,,not_a_photo,,,done
@@ -483,6 +489,7 @@ wv_004291,samir,,,,,,,,not_a_photo,,,done
 wv_004307,samir,,,,,,,,not_a_photo,,,done
 wv_004315,samir,,,,,,,,not_a_photo,,,done
 wv_004319,samir,lookalike,no,not_applicable,none,rear,daylight,vehicle,,,"[[0.3292, 0.321, 0.4552, 0.5246]]",done
+wv_004321,samir,,,,,,,,not_a_photo,,,done
 wv_004343,samir,,,,,,,,not_a_photo,,,done
 wv_004348,samir,other_aid,no,not_applicable,none,three-quarter,indoor,indoor,,,"[[0.325, 0.0798, 0.4208, 0.8204]]",done
 wv_004360,samir,,,,,,,,not_a_photo,,,done
@@ -500,10 +507,13 @@ wv_004426,samir,other_aid,yes,not_applicable,none,front,daylight,other,,,"[[0.06
 wv_004437,samir,,,,,,,,not_a_photo,,,done
 wv_004439,samir,other_aid,yes,attendant,partial,front,indoor,other,,,"[[0.1156, 0.257, 0.4167, 0.7026]]",done
 wv_004447,samir,other_aid,yes,not_applicable,none,side,daylight,sidewalk,,,"[[0.2708, 0.3116, 0.4323, 0.484]]",done
+wv_004454,samir,other_aid,yes,not_applicable,heavy,rear,daylight,sidewalk,,,"[[0.4889, 0.3334, 0.4144, 0.6104]]",done
+wv_004459,samir,other_aid,yes,not_applicable,none,three-quarter,daylight,indoor,,,"[[0.5094, 0.2627, 0.2052, 0.4271]]",done
 wv_004463,samir,,,,,,,,not_a_photo,,,done
 wv_004472,samir,,,,,,,,not_a_photo,,,done
 wv_004485,samir,,,,,,,,not_a_photo,,[],done
 wv_004490,samir,,,,,,,,not_a_photo,,,done
+wv_004493,samir,,,,,,,,not_a_photo,,,done
 wv_004497,samir,,,,,,,,not_a_photo,,,done
 wv_004501,samir,,,,,,,,not_a_photo,,,done
 wv_004519,samir,other_aid,no,not_applicable,none,rear,daylight,other,,,,done
@@ -540,6 +550,7 @@ wv_004755,samir,,,,,,,,not_a_photo,,,done
 wv_004756,samir,,,,,,,,identifiable_person,,,done
 wv_004758,samir,,,,,,,,not_a_photo,,,done
 wv_004794,samir,,,,,,,,not_a_photo,,,done
+wv_004801,samir,,,,,,,,not_a_photo,,,done
 wv_004808,samir,,,,,,,,not_a_photo,,,done
 wv_004826,samir,,,,,,,,identifiable_person,,,done
 wv_004854,samir,,,,,,,,not_a_photo,,,done
@@ -549,6 +560,7 @@ wv_004866,samir,,,,,,,,not_a_photo,,,done
 wv_004870,samir,,,,,,,,identifiable_person,,,done
 wv_004871,samir,,,,,,,,not_a_photo,,,done
 wv_004877,samir,,,,,,,,not_a_photo,,,done
+wv_004880,samir,,,,,,,,not_a_photo,,,done
 wv_004888,samir,,,,,,,,child,,,done
 wv_004899,samir,,,,,,,,child,,,done
 wv_004903,samir,,,,,,,,not_a_photo,,,done
@@ -557,11 +569,13 @@ wv_004907,samir,,,,,,,,not_a_photo,,,done
 wv_004913,samir,,,,,,,,not_a_photo,,,done
 wv_004916,samir,,,,,,,,not_a_photo,,,done
 wv_004947,samir,,,,,,,,not_a_photo,,,done
+wv_004955,samir,,,,,,,,identifiable_person,,,done
 wv_004986,samir,,,,,,,,child,,,done
 wv_004991,samir,,,,,,,,child,,,done
 wv_004992,samir,,,,,,,,child,,,done
 wv_004997,samir,,,,,,,,child,,,done
 wv_005000,samir,,,,,,,,child,,,done
+wv_005015,samir,,,,,,,,child,,,done
 wv_005027,samir,,,,,,,,not_a_photo,,,done
 wv_005028,samir,,,,,,,,child,,,done
 wv_005050,samir,,,,,,,,child,,,done
@@ -708,6 +722,7 @@ wv_006170,samir,,,,,,,,not_a_photo,,,done
 wv_006171,samir,lookalike,no,not_applicable,none,front,indoor,indoor,,,,done
 wv_006181,samir,,,,,,,,not_a_photo,,,done
 wv_006194,samir,,,,,,,,not_a_photo,,,done
+wv_006201,samir,,,,,,,,not_a_photo,,,done
 wv_006205,samir,,,,,,,,child,,,done
 wv_006214,samir,,,,,,,,not_a_photo,,,done
 wv_006219,samir,,,,,,,,not_a_photo,,,done
@@ -718,6 +733,7 @@ wv_006238,samir,lookalike,yes,not_applicable,none,front,indoor,indoor,child,,,do
 wv_006241,samir,,,,,,,,child,,,done
 wv_006247,samir,,,,,,,,not_a_photo,,,done
 wv_006250,samir,,,,,,,,not_a_photo,,,done
+wv_006251,samir,,,,,,,,not_a_photo,,,done
 wv_006258,samir,other_aid,yes,not_applicable,none,front,indoor,indoor,,,"[[0.2438, 0.4142, 0.3438, 0.5534]]",done
 wv_006263,samir,,,,,,,,not_a_photo,,,done
 wv_006265,samir,,,,,,,,not_a_photo,,,done
@@ -794,6 +810,7 @@ wv_006859,samir,,,,,,,,not_a_photo,,,done
 wv_006867,samir,,,,,,,,not_a_photo,,,done
 wv_006871,samir,lookalike,,,,,,,not_a_photo,,"[[0.7156, 0.6332, 0.224, 0.2723]]",done
 wv_006875,samir,,,,,,,,not_a_photo,,,done
+wv_006889,samir,,,,,,,,not_a_photo,,,done
 wv_006893,samir,powered,yes,not_applicable,heavy,front,indoor,other,not_a_photo,,,done
 wv_006905,samir,,,,,,,,not_a_photo,,,done
 wv_006907,samir,,,,,,,,not_a_photo,,,done
@@ -801,6 +818,7 @@ wv_006914,samir,,,,,,,,not_a_photo,,,done
 wv_006924,samir,,,,,,,,not_a_photo,,,done
 wv_006949,samir,,,,,,,,not_a_photo,,,done
 wv_006965,samir,,,,,,,,not_a_photo,,,done
+wv_006967,samir,,,,,,,,not_a_photo,,,done
 wv_006969,samir,,,,,,,,not_a_photo,,,done
 wv_006972,samir,,,,,,,,not_a_photo,,,done
 wv_006979,samir,,,,,,,,not_a_photo,,,done
