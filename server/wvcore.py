@@ -140,15 +140,32 @@ def kappa(per):
                   "pairwise": {f"{a}|{b}": {"kappa": cohen(p), "n": len(p)} for (a, b), p in sorted(pair.items()) if len(p) >= 5}}
     return res
 
+BLOCKLIST_GLOB = "removed_*.txt"   # data/removed_*.txt: image ids removed entirely (never served, assigned or exported)
+
+def load_blocklist(datadir):
+    """Union of image ids in data/removed_*.txt (one id per line; '#' comments). Files are lists, images stay on disk."""
+    out = set()
+    if not datadir or not os.path.isdir(datadir): return out
+    for fn in sorted(os.listdir(datadir)):
+        if fn.startswith("removed_") and fn.endswith(".txt"):
+            for line in open(os.path.join(datadir, fn), encoding="utf-8"):
+                t = line.split("#", 1)[0].strip()
+                if ID_RE.match(t): out.add(t)
+    return out
+
 def load_candidates(path):
     with open(path, newline="", encoding="utf-8") as fh:
         return {r["candidate_id"]: r for r in csv.DictReader(fh)}
 
-def materialize(events, cands, outdir, auto=None):
-    """Write labels.csv, per_annotator_labels.csv, adjudication_needed.csv, kappa.json, progress.json
+def materialize(events, cands, outdir, auto=None, blocked=None):
+    """Blocked ids (data/removed_*.txt) are dropped from events, candidates and machine suggestions first. Write labels.csv, per_annotator_labels.csv, adjudication_needed.csv, kappa.json, progress.json
     (+ auto_vs_human.json when machine suggestions are given). Machine suggestions NEVER enter labels/kappa:
     they are not events, only humans' events are folded."""
     os.makedirs(outdir, exist_ok=True)
+    if blocked:
+        events = [e for e in events if e["image_id"] not in blocked]
+        cands = {k: v for k, v in cands.items() if k not in blocked}
+        if auto is not None: auto = {t: {i: r for i, r in recs.items() if i not in blocked} for t, recs in auto.items()}
     per, adjv = fold(events)
     imgs = sorted(set(per) | {k[0] for k in adjv})
     stat = {i: image_status(i, per, adjv) for i in imgs}

@@ -26,6 +26,14 @@ UA = {"User-Agent": "WheelViewAnnotate/0.1 (UC Merced Mi3 Lab; research dataset 
 for d in (DB_PATH.parent, CACHE_DIR, EXPORT_DIR): d.mkdir(parents=True, exist_ok=True)
 
 CANDIDATES = wvcore.load_candidates(CANDS)
+BLOCK_DIR = Path(os.environ.get("WV_BLOCKLIST_DIR", ROOT / "data"))   # data/removed_*.txt: removed entirely (files stay on disk)
+_BLOCK = {"sig": None, "ids": set()}
+def blocked():
+    """Ids listed in data/removed_*.txt; reloaded whenever those files change (e.g. after git pull)."""
+    try: sig = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in BLOCK_DIR.glob(wvcore.BLOCKLIST_GLOB))
+    except OSError: sig = []
+    if sig != _BLOCK["sig"]: _BLOCK.update(sig=sig, ids=wvcore.load_blocklist(BLOCK_DIR))
+    return _BLOCK["ids"]
 LOCK = threading.Lock()
 BACKOFF = {}  # host -> unix time until which the image proxy will not contact it (after a 429)
 
@@ -182,7 +190,7 @@ async def unlock(req: Request):
 def health():
     with db() as c: n = c.execute("SELECT COUNT(*) FROM events").fetchone()[0]
     a = auto_state()
-    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "images_ready": images_ready(),
+    out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()), "images_ready": images_ready(),
            "features": ["review", "blur"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "models": {t: len(r) for t, r in a["data"].items()}}}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -213,7 +221,7 @@ def get_events(since: int = 0, annotator: str | None = None, image_id: str | Non
 
 @app.get("/api/images/{image_id}")
 def get_image(image_id: str):
-    if image_id not in CANDIDATES: raise HTTPException(404)
+    if image_id not in CANDIDATES or image_id in blocked(): raise HTTPException(404)
     return image_meta(image_id)
 
 def statuses(c):
@@ -233,9 +241,10 @@ def assign(annotator: str, n: int = Query(30, ge=1, le=200)):
         st = statuses(c)
         asg = {}
         for r in c.execute("SELECT image_id, annotator FROM assignments"): asg.setdefault(r[0], set()).add(r[1])
-        mine_open = [i for i, s in asg.items() if ann in s and ann not in st.get(i, {}).get("done", [])]
+        B = blocked()
+        mine_open = [i for i, s in asg.items() if ann in s and ann not in st.get(i, {}).get("done", []) and i not in B]
         out = list(mine_open)
-        eligible = (lambda i: ASSIGN_NO_IMAGE or local_image(i) is not None)
+        eligible = (lambda i: i not in B and (ASSIGN_NO_IMAGE or local_image(i) is not None))
         # 1) third annotator for disagreements; 2) second annotator; 3) fresh images
         third = [i for i, s in st.items() if s["status"] == "needs_third_annotator" and ann not in asg.get(i, set())
                  and ann not in s["done"] and len(asg.get(i, set())) < maxn]
@@ -291,8 +300,8 @@ def review_assign(annotator: str, n: int = Query(30, ge=1, le=200), order: str =
         st = statuses(c)
         asg = {}
         for r in c.execute("SELECT image_id, annotator FROM assignments"): asg.setdefault(r[0], set()).add(r[1])
-        mine_done = {i for i, s in st.items() if ann in s["done"]}
-        ok = lambda i: i in recs and i not in mine_done and (ASSIGN_NO_IMAGE or local_image(i) is not None)
+        mine_done = {i for i, s in st.items() if ann in s["done"]}; B = blocked()
+        ok = lambda i: i in recs and i not in mine_done and i not in B and (ASSIGN_NO_IMAGE or local_image(i) is not None)
         third = [i for i, s in st.items() if s["status"] == "needs_third_annotator" and ann not in asg.get(i, set()) and len(asg.get(i, set())) < maxn]
         # a second human: someone else already finished (or holds) it, it still needs another label, and it is not mine
         second = [i for i in recs if ann not in asg.get(i, set()) and 0 < len(asg.get(i, set()) | set(st.get(i, {}).get("done", []))) < base]
@@ -316,9 +325,9 @@ def review_assign(annotator: str, n: int = Query(30, ge=1, le=200), order: str =
 @app.get("/api/conflicts")
 def conflicts():
     with db() as c: st = statuses(c)
-    rows = []
+    rows = []; B = blocked()
     for i, s in sorted(st.items()):
-        if s["conflicts"]:
+        if s["conflicts"] and i not in B:
             rows.append(image_meta(i) | {"status": s["status"], "done": s["done"],
                         "conflicts": {f: s["fields"][f][2] for f in s["conflicts"]}})
     return {"conflicts": rows}
@@ -326,7 +335,7 @@ def conflicts():
 @app.get("/api/stats")
 def stats():
     with db() as c: evs = all_events(c)
-    stat, k, prog = wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"])
+    stat, k, prog = wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"], blocked=blocked())
     with db() as c: prog["assignments"] = c.execute("SELECT COUNT(*) FROM assignments").fetchone()[0]
     return {"progress": prog, "kappa": k}
 
@@ -335,13 +344,13 @@ def export(name: str):
     allowed = {"labels.csv", "per_annotator_labels.csv", "adjudication_needed.csv", "kappa.json", "progress.json", "auto_vs_human.json"}
     if name not in allowed: raise HTTPException(404)
     with db() as c: evs = all_events(c)
-    wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"])
+    wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"], blocked=blocked())
     return FileResponse(EXPORT_DIR / name, media_type="text/csv" if name.endswith(".csv") else "application/json",
                         headers={"Cache-Control": "no-store"})
 
 @app.get("/img/{image_id}")
 def img(image_id: str):
-    if image_id not in CANDIDATES: raise HTTPException(404)
+    if image_id not in CANDIDATES or image_id in blocked(): raise HTTPException(404)
     p = blurred_image(image_id) or local_image(image_id)      # annotators see the face-blurred release copy when one exists
     if p: return FileResponse(p, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=604800"})
     if not PROXY: raise HTTPException(404, "image not available locally (proxy disabled)")

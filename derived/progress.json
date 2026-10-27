@@ -1,22 +1,22 @@
 {
  "auto_review_events_by_annotator": {
-  "samir": 3331,
-  "shaaz": 240
+  "samir": 2551,
+  "shaaz": 203
  },
- "candidates": 7377,
- "events": 5451,
+ "candidates": 5375,
+ "events": 4158,
  "events_by_annotator": {
   "deploytest": 8,
-  "samir": 3924,
-  "shaaz": 1396
+  "samir": 2926,
+  "shaaz": 1121
  },
  "images_done_by_annotator": {
-  "samir": 743,
-  "shaaz": 130
+  "samir": 453,
+  "shaaz": 101
  },
- "images_touched": 747,
+ "images_touched": 457,
  "status_counts": {
-  "final": 129,
-  "in_progress": 618
+  "final": 100,
+  "in_progress": 357
  }
 }

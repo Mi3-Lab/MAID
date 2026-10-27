@@ -46,7 +46,8 @@ with open(AUTO / f"{TAG}.jsonl", "w") as fh:
 
 BLUR = TMP / "blurred"; BLUR.mkdir(); BLUR_MAN = TMP / "blur_manifest.jsonl"; BLUR_MAN.write_text("")
 env = dict(os.environ, WV_DB=str(TMP / "e2e.db"), WV_EXPORT_DIR=str(TMP / "exports"), WV_IMAGE_PROXY="0", WV_AUTO_DIR=str(AUTO),
-           WV_BLUR_DIR=str(BLUR), WV_BLUR_MANIFESTS=str(BLUR_MAN))
+           WV_BLUR_DIR=str(BLUR), WV_BLUR_MANIFESTS=str(BLUR_MAN), WV_BLOCKLIST_DIR=str(TMP / "block"))
+(TMP / "block").mkdir(); BLOCKED_ID = _ids[-1]; (TMP / "block" / "removed_test.txt").write_text("# test\n" + BLOCKED_ID + "\n")
 srv = subprocess.Popen([sys.executable, "-m", "uvicorn", "main:app", "--port", str(PORT), "--log-level", "warning"],
                        cwd=ROOT / "server", env=env, stdout=open(TMP / "server.log", "w"), stderr=subprocess.STDOUT)
 def _try_health():
@@ -55,6 +56,8 @@ def _try_health():
 
 try:
     check("server starts", wait(_try_health, 20))
+    check("blocklist counted in health", api("/api/health").json().get("blocked") == 1, str(api("/api/health").json().get("blocked")))
+    check("blocked image never served", api(f"/api/images/{BLOCKED_ID}").status_code == 404 and api(f"/img/{BLOCKED_ID}").status_code == 404)
     with sync_playwright() as p:
         br = p.chromium.launch()
         def login(name):

@@ -8,7 +8,7 @@ Writes:
   derived/attributions.csv  one row per candidate (in_use flag grows as people label)
   derived/attributions.bib  BibTeX: per-source dataset entries + special-requirement and in-use images
 Run by .github/workflows/rebuild-derived.yml after build_derived.py. Never hand-edit derived/."""
-import argparse, csv, html, json, re, sys
+import argparse, csv, html, json, os, re, sys
 from collections import Counter
 from pathlib import Path
 
@@ -273,7 +273,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=ROOT / "derived"); ap.add_argument("--events", default=ROOT / "annotations" / "events")
     a = ap.parse_args(); out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
-    cands = list(csv.DictReader(open(ROOT / "data" / "candidates.csv", encoding="utf-8")))
+    import wvcore
+    blocked = wvcore.load_blocklist(os.environ.get("WV_BLOCKLIST_DIR", ROOT / "data"))      # data/removed_*.txt: removed entirely, never credited/released
+    cands = [c for c in csv.DictReader(open(ROOT / "data" / "candidates.csv", encoding="utf-8")) if c["candidate_id"] not in blocked]
     lics = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "data" / "LICENSES_draft.csv", encoding="utf-8"))}
     cp = ROOT / "data" / "attribution_cache.json"
     cache = json.load(open(cp, encoding="utf-8"))["items"] if cp.exists() else {}
