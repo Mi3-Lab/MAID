@@ -1,0 +1,327 @@
+image_id,split,label,creator,group,label_how,license_status
+wv_000233,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000234,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000237,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000240,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000241,test,powered,See-ming Lee (SML),flickr:48973657@n00,consensus,ok
+wv_000244,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000246,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000247,test,powered,See-ming Lee (SML),flickr:48973657@n00,consensus,ok
+wv_000251,val,other_aid,GlacierNPS,flickr:43288043@n04,adjudicated,ok
+wv_000252,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000253,val,other_aid,GlacierNPS,flickr:43288043@n04,adjudicated,ok
+wv_000257,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000262,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000263,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000265,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000272,test,powered,See-ming Lee (SML),flickr:48973657@n00,consensus,ok
+wv_000274,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000275,test,powered,See-ming Lee (SML),flickr:48973657@n00,consensus,ok
+wv_000276,val,other_aid,GlacierNPS,flickr:43288043@n04,adjudicated,ok
+wv_000287,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000291,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000292,val,other_aid,GlacierNPS,flickr:43288043@n04,adjudicated,ok
+wv_000293,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000295,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000296,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000300,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000303,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_000304,test,powered,Elvert Barnes,flickr:perspective,single,ok
+wv_000311,train,powered,Harvey K,flickr:theharv58,single,ok
+wv_000323,test,manual,sylvar,flickr:sylvar,single,ok_with_note
+wv_000329,val,powered,Phillip Capper,flickr:flissphil,single,ok
+wv_000330,train,other_aid,Sandra Cohen-Rose and   Colin Rose,flickr:73416633@n00,single,ok
+wv_000334,train,powered,Can Do Canines,flickr:95368578@n04,single,ok
+wv_000343,val,powered,UNED Universidad Nacional de Educación a Distancia,flickr:uned,single,ok
+wv_000356,test,powered,Fotos GOVBA,flickr:agecombahia,single,ok
+wv_000360,val,powered,SUPERFROG Triathlon,flickr:62244848@n06,single,ok
+wv_000362,train,powered,ITU Pictures,flickr:itupictures,single,ok
+wv_000363,train,powered,TheMatthewSlack,flickr:thematthewslack,single,ok
+wv_000371,train,powered,Dave Ruske,flickr:druske,single,ok_with_note
+wv_000378,train,powered,Simone Ramella,flickr:ramella,single,ok
+wv_000383,test,powered,Eric Fischer,flickr:walkingsf,single,ok
+wv_000385,val,powered,Rikki&#x27;s  Refuge,flickr:rikkis_refuge,single,ok
+wv_000386,train,powered,Control Arms,flickr:controlarms,single,ok
+wv_000398,train,powered,Daren Clarke,flickr:dc07703,single,ok
+wv_000403,val,powered,John Coster,flickr:citizenseye,single,ok
+wv_000407,train,powered,U.S. Department of Agriculture,flickr:usdagov,single,ok
+wv_000409,val,powered,jean-louis Zimmermann,flickr:jeanlouis_zimmermann,single,ok
+wv_000413,test,powered,316th ESC,flickr:316thesc,single,ok_with_note
+wv_000415,test,powered,seligmanwaite,flickr:seligmanwaite,single,ok
+wv_000416,train,powered,U.S. Department of Agriculture,flickr:usdagov,single,ok
+wv_000425,val,manual,Wonderlane,flickr:wonderlane,single,ok
+wv_000437,train,powered,Teddy Llovet,flickr:teddyllovet,single,ok
+wv_001960,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001961,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001962,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001964,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001966,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001967,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001968,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001970,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001971,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001973,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001974,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001976,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001977,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,single,ok
+wv_001979,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001983,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001989,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001990,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001995,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_001998,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002002,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002004,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002005,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002009,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002012,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002016,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002018,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002019,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002026,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002027,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002030,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002033,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002039,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002046,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002047,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002049,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002051,train,other_aid,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002052,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002053,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002059,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002074,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002075,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002076,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,single,ok
+wv_002084,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002088,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002092,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002095,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002097,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002099,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002102,train,other_aid,Rod Waddington,flickr:64607715@n05,single,ok
+wv_002105,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002108,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002111,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002118,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002119,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002121,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002122,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002123,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002124,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002126,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002129,train,powered,Jnzl's Photos,flickr:102748040@n03,adjudicated,ok
+wv_002130,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002131,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002133,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002134,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002135,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002137,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002138,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002140,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002141,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002143,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,single,ok
+wv_002147,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002150,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002153,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,single,ok
+wv_002154,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002160,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002161,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,single,ok
+wv_002164,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002168,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,single,ok
+wv_002171,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002172,train,powered,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002173,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002175,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002176,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002178,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002179,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002187,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002188,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002189,train,lookalike,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002191,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,adjudicated,ok
+wv_002197,train,manual,U.S. Department of Veterans Affairs,flickr:44636446@n04,consensus,ok
+wv_002212,val,manual,jean-louis Zimmermann,flickr:jeanlouis_zimmermann,single,ok
+wv_002214,train,manual,2010 World Wheelchair Basketball Championships,flickr:2010wwbc,single,ok
+wv_002245,train,manual,Biblioteca Pública Iu Bohigas de Salt,flickr:bibsalt,single,ok
+wv_002246,test,manual,US Embassy Canada,flickr:us_mission_canada,single,ok
+wv_002248,train,manual,Affiliate Summit,flickr:affsum,single,ok
+wv_002264,train,manual,Gwydion M. Williams,flickr:45909111@n00,single,ok
+wv_002282,train,manual,Mike Baird,flickr:mikebaird,single,ok_with_note
+wv_002285,test,manual,Aivar Ruukel,flickr:soomaa,single,ok
+wv_002289,train,manual,British Province of Carmelites,flickr:gbcarmelite,single,ok
+wv_002320,test,manual,sylvar,flickr:sylvar,single,ok
+wv_002329,train,manual,Zepfanman.com,flickr:zepfanman,single,ok
+wv_002342,train,manual,Onkologikoa San Sebastián,flickr:110071476@n07,single,ok
+wv_002348,train,manual,Obispado Cádiz y Ceuta,flickr:obispadocadizyceuta,single,ok
+wv_002354,train,other_aid,David Jones,flickr:davidcjones,single,ok
+wv_002367,train,lookalike,VCRR,flickr:vcrr,single,ok
+wv_002374,train,powered,Reedz Malik,flickr:anakbrunei,single,ok_with_note
+wv_002390,val,manual,Municipalidad de Miraflores,flickr:munimiraflores,single,ok
+wv_002392,train,manual,Carlos Martinez,flickr:kumanday,single,ok
+wv_002414,train,manual,Global Justice Now,flickr:wdm,single,ok
+wv_002427,train,manual,budawood,flickr:budawood,single,ok
+wv_002430,train,manual,marksontok,flickr:mark233,single,ok
+wv_002446,val,manual,Jaguar MENA,flickr:jaguarcarsmena,single,ok
+wv_002453,test,manual,Sean Hayford Oleary,flickr:sdho,single,ok_with_note
+wv_002457,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002462,train,other_aid,Stuart Grout,flickr:pigpilot,single,ok
+wv_002464,test,manual,U.S. Embassy Tel Aviv,flickr:usembassyta,single,ok_with_note
+wv_002467,train,manual,Nick Webb,flickr:nickwebb,single,ok
+wv_002472,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002502,test,manual,The U.S. Army,flickr:soldiersmediacenter,single,ok_with_note
+wv_002505,val,manual,Bill,flickr:danceswithlight,single,ok_with_note
+wv_002506,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002512,val,manual,Danny Bollinger,flickr:dannybollinger,single,ok
+wv_002517,val,manual,Municipalidad de Miraflores,flickr:munimiraflores,single,ok
+wv_002524,train,manual,Simon Fraser University -  University Communications,flickr:sfupamr,single,ok
+wv_002530,train,manual,Simon Hannaford,flickr:hannafordeducation,single,ok
+wv_002544,train,manual,Cluster Munition Coalition,flickr:clustermunitioncoalition,single,ok
+wv_002547,test,manual,US Embassy Canada,flickr:us_mission_canada,single,ok
+wv_002570,train,manual,Jugendpresse Deutschland,flickr:97056632@n05,single,ok
+wv_002576,val,manual,Edwin  Martinez,flickr:rhythmstrip,single,ok
+wv_002582,train,powered,Cambodia4kids.org Beth Kanter,flickr:cambodia4kidsorg,single,ok
+wv_002590,val,manual,mike krzeszak,flickr:portland_mike,single,ok
+wv_002591,test,manual,tu Foto con el Presidente,flickr:tufotoconelpresidente,single,ok
+wv_002609,train,powered,Virginia State Parks,flickr:vastateparksstaff,single,ok
+wv_002611,test,manual,Aivar Ruukel,flickr:soomaa,single,ok
+wv_002615,train,manual,Hector Sanchez,flickr:troubleshots,single,ok
+wv_002617,val,manual,Municipalidad de Miraflores,flickr:munimiraflores,single,ok
+wv_002621,train,powered,Cluster Munition Coalition,flickr:clustermunitioncoalition,single,ok
+wv_002627,test,manual,US Embassy Canada,flickr:us_mission_canada,single,ok
+wv_002633,train,manual,ALES,flickr:assembleialegislativaes,single,ok
+wv_002655,test,manual,Thomas Davies,flickr:thomasdavies88,single,ok
+wv_002672,test,powered,UKBERRI.NET Uribe Kosta eta Erandioko agerkari digitala,flickr:www_ukberri_net,single,ok
+wv_002680,train,manual,Stuart Grout,flickr:pigpilot,single,ok
+wv_002684,train,manual,Bratislavská župa,flickr:fotopavolfreso,single,ok
+wv_002687,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002690,test,manual,Keoni Cabral,flickr:keoni101,single,ok_with_note
+wv_002726,train,manual,Reedz Malik,flickr:anakbrunei,single,ok_with_note
+wv_002734,train,manual,PTR Tennis,flickr:ptrtennis,single,ok
+wv_002778,val,manual,Lisa Norwood,flickr:lisanorwood,single,ok
+wv_002779,val,manual,Rikki&#x27;s  Refuge,flickr:rikkis_refuge,single,ok
+wv_002784,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002797,train,manual,Frédéric BISSON,flickr:zigazou76,single,ok
+wv_002803,train,powered,US Department of Education,flickr:departmentofed,single,ok
+wv_002812,train,other_aid,Rosie Ross,flickr:rosie_vs_andre,single,ok_with_note
+wv_002824,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002839,test,manual,Montclair Film Festival,flickr:montclairfilmfest,single,ok
+wv_002846,train,manual,"Cecilia Pérez Jara, ex Ministra SEGEGOB",flickr:segegobchile,single,ok
+wv_002850,test,manual,Karl Baron,flickr:kalleboo,single,ok
+wv_002854,train,manual,whyohgee singapore 2010,flickr:whyohgee,single,ok
+wv_002855,val,manual,Edwin  Martinez,flickr:rhythmstrip,single,ok
+wv_002892,train,manual,Hayato.D,flickr:al-hayat,single,ok
+wv_002895,test,manual,Rick McCharles,flickr:rickmccharles,single,ok
+wv_002897,test,manual,Alzheimer&#x27;s Association - Greater Illinois,flickr:greaterillinois,single,ok
+wv_002898,test,other_aid,Howard Brier,flickr:33764571@n00,single,ok
+wv_002903,test,manual,UKBERRI.NET Uribe Kosta eta Erandioko agerkari digitala,flickr:www_ukberri_net,single,ok
+wv_002905,train,powered,Melissa Wilkins,flickr:melissambwilkins,single,ok
+wv_002939,val,powered,City of Seattle Community Tech,flickr:seattlecommunitytech,single,ok
+wv_002947,train,powered,Cluster Munition Coalition,flickr:clustermunitioncoalition,single,ok
+wv_002952,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_002965,train,manual,Department of Foreign Affairs and Trade,flickr:dfataustralianaid,single,ok_with_note
+wv_002975,train,powered,US Department of Education,flickr:departmentofed,single,ok
+wv_002978,test,lookalike,Federation European Cyclists&#x27;,flickr:eucyclistsfed,single,ok
+wv_002988,val,powered,John Coster,flickr:citizenseye,single,ok
+wv_002996,test,manual,Army Medicine,flickr:armymedicine,single,ok_with_note
+wv_003013,train,powered,COD Newsroom,flickr:codnewsroom,single,ok
+wv_003017,train,manual,Les Chatfield,flickr:elsie,single,ok
+wv_003019,test,manual,zeevveez,flickr:zeevveez,single,ok
+wv_003020,train,manual,Congreso de la República del Perú,flickr:congresoperu,single,ok
+wv_003025,test,manual,Girl Guides of Canada,flickr:girlguidesofcan,single,ok
+wv_003031,train,manual,US Embassy Madrid,flickr:usembassymadrid,single,ok_with_note
+wv_003035,val,manual,Herb Neufeld,flickr:oggiedog,single,ok_with_note
+wv_003045,train,manual,Annie Mole,flickr:anniemole,single,ok
+wv_003056,test,manual,The U.S. Army,flickr:soldiersmediacenter,single,ok_with_note
+wv_003057,train,manual,Cluster Munition Coalition,flickr:clustermunitioncoalition,single,ok
+wv_003080,train,manual,Port of San Diego,flickr:portofsandiego,single,ok
+wv_003113,test,manual,Senado Federal,flickr:agenciasenado,single,ok
+wv_003115,train,manual,Radiofabrik - Community Media Association Salzburg,flickr:radiofabrik,single,ok
+wv_003117,test,manual,The U.S. Army,flickr:soldiersmediacenter,single,ok_with_note
+wv_003126,val,manual,Studieforbund VOFO,flickr:127792490@n08,single,ok
+wv_003129,val,powered,jean-louis Zimmermann,flickr:jeanlouis_zimmermann,single,ok
+wv_003133,train,manual,nancybeetoo,flickr:nancybeetoo,single,ok
+wv_003139,train,manual,Cluster Munition Coalition,flickr:clustermunitioncoalition,single,ok
+wv_003162,train,manual,Unión Europea en Perú,flickr:ueenperu,single,ok
+wv_003174,train,manual,Vaillante Angers Tennis de Table,flickr:vaillantett,single,ok
+wv_003175,val,manual,DVIDSHUB,flickr:dvids,single,ok
+wv_003181,train,manual,City of Boston Archives,flickr:cityofbostonarchives,single,ok
+wv_003201,train,manual,Dignity in Dying,flickr:dignityindying,single,ok
+wv_003206,train,manual,Parker Knight,flickr:rocketboom,single,ok_with_note
+wv_003218,train,manual,Jack Shainsky,flickr:ifyr,single,ok
+wv_003221,val,manual,Abbeyfield Kent,flickr:abbeyfieldkent,single,ok
+wv_003226,train,manual,California Department of Fish and Wildlife,flickr:californiadfg,single,ok_with_note
+wv_003229,test,manual,Galeria del Ministerio de Defensa del Perú,flickr:92793865@n07,single,ok
+wv_003243,train,other_aid,Joe Hall,flickr:joebeone,single,ok
+wv_003246,train,manual,TEDx Roermond,flickr:tedxroermond,single,ok_with_note
+wv_003252,val,manual,Mike Ownby,flickr:40926212@n05,single,ok
+wv_003253,train,powered,Governo do Estado de São Paulo,flickr:governosp,single,ok
+wv_003254,train,manual,Aberdeen Proving Ground,flickr:usagapg,single,ok
+wv_003257,train,powered,Can Do Canines,flickr:95368578@n04,single,ok
+wv_003264,train,manual,COD Newsroom,flickr:codnewsroom,single,ok
+wv_003267,train,manual,Dan Bock,flickr:91828644@n00,single,ok
+wv_003269,val,manual,Gaël Marziou,flickr:gmarziou,single,ok
+wv_003281,train,manual,Bilboko Konpartsak,flickr:bilbokokonpartsak,single,ok
+wv_003290,val,manual,Municipalidad de Miraflores,flickr:munimiraflores,single,ok
+wv_003291,train,manual,US Department of Education,flickr:departmentofed,single,ok
+wv_003299,test,manual,US Embassy Canada,flickr:us_mission_canada,single,ok_with_note
+wv_003302,test,manual,Tourism Victoria,flickr:visitmelbourne,single,ok
+wv_003318,train,powered,pscbarcelona,flickr:pscbarcelona,single,ok_with_note
+wv_003320,train,manual,Special Olympics Connaught,flickr:97095120@n06,single,ok
+wv_003332,train,manual,NCDOTcommunications,flickr:ncdot,single,ok
+wv_003344,val,manual,Edwin  Martinez,flickr:rhythmstrip,single,ok
+wv_003371,test,manual,Army Medicine,flickr:armymedicine,single,ok_with_note
+wv_003383,train,powered,Chris,flickr:chrisfp,single,ok
+wv_003394,train,powered,zombieite,flickr:zombieite,single,ok
+wv_003406,train,manual,Beth Scupham,flickr:bethscupham,single,ok
+wv_003408,test,other_aid,Steve Lambert,flickr:slambert,single,ok_with_note
+wv_003411,test,manual,Municipalidad Antofagasta,flickr:fotosmuniantofagasta,single,ok
+wv_003418,val,manual,SUPERFROG Triathlon,flickr:62244848@n06,single,ok
+wv_003432,train,manual,Mike Anthony Catuira,flickr:catuira,single,ok
+wv_003437,train,manual,Paola Sucato,flickr:ci_polla,single,ok
+wv_003442,val,manual,Shehal Joseph,flickr:shehal,single,ok
+wv_003443,test,manual,sung ming whang,flickr:smwhang,single,ok
+wv_003444,train,manual,COD Newsroom,flickr:codnewsroom,single,ok
+wv_004255,train,other_aid,Allan_Grey,flickr:32744787@n08,consensus,ok
+wv_004262,train,powered,Blake Handley,flickr:56705607@n00,single,ok
+wv_004284,train,other_aid,Blake Handley,flickr:56705607@n00,adjudicated,ok
+wv_004286,train,other_aid,Blake Handley,flickr:56705607@n00,single,ok
+wv_004287,train,lookalike,Blake Handley,flickr:56705607@n00,adjudicated,ok
+wv_004294,val,powered,andy michael2012,flickr:84422026@n07,single,ok
+wv_004306,train,other_aid,Blake Handley,flickr:56705607@n00,consensus,ok
+wv_004319,train,lookalike,Blake Handley,flickr:56705607@n00,single,ok
+wv_004348,val,other_aid,Sascha Pohflepp,flickr:saschapohflepp,single,ok
+wv_004378,train,other_aid,Mark McFadden,flickr:mcfadden1978,single,ok
+wv_004380,train,other_aid,Andy Maguire,flickr:andymag,single,ok
+wv_004383,train,other_aid,Sebastiaan ter Burg,flickr:ter-burg,single,ok
+wv_004384,test,other_aid,Senado Federal,flickr:agenciasenado,single,ok
+wv_004391,test,other_aid,Chris Marchant,flickr:forayinto35mm,single,ok
+wv_004398,test,other_aid,Senado Federal,flickr:agenciasenado,single,ok
+wv_004408,train,other_aid,Jason Rogers,flickr:restlessglobetrotter,single,ok_with_note
+wv_004420,train,other_aid,Calum Fraser,flickr:rally-stage-pix,single,ok
+wv_004426,train,other_aid,Sarah Stierch,flickr:sarahvain,single,ok_with_note
+wv_004439,train,other_aid,Carol VanHook,flickr:librariesrock,single,ok
+wv_004447,train,other_aid,Pixel Addict,flickr:pixel_addict,single,ok
+wv_004454,train,other_aid,Sandra Cohen-Rose and   Colin Rose,flickr:73416633@n00,single,ok
+wv_004459,train,other_aid,roogi,flickr:roogi,single,ok
+wv_004519,train,other_aid,ritzotencate,flickr:24628536@n00,single,ok
+wv_004658,train,other_aid,stina1305,flickr:55366860@n08,single,ok
+wv_004691,train,other_aid,Nicole  Beauchamp,flickr:nicole_beauchamp,single,ok
+wv_004703,train,other_aid,Eric Niiler,flickr:100315880@n04,single,ok
+wv_004709,val,other_aid,Phillip Capper,flickr:flissphil,single,ok
+wv_004715,train,other_aid,Mike Baird,flickr:mikebaird,single,ok_with_note
+wv_005484,train,lookalike,Wicker Paradise,flickr:wicker-furniture,single,ok_with_note
+wv_006047,val,lookalike,MikeKalasnik,flickr:10542402@n06,single,ok
+wv_006085,train,lookalike,androidbuilder,flickr:200833743@n07,single,ok_with_note
+wv_006157,train,lookalike,Mikey,flickr:raver_mikey,single,ok
+wv_006171,train,lookalike,Surreal Name Given,flickr:greenwichphotography,single,ok
+wv_006222,train,lookalike,Mikey,flickr:raver_mikey,single,ok
+wv_006258,test,other_aid,Wendy Berry,flickr:twodolla,single,ok
+wv_006300,train,lookalike,Mike Mozart,flickr:jeepersmedia,single,ok
+wv_006501,train,lookalike,Mikey,flickr:raver_mikey,single,ok
+wv_006562,val,lookalike,Kentucky National Guard Public Affairs Office,flickr:kyngpao,single,ok_with_note
+wv_006611,test,lookalike,Rusty Clark - On the Air M-F 8am-noon,flickr:rusty_clark,single,ok
+wv_006637,train,manual,MTAPhotos,flickr:61135621@n03,single,ok
+wv_006712,train,manual,MTAPhotos,flickr:61135621@n03,single,ok
+wv_007021,val,powered,Eric Chan,flickr:maveric2003,single,ok
+wv_007150,test,powered,Yuichiro MASUI,flickr:masuidrive,single,ok
