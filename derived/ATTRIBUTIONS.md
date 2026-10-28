@@ -13,7 +13,7 @@ Every image in the release and every image shown in the paper gets a credit line
 - **Paper:** cite the sources with `\cite{wikimediacommons, openverse, kuznetsova2020openimages, openimagesv7}` from [`attributions.bib`](attributions.bib). Any single image reproduced in a figure needs its own credit line in the caption (cite its `wv_` key).
 - **Open Images V7:** annotations are CC BY 4.0 (Google LLC); images are listed as CC BY 2.0 and credited to their Flickr authors.
 
-Candidates: **5417**. Images in use (labelled and not excluded by at least one annotator): **349**. Images with special requirements: **350**. Rows needing review or not usable: **13**.
+Candidates: **5417**. Images in use (labelled and not excluded by at least one annotator): **350**. Images with special requirements: **350**. Rows needing review or not usable: **13**.
 
 ## Rows that need review or cannot be used
 
@@ -2065,7 +2065,7 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 
 ## Images currently in use
 
-349 images. This list grows automatically as people label.
+350 images. This list grows automatically as people label.
 
 | image_id | title | author | license | source | special | credit line |
 |---|---|---|---|---|---|---|
@@ -2109,6 +2109,7 @@ Use the **exact** credit text below. `restriction:*` flags come from the Commons
 | wv_000296 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212528999) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212528999 |
 | wv_000300 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212742285) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212742285 |
 | wv_000303 | National Veterans Wheelchair Games 2022 | U.S. Department of Veterans Affairs | [Public Domain Mark 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [link](https://www.flickr.com/photos/44636446@N04/52212741490) | no | "National Veterans Wheelchair Games 2022" by U.S. Department of Veterans Affairs is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/. Source: https://www.flickr.com/photos/44636446@N04/52212741490 |
+| wv_000304 | 67.NPOM25.NLEOM.WDC.15may06 | Elvert Barnes | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/perspective/500498088) | no | "67.NPOM25.NLEOM.WDC.15may06" by Elvert Barnes, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/perspective/500498088. Modified: resized; faces blurred (17 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_000311 | we get off here guys come on now | Harvey K | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/theharv58/18408346703) | no | "we get off here guys come on now" by Harvey K, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/theharv58/18408346703. Modified: resized; faces blurred (8 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_000323 | USF School of Information graduation photo. | sylvar | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/sylvar/14095214261) | no | "USF School of Information graduation photo." by sylvar, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/sylvar/14095214261. Modified: resized; faces blurred (10 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
 | wv_000329 | 3rd. Ave - 149th. St., The Bronx, New York, Feb. 2008 | Phillip Capper | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [link](https://www.flickr.com/photos/flissphil/2300095304) | no | "3rd. Ave - 149th. St., The Bronx, New York, Feb. 2008" by Phillip Capper, Flickr, via Open Images Dataset V7, licensed under CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/), https://www.flickr.com/photos/flissphil/2300095304. Modified: resized; faces blurred (27 detected, automatic, opencv-yunet-2023mar blur-v3); EXIF stripped |
@@ -2425,7 +2426,7 @@ All 5417 candidates, with credit lines, are in [`attributions.csv`](attributions
 
 | license | all candidates | in use |
 |---|---|---|
-| CC-BY-2.0 | 2698 | 220 |
+| CC-BY-2.0 | 2698 | 221 |
 | CC-BY-SA-4.0 | 1085 | 0 |
 | CC-BY-SA-3.0 | 471 | 0 |
 | CC-BY-SA-2.0 | 303 | 3 |

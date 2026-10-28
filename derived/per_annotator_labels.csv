@@ -134,6 +134,7 @@ wv_000301,samir,,,,,,,,not_a_photo,,,done
 wv_000301,shaaz,,,,,,,,not_a_photo,,,done
 wv_000303,samir,powered,yes,not_applicable,heavy,front,indoor,vehicle,,,,done
 wv_000303,shaaz,powered,yes,not_applicable,none,side,indoor,indoor,,True,"[[0.0118, 0.1122, 0.9816, 0.8813]]",done
+wv_000304,samir,powered,yes,not_applicable,none,rear,daylight,sidewalk,,,,done
 wv_000311,samir,powered,yes,not_applicable,heavy,side,indoor,other,,,"[[0.7531, 0.3023, 0.2292, 0.6401]]",done
 wv_000323,samir,manual,yes,not_applicable,partial,front,indoor,indoor,,,"[[0.4094, 0.3678, 0.4344, 0.5052]]",done
 wv_000329,samir,powered,yes,not_applicable,none,side,daylight,sidewalk,,,"[[0.3495, 0.3943, 0.3245, 0.5171]]",done
@@ -769,6 +770,7 @@ wv_006768,samir,,,,,,,,not_a_photo,,,done
 wv_006770,samir,,,,,,,,not_a_photo,,,done
 wv_006775,samir,,,,,,,,not_a_photo,,,done
 wv_006782,samir,,,,,,,,identifiable_person,,,done
+wv_006790,samir,,,,,,,,not_a_photo,,,done
 wv_006803,samir,,,,,,,,not_a_photo,,,done
 wv_006806,samir,,,,,,,,not_a_photo,,,done
 wv_006812,samir,,,,,,,,not_a_photo,,,done
