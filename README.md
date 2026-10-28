@@ -19,7 +19,7 @@ tests/test_e2e.py       Playwright end-to-end test (two annotators, offline peri
 images/ var/            git-ignored: image files, SQLite DB, proxy cache, server-side exports
 ```
 
-## Run locally (one command)
+## Run locally
 ```bash
 ./run.sh            # http://127.0.0.1:8770  (or ./run.sh 9000; HOST=0.0.0.0 ./run.sh to expose on the LAN)
 # or with Docker:
@@ -29,39 +29,7 @@ docker build -t wheelview-annotate . && docker run -p 8770:8000 -v $PWD/var:/srv
 (`WHEELVIEW_BUILD_DIR`, default `/workspace/wheelview`), it links the thumbnails into `images/`. It then imports any
 committed `annotations/events/*.jsonl` (an idempotent step) and starts uvicorn.
 
-Pages:
-* `/` is the annotator app.
-* `/adjudicate.html` is the adjudicator view. It also shows progress and kappa.
-* `/export/labels.csv` and the other files under `/export/` are always rebuilt live.
 
-## Annotating
-* **Starting out.** Enter your name; there is no password. **Get batch** assigns about 30 images and caches them, with
-  their metadata, for offline work. You can then label with no connection. Edits are queued in IndexedDB and pushed
-  automatically on the browser's `online` event and every 15 s.
-* **Fields.** These come from `server/schema.json`: device_type, occupied, propulsion, occlusion, viewpoint, lighting
-  and setting.
-  * There is also exclude-with-reason (child, clinical_setting, identifiable_person, not_a_photo, license_concern,
-    duplicate), a *face blur missed* flag and optional bboxes.
-  * **The option values are my working definition.** The report's Table 1 was not available when this was built.
-    Edit `schema.json` to match Table 1 exactly; the UI, the server validation and CI all read it.
-* **Prefill.** Weak labels from `proposed_class` appear as dashed suggestions. They are saved only when you click them
-  or press **Done** (Enter).
-* **Keyboard shortcuts.**
-
-  | Key | Action |
-  |---|---|
-  | ↑ / ↓ | choose the field row |
-  | 1–9 | pick a value (0 clears it) |
-  | Enter | Done, then next image |
-  | ← / → or p / n | previous / next image |
-  | e, then 1–6 | exclude with that reason |
-  | f | face-blur flag (a face is still recognisable) |
-  | r | Review auto labels on/off |
-  | a | (review) confirm all suggestions, then next |
-  | o | (review) face-blur boxes overlay |
-  | b | bbox mode |
-  | Backspace | clear bboxes |
-  | ? | help |
 * **Corrections.** *My images* lists everything you have labelled; open any of them to change a field. Your newest
   event wins, but only for *you*.
 * **Independence.** Annotators never see each other's labels.
@@ -165,35 +133,6 @@ Pages:
     1 GB/month of bandwidth on free plans as of this writing, so check your org's plan.
   * Every clone that pulls LFS uses up bandwidth.
   * The license obligations (attribution in `data/LICENSES_draft.csv`) still apply to redistributed copies.
-
-## Backing up SQLite
-The jsonl files are a complete backup of all labels: `sync_events.py export`, then commit. To restore, run
-`sync_events.py import` against an empty DB. Assignments are not exported; they are re-derived as people request new
-batches. For a hot copy of the DB itself:
-```bash
-sqlite3 var/wheelview.db ".backup 'backup/wheelview-$(date +%F-%H%M).db'"     # safe while the server runs (WAL)
-# cron example: */30 * * * *  cd /srv/wheelview-annotate && python3 scripts/sync_events.py sync --push && sqlite3 var/wheelview.db ".backup var/backup.db"
-```
-Litestream (continuous replication to S3-compatible storage) is a good fit for a hosted instance.
-
-## Hosting publicly (not done; needs an account or a server)
-Requirements:
-* **HTTPS.** Service workers and `crypto.randomUUID` only work on HTTPS or localhost.
-* **Persistent disk** for `var/`.
-* **The images.** Either run `fetch_images.py --download` on the host or mount a volume.
-* **Some access control.** Names are not authentication. At minimum, put the app behind your institution's SSO, an
-  HTTP basic-auth reverse proxy, Cloudflare Access, or a Tailscale/VPN.
-
-| Option | Notes |
-|---|---|
-| **UC Merced server / VM** | `HOST=0.0.0.0 ./run.sh 8770` under systemd, with nginx or Caddy in front for TLS, campus SSO or basic auth, cron backups. Simplest for data governance. |
-| **Fly.io** | `fly launch` (uses the Dockerfile), `fly volumes create wv_data`, mounted at `/srv/wheelview/var`. Images go in a second volume or are fetched on boot. Single machine only (SQLite). |
-| **Render** | Docker web service plus a persistent disk at `/srv/wheelview/var`. Persistent disks require a paid instance; the free tier's filesystem is ephemeral and sleeps when idle. |
-| **Railway** | Docker deploy plus a volume at `/srv/wheelview/var`. |
-| **Hugging Face Spaces** | Docker Space with `PORT=7860`. Storage is ephemeral unless you buy persistent storage, so run `sync_events.py sync --push` frequently (it needs a deploy key) or attach persistent storage. Make the Space private. |
-
-Run only **one** server instance per SQLite file. For multiple sites, run separate servers and merge through git: each
-server exports its events, and `import` on the others unions them.
 
 ## Hosted deployment (Hugging Face Space)
 
