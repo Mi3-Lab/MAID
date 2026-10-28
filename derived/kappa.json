@@ -1,82 +1,82 @@
 {
  "device_type": {
-  "n_items": 70,
+  "n_items": 73,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.7688,
-    "n": 70
+    "kappa": 0.7567,
+    "n": 73
    }
   },
-  "pooled_kappa": 0.7688
+  "pooled_kappa": 0.7567
  },
  "exclude": {
-  "n_items": 134,
+  "n_items": 138,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.4828,
-    "n": 134
+    "kappa": 0.4944,
+    "n": 138
    }
   },
-  "pooled_kappa": 0.4828
+  "pooled_kappa": 0.4944
  },
  "lighting": {
-  "n_items": 69,
+  "n_items": 72,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.7546,
-    "n": 69
+    "kappa": 0.7607,
+    "n": 72
    }
   },
-  "pooled_kappa": 0.7546
+  "pooled_kappa": 0.7607
  },
  "occlusion": {
-  "n_items": 70,
+  "n_items": 73,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.018,
-    "n": 70
+    "kappa": 0.0347,
+    "n": 73
    }
   },
-  "pooled_kappa": 0.018
+  "pooled_kappa": 0.0347
  },
  "occupied": {
-  "n_items": 69,
+  "n_items": 72,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.8497,
-    "n": 69
+    "kappa": 0.85,
+    "n": 72
    }
   },
-  "pooled_kappa": 0.8497
+  "pooled_kappa": 0.85
  },
  "propulsion": {
-  "n_items": 69,
+  "n_items": 72,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.8033,
-    "n": 69
+    "kappa": 0.7863,
+    "n": 72
    }
   },
-  "pooled_kappa": 0.8033
+  "pooled_kappa": 0.7863
  },
  "setting": {
-  "n_items": 70,
+  "n_items": 73,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.5908,
-    "n": 70
+    "kappa": 0.6012,
+    "n": 73
    }
   },
-  "pooled_kappa": 0.5908
+  "pooled_kappa": 0.6012
  },
  "viewpoint": {
-  "n_items": 69,
+  "n_items": 72,
   "pairwise": {
    "samir|shaaz": {
-    "kappa": 0.5026,
-    "n": 69
+    "kappa": 0.4968,
+    "n": 72
    }
   },
-  "pooled_kappa": 0.5026
+  "pooled_kappa": 0.4968
  }
 }

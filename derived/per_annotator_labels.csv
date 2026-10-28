@@ -144,6 +144,7 @@ wv_000356,samir,powered,yes,not_applicable,partial,side,indoor,indoor,,,"[[0.003
 wv_000360,samir,powered,yes,not_applicable,heavy,side,daylight,curb,,,"[[0.0109, 0.2324, 0.9789, 0.7271]]",done
 wv_000362,samir,powered,yes,self,partial,side,indoor,indoor,,True,"[[0.2844, 0.2351, 0.4427, 0.7572]]",done
 wv_000371,samir,powered,yes,not_applicable,none,front,indoor,indoor,,True,"[[0.1417, 0.3821, 0.25, 0.4722]]",done
+wv_000375,samir,,,,,,,,not_a_photo,,,done
 wv_000378,samir,powered,yes,not_applicable,heavy,rear,indoor,other,,,"[[0.4604, 0.4571, 0.4792, 0.4722]]",done
 wv_000383,samir,powered,yes,not_applicable,none,side,daylight,sidewalk,,,"[[0.6458, 0.3446, 0.2781, 0.4514]]",done
 wv_000385,samir,powered,no,not_applicable,partial,three-quarter,indoor,indoor,,,"[[0.0722, 0.0397, 0.7458, 0.9406]]",done
@@ -188,6 +189,7 @@ wv_001974,shaaz,manual,yes,self,none,rear,daylight,other,,True,"[[0.7285, 0.5237
 wv_001976,samir,manual,yes,self,partial,front,daylight,other,,,,done
 wv_001976,shaaz,manual,yes,self,none,front,daylight,other,,True,"[[0.0068, 0.113, 0.355, 0.8827], [0.4436, 0.2505, 0.3037, 0.4821], [0.8966, 0.2634, 0.0932, 0.4558]]",done
 wv_001979,shaaz,powered,yes,self,partial,front,indoor,indoor,,,"[[0.0508, 0.4784, 0.6842, 0.5022]]",done
+wv_001981,samir,,,,,,,other,not_a_photo,,,done
 wv_001981,shaaz,,,,,,,,not_a_photo,,,done
 wv_001983,shaaz,manual,yes,self,none,front,indoor,indoor,,,"[[0.0264, 0.5521, 0.9681, 0.4342]]",done
 wv_001985,shaaz,,,,,,,,not_a_photo,,,done
@@ -254,6 +256,7 @@ wv_002091,shaaz,,,,,,,,not_a_photo,,,done
 wv_002092,shaaz,manual,yes,self,none,front,indoor,indoor,,,"[[0.0928, 0.6288, 0.4283, 0.3599]]",done
 wv_002094,samir,,,,,,,,not_a_photo,,,done
 wv_002094,shaaz,,,,,,,,not_a_photo,,,done
+wv_002095,samir,manual,yes,self,partial,side,indoor,indoor,,,,done
 wv_002095,shaaz,manual,yes,self,partial,front,indoor,indoor,,,"[[0.4789, 0.5715, 0.3531, 0.3893], [0.0091, 0.5029, 0.3198, 0.4831], [0.3071, 0.4517, 0.1668, 0.3474], [0.7823, 0.4651, 0.1049, 0.2589]]",done
 wv_002097,shaaz,manual,yes,self,partial,front,daylight,other,,,"[[0.7204, 0.3065, 0.2162, 0.1686], [0.0654, 0.3618, 0.3236, 0.2099], [0.1273, 0.5164, 0.6645, 0.4601]]",done
 wv_002099,samir,manual,yes,self,partial,side,daylight,other,,,,done
@@ -299,6 +302,7 @@ wv_002141,shaaz,manual,yes,self,none,front,indoor,indoor,,,"[[0.222, 0.5056, 0.4
 wv_002147,shaaz,manual,yes,self,heavy,side,indoor,indoor,,,"[[0.5026, 0.6349, 0.382, 0.3433], [0.096, 0.7455, 0.3313, 0.2462]]",done
 wv_002148,samir,,,,,,,,not_a_photo,,,done
 wv_002148,shaaz,,,,,,,,not_a_photo,,,done
+wv_002150,samir,manual,yes,self,partial,side,indoor,indoor,,,,done
 wv_002150,shaaz,manual,yes,self,partial,side,indoor,indoor,,,"[[0.247, 0.6307, 0.454, 0.2631], [0.0395, 0.5875, 0.347, 0.2125], [0.7233, 0.6031, 0.2697, 0.2346]]",done
 wv_002151,samir,,,,,,,,not_a_photo,,,done
 wv_002151,shaaz,,,,,,,,not_a_photo,,,done
@@ -328,6 +332,7 @@ wv_002188,shaaz,manual,yes,self,partial,front,daylight,other,,,"[[0.4362, 0.5875
 wv_002189,shaaz,unclear,yes,unclear,none,side,shade,other,,,"[[0.2582, 0.662, 0.3942, 0.3378]]",done
 wv_002190,samir,,,,,,,,not_a_photo,,,done
 wv_002190,shaaz,,,,,,,,not_a_photo,,,done
+wv_002191,samir,other_aid,yes,not_applicable,partial,front,indoor,indoor,,,,done
 wv_002191,shaaz,manual,yes,self,none,front,indoor,indoor,,,"[[0.0869, 0.5186, 0.3596, 0.4807]]",done
 wv_002197,samir,manual,yes,self,partial,front,indoor,indoor,,,,done
 wv_002197,shaaz,manual,yes,self,none,side,indoor,indoor,,,"[[0.0379, 0.4199, 0.5713, 0.5682]]",done
@@ -490,6 +495,7 @@ wv_004256,shaaz,,,,,,,,not_a_photo,,,done
 wv_004258,shaaz,,,,,,,,not_a_photo,,,done
 wv_004261,samir,,,,,,,,not_a_photo,,,done
 wv_004261,shaaz,,,,,,,,not_a_photo,,,done
+wv_004262,shaaz,powered,yes,not_applicable,none,front,shade,other,,,"[[0.3769, 0.3903, 0.2052, 0.3299]]",done
 wv_004268,shaaz,,,,,,,,not_a_photo,,,done
 wv_004272,samir,,,,,,,,not_a_photo,,,done
 wv_004272,shaaz,,,,,,,,not_a_photo,,,done
@@ -518,6 +524,7 @@ wv_004311,shaaz,,,,,,,,not_a_photo,,,done
 wv_004319,samir,lookalike,no,not_applicable,none,rear,daylight,vehicle,,,"[[0.3292, 0.321, 0.4552, 0.5246]]",done
 wv_004343,samir,,,,,,,,not_a_photo,,,done
 wv_004348,samir,other_aid,no,not_applicable,none,three-quarter,indoor,indoor,,,"[[0.325, 0.0798, 0.4208, 0.8204]]",done
+wv_004364,samir,,,,,,,,not_a_photo,,,done
 wv_004378,samir,other_aid,yes,not_applicable,none,side,daylight,other,,,"[[0.575, 0.0837, 0.3198, 0.5667]]",done
 wv_004380,samir,other_aid,yes,not_applicable,none,front,daylight,other,,,"[[0.0188, 0.1532, 0.5229, 0.8297], [0.5417, 0.2786, 0.4229, 0.7001]]",done
 wv_004383,samir,other_aid,yes,not_applicable,none,side,daylight,sidewalk,,,"[[0.5896, 0.4084, 0.3135, 0.395]]",done
@@ -546,6 +553,7 @@ wv_004703,samir,other_aid,yes,not_applicable,none,front,indoor,indoor,,,"[[0.369
 wv_004709,samir,other_aid,yes,not_applicable,none,front,daylight,sidewalk,,,"[[0.3823, 0.3907, 0.2458, 0.5791]]",done
 wv_004715,samir,other_aid,yes,not_applicable,none,front,daylight,sidewalk,,,"[[0.0075, 0.5147, 0.6817, 0.4802]]",done
 wv_005484,samir,lookalike,no,not_applicable,none,side,indoor,other,,,,done
+wv_005826,samir,,,,,,,,not_a_photo,,,done
 wv_005909,samir,,,,,,,,not_a_photo,,,done
 wv_005915,samir,,,,,,,,not_a_photo,,,done
 wv_005917,samir,,,,,,,,not_a_photo,,,done
