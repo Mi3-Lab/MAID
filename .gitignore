@@ -25,3 +25,6 @@ ACCESS_CODE.txt
 .space-build/
 # face-blurred release copies (scripts/auto_blur.py); like images/, never committed
 images_blurred/
+
+# offline review viewer: images are handed over in person, never committed
+review/images/

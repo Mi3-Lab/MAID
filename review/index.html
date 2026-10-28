@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WheelView offline review</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1d2330; --mute:#667085; --line:#e3e6ea; --ok:#127a3e; --note:#9a6700; --ross:#b54708; --bad:#b42318; --acc:#2453c9; }
+  * { box-sizing: border-box; }
+  body { margin:0; display:flex; flex-direction:column; height:100vh; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+  header { flex:none; padding:12px 18px; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  h1 { font-size:18px; margin:0 0 6px; }
+  .sum { display:flex; flex-wrap:wrap; gap:6px 14px; color:var(--mute); font-size:13px; }
+  .sum b { color:var(--ink); }
+  .filters { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center; }
+  select, input[type=text], button { font:inherit; padding:4px 8px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  button { cursor:pointer; } button:hover { border-color:var(--acc); }
+  main { display:grid; grid-template-columns: 300px 1fr; flex:1; min-height:0; }
+  #list { overflow:auto; border-right:1px solid var(--line); background:var(--card); }
+  #list div.row { padding:6px 10px; border-bottom:1px solid var(--line); cursor:pointer; display:flex; gap:8px; align-items:center; }
+  #list div.row.sel { background:#e8eefc; }
+  .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+  .s-ok{background:var(--ok)} .s-ok_with_note{background:var(--note)} .s-needs_ross{background:var(--ross)} .s-exclude{background:var(--bad)} .s-unchecked{background:#999}
+  .mk { margin-left:auto; font-size:12px; color:var(--mute); }
+  #detail { overflow:auto; padding:16px 20px; }
+  .imgbox { background:#222; border-radius:8px; min-height:240px; display:flex; align-items:center; justify-content:center; color:#ddd; }
+  .imgbox img { max-width:100%; max-height:58vh; display:block; }
+  .imgbox .ph { padding:40px; text-align:center; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .card h3 { margin:0 0 8px; font-size:14px; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  td, th { text-align:left; padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mute); font-weight:500; }
+  .dis { color:var(--bad); font-weight:600; }
+  .pill { display:inline-block; padding:1px 8px; border-radius:10px; color:#fff; font-size:12px; }
+  .warn { color:var(--note); }
+  .marks button.on { background:var(--acc); color:#fff; border-color:var(--acc); }
+  .kbd { font-family:ui-monospace,monospace; border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 4px; font-size:12px; }
+  .help { color:var(--mute); font-size:12px; margin-top:8px; }
+  textarea { width:100%; font:inherit; min-height:48px; border:1px solid var(--line); border-radius:6px; padding:6px; }
+  a { color:var(--acc); }
+  @media (max-width: 900px) { body { height:auto; } main { grid-template-columns: 1fr; } #list { max-height:30vh; } .grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>WheelView offline review</h1>
+  <div class="sum" id="sum"></div>
+  <div class="filters">
+    <select id="fClass"><option value="">All classes</option></select>
+    <select id="fLic"><option value="">All license statuses</option></select>
+    <select id="fBy"><option value="">Single + double labeled</option><option value="single">Single labeled</option><option value="double">Double labeled</option></select>
+    <select id="fWarn"><option value="">Any warnings</option><option value="__any">Has a model warning</option><option value="__none">No model warning</option></select>
+    <select id="fMark"><option value="">Any review mark</option><option value="ok">Marked OK</option><option value="question">Marked question</option><option value="__none">Not reviewed yet</option></select>
+    <input type="text" id="fId" placeholder="Search id / creator" size="16">
+    <span id="count" class="help"></span>
+    <span style="margin-left:auto"></span>
+    <label class="help">Reviewer <input type="text" id="who" size="10" placeholder="your name"></label>
+    <button id="export">Export my marks (CSV)</button>
+  </div>
+</header>
+<main>
+  <div id="list"></div>
+  <div id="detail"></div>
+</main>
+<script src="review_data.js"></script>
+<script>
+(function () {
+  const D = window.WV_REVIEW;
+  if (!D) { document.body.innerHTML = '<p style="padding:20px">review_data.js did not load. Run <code>git pull</code> in the repo and open review/index.html again.</p>'; return; }
+  const items = D.items, F = D.fields;
+  const LS = 'wv_review_marks_v1';
+  let marks = {}; try { marks = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { marks = {}; }
+  const save = () => { try { localStorage.setItem(LS, JSON.stringify(marks)); } catch (e) {} };
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const COLORS = {ok:'var(--ok)', ok_with_note:'var(--note)', needs_ross:'var(--ross)', exclude:'var(--bad)', unchecked:'#999'};
+  const LABEL = {ok:'OK', ok_with_note:'OK with note', needs_ross:'Needs Ross', exclude:'Exclude', unchecked:'Not checked'};
+  $('who').value = localStorage.getItem('wv_review_who') || '';
+  $('who').addEventListener('change', () => localStorage.setItem('wv_review_who', $('who').value.trim()));
+
+  const cls = x => x.consensus.device_type.value || '(labelers disagree)';
+  const uniq = (arr) => [...new Set(arr)].sort();
+  uniq(items.map(cls)).forEach(c => $('fClass').insertAdjacentHTML('beforeend', `<option>${esc(c)}</option>`));
+  uniq(items.map(x => x.license_status)).forEach(c => $('fLic').insertAdjacentHTML('beforeend', `<option value="${esc(c)}">${esc(LABEL[c] || c)}</option>`));
+  uniq(items.flatMap(x => x.warning_kinds)).forEach(c => $('fWarn').insertAdjacentHTML('beforeend', `<option value="${esc(c)}">Warning: ${esc(c)}</option>`));
+
+  function summary() {
+    const S = D.summary, cnt = o => Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `${esc(LABEL[k]||k)} <b>${v}</b>`).join(', ');
+    const nOk = Object.values(marks).filter(m => m.mark === 'ok').length, nQ = Object.values(marks).filter(m => m.mark === 'question').length;
+    $('sum').innerHTML = `<span><b>${S.total}</b> images</span><span>Classes: ${cnt(S.device_type)}</span><span>Labeled by: ${cnt(S.labeled_by)}</span>` +
+      `<span>License: ${cnt(S.license_status)}</span><span>With model warning: <b>${S.with_warnings}</b></span>` +
+      `<span>Your marks: OK <b>${nOk}</b>, question <b>${nQ}</b></span><span>Data built ${esc(D.generated)}</span>`;
+  }
+  let view = [], cur = 0;
+  function filter() {
+    const c = $('fClass').value, l = $('fLic').value, b = $('fBy').value, w = $('fWarn').value, m = $('fMark').value, q = $('fId').value.trim().toLowerCase();
+    view = items.filter(x => (!c || cls(x) === c) && (!l || x.license_status === l) && (!b || x.labeled_by === b) &&
+      (!w || (w === '__any' ? x.warnings.length : w === '__none' ? !x.warnings.length : x.warning_kinds.includes(w))) &&
+      (!m || (m === '__none' ? !marks[x.id] || !marks[x.id].mark : marks[x.id] && marks[x.id].mark === m)) &&
+      (!q || x.id.includes(q) || (x.creator || '').toLowerCase().includes(q)));
+    $('count').textContent = `${view.length} shown`;
+    cur = Math.min(cur, Math.max(0, view.length - 1));
+    list(); show();
+  }
+  function list() {
+    $('list').innerHTML = view.map((x, k) => `<div class="row${k === cur ? ' sel' : ''}" data-k="${k}"><span class="dot s-${esc(x.license_status)}" title="${esc(LABEL[x.license_status]||x.license_status)}"></span>` +
+      `<span>${esc(x.id)}</span><span class="help">${esc(cls(x))}${x.labeled_by === 'double' ? ' ×2' : ''}${x.warnings.length ? ' ⚠' : ''}</span>` +
+      `<span class="mk">${marks[x.id] && marks[x.id].mark ? (marks[x.id].mark === 'ok' ? '✓' : '?') : ''}</span></div>`).join('');
+  }
+  $('list').addEventListener('click', e => { const r = e.target.closest('.row'); if (r) { cur = +r.dataset.k; list(); show(); } });
+  function show() {
+    const x = view[cur];
+    if (!x) { $('detail').innerHTML = '<p>No images match these filters.</p>'; return; }
+    const m = marks[x.id] || {};
+    const rows = F.map(f => {
+      const vals = x.annotators.map(a => (x.labels[a] || {})[f]);
+      const dis = new Set(vals.filter(v => v != null)).size > 1;
+      return `<tr><th>${esc(f)}</th><td>${esc(x.consensus[f].value || '—')} <span class="help">${esc(x.consensus[f].how)}</span></td>` +
+        x.annotators.map(a => `<td class="${dis ? 'dis' : ''}">${esc((x.labels[a] || {})[f] ?? '—')}</td>`).join('') + '</tr>';
+    }).join('');
+    $('detail').innerHTML = `
+      <div class="imgbox"><img id="im" alt="${esc(x.id)}" src="images/${encodeURIComponent(x.id)}.jpg"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+        <b style="font-size:16px">${esc(x.id)}</b><span class="help">${cur + 1} / ${view.length}</span>
+        <span class="pill" style="background:${COLORS[x.license_status] || '#999'}">${esc(LABEL[x.license_status] || x.license_status)}</span>
+        <span class="marks" style="margin-left:auto"><button data-m="ok" class="${m.mark === 'ok' ? 'on' : ''}">OK <span class="kbd">O</span></button>
+        <button data-m="question" class="${m.mark === 'question' ? 'on' : ''}">Question <span class="kbd">Q</span></button>
+        <button data-m="">Clear <span class="kbd">U</span></button></span>
+      </div>
+      <div class="grid">
+        <div class="card"><h3>Labels (${esc(x.labeled_by)}: ${esc(x.annotators.join(', '))}, ${esc(x.status)})</h3>
+          <table><tr><th>field</th><th>consensus</th>${x.annotators.map(a => `<th>${esc(a)}</th>`).join('')}</tr>${rows}</table>
+          ${x.model_assisted.length ? `<p class="help">Model-suggested then human-confirmed for: ${esc(x.model_assisted.join(', '))}</p>` : ''}
+        </div>
+        <div class="card"><h3>License and source</h3>
+          <table>
+            <tr><th>license</th><td>${x.license_url ? `<a href="${esc(x.license_url)}" target="_blank" rel="noopener noreferrer">${esc(x.license)}</a>` : esc(x.license)}</td></tr>
+            <tr><th>creator</th><td>${esc(x.creator)}</td></tr>
+            <tr><th>title</th><td>${esc(x.title)}</td></tr>
+            <tr><th>source</th><td>${esc(x.source_site)}<br>${x.source_url ? `<a href="${esc(x.source_url)}" target="_blank" rel="noopener noreferrer">${esc(x.source_url)}</a>` : '—'}</td></tr>
+            <tr><th>status</th><td><b>${esc(LABEL[x.license_status] || x.license_status)}</b>${x.license_reason ? '<br>' + esc(x.license_reason) : ''}</td></tr>
+            <tr><th>live check</th><td>${esc(x.live_check || '—')} <span class="help">${esc(x.license_checked)}</span></td></tr>
+          </table>
+        </div>
+        <div class="card"><h3>Model warnings (info only, never removes a human-labeled image)</h3>
+          ${x.warnings.length ? '<ul style="margin:0;padding-left:18px">' + x.warnings.map(w => `<li class="warn">${esc(w)}</li>`).join('') + '</ul>' : '<span class="help">None</span>'}
+        </div>
+        <div class="card"><h3>Your note</h3><textarea id="note" placeholder="Optional note (saved on this device only)">${esc(m.note || '')}</textarea></div>
+      </div>
+      <p class="help">Keys: <span class="kbd">→</span>/<span class="kbd">J</span> next, <span class="kbd">←</span>/<span class="kbd">K</span> previous, <span class="kbd">O</span> OK, <span class="kbd">Q</span> question, <span class="kbd">U</span> clear. Marks and notes stay in this browser (localStorage) until you export them. Nothing is uploaded.</p>`;
+    $('im').onerror = function () { this.parentNode.innerHTML = `<div class="ph">Image ${esc(x.id)}.jpg not found.<br>Put the images folder at <code>review/images/</code> (see review/README.md).</div>`; };
+    $('detail').querySelectorAll('.marks button').forEach(b => b.onclick = () => setMark(b.dataset.m));
+    $('note').addEventListener('input', e => { (marks[x.id] = marks[x.id] || {}).note = e.target.value; stamp(x.id); save(); });
+    const sel = $('list').querySelector('.sel'); if (sel) sel.scrollIntoView({block: 'nearest'});
+  }
+  function stamp(id) { marks[id].who = $('who').value.trim(); marks[id].at = new Date().toISOString(); }
+  function setMark(v) { const x = view[cur]; if (!x) return; (marks[x.id] = marks[x.id] || {}).mark = v; stamp(x.id); save(); summary(); list(); show(); }
+  function go(d) { if (!view.length) return; cur = Math.max(0, Math.min(view.length - 1, cur + d)); list(); show(); }
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === 'arrowright' || k === 'j') { go(1); e.preventDefault(); }
+    else if (k === 'arrowleft' || k === 'k') { go(-1); e.preventDefault(); }
+    else if (k === 'o') setMark('ok'); else if (k === 'q') setMark('question'); else if (k === 'u') setMark('');
+  });
+  ['fClass','fLic','fBy','fWarn','fMark'].forEach(id => $(id).addEventListener('change', () => { cur = 0; filter(); }));
+  $('fId').addEventListener('input', () => { cur = 0; filter(); });
+  $('export').onclick = () => {
+    const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
+    const lines = [['image_id','mark','note','reviewer','marked_at','license_status','device_type'].join(',')];
+    items.forEach(x => { const m = marks[x.id]; if (m && (m.mark || m.note)) lines.push([x.id, m.mark || '', m.note || '', m.who || $('who').value, m.at || '', x.license_status, cls(x)].map(q).join(',')); });
+    const blob = new Blob([lines.join('\r\n') + '\r\n'], {type: 'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `wheelview_review_${($('who').value.trim() || 'reviewer').replace(/\W+/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  summary(); filter();
+})();
+</script>
+</body>
+</html>
