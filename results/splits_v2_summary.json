@@ -1,0 +1,93 @@
+{
+  "n": 433,
+  "class_counts": {
+    "powered": 85,
+    "other_aid": 57,
+    "manual": 276,
+    "lookalike": 15
+  },
+  "split_counts": {
+    "train": {
+      "manual": 193,
+      "powered": 59,
+      "other_aid": 40,
+      "lookalike": 11
+    },
+    "val": {
+      "manual": 41,
+      "powered": 13,
+      "other_aid": 9,
+      "lookalike": 2
+    },
+    "test": {
+      "manual": 42,
+      "powered": 13,
+      "other_aid": 8,
+      "lookalike": 2
+    }
+  },
+  "split_sizes": {
+    "train": 303,
+    "val": 65,
+    "test": 65
+  },
+  "n_groups": 176,
+  "largest_groups": [
+    [
+      "flickr:44636446@n04",
+      188
+    ],
+    [
+      "flickr:56705607@n00",
+      10
+    ],
+    [
+      "flickr:gmarziou",
+      9
+    ],
+    [
+      "flickr:clustermunitioncoalition",
+      5
+    ],
+    [
+      "flickr:95413346@n00",
+      5
+    ],
+    [
+      "flickr:48973657@n00",
+      4
+    ],
+    [
+      "flickr:43288043@n04",
+      4
+    ],
+    [
+      "flickr:us_mission_canada",
+      4
+    ]
+  ],
+  "seed": 20261027,
+  "fracs": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "license_file": "license_audit_v2.csv",
+  "filters": {
+    "clean_set": 446,
+    "drop_license_needs_ross": 9,
+    "drop_device_unclear": 4
+  },
+  "events_used": 9357,
+  "events_from_db": 9357,
+  "events_only_in_jsonl": 0,
+  "label_resolution": {
+    "consensus": 99,
+    "adjudicated": 15,
+    "single": 319
+  },
+  "license_status": {
+    "ok": 400,
+    "ok_with_note": 33
+  }
+}

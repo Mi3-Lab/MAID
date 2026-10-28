@@ -66,6 +66,7 @@ def run(seed, data, a, dev, outdir):
     g = torch.Generator(); g.manual_seed(seed)
     dl = lambda s, tf, sh: torch.utils.data.DataLoader(DS(data[s][0], data[s][1], tf), batch_size=a.bs, shuffle=sh, generator=g if sh else None, num_workers=0)
     tr, va, te = dl("train", tf_tr, True), dl("val", tf_ev, False), dl("test", tf_ev, False)
+    xt = dl("extra", tf_ev, False) if "extra" in data else None
     model = torchvision.models.resnet50(weights=torchvision.models.ResNet50_Weights.IMAGENET1K_V2)
     model.fc = nn.Linear(model.fc.in_features, len(CLASSES)); model.to(dev)
     cnt = np.bincount(data["train"][1], minlength=len(CLASSES)).astype(float)
@@ -103,8 +104,13 @@ def run(seed, data, a, dev, outdir):
     ys, ps = predict(te); tm = metrics(ys, ps)
     preds = [{"image_id": i, "label": CLASSES[y], "pred": CLASSES[p]} for i, y, p in zip(data["test"][2], ys, ps)]
     json.dump(preds, open(outdir / f"seed{seed}_test_preds.json", "w"), indent=1)   # local only (var/)
-    return {"seed": seed, "best_epoch": best_ep, "epochs_run": len(hist), "best_val_macro_f1": round(best, 4),
-            "test": tm, "test_bootstrap": bootstrap(ys, ps, seed=seed), "train_seconds": round(time.time() - t0, 1), "history": hist}
+    out = {"seed": seed, "best_epoch": best_ep, "epochs_run": len(hist), "best_val_macro_f1": round(best, 4),
+           "test": tm, "test_bootstrap": bootstrap(ys, ps, seed=seed), "train_seconds": round(time.time() - t0, 1), "history": hist}
+    if xt is not None:
+        ey, ep_ = predict(xt); out["extra_test"] = metrics(ey, ep_)
+        json.dump([{"image_id": i, "label": CLASSES[y], "pred": CLASSES[p]} for i, y, p in zip(data["extra"][2], ey, ep_)],
+                  open(outdir / f"seed{seed}_extra_test_preds.json", "w"), indent=1)
+    return out
 
 def plot_cm(cm, path, title):
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -127,6 +133,7 @@ def main():
     ap.add_argument("--head_lr_mult", type=float, default=10.0); ap.add_argument("--wd", type=float, default=0.05)
     ap.add_argument("--label_smoothing", type=float, default=0.0)
     ap.add_argument("--results", default=ROOT / "results")
+    ap.add_argument("--extra_test", default=None, help="older splits CSV; its test rows not in this run's train/val are also evaluated")
     a = ap.parse_args()
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     outdir = ROOT / "var" / "runs" / a.run; outdir.mkdir(parents=True, exist_ok=True)
@@ -135,7 +142,16 @@ def main():
     missing = [r["image_id"] for r in rows if not (imgdir / f"{r['image_id']}.jpg").exists()]
     if missing: sys.exit(f"{len(missing)} blurred images missing from {imgdir}, e.g. {missing[:5]}")
     data = {s: load_split([r for r in rows if r["split"] == s], imgdir) for s in ("train", "val", "test")}
-    n_per = {s: {c: data[s][1].count(i) for i, c in enumerate(CLASSES)} for s in data}
+    extra_info = None
+    if a.extra_test:
+        seen = {r["image_id"] for r in rows if r["split"] in ("train", "val")}
+        old = [r for r in csv.DictReader(open(a.extra_test, encoding="utf-8")) if r["split"] == "test"]
+        keep = [r for r in old if r["image_id"] not in seen and r["label"] in CLASSES]
+        data["extra"] = load_split(keep, imgdir)
+        extra_info = {"file": Path(a.extra_test).name, "n_old_test": len(old), "n_evaluated": len(keep),
+                      "n_dropped_now_in_train_or_val": len(old) - len(keep)}
+        print("extra test:", extra_info, flush=True)
+    n_per = {s: {c: data[s][1].count(i) for i, c in enumerate(CLASSES)} for s in ("train", "val", "test")}
     print("n per split/class:", n_per, "device:", dev, flush=True)
     hw = {"device": str(dev), "gpu": torch.cuda.get_device_name(0) if dev.type == "cuda" else None,
           "cpu": platform.processor(), "os": platform.platform(), "python": platform.python_version(),
@@ -146,7 +162,7 @@ def main():
         print(f"[seed {s}] TEST acc {r['test']['accuracy']:.3f} macro-F1 {r['test']['macro_f1']:.3f} best_ep {r['best_epoch']}", flush=True)
     agg = lambda f: {"mean": round(float(np.mean([f(r) for r in runs])), 4), "std": round(float(np.std([f(r) for r in runs], ddof=1)), 4) if len(runs) > 1 else 0.0}
     summary = {"model": "torchvision resnet50, IMAGENET1K_V2 weights, full fine-tune", "task": "4-way device class",
-               "classes": CLASSES, "splits_file": "data/splits_v1.csv", "images": "images_blurred/ (face-blurred copies)",
+               "classes": CLASSES, "splits_file": "data/" + Path(a.splits).name, "extra_test": extra_info, "images": "images_blurred/ (face-blurred copies)",
                "n_per_split": n_per,
                "hyperparams": {k: v for k, v in vars(a).items() if k in ("epochs", "patience", "bs", "lr", "head_lr_mult", "wd", "label_smoothing")} |
                    {"optimizer": "AdamW", "schedule": "1-epoch linear warmup + cosine", "loss": "class-weighted CE (inverse train frequency)",
@@ -154,14 +170,16 @@ def main():
                     "early_stopping": "best val macro-F1", "amp": dev.type == "cuda"},
                "seeds": seeds, "primary_seed": seeds[0], "primary": {k: v for k, v in runs[0].items() if k != "history"},
                "seed_spread": {"test_accuracy": agg(lambda r: r["test"]["accuracy"]), "test_macro_f1": agg(lambda r: r["test"]["macro_f1"]),
-                               **{f"test_f1_{c}": agg(lambda r, c=c: r["test"]["per_class"][c]["f1"]) for c in CLASSES}},
+                               **{f"test_f1_{c}": agg(lambda r, c=c: r["test"]["per_class"][c]["f1"]) for c in CLASSES},
+                               **({"extra_test_accuracy": agg(lambda r: r["extra_test"]["accuracy"]),
+                                   "extra_test_macro_f1": agg(lambda r: r["extra_test"]["macro_f1"])} if extra_info else {})},
                "runs": runs, "hardware": hw, "total_seconds": round(time.time() - t0, 1)}
     res = Path(a.results); res.mkdir(parents=True, exist_ok=True)
     json.dump(summary, open(res / f"baseline_{a.run}.json", "w"), indent=2)
     p = runs[0]["test"]
     plot_cm(p["confusion_matrix"], res / f"baseline_{a.run}_confusion.png", f"ResNet-50 baseline, test (n={sum(map(sum, p['confusion_matrix']))}), seed {seeds[0]}")
     ss = summary["seed_spread"]; bs = runs[0]["test_bootstrap"]
-    md = [f"# ResNet-50 baseline ({a.run})", "", "4-way device classification on WheelView v1 (face-blurred images). "
+    md = [f"# ResNet-50 baseline ({a.run})", "", f"4-way device classification on WheelView, splits `{Path(a.splits).name}` (face-blurred images). "
           "Generated by `scripts/train_baseline.py`; splits from `scripts/make_splits.py`.", "",
           "| split | " + " | ".join(CLASSES) + " | total |", "|---|" + "---|" * (len(CLASSES) + 1)]
     for s in ("train", "val", "test"): md.append(f"| {s} | " + " | ".join(str(n_per[s][c]) for c in CLASSES) + f" | {sum(n_per[s].values())} |")
@@ -175,6 +193,10 @@ def main():
            f"- Test accuracy: {ss['test_accuracy']['mean']:.3f} ± {ss['test_accuracy']['std']:.3f}",
            f"- Test macro-F1: {ss['test_macro_f1']['mean']:.3f} ± {ss['test_macro_f1']['std']:.3f}"]
     md += [f"- F1 {c}: {ss['test_f1_'+c]['mean']:.3f} ± {ss['test_f1_'+c]['std']:.3f}" for c in CLASSES]
+    if extra_info:
+        md += ["", f"## Older test set ({extra_info['file']})", "",
+               f"{extra_info['n_evaluated']} of its {extra_info['n_old_test']} test images (the {extra_info['n_dropped_now_in_train_or_val']} now in this run's train/val are dropped to avoid leakage):",
+               f"accuracy {ss['extra_test_accuracy']['mean']:.3f} ± {ss['extra_test_accuracy']['std']:.3f}, macro-F1 {ss['extra_test_macro_f1']['mean']:.3f} ± {ss['extra_test_macro_f1']['std']:.3f}."]
     md += ["", "## Setup", "", "```json", json.dumps(summary["hyperparams"], indent=1), "```", "",
            f"Hardware: {hw['gpu'] or hw['cpu']} ({hw['device']}), torch {hw['torch']}, torchvision {hw['torchvision']}. "
            f"Total wall time {summary['total_seconds']:.0f}s.", "",
@@ -182,7 +204,7 @@ def main():
            "have only a handful of test images and their per-class F1 can swing a lot with one prediction.",
            "- Seed spread only reflects training randomness on one fixed split, not split-to-split variance.",
            "- Splits are grouped by Flickr uploader/creator; one uploader contributes a large share of images and sits entirely in one split.",
-           "- Most labels are single-annotator; see `results/splits_v1_summary.json` for label resolution counts."]
+           "- Most labels are single-annotator; see `results/" + Path(a.splits).stem + "_summary.json` for label resolution counts."]
     open(res / f"baseline_{a.run}.md", "w", encoding="utf-8").write("\n".join(md) + "\n")
     print(json.dumps({"primary_test": {"acc": p["accuracy"], "macro_f1": p["macro_f1"]}, "seed_spread": ss}, indent=1))
 

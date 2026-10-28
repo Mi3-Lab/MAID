@@ -1,0 +1,53 @@
+{
+ "samples": 288,
+ "interval_s": 5,
+ "busy_samples": 196,
+ "max_temp_c": 87,
+ "mean_temp_busy_c": 71.1,
+ "max_power_w": 101.85,
+ "mean_sm_clock_busy_mhz": 1711.0,
+ "max_sm_clock_mhz": 3105.0,
+ "pct_busy_time_thermal_throttled": 7.65,
+ "pct_busy_time_power_capped": 56.12,
+ "pct_busy_time_hw_slowdown": 0.0,
+ "pct_busy_time_any_throttle": 56.12,
+ "reasons_seen_busy": {
+  "GpuIdle": 77,
+  "SwPowerCap": 110,
+  "SwThermalSlowdown": 15
+ },
+ "first_ts": "2026/10/28 04:44:36.753",
+ "last_ts": "2026/10/28 05:08:34.099",
+ "phases": [
+  {
+   "name": "resnet50_v2",
+   "start": "2026/10/28 04:44:36",
+   "end": "2026/10/28 04:46:24",
+   "rc": 0,
+   "busy_samples": 20,
+   "max_temp_c": 77,
+   "pct_thermal": 0.0,
+   "pct_power_cap": 60.0
+  },
+  {
+   "name": "siglip2_v2",
+   "start": "2026/10/28 04:47:54",
+   "end": "2026/10/28 04:53:59",
+   "rc": 0,
+   "busy_samples": 61,
+   "max_temp_c": 87,
+   "pct_thermal": 9.84,
+   "pct_power_cap": 100.0
+  },
+  {
+   "name": "yolo_v2",
+   "start": "2026/10/28 04:55:29",
+   "end": "2026/10/28 05:08:28",
+   "rc": 0,
+   "busy_samples": 114,
+   "max_temp_c": 80,
+   "pct_thermal": 7.02,
+   "pct_power_cap": 31.58
+  }
+ ]
+}
