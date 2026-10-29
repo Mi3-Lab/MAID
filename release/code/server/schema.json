@@ -1,0 +1,142 @@
+{
+ "version": 2,
+ "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation.",
+ "value_aliases": {
+  "device_type": {
+   "lookalike": "ambiguous"
+  }
+ },
+ "value_aliases_note": "Historical values kept in the append-only event log, mapped to the canonical option on read (wvcore.canon). 'lookalike' was renamed 'ambiguous' on 2026-10-28; old events are never rewritten. Prefill keys (lookalike_*) are candidate source categories from data/candidates.csv, not label values.",
+ "fields": [
+  {
+   "name": "device_type",
+   "label": "Device type",
+   "options": [
+    "manual",
+    "powered",
+    "other_aid",
+    "ambiguous",
+    "unclear"
+   ],
+   "compare": true
+  },
+  {
+   "name": "occupied",
+   "label": "Occupied",
+   "options": [
+    "yes",
+    "no"
+   ],
+   "compare": true
+  },
+  {
+   "name": "propulsion",
+   "label": "Propulsion",
+   "options": [
+    "self",
+    "attendant",
+    "not_applicable",
+    "unclear"
+   ],
+   "compare": true
+  },
+  {
+   "name": "occlusion",
+   "label": "Occlusion",
+   "options": [
+    "none",
+    "partial",
+    "heavy"
+   ],
+   "compare": true
+  },
+  {
+   "name": "viewpoint",
+   "label": "Viewpoint",
+   "options": [
+    "front",
+    "rear",
+    "side",
+    "three-quarter"
+   ],
+   "compare": true
+  },
+  {
+   "name": "lighting",
+   "label": "Lighting",
+   "options": [
+    "daylight",
+    "shade",
+    "indoor",
+    "low_light"
+   ],
+   "compare": true
+  },
+  {
+   "name": "setting",
+   "label": "Setting",
+   "options": [
+    "curb",
+    "vehicle",
+    "sidewalk",
+    "indoor",
+    "other"
+   ],
+   "compare": true
+  }
+ ],
+ "exclude_reasons": [
+  "child",
+  "clinical_setting",
+  "identifiable_person",
+  "not_a_photo",
+  "license_concern",
+  "duplicate"
+ ],
+ "extra_fields": {
+  "exclude": "one of exclude_reasons or '' (= not excluded); compared between annotators",
+  "face_blur_missed": "true/false; OR-combined across annotators (safety flag)",
+  "bbox": "JSON list of [x,y,w,h] in 0..1 image coordinates, or []; not compared, kept per annotator",
+  "_status": "'done' when the annotator has finished the image; only 'done' annotators count towards consensus"
+ },
+ "prefill": {
+  "manual_wheelchair": {
+   "device_type": "manual",
+   "propulsion": null
+  },
+  "powered_wheelchair": {
+   "device_type": "powered",
+   "propulsion": "not_applicable"
+  },
+  "powered_wheelchair_ambiguous_addon": {
+   "device_type": "powered",
+   "propulsion": "not_applicable"
+  },
+  "other_aid_scooter": {
+   "device_type": "other_aid",
+   "propulsion": "not_applicable"
+  },
+  "other_aid_rollator_walker": {
+   "device_type": "other_aid",
+   "propulsion": "not_applicable"
+  },
+  "lookalike_stroller": {
+   "device_type": "ambiguous",
+   "propulsion": "not_applicable"
+  },
+  "lookalike_shopping_cart": {
+   "device_type": "ambiguous",
+   "propulsion": "not_applicable"
+  },
+  "lookalike_office_chair": {
+   "device_type": "ambiguous",
+   "propulsion": "not_applicable"
+  },
+  "lookalike_luggage_trolley": {
+   "device_type": "ambiguous",
+   "propulsion": "not_applicable"
+  }
+ },
+ "annotators_per_image": 2,
+ "max_annotators_per_image": 3
+}

@@ -44,7 +44,7 @@ strollers, rollators, shopping carts, ...). Old events/suggestions say `lookalik
 | label_how, labelers, adjudicated_by | single / consensus / majority / adjudicated; who marked the image done; who adjudicated any field |
 | labeled_via | per labeler: `manual` or `confirmed_suggestion` (picked the shown SigLIP2 suggestion). Provenance for analysis only |
 | setting, occupied, occlusion, propulsion, viewpoint, lighting | resolved descriptive fields ("" = missing or unresolved disagreement) |
-| n_boxes, bboxes | max boxes per labeler; JSON `{labeler: [[x0,y0,x1,y1], ...]}` normalised 0-1 |
+| n_boxes, bboxes | max boxes per labeler; JSON `{labeler: [[x, y, w, h], ...]}`: top-left corner, width, height, normalised 0-1 |
 | license, license_url, license_status, creator, source_site, source_url | attribution from the license audit (fallback `derived/attributions.csv`) |
 | uploader_group | Flickr owner (NSID or path alias) or creator, as used by splits_v1/v2 |
 | dup_cluster | exact / near-duplicate cluster (sha256, pHash, SigLIP2 cosine) |

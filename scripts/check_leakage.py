@@ -5,6 +5,7 @@
   python scripts/check_leakage.py --features   # + recompute near-duplicates from var/manifest_features.npz (lab laptop)
   python scripts/check_leakage.py --files      # + sha256 of images_blurred/ files must match the manifest
   python scripts/check_leakage.py --runtime    # + run scripts/predict.py on a test image under an audit hook per saved model
+  python scripts/check_leakage.py --release var/release/WheelView_v1.0   # + audit a built release folder (see check_release)
 
 Checks (see data/MANIFEST.md):
   data   no duplicate (sha256 / pHash / dup_cluster), uploader, creator, source page, Flickr photo, Flickr burst or
@@ -164,10 +165,10 @@ def check_code():
              "script, which refuses to reuse that dataset dir; left in place, nothing deleted)")
 
 ALLOWED_REPO = re.compile(r"\.(py|pyc|pyd|so|dll)$")
-def check_runtime(T):
+def check_runtime(T, img=None, tag="--runtime"):
     test = [r for r in T if r["split"] == "test"]
     if not test: fail("--runtime: no test row"); return
-    img = ROOT / test[0]["path"]
+    img = img or ROOT / test[0]["path"]
     if not img.exists(): fail(f"--runtime: {img} not on this machine"); return
     cands = []
     for kind, pat in [("resnet", "var/runs/resnet50_*/seed0_best.pt"), ("siglip-probe", "var/runs/siglip2_*/probe_seed0_head.npz"),
@@ -180,7 +181,7 @@ def check_runtime(T):
             au = Path(td) / "opened.json"
             r = subprocess.run([sys.executable, str(ROOT / "scripts" / "predict.py"), "--kind", kind, "--weights", str(w), "--audit", str(au), str(img)],
                                capture_output=True, text=True, cwd=str(ROOT))
-            if r.returncode != 0: fail(f"--runtime {kind}: predict.py failed: {r.stderr.strip().splitlines()[-1:]}"); continue
+            if r.returncode != 0: fail(f"{tag} {kind}: predict.py failed: {r.stderr.strip().splitlines()[-1:]}"); continue
             opened = json.loads(au.read_text())
         root = str(ROOT.resolve()).lower(); allowed = {str(w.resolve()).lower(), str(img.resolve()).lower(), str((ROOT / "server" / "schema.json").resolve()).lower()}
         bad = []
@@ -189,11 +190,94 @@ def check_runtime(T):
             if not fl.startswith(root) or fl in allowed or ALLOWED_REPO.search(fl) or os.path.isdir(f): continue
             if "__pycache__" in fl or os.sep + ".venv" + os.sep in fl or "/.venv/" in fl: continue
             bad.append(os.path.relpath(f, ROOT))
-        (fail if bad else ok)(f"--runtime {kind}: predict opened {len(opened)} files; repo files other than weights/image/code/schema: {bad[:8]}")
+        (fail if bad else ok)(f"{tag} {kind}: predict on {os.path.relpath(img, ROOT)} opened {len(opened)} files; repo files other than weights/image/code/schema: {bad[:8]}")
+
+# ---------------------------------------------------------------- release audit
+META_MARKERS = set(range(0xE1, 0xF0)) | {0xFE}
+def jpeg_meta_segments(data):
+    out, i = [], 2
+    while i + 4 <= len(data) and data[i] == 0xFF:
+        m = data[i + 1]
+        if m == 0xDA: break
+        if m == 0x01 or 0xD0 <= m <= 0xD7: i += 2; continue
+        if m in META_MARKERS: out.append(hex(m))
+        i += 2 + int.from_bytes(data[i + 2:i + 4], "big")
+    return out
+
+def phash64(im):
+    """Same 63-bit pHash as scripts/build_manifest.py (32x32 grey LANCZOS, orthonormal 2-D DCT, 8x8 block minus DC, > median)."""
+    import numpy as np, scipy.fft
+    from PIL import Image
+    g = np.asarray(im.convert("L").resize((32, 32), Image.LANCZOS), dtype=np.float64)
+    d = scipy.fft.dctn(g, norm="ortho")[:8, :8].flatten(); bits = d[1:] > np.median(d[1:])
+    return int("".join("1" if b else "0" for b in bits), 2)
+
+def check_release(a, T, rep):
+    """Audit a built release folder: metadata vs manifest, exact image set (no safety-hold, nothing extra), SHA256SUMS,
+    no EXIF/XMP/ICC/comment segments, size <= 1280 px, cross-split near-duplicates recomputed from the released pixels
+    (pHash incl. mirror), no model-output columns or weights shipped, and predict.py on a released test image."""
+    import hashlib
+    from PIL import Image, ImageOps
+    R = Path(a.release).resolve(); tag = "--release"
+    if not R.is_dir(): fail(f"{tag}: {R} not found"); return
+    M = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "data" / "manifest_v2.csv", encoding="utf-8"))}
+    hold = {r["image_id"] for r in csv.DictReader(open(ROOT / "data" / "safety_hold.csv", encoding="utf-8"))}
+    L = list(csv.DictReader(open(R / "annotations" / "labels.csv", encoding="utf-8")))
+    LD = {r["image_id"]: r for r in L}
+    bad = [i for i in M if i not in LD or LD[i]["split"] != M[i]["split"] or wvcore.canon_class(LD[i]["device_type"]) != wvcore.canon_class(M[i]["device_type"])
+           or LD[i]["sha256"] != M[i]["sha256_blurred"] or LD[i]["file"] != f"images/{M[i]['split']}/{i}.jpg"] + [i for i in LD if i not in M]
+    (fail if bad or len(L) != len(LD) else ok)(f"{tag}: labels.csv has {len(L)} rows == manifest ({len(M)}), same split/label/sha256/file: {len(bad)} mismatches {bad[:5]}")
+    cols = [c for c in (L[0] if L else {}) if re.search(r"sugg|confid|prob|score|logit|emb|auto|pred", c.lower())]
+    (fail if cols else ok)(f"{tag}: no model-output columns in labels.csv: {cols}")
+    seen = {}
+    for s in SPLITS:
+        f = R / "splits" / f"{s}.txt"; ids = f.read_text(encoding="utf-8").split() if f.exists() else None
+        if ids is None: fail(f"{tag}: splits/{s}.txt missing"); continue
+        exp = sorted(r["image_id"] for r in T if r["split"] == s)
+        dup = [i for i in ids if i in seen]; seen.update({i: s for i in ids})
+        (fail if sorted(ids) != exp or dup else ok)(f"{tag}: splits/{s}.txt {len(ids)} ids == manifest {s} ({len(exp)}); in another split file: {len(dup)}")
+    jpgs = sorted(p for p in (R / "images").rglob("*") if p.is_file())
+    exp_files = {f"images/{r['split']}/{i}.jpg" for i, r in M.items()}
+    got = [p.relative_to(R).as_posix() for p in jpgs]
+    extra = sorted(set(got) - exp_files); missing = sorted(exp_files - set(got))
+    held = [g for g in got if Path(g).stem in hold]
+    stems = Counter(Path(g).stem for g in got); dups = [k for k, v in stems.items() if v > 1]
+    (fail if extra or missing or held or dups else ok)(f"{tag}: images/ holds exactly the {len(exp_files)} manifest images in their split folders "
+        f"(extra {len(extra)} {extra[:3]}, missing {len(missing)} {missing[:3]}, safety-hold {len(held)}, same id twice {len(dups)})")
+    other = [p.relative_to(R).as_posix() for p in R.rglob("*") if p.is_file() and not p.relative_to(R).as_posix().startswith("images/")
+             and re.search(r"\.(jpe?g|png|webp|gif|bmp|tiff?|pt|pth|npz|npy|onnx|safetensors|bin|ckpt|db|jsonl)$", p.name.lower())]
+    (fail if other else ok)(f"{tag}: no images, weights, embeddings, DBs or event logs outside images/: {other[:5]}")
+    sums = {}
+    sf = R / "SHA256SUMS.txt"
+    if sf.exists():
+        for line in sf.read_text(encoding="utf-8").splitlines():
+            h, f = line.split("  ", 1); sums[f] = h
+    badsum, meta, big, ph = [], [], [], []
+    for p, g in zip(jpgs, got):
+        data = p.read_bytes()
+        if sums.get(g) != hashlib.sha256(data).hexdigest(): badsum.append(g)
+        segs = jpeg_meta_segments(data)
+        if segs: meta.append((g, segs))
+        im = Image.open(p); im.load()
+        if im.format != "JPEG" or max(im.size) > 1280 or im.info.get("exif") or im.info.get("icc_profile"): big.append((g, im.format, im.size))
+        if g in exp_files and M[Path(g).stem]["split"] in SPLITS:
+            ph.append((phash64(im), phash64(ImageOps.mirror(im)), M[Path(g).stem]["split"], Path(g).stem))
+    (fail if badsum or set(sums) != set(got) else ok)(f"{tag}: SHA256SUMS.txt covers {len(sums)} files, all images match: {len(badsum)} mismatches {badsum[:3]}")
+    (fail if meta else ok)(f"{tag}: no EXIF/XMP/ICC/IPTC/comment segments in any JPEG: {len(meta)} files with metadata {meta[:3]}")
+    (fail if big else ok)(f"{tag}: all images JPEG, longer side <= 1280 px, no EXIF/ICC: {len(big)} bad {big[:3]}")
+    tm = (rep.get("thresholds") or {}).get("phash_max", 8)
+    near = [(x[3], y[3], min(bin(x[0] ^ y[0]).count("1"), bin(x[0] ^ y[1]).count("1"))) for k, x in enumerate(ph) for y in ph[k + 1:]
+            if x[2] != y[2] and min(bin(x[0] ^ y[0]).count("1"), bin(x[0] ^ y[1]).count("1")) <= tm]
+    (fail if near else ok)(f"{tag}: pHash recomputed from released pixels (incl. mirror) <= {tm} across splits: {len(near)} {near[:5]}")
+    ag = sum(1 for h, _, _, i in ph if M[i].get("phash_blurred") and int(M[i]["phash_blurred"], 16) == h)
+    ok(f"{tag}: recomputed pHash equals the manifest's phash_blurred for {ag}/{len(ph)} images (informational)")
+    test = sorted(i for i, r in M.items() if r["split"] == "test")
+    if a.runtime and test: check_runtime(T, img=R / "images" / "test" / f"{test[0]}.jpg", tag=tag)
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--features", action="store_true"); ap.add_argument("--files", action="store_true"); ap.add_argument("--runtime", action="store_true")
+    ap.add_argument("--release", default=None, help="audit a built release folder (e.g. var/release/WheelView_v1.0)")
     a = ap.parse_args()
     rp = ROOT / "results" / "leakage_v2.json"; rep = json.load(open(rp, encoding="utf-8")) if rp.exists() else {}
     T = check_data(a, rep)
@@ -201,6 +285,7 @@ def main():
     if a.files and T: check_files(T)
     check_code()
     if a.runtime and T: check_runtime(T)
+    if a.release and T: check_release(a, T, rep)
     print(f"\n{len(FAIL)} failure(s), {len(WARN)} warning(s)")
     sys.exit(1 if FAIL else 0)
 

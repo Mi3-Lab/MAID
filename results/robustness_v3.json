@@ -1,0 +1,2424 @@
+{
+ "note": "WheelView v1.0 test split (n=69). Produced by release/code/evaluate.py from the per-image predictions in results/preds_v3/ against release/annotations/labels.csv. T2 = accuracy/macro-F1 by condition (mean \u00b1 sd over 3 seeds where a model has 3 runs); subsets with n<10 are flagged. T4 Amb-FPR = share of truly-ambiguous test images given a definite class; false-ambiguous rate = share of non-ambiguous images predicted ambiguous.",
+ "models": {
+  "siglip2_so400m_finetune": {
+   "split": "test",
+   "n": 69,
+   "class_counts": {
+    "powered": 15,
+    "manual": 43,
+    "other_aid": 9,
+    "ambiguous": 2
+   },
+   "n_runs": 3,
+   "T1": {
+    "accuracy": {
+     "mean": 0.9034,
+     "sd": 0.0167
+    },
+    "macro_f1": {
+     "mean": 0.8406,
+     "sd": 0.0733
+    },
+    "macro_f1_3": {
+     "mean": 0.8896,
+     "sd": 0.014
+    }
+   },
+   "T1_per_class_f1": {
+    "manual": {
+     "mean": 0.9453,
+     "sd": 0.0071
+    },
+    "powered": {
+     "mean": 0.8235,
+     "sd": 0.0359
+    },
+    "other_aid": {
+     "mean": 0.8714,
+     "sd": 0.0247
+    },
+    "ambiguous": {
+     "mean": 0.7222,
+     "sd": 0.2546
+    }
+   },
+   "T2": {
+    "occupied=yes": {
+     "n": 61,
+     "accuracy": {
+      "mean": 0.9235,
+      "sd": 0.0095
+     },
+     "macro_f1": {
+      "mean": 0.7561,
+      "sd": 0.1553
+     }
+    },
+    "occupied=no": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.75,
+      "sd": 0.125
+     },
+     "macro_f1": {
+      "mean": 0.625,
+      "sd": 0.2512
+     }
+    },
+    "occlusion=none": {
+     "n": 50,
+     "accuracy": {
+      "mean": 0.8667,
+      "sd": 0.0231
+     },
+     "macro_f1": {
+      "mean": 0.8098,
+      "sd": 0.0766
+     }
+    },
+    "occlusion=partial": {
+     "n": 8,
+     "accuracy": {
+      "mean": 1.0,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 1.0,
+      "sd": 0.0
+     }
+    },
+    "occlusion=heavy": {
+     "n": 11,
+     "accuracy": {
+      "mean": 1.0,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 1.0,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=front": {
+     "n": 24,
+     "accuracy": {
+      "mean": 0.9167,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.875,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=side": {
+     "n": 28,
+     "accuracy": {
+      "mean": 0.881,
+      "sd": 0.0206
+     },
+     "macro_f1": {
+      "mean": 0.8044,
+      "sd": 0.0618
+     }
+    },
+    "viewpoint=rear": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.8788,
+      "sd": 0.0525
+     },
+     "macro_f1": {
+      "mean": 0.8427,
+      "sd": 0.0275
+     }
+    },
+    "viewpoint=three-quarter": {
+     "n": 6,
+     "accuracy": {
+      "mean": 1.0,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 1.0,
+      "sd": 0.0
+     }
+    },
+    "lighting=daylight": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.9375,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.9331,
+      "sd": 0.0
+     }
+    },
+    "lighting=indoor": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.875,
+      "sd": 0.0312
+     },
+     "macro_f1": {
+      "mean": 0.8687,
+      "sd": 0.0226
+     }
+    },
+    "lighting=other": {
+     "n": 5,
+     "accuracy": {
+      "mean": 0.8667,
+      "sd": 0.1155
+     },
+     "macro_f1": {
+      "mean": 0.7037,
+      "sd": 0.2566
+     }
+    }
+   },
+   "T4": {
+    "n_ambiguous": 2,
+    "amb_fpr": {
+     "mean": 0.3333,
+     "sd": 0.2887
+    },
+    "false_ambiguous_rate": {
+     "mean": 0.005,
+     "sd": 0.0086
+    }
+   },
+   "runs": [
+    {
+     "pred_file": "results/preds_v3/siglip2_v3__ft_seed0_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.9130434782608695,
+      "macro_f1": 0.833610188261351,
+      "macro_f1_3": 0.9035437430786268,
+      "per_class": {
+       "manual": {
+        "precision": 0.9534883720930233,
+        "recall": 0.9534883720930233,
+        "f1": 0.9534883720930233,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.9230769230769231,
+        "recall": 0.8,
+        "f1": 0.8571428571428571,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571428571428571,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.841,
+        0.971
+       ],
+       "macro_f1_95ci": [
+        0.619,
+        0.971
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.9180327868852459,
+       "macro_f1": 0.6664285714285714
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.875,
+       "macro_f1": 0.8888888888888888
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.88,
+       "macro_f1": 0.8081554460864805
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.9166666666666666,
+       "macro_f1": 0.8749615975422427
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.8928571428571429,
+       "macro_f1": 0.7851190476190476
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.9090909090909091,
+       "macro_f1": 0.8585858585858586
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.9375,
+       "macro_f1": 0.9330808080808082
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.90625,
+       "macro_f1": 0.8918128654970761
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.8,
+       "macro_f1": 0.5555555555555556
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.5,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/siglip2_v3__ft_seed1_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.8840579710144928,
+      "macro_f1": 0.7710084033613445,
+      "macro_f1_3": 0.8756302521008402,
+      "per_class": {
+       "manual": {
+        "precision": 0.9523809523809523,
+        "recall": 0.9302325581395349,
+        "f1": 0.9411764705882352,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.8461538461538461,
+        "recall": 0.7333333333333333,
+        "f1": 0.7857142857142856,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571428571428571,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.797,
+        0.957
+       ],
+       "macro_f1_95ci": [
+        0.593,
+        0.944
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.9180327868852459,
+       "macro_f1": 0.6664285714285714
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.625,
+       "macro_f1": 0.3888888888888889
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.84,
+       "macro_f1": 0.7340225563909775
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.9166666666666666,
+       "macro_f1": 0.8749615975422427
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.8571428571428571,
+       "macro_f1": 0.7545787545787546
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.8181818181818182,
+       "macro_f1": 0.8109668109668109
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.9375,
+       "macro_f1": 0.9330808080808082
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.84375,
+       "macro_f1": 0.8466722361459204
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.8,
+       "macro_f1": 0.5555555555555556
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.5,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.014925373134328358
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/siglip2_v3__ft_seed2_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.9130434782608695,
+      "macro_f1": 0.9171906693711968,
+      "macro_f1_3": 0.8895875591615957,
+      "per_class": {
+       "manual": {
+        "precision": 0.9523809523809523,
+        "recall": 0.9302325581395349,
+        "f1": 0.9411764705882352,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.8571428571428571,
+        "recall": 0.8,
+        "f1": 0.8275862068965518,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.8181818181818182,
+        "recall": 1.0,
+        "f1": 0.9,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.841,
+        0.971
+       ],
+       "macro_f1_95ci": [
+        0.819,
+        0.974
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.9344262295081968,
+       "macro_f1": 0.9353679653679653
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.75,
+       "macro_f1": 0.5972222222222222
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.88,
+       "macro_f1": 0.887280701754386
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.9166666666666666,
+       "macro_f1": 0.8749615975422427
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.8928571428571429,
+       "macro_f1": 0.8736263736263736
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.9090909090909091,
+       "macro_f1": 0.8585858585858586
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.9375,
+       "macro_f1": 0.9330808080808082
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.875,
+       "macro_f1": 0.8677248677248678
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    }
+   ]
+  },
+  "siglip2_so400m_linear_probe": {
+   "split": "test",
+   "n": 69,
+   "class_counts": {
+    "powered": 15,
+    "manual": 43,
+    "other_aid": 9,
+    "ambiguous": 2
+   },
+   "n_runs": 3,
+   "T1": {
+    "accuracy": {
+     "mean": 0.7536,
+     "sd": 0.0
+    },
+    "macro_f1": {
+     "mean": 0.7206,
+     "sd": 0.0
+    },
+    "macro_f1_3": {
+     "mean": 0.7501,
+     "sd": 0.0
+    }
+   },
+   "T1_per_class_f1": {
+    "manual": {
+     "mean": 0.8056,
+     "sd": 0.0
+    },
+    "powered": {
+     "mean": 0.6829,
+     "sd": 0.0
+    },
+    "other_aid": {
+     "mean": 0.7273,
+     "sd": 0.0
+    },
+    "ambiguous": {
+     "mean": 0.6667,
+     "sd": 0.0
+    }
+   },
+   "T2": {
+    "occupied=yes": {
+     "n": 61,
+     "accuracy": {
+      "mean": 0.7377,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.5249,
+      "sd": 0.0
+     }
+    },
+    "occupied=no": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.875,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.8889,
+      "sd": 0.0
+     }
+    },
+    "occlusion=none": {
+     "n": 50,
+     "accuracy": {
+      "mean": 0.72,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.7038,
+      "sd": 0.0
+     }
+    },
+    "occlusion=partial": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.75,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.6667,
+      "sd": 0.0
+     }
+    },
+    "occlusion=heavy": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.9091,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.9615,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=front": {
+     "n": 24,
+     "accuracy": {
+      "mean": 0.8333,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.8201,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=side": {
+     "n": 28,
+     "accuracy": {
+      "mean": 0.7143,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.6761,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=rear": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.7273,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.6852,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=three-quarter": {
+     "n": 6,
+     "accuracy": {
+      "mean": 0.6667,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.6667,
+      "sd": 0.0
+     }
+    },
+    "lighting=daylight": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.6875,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.7553,
+      "sd": 0.0
+     }
+    },
+    "lighting=indoor": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.875,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.8721,
+      "sd": 0.0
+     }
+    },
+    "lighting=other": {
+     "n": 5,
+     "accuracy": {
+      "mean": 0.4,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.2667,
+      "sd": 0.0
+     }
+    }
+   },
+   "T4": {
+    "n_ambiguous": 2,
+    "amb_fpr": {
+     "mean": 0.5,
+     "sd": 0.0
+    },
+    "false_ambiguous_rate": {
+     "mean": 0.0,
+     "sd": 0.0
+    }
+   },
+   "runs": [
+    {
+     "pred_file": "results/preds_v3/siglip2_v3__probe_seed0_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.7536231884057971,
+      "macro_f1": 0.7206054446908106,
+      "macro_f1_3": 0.7501290489095367,
+      "per_class": {
+       "manual": {
+        "precision": 1.0,
+        "recall": 0.6744186046511628,
+        "f1": 0.8055555555555556,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.5384615384615384,
+        "recall": 0.9333333333333333,
+        "f1": 0.6829268292682926,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.6153846153846154,
+        "recall": 0.8888888888888888,
+        "f1": 0.7272727272727274,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.652,
+        0.855
+       ],
+       "macro_f1_95ci": [
+        0.493,
+        0.865
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.7377049180327869,
+       "macro_f1": 0.5248987854251013
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.875,
+       "macro_f1": 0.8888888888888888
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.72,
+       "macro_f1": 0.7038046326380882
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.75,
+       "macro_f1": 0.6666666666666666
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.9090909090909091,
+       "macro_f1": 0.9615384615384615
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.8333333333333334,
+       "macro_f1": 0.8201058201058201
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.7142857142857143,
+       "macro_f1": 0.6761363636363636
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.7272727272727273,
+       "macro_f1": 0.6851851851851852
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.6666666666666666,
+       "macro_f1": 0.6666666666666666
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.6875,
+       "macro_f1": 0.7553475935828877
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.875,
+       "macro_f1": 0.8720538720538721
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.4,
+       "macro_f1": 0.26666666666666666
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.5,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/siglip2_v3__probe_seed1_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.7536231884057971,
+      "macro_f1": 0.7206054446908106,
+      "macro_f1_3": 0.7501290489095367,
+      "per_class": {
+       "manual": {
+        "precision": 1.0,
+        "recall": 0.6744186046511628,
+        "f1": 0.8055555555555556,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.5384615384615384,
+        "recall": 0.9333333333333333,
+        "f1": 0.6829268292682926,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.6153846153846154,
+        "recall": 0.8888888888888888,
+        "f1": 0.7272727272727274,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.652,
+        0.855
+       ],
+       "macro_f1_95ci": [
+        0.493,
+        0.865
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.7377049180327869,
+       "macro_f1": 0.5248987854251013
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.875,
+       "macro_f1": 0.8888888888888888
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.72,
+       "macro_f1": 0.7038046326380882
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.75,
+       "macro_f1": 0.6666666666666666
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.9090909090909091,
+       "macro_f1": 0.9615384615384615
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.8333333333333334,
+       "macro_f1": 0.8201058201058201
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.7142857142857143,
+       "macro_f1": 0.6761363636363636
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.7272727272727273,
+       "macro_f1": 0.6851851851851852
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.6666666666666666,
+       "macro_f1": 0.6666666666666666
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.6875,
+       "macro_f1": 0.7553475935828877
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.875,
+       "macro_f1": 0.8720538720538721
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.4,
+       "macro_f1": 0.26666666666666666
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.5,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/siglip2_v3__probe_seed2_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.7536231884057971,
+      "macro_f1": 0.7206054446908106,
+      "macro_f1_3": 0.7501290489095367,
+      "per_class": {
+       "manual": {
+        "precision": 1.0,
+        "recall": 0.6744186046511628,
+        "f1": 0.8055555555555556,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.5384615384615384,
+        "recall": 0.9333333333333333,
+        "f1": 0.6829268292682926,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.6153846153846154,
+        "recall": 0.8888888888888888,
+        "f1": 0.7272727272727274,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.652,
+        0.855
+       ],
+       "macro_f1_95ci": [
+        0.493,
+        0.865
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.7377049180327869,
+       "macro_f1": 0.5248987854251013
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.875,
+       "macro_f1": 0.8888888888888888
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.72,
+       "macro_f1": 0.7038046326380882
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.75,
+       "macro_f1": 0.6666666666666666
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.9090909090909091,
+       "macro_f1": 0.9615384615384615
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.8333333333333334,
+       "macro_f1": 0.8201058201058201
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.7142857142857143,
+       "macro_f1": 0.6761363636363636
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.7272727272727273,
+       "macro_f1": 0.6851851851851852
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.6666666666666666,
+       "macro_f1": 0.6666666666666666
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.6875,
+       "macro_f1": 0.7553475935828877
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.875,
+       "macro_f1": 0.8720538720538721
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.4,
+       "macro_f1": 0.26666666666666666
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.5,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    }
+   ]
+  },
+  "resnet50_finetune": {
+   "split": "test",
+   "n": 69,
+   "class_counts": {
+    "powered": 15,
+    "manual": 43,
+    "other_aid": 9,
+    "ambiguous": 2
+   },
+   "n_runs": 3,
+   "T1": {
+    "accuracy": {
+     "mean": 0.657,
+     "sd": 0.0509
+    },
+    "macro_f1": {
+     "mean": 0.4976,
+     "sd": 0.083
+    },
+    "macro_f1_3": {
+     "mean": 0.6304,
+     "sd": 0.0341
+    }
+   },
+   "T1_per_class_f1": {
+    "manual": {
+     "mean": 0.752,
+     "sd": 0.0554
+    },
+    "powered": {
+     "mean": 0.5828,
+     "sd": 0.0521
+    },
+    "other_aid": {
+     "mean": 0.5224,
+     "sd": 0.0227
+    },
+    "ambiguous": {
+     "mean": 0.1333,
+     "sd": 0.2309
+    }
+   },
+   "T2": {
+    "occupied=yes": {
+     "n": 61,
+     "accuracy": {
+      "mean": 0.6667,
+      "sd": 0.0576
+     },
+     "macro_f1": {
+      "mean": 0.4381,
+      "sd": 0.0337
+     }
+    },
+    "occupied=no": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.5833,
+      "sd": 0.0722
+     },
+     "macro_f1": {
+      "mean": 0.352,
+      "sd": 0.1015
+     }
+    },
+    "occlusion=none": {
+     "n": 50,
+     "accuracy": {
+      "mean": 0.62,
+      "sd": 0.0346
+     },
+     "macro_f1": {
+      "mean": 0.4781,
+      "sd": 0.0695
+     }
+    },
+    "occlusion=partial": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.6667,
+      "sd": 0.1909
+     },
+     "macro_f1": {
+      "mean": 0.6084,
+      "sd": 0.1686
+     }
+    },
+    "occlusion=heavy": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.8182,
+      "sd": 0.0909
+     },
+     "macro_f1": {
+      "mean": 0.8248,
+      "sd": 0.0941
+     }
+    },
+    "viewpoint=front": {
+     "n": 24,
+     "accuracy": {
+      "mean": 0.6111,
+      "sd": 0.1339
+     },
+     "macro_f1": {
+      "mean": 0.5638,
+      "sd": 0.1278
+     }
+    },
+    "viewpoint=side": {
+     "n": 28,
+     "accuracy": {
+      "mean": 0.6548,
+      "sd": 0.0546
+     },
+     "macro_f1": {
+      "mean": 0.4338,
+      "sd": 0.0911
+     }
+    },
+    "viewpoint=rear": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.5758,
+      "sd": 0.0525
+     },
+     "macro_f1": {
+      "mean": 0.5656,
+      "sd": 0.0492
+     }
+    },
+    "viewpoint=three-quarter": {
+     "n": 6,
+     "accuracy": {
+      "mean": 1.0,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 1.0,
+      "sd": 0.0
+     }
+    },
+    "lighting=daylight": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.625,
+      "sd": 0.0827
+     },
+     "macro_f1": {
+      "mean": 0.4966,
+      "sd": 0.1677
+     }
+    },
+    "lighting=indoor": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.7188,
+      "sd": 0.0625
+     },
+     "macro_f1": {
+      "mean": 0.728,
+      "sd": 0.0626
+     }
+    },
+    "lighting=other": {
+     "n": 5,
+     "accuracy": {
+      "mean": 0.4667,
+      "sd": 0.1155
+     },
+     "macro_f1": {
+      "mean": 0.4593,
+      "sd": 0.0612
+     }
+    }
+   },
+   "T4": {
+    "n_ambiguous": 2,
+    "amb_fpr": {
+     "mean": 0.8333,
+     "sd": 0.2887
+    },
+    "false_ambiguous_rate": {
+     "mean": 0.01,
+     "sd": 0.0172
+    }
+   },
+   "runs": [
+    {
+     "pred_file": "results/preds_v3/resnet50_v3__seed0_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.6521739130434783,
+      "macro_f1": 0.46305282555282556,
+      "macro_f1_3": 0.6307626307626308,
+      "per_class": {
+       "manual": {
+        "precision": 0.9032258064516129,
+        "recall": 0.6511627906976745,
+        "f1": 0.7567567567567568,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.44,
+        "recall": 0.7333333333333333,
+        "f1": 0.5499999999999999,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.46153846153846156,
+        "recall": 0.6666666666666666,
+        "f1": 0.5454545454545455,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.536,
+        0.754
+       ],
+       "macro_f1_95ci": [
+        0.36,
+        0.69
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.6721311475409836,
+       "macro_f1": 0.4500225801595664
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.5,
+       "macro_f1": 0.2666666666666666
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.64,
+       "macro_f1": 0.460979020979021
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.625,
+       "macro_f1": 0.5636363636363637
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.7272727272727273,
+       "macro_f1": 0.7179487179487178
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.6666666666666666,
+       "macro_f1": 0.6278659611992946
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.6071428571428571,
+       "macro_f1": 0.36025641025641025
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.5454545454545454,
+       "macro_f1": 0.5222222222222221
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.6875,
+       "macro_f1": 0.4551282051282051
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.65625,
+       "macro_f1": 0.6732258064516129
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.4,
+       "macro_f1": 0.5
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 1.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/resnet50_v3__seed1_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.7101449275362319,
+      "macro_f1": 0.5923685805181034,
+      "macro_f1_3": 0.6643965790307254,
+      "per_class": {
+       "manual": {
+        "precision": 0.8461538461538461,
+        "recall": 0.7674418604651163,
+        "f1": 0.8048780487804877,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.6923076923076923,
+        "recall": 0.6,
+        "f1": 0.6428571428571429,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.42857142857142855,
+        "recall": 0.6666666666666666,
+        "f1": 0.5217391304347826,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.594,
+        0.812
+       ],
+       "macro_f1_95ci": [
+        0.424,
+        0.764
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.7213114754098361,
+       "macro_f1": 0.46412037037037035
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.625,
+       "macro_f1": 0.4642857142857143
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.64,
+       "macro_f1": 0.5545088566827697
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.875,
+       "macro_f1": 0.7948717948717948
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.9090909090909091,
+       "macro_f1": 0.8952380952380952
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.7083333333333334,
+       "macro_f1": 0.6469534050179212
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.7142857142857143,
+       "macro_f1": 0.5356606606606606
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.5454545454545454,
+       "macro_f1": 0.5555555555555556
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.65625,
+       "macro_f1": 0.6810897435897435
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.78125,
+       "macro_f1": 0.7962247962247961
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.6,
+       "macro_f1": 0.4888888888888889
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 0.5,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.029850746268656716
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/resnet50_v3__seed2_test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.6086956521739131,
+      "macro_f1": 0.4375,
+      "macro_f1_3": 0.5961538461538461,
+      "per_class": {
+       "manual": {
+        "precision": 0.8620689655172413,
+        "recall": 0.5813953488372093,
+        "f1": 0.6944444444444445,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.47619047619047616,
+        "recall": 0.6666666666666666,
+        "f1": 0.5555555555555556,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.3684210526315789,
+        "recall": 0.7777777777777778,
+        "f1": 0.5,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.493,
+        0.725
+       ],
+       "macro_f1_95ci": [
+        0.341,
+        0.647
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.6065573770491803,
+       "macro_f1": 0.40001467136150237
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.625,
+       "macro_f1": 0.325
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.58,
+       "macro_f1": 0.41867724867724865
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.5,
+       "macro_f1": 0.4666666666666667
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.8181818181818182,
+       "macro_f1": 0.8611111111111112
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.4583333333333333,
+       "macro_f1": 0.4166666666666667
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.6428571428571429,
+       "macro_f1": 0.40555555555555556
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.6363636363636364,
+       "macro_f1": 0.6190476190476191
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 1.0,
+       "macro_f1": 1.0
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.53125,
+       "macro_f1": 0.35347985347985345
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.71875,
+       "macro_f1": 0.7146464646464646
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.4,
+       "macro_f1": 0.3888888888888889
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 1.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    }
+   ]
+  },
+  "yolo11s_cls_finetune": {
+   "split": "test",
+   "n": 69,
+   "class_counts": {
+    "powered": 15,
+    "manual": 43,
+    "other_aid": 9,
+    "ambiguous": 2
+   },
+   "n_runs": 3,
+   "T1": {
+    "accuracy": {
+     "mean": 0.57,
+     "sd": 0.0729
+    },
+    "macro_f1": {
+     "mean": 0.3625,
+     "sd": 0.0455
+    },
+    "macro_f1_3": {
+     "mean": 0.4937,
+     "sd": 0.0648
+    }
+   },
+   "T1_per_class_f1": {
+    "manual": {
+     "mean": 0.7076,
+     "sd": 0.0642
+    },
+    "powered": {
+     "mean": 0.3448,
+     "sd": 0.1604
+    },
+    "other_aid": {
+     "mean": 0.3977,
+     "sd": 0.1114
+    },
+    "ambiguous": {
+     "mean": 0.0,
+     "sd": 0.0
+    }
+   },
+   "T2": {
+    "occupied=yes": {
+     "n": 61,
+     "accuracy": {
+      "mean": 0.5902,
+      "sd": 0.0751
+     },
+     "macro_f1": {
+      "mean": 0.321,
+      "sd": 0.0469
+     }
+    },
+    "occupied=no": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.4167,
+      "sd": 0.0722
+     },
+     "macro_f1": {
+      "mean": 0.2726,
+      "sd": 0.0833
+     }
+    },
+    "occlusion=none": {
+     "n": 50,
+     "accuracy": {
+      "mean": 0.5467,
+      "sd": 0.0757
+     },
+     "macro_f1": {
+      "mean": 0.3574,
+      "sd": 0.0426
+     }
+    },
+    "occlusion=partial": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.5833,
+      "sd": 0.0722
+     },
+     "macro_f1": {
+      "mean": 0.4272,
+      "sd": 0.1209
+     }
+    },
+    "occlusion=heavy": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.6667,
+      "sd": 0.1389
+     },
+     "macro_f1": {
+      "mean": 0.6204,
+      "sd": 0.132
+     }
+    },
+    "viewpoint=front": {
+     "n": 24,
+     "accuracy": {
+      "mean": 0.5694,
+      "sd": 0.0636
+     },
+     "macro_f1": {
+      "mean": 0.3962,
+      "sd": 0.0941
+     }
+    },
+    "viewpoint=side": {
+     "n": 28,
+     "accuracy": {
+      "mean": 0.5476,
+      "sd": 0.0743
+     },
+     "macro_f1": {
+      "mean": 0.3508,
+      "sd": 0.033
+     }
+    },
+    "viewpoint=rear": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.6061,
+      "sd": 0.105
+     },
+     "macro_f1": {
+      "mean": 0.5743,
+      "sd": 0.2021
+     }
+    },
+    "viewpoint=three-quarter": {
+     "n": 6,
+     "accuracy": {
+      "mean": 0.6111,
+      "sd": 0.0962
+     },
+     "macro_f1": {
+      "mean": 0.5704,
+      "sd": 0.074
+     }
+    },
+    "lighting=daylight": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.5729,
+      "sd": 0.0902
+     },
+     "macro_f1": {
+      "mean": 0.3477,
+      "sd": 0.0586
+     }
+    },
+    "lighting=indoor": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.5729,
+      "sd": 0.1005
+     },
+     "macro_f1": {
+      "mean": 0.4825,
+      "sd": 0.1089
+     }
+    },
+    "lighting=other": {
+     "n": 5,
+     "accuracy": {
+      "mean": 0.5333,
+      "sd": 0.1155
+     },
+     "macro_f1": {
+      "mean": 0.4741,
+      "sd": 0.181
+     }
+    }
+   },
+   "T4": {
+    "n_ambiguous": 2,
+    "amb_fpr": {
+     "mean": 1.0,
+     "sd": 0.0
+    },
+    "false_ambiguous_rate": {
+     "mean": 0.0249,
+     "sd": 0.0172
+    }
+   },
+   "runs": [
+    {
+     "pred_file": "results/preds_v3/yolo11s_cls_v3_seed0__test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.4927536231884058,
+      "macro_f1": 0.3132984901277584,
+      "macro_f1_3": 0.4231420963447107,
+      "per_class": {
+       "manual": {
+        "precision": 0.6666666666666666,
+        "recall": 0.6046511627906976,
+        "f1": 0.6341463414634145,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.25,
+        "recall": 0.3333333333333333,
+        "f1": 0.28571428571428575,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.3333333333333333,
+        "recall": 0.3333333333333333,
+        "f1": 0.3333333333333333,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.377,
+        0.623
+       ],
+       "macro_f1_95ci": [
+        0.214,
+        0.485
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.5081967213114754,
+       "macro_f1": 0.27667817414652857
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.375,
+       "macro_f1": 0.24285714285714288
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.46,
+       "macro_f1": 0.31061291649526945
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.5,
+       "macro_f1": 0.3333333333333333
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.6363636363636364,
+       "macro_f1": 0.5666666666666667
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.5,
+       "macro_f1": 0.2962962962962963
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.4642857142857143,
+       "macro_f1": 0.3140151515151515
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.5454545454545454,
+       "macro_f1": 0.5202020202020201
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.5,
+       "macro_f1": 0.5222222222222223
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.46875,
+       "macro_f1": 0.28027003484320556
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.5,
+       "macro_f1": 0.41081871345029236
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.6,
+       "macro_f1": 0.6
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 1.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.014925373134328358
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/yolo11s_cls_v3_seed1__test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.6376811594202898,
+      "macro_f1": 0.4031475748194014,
+      "macro_f1_3": 0.5506189716716032,
+      "per_class": {
+       "manual": {
+        "precision": 0.7619047619047619,
+        "recall": 0.7441860465116279,
+        "f1": 0.7529411764705882,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.43478260869565216,
+        "recall": 0.6666666666666666,
+        "f1": 0.5263157894736841,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.6666666666666666,
+        "recall": 0.2222222222222222,
+        "f1": 0.3333333333333333,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.522,
+        0.754
+       ],
+       "macro_f1_95ci": [
+        0.286,
+        0.63
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.6557377049180327,
+       "macro_f1": 0.3163340724316334
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.5,
+       "macro_f1": 0.3666666666666667
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.6,
+       "macro_f1": 0.3939974457215837
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.625,
+       "macro_f1": 0.5636363636363637
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.8181818181818182,
+       "macro_f1": 0.7708333333333334
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.625,
+       "macro_f1": 0.40909090909090906
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.6071428571428571,
+       "macro_f1": 0.37777777777777777
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.7272727272727273,
+       "macro_f1": 0.7979797979797979
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.6666666666666666,
+       "macro_f1": 0.5333333333333333
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.625,
+       "macro_f1": 0.386046511627907
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.6875,
+       "macro_f1": 0.6078078078078077
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.4,
+       "macro_f1": 0.26666666666666666
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 1.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.014925373134328358
+     }
+    },
+    {
+     "pred_file": "results/preds_v3/yolo11s_cls_v3_seed2__test_preds.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.5797101449275363,
+      "macro_f1": 0.3710425489009881,
+      "macro_f1_3": 0.5073212747631352,
+      "per_class": {
+       "manual": {
+        "precision": 0.7272727272727273,
+        "recall": 0.7441860465116279,
+        "f1": 0.735632183908046,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.25,
+        "recall": 0.2,
+        "f1": 0.22222222222222224,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.5,
+        "recall": 0.5555555555555556,
+        "f1": 0.5263157894736842,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.464,
+        0.696
+       ],
+       "macro_f1_95ci": [
+        0.268,
+        0.562
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.6065573770491803,
+       "macro_f1": 0.37002919561059094
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.375,
+       "macro_f1": 0.20833333333333331
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.58,
+       "macro_f1": 0.3675438596491228
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.625,
+       "macro_f1": 0.3846153846153846
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.5454545454545454,
+       "macro_f1": 0.5238095238095238
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.5833333333333334,
+       "macro_f1": 0.48316498316498313
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.5714285714285714,
+       "macro_f1": 0.3607142857142857
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.5454545454545454,
+       "macro_f1": 0.40476190476190477
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.6666666666666666,
+       "macro_f1": 0.6555555555555556
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.625,
+       "macro_f1": 0.37683982683982686
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.53125,
+       "macro_f1": 0.42885872297637
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.6,
+       "macro_f1": 0.5555555555555556
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 1.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.04477611940298507
+     }
+    }
+   ]
+  },
+  "always_manual_baseline": {
+   "split": "test",
+   "n": 69,
+   "class_counts": {
+    "powered": 15,
+    "manual": 43,
+    "other_aid": 9,
+    "ambiguous": 2
+   },
+   "n_runs": 1,
+   "T1": {
+    "accuracy": {
+     "mean": 0.6232,
+     "sd": 0.0
+    },
+    "macro_f1": {
+     "mean": 0.192,
+     "sd": 0.0
+    },
+    "macro_f1_3": {
+     "mean": 0.2606,
+     "sd": 0.0
+    }
+   },
+   "T1_per_class_f1": {
+    "manual": {
+     "mean": 0.7679,
+     "sd": 0.0
+    },
+    "powered": {
+     "mean": 0.0,
+     "sd": 0.0
+    },
+    "other_aid": {
+     "mean": 0.0,
+     "sd": 0.0
+    },
+    "ambiguous": {
+     "mean": 0.0,
+     "sd": 0.0
+    }
+   },
+   "T2": {
+    "occupied=yes": {
+     "n": 61,
+     "accuracy": {
+      "mean": 0.6885,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.2039,
+      "sd": 0.0
+     }
+    },
+    "occupied=no": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.125,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.0556,
+      "sd": 0.0
+     }
+    },
+    "occlusion=none": {
+     "n": 50,
+     "accuracy": {
+      "mean": 0.58,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.1835,
+      "sd": 0.0
+     }
+    },
+    "occlusion=partial": {
+     "n": 8,
+     "accuracy": {
+      "mean": 0.875,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.4667,
+      "sd": 0.0
+     }
+    },
+    "occlusion=heavy": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.6364,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.3889,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=front": {
+     "n": 24,
+     "accuracy": {
+      "mean": 0.625,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.2564,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=side": {
+     "n": 28,
+     "accuracy": {
+      "mean": 0.7143,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.2083,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=rear": {
+     "n": 11,
+     "accuracy": {
+      "mean": 0.5455,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.2353,
+      "sd": 0.0
+     }
+    },
+    "viewpoint=three-quarter": {
+     "n": 6,
+     "accuracy": {
+      "mean": 0.3333,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.1667,
+      "sd": 0.0
+     }
+    },
+    "lighting=daylight": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.6875,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.2037,
+      "sd": 0.0
+     }
+    },
+    "lighting=indoor": {
+     "n": 32,
+     "accuracy": {
+      "mean": 0.5625,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.24,
+      "sd": 0.0
+     }
+    },
+    "lighting=other": {
+     "n": 5,
+     "accuracy": {
+      "mean": 0.6,
+      "sd": 0.0
+     },
+     "macro_f1": {
+      "mean": 0.25,
+      "sd": 0.0
+     }
+    }
+   },
+   "T4": {
+    "n_ambiguous": 2,
+    "amb_fpr": {
+     "mean": 1.0,
+     "sd": 0.0
+    },
+    "false_ambiguous_rate": {
+     "mean": 0.0,
+     "sd": 0.0
+    }
+   },
+   "runs": [
+    {
+     "pred_file": "results/preds_v3/always_manual.csv",
+     "T1": {
+      "n": 69,
+      "accuracy": 0.6231884057971014,
+      "macro_f1": 0.1919642857142857,
+      "macro_f1_3": 0.2606060606060606,
+      "per_class": {
+       "manual": {
+        "precision": 0.6231884057971014,
+        "recall": 1.0,
+        "f1": 0.7678571428571428,
+        "n": 43
+       },
+       "powered": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 15
+       },
+       "other_aid": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 9
+       },
+       "ambiguous": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "n": 2
+       }
+      },
+      "bootstrap": {
+       "accuracy_95ci": [
+        0.507,
+        0.739
+       ],
+       "macro_f1_95ci": [
+        0.168,
+        0.274
+       ]
+      }
+     },
+     "T2": {
+      "occupied=yes": {
+       "n": 61,
+       "accuracy": 0.6885245901639344,
+       "macro_f1": 0.2038834951456311
+      },
+      "occupied=no": {
+       "n": 8,
+       "accuracy": 0.125,
+       "macro_f1": 0.05555555555555555
+      },
+      "occlusion=none": {
+       "n": 50,
+       "accuracy": 0.58,
+       "macro_f1": 0.18354430379746833
+      },
+      "occlusion=partial": {
+       "n": 8,
+       "accuracy": 0.875,
+       "macro_f1": 0.4666666666666667
+      },
+      "occlusion=heavy": {
+       "n": 11,
+       "accuracy": 0.6363636363636364,
+       "macro_f1": 0.3888888888888889
+      },
+      "viewpoint=front": {
+       "n": 24,
+       "accuracy": 0.625,
+       "macro_f1": 0.25641025641025644
+      },
+      "viewpoint=side": {
+       "n": 28,
+       "accuracy": 0.7142857142857143,
+       "macro_f1": 0.20833333333333331
+      },
+      "viewpoint=rear": {
+       "n": 11,
+       "accuracy": 0.5454545454545454,
+       "macro_f1": 0.2352941176470588
+      },
+      "viewpoint=three-quarter": {
+       "n": 6,
+       "accuracy": 0.3333333333333333,
+       "macro_f1": 0.16666666666666666
+      },
+      "lighting=daylight": {
+       "n": 32,
+       "accuracy": 0.6875,
+       "macro_f1": 0.2037037037037037
+      },
+      "lighting=indoor": {
+       "n": 32,
+       "accuracy": 0.5625,
+       "macro_f1": 0.24
+      },
+      "lighting=other": {
+       "n": 5,
+       "accuracy": 0.6,
+       "macro_f1": 0.24999999999999997
+      }
+     },
+     "T4": {
+      "n_ambiguous": 2,
+      "amb_fpr": 1.0,
+      "n_devices": 67,
+      "false_ambiguous_rate": 0.0
+     }
+    }
+   ]
+  }
+ }
+}

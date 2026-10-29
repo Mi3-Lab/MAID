@@ -1,0 +1,93 @@
+{
+ "batch_size": 1,
+ "precision": "fp32",
+ "n_images": 20,
+ "torch": "2.11.0+cu128",
+ "torch_threads": 16,
+ "cpu": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+ "gpu": "NVIDIA RTX 3000 Ada Generation Laptop GPU",
+ "gpu_state_before": "46, 0x0000000000000024",
+ "results": [
+  {
+   "model": "SigLIP 2 so400m fine-tune (last 4 blocks)",
+   "weights": "var/runs/siglip2_v3/ft_seed0_best.pt",
+   "device": "cuda",
+   "model_only": {
+    "median_ms": 37.17,
+    "p90_ms": 40.39,
+    "iters": 200
+   },
+   "end2end": {
+    "median_ms": 43.58,
+    "p90_ms": 44.99,
+    "iters": 200
+   }
+  },
+  {
+   "model": "SigLIP 2 so400m fine-tune (last 4 blocks)",
+   "weights": "var/runs/siglip2_v3/ft_seed0_best.pt",
+   "device": "cpu",
+   "model_only": {
+    "median_ms": 527.88,
+    "p90_ms": 557.38,
+    "iters": 40
+   },
+   "end2end": {
+    "median_ms": 564.42,
+    "p90_ms": 582.76,
+    "iters": 40
+   }
+  },
+  {
+   "model": "ResNet-50 fine-tune",
+   "weights": "var/runs/resnet50_v3/seed0_best.pt",
+   "device": "cuda",
+   "model_only": {
+    "median_ms": 6.09,
+    "p90_ms": 8.85,
+    "iters": 200
+   },
+   "end2end": {
+    "median_ms": 11.14,
+    "p90_ms": 16.98,
+    "iters": 200
+   }
+  },
+  {
+   "model": "ResNet-50 fine-tune",
+   "weights": "var/runs/resnet50_v3/seed0_best.pt",
+   "device": "cpu",
+   "model_only": {
+    "median_ms": 34.8,
+    "p90_ms": 37.38,
+    "iters": 40
+   },
+   "end2end": {
+    "median_ms": 38.7,
+    "p90_ms": 40.69,
+    "iters": 40
+   }
+  },
+  {
+   "model": "YOLO11s-cls fine-tune",
+   "weights": "var/runs/yolo11s_cls_v3_seed0/weights/best.pt",
+   "device": "cuda",
+   "end2end": {
+    "median_ms": 11.86,
+    "p90_ms": 14.95,
+    "iters": 200
+   }
+  },
+  {
+   "model": "YOLO11s-cls fine-tune",
+   "weights": "var/runs/yolo11s_cls_v3_seed0/weights/best.pt",
+   "device": "cpu",
+   "end2end": {
+    "median_ms": 14.75,
+    "p90_ms": 17.43,
+    "iters": 40
+   }
+  }
+ ],
+ "gpu_state_after": "63, 0x0000000000000001"
+}
