@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""SigLIP 2 baselines for WheelView: 4-way device classification (manual / powered / other_aid / lookalike).
+"""SigLIP 2 baselines for WheelView: 4-way device classification (manual / powered / other_aid / ambiguous;
+`ambiguous` was called `lookalike` before 2026-10-28).
 
 Model: google/siglip2-so400m-patch14-224 (Apache-2.0) -- the same checkpoint scripts/auto_annotate.py uses.
 Rows produced (all on the same face-BLURRED images and the same splits file):
@@ -21,7 +22,7 @@ from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts")); import auto_annotate as AA   # prompts / temperature / feats: single source of truth
-sys.path.insert(0, str(ROOT / "scripts")); from train_baseline import CLASSES, metrics, bootstrap, set_seed, load_split, DS, plot_cm
+sys.path.insert(0, str(ROOT / "scripts")); from train_baseline import CLASSES, metrics, bootstrap, set_seed, load_split, DS, plot_cm, read_split_rows, DEFAULT_SPLITS, wvcore
 import torch, torch.nn as nn
 from torchvision import transforms as T
 from PIL import Image
@@ -60,9 +61,9 @@ def agreement(rows, sugg):
         eq = sum(sugg[r["image_id"]] == r["label"] for r in have)
         acc = 0; n_ev = 0
         for r in rs:
-            es = [e for (i, a), e in last.items() if i == r["image_id"] and e.get("value") == r["label"]]
+            es = [e for (i, a), e in last.items() if i == r["image_id"] and wvcore.canon_class(e.get("value")) == r["label"]]
             if es:
-                n_ev += 1; acc += any(e.get("source") == "auto_review" and e.get("suggested") == e.get("value") for e in es)
+                n_ev += 1; acc += any(e.get("source") == "auto_review" and wvcore.canon_class(e.get("suggested")) == wvcore.canon_class(e.get("value")) for e in es)
         out[name] = {"n": len(rs), "n_with_suggestion": len(have), "label_equals_suggestion": eq,
                      "rate": round(eq / max(len(have), 1), 4),
                      "accepted_suggestion_unchanged": acc, "accepted_rate": round(acc / max(n_ev, 1), 4)}
@@ -70,7 +71,7 @@ def agreement(rows, sugg):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--splits", default=ROOT / "data" / "splits_v2.csv")
+    ap.add_argument("--splits", "--manifest", dest="splits", default=DEFAULT_SPLITS, help="dataset manifest (default) or an older splits CSV")
     ap.add_argument("--extra_test", default=None)
     ap.add_argument("--images", default=ROOT / "images_blurred")
     ap.add_argument("--model", default=AA.CLS_MODEL)
@@ -86,12 +87,12 @@ def main():
     from transformers import AutoModel, AutoProcessor
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu"); amp = dev.type == "cuda"
     outdir = ROOT / "var" / "runs" / a.run; outdir.mkdir(parents=True, exist_ok=True)
-    rows = list(csv.DictReader(open(a.splits, encoding="utf-8"))); imgdir = Path(a.images)
+    rows = read_split_rows(a.splits); imgdir = Path(a.images)
     sp = {s: [r for r in rows if r["split"] == s] for s in ("train", "val", "test")}
     extra_info = None
     if a.extra_test:
         seen = {r["image_id"] for r in rows if r["split"] in ("train", "val")}
-        old = [r for r in csv.DictReader(open(a.extra_test, encoding="utf-8")) if r["split"] == "test"]
+        old = [r for r in read_split_rows(a.extra_test) if r["split"] == "test"]
         sp["extra"] = [r for r in old if r["image_id"] not in seen and r["label"] in CLASSES]
         extra_info = {"file": Path(a.extra_test).name, "n_old_test": len(old), "n_evaluated": len(sp["extra"]), "n_dropped_now_in_train_or_val": len(old) - len(sp["extra"])}
     y = {s: np.array([CLASSES.index(r["label"]) for r in v]) for s, v in sp.items()}
@@ -113,10 +114,12 @@ def main():
             out.append(torch.nn.functional.normalize(e.float(), dim=-1).cpu().numpy())
         E[s] = np.concatenate(out); print(f"embedded {s}: {E[s].shape}", flush=True)
     emb_s = time.time() - t0
+    # Cache for inspection only: NO evaluation step below (or anywhere) reads it back; the probe predicts test images
+    # with the fitted head alone (scripts/check_leakage.py checks that no script np.load()s it).
     np.savez(outdir / "emb.npz", **{s: E[s] for s in E}, **{f"ids_{s}": np.array([r["image_id"] for r in sp[s]]) for s in sp})
 
     # ---------- zero-shot (untrained) ----------
-    opts = AA.P["device_type"]; names = list(opts)
+    opts = AA.prompts_for("device_type"); names = list(opts)   # canonical class names (lookalike prompts -> ambiguous)
     with torch.inference_mode():
         Tm = []
         for o in names:
@@ -124,9 +127,8 @@ def main():
             t = torch.nn.functional.normalize(AA.feats(m.get_text_features(**x)).float(), dim=-1)
             Tm.append(torch.nn.functional.normalize(t.mean(0), dim=-1).cpu().numpy())
     Tm = np.stack(Tm); order = [names.index(c) for c in CLASSES]
-    def zs(Es):
+    def zs(Es):   # per image: image embedding x fixed text embeddings only (no batch/test-set statistics, no train data)
         z = Es @ Tm.T
-        if AA.CALIB and len(Es) >= 200: z = z - AA.CALIB * z.mean(0, keepdims=True)
         return AA.softmax(z / AA.TEMP)[:, order].argmax(1)
     zres = {"seed": None, "test": metrics(y["test"], zs(E["test"])), "test_bootstrap": bootstrap(y["test"], zs(E["test"]))}
     if "extra" in E: zres["extra_test"] = metrics(y["extra"], zs(E["extra"]))
@@ -135,7 +137,7 @@ def main():
     sf = ROOT / "annotations" / "auto" / f"{AA.MODEL_TAG}.jsonl"
     for line in open(sf, encoding="utf-8"):
         d = json.loads(line); v = d.get("suggestions", {}).get("device_type", {}).get("value")
-        if v: sugg[d["image_id"]] = v
+        if v: sugg[d["image_id"]] = wvcore.canon_class(v)   # suggestion file keeps 'lookalike'; mapped on read
     st = [(CLASSES.index(r["label"]), CLASSES.index(sugg[r["image_id"]])) for r in sp["test"] if sugg.get(r["image_id"]) in CLASSES]
     stored = {"n": len(st), "test": metrics([u for u, _ in st], [v for _, v in st]), "test_bootstrap": bootstrap([u for u, _ in st], [v for _, v in st])}
     agree = agreement(rows, sugg)
@@ -154,6 +156,8 @@ def main():
         p = clf.predict(E["test"]); r = {"seed": s, "C": bestC, "test": metrics(y["test"], p), "test_bootstrap": bootstrap(y["test"], p, seed=s)}
         if "extra" in E: r["extra_test"] = metrics(y["extra"], clf.predict(E["extra"]))
         probe_runs.append(r)
+        # the fitted head IS the probe model: inference = embed one image + this head (scripts/predict.py), no train embeddings
+        np.savez(outdir / f"probe_seed{s}_head.npz", coef=clf.coef_, intercept=clf.intercept_, classes=np.array(CLASSES), C=bestC, model=a.model)
         json.dump([{"image_id": rr["image_id"], "label": rr["label"], "pred": CLASSES[k]} for rr, k in zip(sp["test"], p)], open(outdir / f"probe_seed{s}_test_preds.json", "w"), indent=1)
     print("probe C", bestC, "test", round(probe_runs[0]["test"]["accuracy"], 3), round(probe_runs[0]["test"]["macro_f1"], 3), flush=True)
 

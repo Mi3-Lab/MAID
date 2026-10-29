@@ -37,13 +37,16 @@ window.fetch = async (...a) => { const r = await _fetch(...a); if (r.status === 
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c == 'x' ? r : (r & 3 | 8)).toString(16); }));
 const slug = s => s.trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^[-.]+|[-.]+$/g, '').slice(0, 40);
 
+// Renamed option values (schema.value_aliases, e.g. device_type 'lookalike' -> 'ambiguous'): old events keep their
+// recorded value; every read maps it to the canonical option so old and new labels merge.
+const canon = (f, v) => (typeof v === 'string' && S.schema?.value_aliases?.[f]?.[v]) || v;
 function foldMine(events) {   // latest value per (image, field) for this annotator; ts then uuid
   const m = {};
   for (const e of events) {
     if (e.annotator !== S.annotator || e.kind !== 'label') continue;
     const im = m[e.image_id] ||= {}; const k = [e.ts, e.uuid];
     const cur = im[e.field];
-    if (!cur || k[0] > cur.k[0] || (k[0] === cur.k[0] && k[1] > cur.k[1])) im[e.field] = { v: e.value, k, n: (cur?.n || 0) + 1 }; else cur.n++;
+    if (!cur || k[0] > cur.k[0] || (k[0] === cur.k[0] && k[1] > cur.k[1])) im[e.field] = { v: canon(e.field, e.value), k, n: (cur?.n || 0) + 1 }; else cur.n++;
   }
   return m;
 }
@@ -53,7 +56,7 @@ const val = (img, f) => S.mine[img]?.[f]?.v;
 function prov(image_id, field) {   // review mode: every human edit carries "model-suggested" provenance
   const a = S.mode === 'review' && S.auto[image_id]; if (!a) return {};
   let sv = null, cf = null;
-  if (a.suggestions?.[field]) { sv = a.suggestions[field].value; cf = a.suggestions[field].confidence; }
+  if (a.suggestions?.[field]) { sv = canon(field, a.suggestions[field].value); cf = a.suggestions[field].confidence; }
   else if (field === 'face_blur_missed') { sv = (a.flags || []).includes('visible_face'); cf = a.screening?.visible_face ?? null; }
   return { source: 'auto_review', model_tag: a.model_tag, suggested: sv, confidence: cf };
 }
@@ -174,7 +177,7 @@ async function setMode(m) {
 
 // ---------- rendering ----------
 const cur = () => S.images[S.idx];
-function autoSug(img, f) { return S.mode === 'review' ? S.auto[img.image_id]?.suggestions?.[f] : null; }
+function autoSug(img, f) { const s = S.mode === 'review' ? S.auto[img.image_id]?.suggestions?.[f] : null; return s ? { ...s, value: canon(f, s.value) } : s; }
 function suggestion(img, f) {
   if (S.mode === 'review') return autoSug(img, f)?.value ?? null;
   return S.schema.prefill[img.proposed_class]?.[f] ?? null;
@@ -256,7 +259,7 @@ async function confirmAll() {   // review mode: accept every remaining suggestio
   if (risks.length && !val(id, 'exclude') && S.armed !== id) { S.armed = id; render(); return; }   // screening flag: 2nd press needed
   S.armed = null;
   if (!val(id, 'exclude')) {
-    for (const f of rows()) { const s = A.suggestions?.[f]?.value; if (val(id, f) === undefined && s != null) await emit(f, s); }
+    for (const f of rows()) { const s = canon(f, A.suggestions?.[f]?.value); if (val(id, f) === undefined && s != null) await emit(f, s); }
     if (val(id, 'face_blur_missed') === undefined && missSug(im)) await emit('face_blur_missed', true);
   }
   if (val(id, 'exclude') === undefined) await emit('exclude', '');

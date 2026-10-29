@@ -8,6 +8,37 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
 FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}
 COMPARE = [f["name"] for f in SCHEMA["fields"] if f.get("compare")] + ["exclude"]
+# Renamed values: {field: {historical value: canonical value}} (schema.json "value_aliases"; e.g. device_type
+# 'lookalike' -> 'ambiguous', renamed 2026-10-28). The event log is append-only and is NEVER rewritten: old events
+# keep the value they were recorded with, and every reader maps it through canon() (fold() does this for all
+# label/adjudication folding, load_auto() for machine suggestions). This is the ONE place the mapping lives.
+VALUE_ALIASES = SCHEMA.get("value_aliases", {})
+# Device classes used for classification (device_type minus 'unclear'), canonical names, fixed order.
+DEVICE_CLASSES = [o for o in FIELD_OPTS["device_type"] if o != "unclear"]
+
+def canon(field, value):
+    """Canonical value for (field, value): maps renamed/historical option values (see VALUE_ALIASES)."""
+    if isinstance(value, str):
+        return VALUE_ALIASES.get(field, {}).get(value, value)
+    return value
+
+def canon_keys(obj, field="device_type"):
+    """Copy of a JSON-like object with renamed option values mapped in dict keys, also as a '_<old>' key suffix
+    (e.g. results JSON 'lookalike' -> 'ambiguous', 'test_f1_lookalike' -> 'test_f1_ambiguous'). For reading old results."""
+    al = VALUE_ALIASES.get(field, {})
+    def k2(k):
+        if not isinstance(k, str): return k
+        for old, new in al.items():
+            if k == old: return new
+            if k.endswith("_" + old): return k[: -len(old)] + new
+        return k
+    if isinstance(obj, dict): return {k2(k): canon_keys(v, field) for k, v in obj.items()}
+    if isinstance(obj, list): return [canon_keys(v, field) for v in obj]
+    return canon(field, obj) if isinstance(obj, str) else obj
+
+def canon_class(value):
+    """Canonical device class name (e.g. 'lookalike' -> 'ambiguous'); other values unchanged."""
+    return canon("device_type", value)
 ALL_FIELDS = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status"]
 EVENT_KEYS = ["uuid", "image_id", "annotator", "field", "value", "ts", "device_id", "kind"]
 # Optional provenance on HUMAN events made in review mode ("model-suggested, human-confirmed/corrected").
@@ -45,7 +76,8 @@ def validate(ev):
         if ev.get("source") is not None or ev.get("model_tag") is not None: return None, "provenance only on label events"
         return e, None
     if f in FIELD_OPTS:
-        if v is not None and v not in FIELD_OPTS[f]: return None, f"bad value for {f}"
+        # historical aliases stay valid (offline clients may still queue them); stored as sent, mapped on read
+        if v is not None and canon(f, v) not in FIELD_OPTS[f]: return None, f"bad value for {f}"
     elif f == "exclude":
         if v not in ("", None) and v not in SCHEMA["exclude_reasons"]: return None, "bad exclude reason"
     elif f == "face_blur_missed":
@@ -79,13 +111,13 @@ def fold(events):
     lab, adj = {}, {}
     for e in events:
         if e["kind"] == "removal": continue        # removal-review decisions are not labels (see removal_decisions)
-        key = (e["ts"], e["uuid"])
+        key = (e["ts"], e["uuid"]); v = canon(e["field"], e["value"])   # historical aliases -> canonical (read-side only)
         if e["kind"] == "adjudication":
             k = (e["image_id"], e["field"])
-            if k not in adj or key > adj[k][0]: adj[k] = (key, e["value"], e["annotator"])
+            if k not in adj or key > adj[k][0]: adj[k] = (key, v, e["annotator"])
         else:
             k = (e["image_id"], e["annotator"], e["field"])
-            if k not in lab or key > lab[k][0]: lab[k] = (key, e["value"])
+            if k not in lab or key > lab[k][0]: lab[k] = (key, v)
     per = defaultdict(lambda: defaultdict(dict))   # image -> annotator -> field -> value
     for (img, ann, f), (_, v) in lab.items(): per[img][ann][f] = v
     adjv = {k: (v, who) for k, (_, v, who) in adj.items()}
@@ -249,9 +281,24 @@ def load_auto(autodir):
             if not line.strip(): continue
             try: r = json.loads(line)
             except json.JSONDecodeError: continue
-            if isinstance(r, dict) and isinstance(r.get("image_id"), str) and isinstance(r.get("suggestions"), dict): recs[r["image_id"]] = r
+            if isinstance(r, dict) and isinstance(r.get("image_id"), str) and isinstance(r.get("suggestions"), dict): recs[r["image_id"]] = canon_auto(r)
         out[tag] = recs
     return out
+
+def canon_auto(r):
+    """Map renamed option values inside one machine-suggestion record on read (the file itself is never rewritten):
+    suggestions[field].value and the keys of suggestions[field].dist / .distribution / .probs."""
+    for f, sg in (r.get("suggestions") or {}).items():
+        if not isinstance(sg, dict) or f not in VALUE_ALIASES: continue
+        if "value" in sg: sg["value"] = canon(f, sg["value"])
+        for dk in ("dist", "distribution", "probs", "scores"):
+            if isinstance(sg.get(dk), dict):
+                d = {}
+                for k, v in sg[dk].items():
+                    ck = canon(f, k)
+                    d[ck] = d[ck] + v if ck in d and isinstance(v, (int, float)) else v
+                sg[dk] = d
+    return r
 
 def _agree(pairs):
     n = len(pairs)
@@ -304,7 +351,7 @@ def auto_agreement(per, auto, events=None, stat=None):
             if e.get("model_tag") != tag or e.get("suggested") is None: continue
             fv = per.get(img, {}).get(a, {})
             if fv.get("_status") != "done": continue
-            acc[f][1] += 1; acc[f][0] += fv.get(f) == e["suggested"]
+            acc[f][1] += 1; acc[f][0] += fv.get(f) == canon(f, e["suggested"])
         r["review_acceptance"] = {f: {"n": t, "accepted": k, "rate": round(k / t, 4) if t else None} for f, (k, t) in sorted(acc.items())}
         res[tag] = r
     return res

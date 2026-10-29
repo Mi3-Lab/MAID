@@ -107,7 +107,7 @@ def main():
     nodev, unsure, owl_needed = set(), set(), []
     for i in sorted(local):
         s = S[i]; hd = human_dev(i)
-        if hd in ("manual", "powered", "other_aid", "lookalike"): continue      # human saw a device: overrides the model
+        if hd in wvcore.DEVICE_CLASSES: continue      # human saw a device: overrides the model
         if s["owl_dev"] >= TH["owl"]: continue
         verified = cands[i]["label_strength"].startswith("human_verified")
         if s["dev"] < TH["dev_absent"] and not verified and s["owl_checked"]: nodev.add(i); why[i].append(f"no device: siglip presence {s['dev']:.2f}, top={s['top']}, owl max {s['owl_dev']:.2f}")
@@ -235,7 +235,7 @@ def calib(S, st, ex_info, human_dev, labeled, cands, local):
     nons = [i for i in local if "stroller" not in cands[i]["proposed_class"]]
     for t in [.1, .2, .25, .3, .4, .5]:
         print(f"  stroller>={t}: stroller-class {sum(S[i]['stroller'] >= t for i in strp)}/{len(strp)}  human-device {sum(S[i]['stroller'] >= t for i in neg)}/{len(neg)}  non-stroller-class {sum(S[i]['stroller'] >= t for i in nons)}/{len(nons)}")
-    hd_all = [i for i in lab if human_dev(i) in ("manual", "powered", "other_aid", "lookalike")]
+    hd_all = [i for i in lab if human_dev(i) in wvcore.DEVICE_CLASSES]
     v = sorted(S[i]["dev"] for i in hd_all); print("device presence on human-device images: n", len(v), "p1/p5/p10", v[len(v)//100], v[len(v)//20], v[len(v)//10])
     for t in [.05, .1, .2, .35, .5]:
         print(f"  dev<{t}: human-device {sum(S[i]['dev'] < t for i in hd_all)}  all_local {sum(S[i]['dev'] < t for i in local)}  weak-label {sum(S[i]['dev'] < t and not cands[i]['label_strength'].startswith('human') for i in local)}")

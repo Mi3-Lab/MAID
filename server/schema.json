@@ -1,6 +1,12 @@
 {
- "version": 1,
+ "version": 2,
  "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation.",
+ "value_aliases": {
+  "device_type": {
+   "lookalike": "ambiguous"
+  }
+ },
+ "value_aliases_note": "Historical values kept in the append-only event log, mapped to the canonical option on read (wvcore.canon). 'lookalike' was renamed 'ambiguous' on 2026-10-28; old events are never rewritten. Prefill keys (lookalike_*) are candidate source categories from data/candidates.csv, not label values.",
  "fields": [
   {
    "name": "device_type",
@@ -9,7 +15,7 @@
     "manual",
     "powered",
     "other_aid",
-    "lookalike",
+    "ambiguous",
     "unclear"
    ],
    "compare": true
@@ -115,19 +121,19 @@
    "propulsion": "not_applicable"
   },
   "lookalike_stroller": {
-   "device_type": "lookalike",
+   "device_type": "ambiguous",
    "propulsion": "not_applicable"
   },
   "lookalike_shopping_cart": {
-   "device_type": "lookalike",
+   "device_type": "ambiguous",
    "propulsion": "not_applicable"
   },
   "lookalike_office_chair": {
-   "device_type": "lookalike",
+   "device_type": "ambiguous",
    "propulsion": "not_applicable"
   },
   "lookalike_luggage_trolley": {
-   "device_type": "lookalike",
+   "device_type": "ambiguous",
    "propulsion": "not_applicable"
   }
  },

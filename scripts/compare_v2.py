@@ -11,10 +11,11 @@ from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parent.parent; RES = ROOT / "results"
 sys.path.insert(0, str(ROOT / "scripts"))
-from train_baseline import CLASSES, metrics
+from train_baseline import CLASSES, metrics, read_split_rows, wvcore
+# Results JSONs written before 2026-10-28 say "lookalike"; wvcore.canon_keys maps them to "ambiguous" on read (numbers unchanged).
 
 def L(n):
-    p = RES / f"baseline_{n}.json"; return json.load(open(p)) if p.exists() else None
+    p = RES / f"baseline_{n}.json"; return wvcore.canon_keys(json.load(open(p))) if p.exists() else None
 
 def ms(d, k, nd=3):
     if not d or k not in d: return "n/a"
@@ -61,7 +62,7 @@ def gpu_summary():
 
 def main():
     rn, sg, yo, v1 = L("resnet50_v2"), L("siglip2_v2"), L("yolo_v2"), L("resnet50_v1")
-    split = json.load(open(RES / "splits_v2_summary.json"))
+    split = wvcore.canon_keys(json.load(open(RES / "splits_v2_summary.json")))
     rows = []   # (name, kind, runs, spread, note)
     if sg:
         ag = sg["label_suggestion_agreement"]
@@ -85,7 +86,7 @@ def main():
           "`results/baseline_{siglip2_v2,resnet50_v2,yolo_v2}.json`.", "",
           f"Clean v2 set: {split['n']} images (" + ", ".join(f"{c} {split['class_counts'][c]}" for c in CLASSES) +
           f"); train {split['split_sizes']['train']} / val {split['split_sizes']['val']} / test {split['split_sizes']['test']}; {split['n_groups']} uploader groups.", "",
-          "| model | type | accuracy | macro-F1 | F1 manual | F1 powered | F1 other_aid | F1 lookalike | note |", "|---|---|---|---|---|---|---|---|---|"]
+          "| model | type | accuracy | macro-F1 | " + " | ".join(f"F1 {c}" for c in CLASSES) + " | note |", "|---|---|---|---|" + "---|" * len(CLASSES) + "---|"]
     for name, kind, runs, s, note in rows:
         md.append(f"| {name} | {kind} | {ms(s,'test_accuracy')}{ci(runs[0],'accuracy_95ci')} | {ms(s,'test_macro_f1')}{ci(runs[0],'macro_f1_95ci')} | " +
                   " | ".join(ms(s, f"test_f1_{c}") for c in CLASSES) + f" | {note} |")
@@ -107,16 +108,16 @@ def main():
         s1 = v1["seed_spread"]; md.append(f"- v1 ResNet-50 on the v1 test split (n = {sum(v1['n_per_split']['test'].values())}): accuracy {ms(s1,'test_accuracy')}, macro-F1 {ms(s1,'test_macro_f1')}.")
     ex = (rn or {}).get("extra_test")
     if ex:
-        v2rows = list(csv.DictReader(open(ROOT / "data" / "splits_v2.csv", encoding="utf-8")))
+        v2rows = read_split_rows(ROOT / "data" / "splits_v2.csv")
         seen = {r["image_id"] for r in v2rows if r["split"] in ("train", "val")}
-        old = [r for r in csv.DictReader(open(ROOT / "data" / "splits_v1.csv", encoding="utf-8")) if r["split"] == "test"]
+        old = [r for r in read_split_rows(ROOT / "data" / "splits_v1.csv") if r["split"] == "test"]
         keep = {r["image_id"] for r in old if r["image_id"] not in seen}
         v1sub = []
         for s in (v1 or {}).get("seeds", []):
             pp = ROOT / "var" / "runs" / "resnet50_v1" / f"seed{s}_test_preds.json"
             if pp.exists():
                 pr = [d for d in json.load(open(pp)) if d["image_id"] in keep]
-                v1sub.append(metrics([CLASSES.index(d["label"]) for d in pr], [CLASSES.index(d["pred"]) for d in pr]))
+                v1sub.append(metrics([CLASSES.index(wvcore.canon_class(d["label"])) for d in pr], [CLASSES.index(wvcore.canon_class(d["pred"])) for d in pr]))
         md += [f"- Old v1 test images not in v2 train/val: {ex['n_evaluated']} of {ex['n_old_test']} ({ex['n_dropped_now_in_train_or_val']} moved into v2 train/val by the fresh split and are dropped). Scores on that subset:", "",
                "| model | accuracy | macro-F1 |", "|---|---|---|"]
         if v1sub:
@@ -134,7 +135,7 @@ def main():
                f"max temp {g['max_temp_c']} °C (busy mean {g['mean_temp_busy_c']} °C), max power {g['max_power_w']} W, busy mean SM clock {g['mean_sm_clock_busy_mhz']:.0f} of {g['max_sm_clock_mhz']:.0f} MHz max; "
                f"busy time thermally throttled {g['pct_busy_time_thermal_throttled']}%, power-capped {g['pct_busy_time_power_capped']}%, HW slowdown {g['pct_busy_time_hw_slowdown']}%. "
                f"Reasons seen while busy (sample counts): {g['reasons_seen_busy']}. Details in `results/gpu_log_v2_summary.json`.", ""]
-    md += ["## Caveats", "", f"- Small test set (n = {n_test}; lookalike {split['split_counts']['test']['lookalike']}, other_aid {split['split_counts']['test']['other_aid']}): CIs are wide and per-class F1 for rare classes swings with single images.",
+    md += ["## Caveats", "", f"- Small test set (n = {n_test}; ambiguous {split['split_counts']['test']['ambiguous']}, other_aid {split['split_counts']['test']['other_aid']}): CIs are wide and per-class F1 for rare classes swings with single images.",
            "- Zero-shot SigLIP2 is biased upward (labels were confirmed from its suggestions); SigLIP-based trained rows inherit some of that.",
            f"- Most labels are single-annotator ({split['label_resolution']['single']} of {split['n']}; {split['label_resolution']['consensus']} consensus, {split['label_resolution']['adjudicated']} adjudicated).",
            "- Seed spread reflects training randomness on one fixed grouped split, not split-to-split variance. One uploader group "

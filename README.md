@@ -13,7 +13,8 @@ server/                 main.py (FastAPI), wvcore.py (validation/consensus/kappa
 data/                   candidates.csv, LICENSES_draft.csv (from the WheelView candidate build)
 annotations/events/     <annotator>.jsonl, append-only event logs: the source of truth in git
 derived/                generated outputs (labels.csv, adjudication_needed.csv, per_annotator_labels.csv, kappa.json, progress.json). Do not edit.
-scripts/                fetch_images.py, sync_events.py (export/import/sync), build_derived.py
+scripts/                fetch_images.py, sync_events.py (export/import/sync), build_derived.py,
+                        build_manifest.py + check_leakage.py (dataset manifest and train/test leakage checks; see data/MANIFEST.md)
 tests/test_e2e.py       Playwright end-to-end test (two annotators, offline period, third annotator, adjudication, git round-trip)
 .github/                rebuild-derived.yml workflow, CODEOWNERS
 images/ var/            git-ignored: image files, SQLite DB, proxy cache, server-side exports
@@ -90,6 +91,11 @@ committed `annotations/events/*.jsonl` (an idempotent step) and starts uvicorn.
   * `conflict` otherwise
   * `face_blur_missed` is OR-combined across annotators, for safety.
   * If the image is excluded by consensus, disagreements on the other fields are marked `moot_excluded`.
+* **Device classes.** `device_type` is one of `manual`, `powered`, `other_aid`, `ambiguous` or `unclear`.
+  `ambiguous` covers wheeled look-alikes and borderline objects (strollers, shopping carts, office chairs, luggage
+  trolleys); it was called `lookalike` until 2026-10-28. Old events still say `lookalike` and are never rewritten:
+  `schema.json` `value_aliases` maps them to `ambiguous` on read (`wvcore.canon`, used by fold, the app, the review
+  viewer, and the split/train/compare scripts). `unclear` is kept out of the classification splits.
 * **Image status.** The overall status is one of `unlabelled`, `in_progress`, `needs_third_annotator`,
   `needs_adjudication` or `final`.
 * **Kappa.** Cohen's kappa is computed per field in two ways:

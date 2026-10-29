@@ -36,7 +36,10 @@ same id on two machines/branches, `.gitattributes` sets `merge=union` for event 
 
 ## Changing the label schema
 `server/schema.json` is the single source of truth for the UI, server validation and derivation. Adding options is
-safe. Renaming or removing options makes old events fail validation, so add a migration note and get a review from CODEOWNERS.
+safe. Removing options makes old events fail validation, so add a migration note and get a review from CODEOWNERS.
+To rename an option, never rewrite events: change the option in `fields`, add `{"<field>": {"<old>": "<new>"}}` to
+`value_aliases`, and bump `version`. `wvcore.validate` still accepts the old value (offline clients may queue it) and
+every reader maps it through `wvcore.canon` (example: `device_type` `lookalike` -> `ambiguous`, 2026-10-28).
 
 ## Recommended GitHub settings (private repo)
 * Branch protection on `main`: require PRs, 1 approving review (CODEOWNERS), the status check

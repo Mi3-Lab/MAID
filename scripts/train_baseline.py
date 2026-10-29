@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""ResNet-50 baseline for WheelView v1: 4-way device classification (manual / powered / other_aid / lookalike).
+"""ResNet-50 baseline for WheelView v1: 4-way device classification (manual / powered / other_aid / ambiguous;
+`ambiguous` was called `lookalike` before 2026-10-28, old split files are mapped on read).
 
-Reads data/splits_v1.csv (scripts/make_splits.py) and the face-BLURRED copies in images_blurred/<image_id>.jpg.
+Reads split assignments + labels from the dataset manifest data/manifest_v2.csv (scripts/build_manifest.py; only
+train_eligible rows) or, with --splits, an older splits CSV (scripts/make_splits.py), and the face-BLURRED copies in images_blurred/<image_id>.jpg.
 Fine-tunes torchvision ResNet-50 (ImageNet weights), 224 px, light augmentation, class-weighted cross-entropy,
 AdamW + cosine schedule, early stopping on validation macro-F1, fixed seeds. Evaluates the best-val checkpoint on test.
 
@@ -16,7 +18,23 @@ import torch, torch.nn as nn, torchvision
 from torchvision import transforms as T
 from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
-CLASSES = ["manual", "powered", "other_aid", "lookalike"]
+sys.path.insert(0, str(ROOT / "server")); import wvcore
+CLASSES = list(wvcore.DEVICE_CLASSES)   # manual, powered, other_aid, ambiguous (canonical names, fixed order)
+DEFAULT_SPLITS = ROOT / "data" / "manifest_v2.csv"
+
+def read_split_rows(path):
+    """Rows {image_id, split, label, ...} for train/val/test from the dataset manifest (scripts/build_manifest.py:
+    rows with train_eligible=1, label = device_type) or an older splits CSV (label column). Labels are the only
+    supervision read and come from this file only; historical class names are canonicalized (lookalike -> ambiguous).
+    Test labels are used only to score predictions after training (never for fitting, weighting or model selection)."""
+    out = []
+    for r in csv.DictReader(open(path, encoding="utf-8")):
+        if "label" not in r:   # manifest
+            if str(r.get("train_eligible", "")).strip() not in ("1", "true", "True"): continue
+            r["label"] = r["device_type"]
+        r["label"] = wvcore.canon_class(r["label"])
+        if r.get("split") in ("train", "val", "test") and r["label"] in CLASSES: out.append(r)
+    return out
 
 def set_seed(s):
     random.seed(s); np.random.seed(s); torch.manual_seed(s); torch.cuda.manual_seed_all(s)
@@ -125,7 +143,7 @@ def plot_cm(cm, path, title):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--splits", default=ROOT / "data" / "splits_v1.csv")
+    ap.add_argument("--splits", "--manifest", dest="splits", default=DEFAULT_SPLITS, help="dataset manifest (default) or an older splits CSV")
     ap.add_argument("--images", default=ROOT / "images_blurred")
     ap.add_argument("--run", default="resnet50_v1"); ap.add_argument("--seeds", default="0")
     ap.add_argument("--epochs", type=int, default=30); ap.add_argument("--patience", type=int, default=8)
@@ -137,7 +155,7 @@ def main():
     a = ap.parse_args()
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     outdir = ROOT / "var" / "runs" / a.run; outdir.mkdir(parents=True, exist_ok=True)
-    rows = list(csv.DictReader(open(a.splits, encoding="utf-8")))
+    rows = read_split_rows(a.splits)
     imgdir = Path(a.images)
     missing = [r["image_id"] for r in rows if not (imgdir / f"{r['image_id']}.jpg").exists()]
     if missing: sys.exit(f"{len(missing)} blurred images missing from {imgdir}, e.g. {missing[:5]}")
@@ -145,7 +163,7 @@ def main():
     extra_info = None
     if a.extra_test:
         seen = {r["image_id"] for r in rows if r["split"] in ("train", "val")}
-        old = [r for r in csv.DictReader(open(a.extra_test, encoding="utf-8")) if r["split"] == "test"]
+        old = [r for r in read_split_rows(a.extra_test) if r["split"] == "test"]
         keep = [r for r in old if r["image_id"] not in seen and r["label"] in CLASSES]
         data["extra"] = load_split(keep, imgdir)
         extra_info = {"file": Path(a.extra_test).name, "n_old_test": len(old), "n_evaluated": len(keep),
@@ -200,7 +218,7 @@ def main():
     md += ["", "## Setup", "", "```json", json.dumps(summary["hyperparams"], indent=1), "```", "",
            f"Hardware: {hw['gpu'] or hw['cpu']} ({hw['device']}), torch {hw['torch']}, torchvision {hw['torchvision']}. "
            f"Total wall time {summary['total_seconds']:.0f}s.", "",
-           "## Caveats", "", "- The test set is small, so the bootstrap intervals are wide; rare classes (lookalike, other_aid) "
+           "## Caveats", "", "- The test set is small, so the bootstrap intervals are wide; rare classes (ambiguous, other_aid) "
            "have only a handful of test images and their per-class F1 can swing a lot with one prediction.",
            "- Seed spread only reflects training randomness on one fixed split, not split-to-split variance.",
            "- Splits are grouped by Flickr uploader/creator; one uploader contributes a large share of images and sits entirely in one split.",

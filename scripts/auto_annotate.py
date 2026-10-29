@@ -49,6 +49,8 @@ P = {
               "a motorized wheelchair with a battery box and small wheels", "an electric wheelchair"],
   "other_aid": ["a mobility scooter", "a person riding a mobility scooter", "a rollator walker with wheels and a seat",
                 "a walking frame", "a person using a walker", "a walking cane or crutches"],
+  # key keeps its zs-v1 name (part of MODEL_TAG); it is the `ambiguous` class (renamed 2026-10-28). Read the prompts
+  # through prompts_for(), which maps keys with wvcore.canon; score() writes canonical option names.
   "lookalike": ["a baby stroller", "a pram or pushchair", "a shopping cart", "a supermarket trolley",
                 "an office chair on wheels", "a luggage trolley", "a baggage cart at an airport"],
  },
@@ -184,6 +186,10 @@ def text_bank(torch, m, p):
     scale = float(m.logit_scale.exp()) if hasattr(m, "logit_scale") else 100.0
     return bank, scr, scale
 
+def prompts_for(field):
+    """P[field] keyed by canonical option names (e.g. prompt key 'lookalike' -> class 'ambiguous')."""
+    return {wvcore.canon(field, o): ds for o, ds in P[field].items()}
+
 def softmax(z):
     import numpy as np
     z = z - z.max(-1, keepdims=True); e = np.exp(z); return e / e.sum(-1, keepdims=True)
@@ -211,7 +217,7 @@ def score(E, bank, scr):
     prop[:, names.index("not_applicable")] += 1 - pman
     prob["propulsion"] = (names, prop)
     for f in wvcore.FIELD_OPTS:
-        names, pr = prob[f]
+        names, pr = prob[f]; names = [wvcore.canon(f, n) for n in names]   # renamed options -> canonical names
         for i in range(len(E)):
             k = int(pr[i].argmax())
             sug[i][f] = {"value": names[k], "confidence": round(float(pr[i, k]), 4),

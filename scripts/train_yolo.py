@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
-from train_baseline import CLASSES, metrics
+from train_baseline import CLASSES, metrics, read_split_rows, DEFAULT_SPLITS
 import auto_annotate as AA
 
 NONE = len(CLASSES)   # "no box" pseudo-prediction index for YOLO-World / detector
@@ -64,7 +64,7 @@ def latest_boxes(ids):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--splits", default=ROOT / "data" / "splits_v2.csv"); ap.add_argument("--extra_test", default=None)
+    ap.add_argument("--splits", "--manifest", dest="splits", default=DEFAULT_SPLITS); ap.add_argument("--extra_test", default=None)
     ap.add_argument("--images", default=ROOT / "images_blurred"); ap.add_argument("--seeds", default="0,1,2")
     ap.add_argument("--cls_model", default="yolo11s-cls.pt"); ap.add_argument("--epochs", type=int, default=30)
     ap.add_argument("--patience", type=int, default=8); ap.add_argument("--bs", type=int, default=32); ap.add_argument("--imgsz", type=int, default=224)
@@ -84,11 +84,11 @@ def main():
     a.splits, a.images, a.results = Path(a.splits).resolve(), Path(a.images).resolve(), Path(a.results).resolve()
     if a.extra_test: a.extra_test = Path(a.extra_test).resolve()
     os.chdir(work)   # pretrained .pt downloads land in var/yolo_work/
-    rows = list(csv.DictReader(open(a.splits, encoding="utf-8"))); img = Path(a.images)
+    rows = read_split_rows(a.splits); img = Path(a.images)
     sp = {s: [r for r in rows if r["split"] == s] for s in ("train", "val", "test")}
     if a.extra_test:
         seen = {r["image_id"] for r in rows if r["split"] in ("train", "val")}
-        old = [r for r in csv.DictReader(open(a.extra_test, encoding="utf-8")) if r["split"] == "test"]
+        old = [r for r in read_split_rows(a.extra_test) if r["split"] == "test"]
         sp["extra"] = [r for r in old if r["image_id"] not in seen and r["label"] in CLASSES]
     y = {s: [CLASSES.index(r["label"]) for r in v] for s, v in sp.items()}
     paths = {s: [str(img / f"{r['image_id']}.jpg") for r in v] for s, v in sp.items()}
@@ -102,7 +102,12 @@ def main():
     # ---------- YOLO11 classification ----------
     if not a.skip_cls:
         ds = var / f"yolo_cls_{a.tag}"
-        for s in ("train", "val", "test"):
+        # Ultralytics' class-per-folder layout only for train/val (what training and best.pt selection see). Test images
+        # are NOT put in labelled folders: they are predicted from images_blurred/<id>.jpg (label-free paths) and the
+        # labels are only used to score the predictions afterwards.
+        if (ds / "test").exists():
+            sys.exit(f"{ds} has a labelled test/ folder from an older run; use a new --tag (files are never deleted by this script)")
+        for s in ("train", "val"):
             for r in sp[s]: link(img / f"{r['image_id']}.jpg", ds / s / r["label"] / f"{r['image_id']}.jpg")
         cruns = []
         for si, s in enumerate(seeds):
@@ -127,7 +132,7 @@ def main():
 
     # ---------- YOLO-World zero-shot ----------
     if not a.skip_world:
-        prom = [(t.lower(), c) for c in CLASSES for t in AA.P["device_type"][c]]
+        prom = [(t.lower(), c) for c in CLASSES for t in AA.prompts_for("device_type")[c]]
         w = YOLO(a.world_model); w.set_classes([t for t, _ in prom])
         def wpred(lst):
             best_conf = []
@@ -161,8 +166,10 @@ def main():
                     x0, y0 = max(0.0, x0), max(0.0, y0); bw, bh = min(bw, 1 - x0), min(bh, 1 - y0)
                     if bw > 0 and bh > 0: L.append(f"{k} {x0 + bw/2:.6f} {y0 + bh/2:.6f} {bw:.6f} {bh:.6f}")
                 lp.write_text("\n".join(L) + "\n")
-        yaml = dd / "data.yaml"
-        yaml.write_text(f"path: {dd.as_posix()}\ntrain: images/train\nval: images/val\ntest: images/test\nnames:\n" + "".join(f"  {i}: {c}\n" for i, c in enumerate(CLASSES)))
+        yaml = dd / "data.yaml"; yaml_test = dd / "data_test.yaml"   # training yaml has no test entry; test only for scoring after training
+        names_y = "names:\n" + "".join(f"  {i}: {c}\n" for i, c in enumerate(CLASSES))
+        yaml.write_text(f"path: {dd.as_posix()}\ntrain: images/train\nval: images/val\n" + names_y)
+        yaml_test.write_text(f"path: {dd.as_posix()}\ntrain: images/train\nval: images/val\ntest: images/test\n" + names_y)
         druns = []
         for si, s in enumerate(int(t) for t in a.det_seeds.split(",")):
             if a.pause: time.sleep(a.pause)
@@ -171,7 +178,7 @@ def main():
             m.train(data=str(yaml), epochs=a.det_epochs, patience=15, imgsz=640, batch=a.det_bs, seed=s, deterministic=True,
                     project=str(runs_dir), name=name, exist_ok=True, workers=0, plots=False, verbose=False)
             best = YOLO(str(runs_dir / name / "weights" / "best.pt"))
-            v = best.val(data=str(yaml), split="test", imgsz=640, batch=a.det_bs, project=str(runs_dir), name=name + "_test", exist_ok=True, plots=False, verbose=False)
+            v = best.val(data=str(yaml_test), split="test", imgsz=640, batch=a.det_bs, project=str(runs_dir), name=name + "_test", exist_ok=True, plots=False, verbose=False)
             def dpred(lst):
                 ps = []
                 for ch in chunks(lst, 16):
