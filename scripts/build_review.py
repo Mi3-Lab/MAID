@@ -8,7 +8,7 @@ Output: review/review_data.js (window.WV_REVIEW = {...}); no images are written 
 
   python scripts/build_review.py [--db var/wheelview.db | --events annotations/events | --jsonl dump.jsonl]
 """
-import argparse, csv, json, os, sqlite3, sys
+import argparse, csv, json, os, re, sqlite3, sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +19,13 @@ import wvcore  # noqa: E402
 
 HUMANS = ("samir", "shaaz")
 FIELDS = ["device_type", "propulsion", "occupied", "setting", "viewpoint", "lighting", "occlusion"]
+
+def canon_text(t):
+    """Free-text warnings from older data files may name renamed classes (e.g. 'single label lookalike');
+    show the canonical name (read-side only, the source files are not rewritten)."""
+    for old, new in wvcore.VALUE_ALIASES.get("device_type", {}).items():
+        t = re.sub(r"\b%s\b" % re.escape(old), new, t)
+    return t
 
 def events_from_db(path):
     c = sqlite3.connect(f"file:{path}?mode=ro", uri=True); c.row_factory = sqlite3.Row
@@ -79,6 +86,7 @@ def main():
         if t and t.get("model_warning"): warn += [w.strip() for w in t["model_warning"].split(";") if w.strip()]
         for fn, why in blk.get(i, []):
             if fn.startswith("removed_model_") and why and why not in warn: warn.append(why + " (model removal, restored by a human)")
+        warn = [canon_text(w) for w in warn]
         kinds = sorted({w.split(":")[0].split(" ")[0] for w in warn})
         items.append({
             "id": i,
