@@ -317,6 +317,9 @@ No model output (suggestions, confidences, probabilities, embeddings) is a manif
 Duplicates (thresholds tuned by inspecting the closest pairs): pHash Hamming <= {a.phash_max}/63 (also against the mirrored
 image) or SigLIP2 cosine >= {a.cos_min} or identical sha256 -> one `dup_cluster`. Found {len(rep['dup_pairs'])} duplicate pair(s),
 {rep['dup_clusters_multi']} multi-image cluster(s). Edges by kind: `{json.dumps(rep['edges_by_kind'])}`.
+Visual check (2026-10-28, defaults 8 / 0.95): no exact (sha256) duplicates; pairs at cosine 0.95-0.98 are the same
+scene/event shot seconds apart (burst-like, kept together on purpose) and every one was within one uploader already;
+the closest cross-group pairs (cosine <= 0.93, pHash >= 18) are different photos of similar wheelchair-sports scenes.
 {rep['leak_groups']} leak groups ({rep['leak_groups_multi']} with more than one image); largest: {', '.join(f'{g} ({n})' for g, n in rep['largest_leak_groups'])}.
 
 Series grouping: Flickr owner, normalised creator name (merges one account seen as NSID in one source and as path alias in
