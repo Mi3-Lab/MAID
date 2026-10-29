@@ -21,16 +21,16 @@ Engineering, University of California, Merced. Contact: Ross Greer, rossgreer@uc
 **What do the instances represent?** Each instance is one photograph (JPEG) showing a mobility device or a
 wheelchair-like object, with one row of labels in `annotations/labels.csv`.
 
-**How many instances?** 464 images. 458 have a determinable device type and form the splits; 6 are labeled
+**How many instances?** 455 images. 449 have a determinable device type and form the splits; 6 are labeled
 `unclear` and are in `images/excluded/` (in no split).
 
 | Class | Train | Val | Test | Total |
 |---|---:|---:|---:|---:|
-| manual | 200 | 43 | 43 | 286 |
-| powered | 67 | 14 | 15 | 96 |
-| other_aid | 43 | 9 | 9 | 61 |
+| manual | 200 | 41 | 39 | 280 |
+| powered | 66 | 14 | 14 | 94 |
+| other_aid | 42 | 9 | 9 | 60 |
 | ambiguous | 11 | 2 | 2 | 15 |
-| **total** | 321 | 68 | 69 | 458 |
+| **total** | 319 | 66 | 64 | 449 |
 
 **Is it a sample?** Yes, a screened sample of openly licensed web photographs, not a representative sample of
 wheelchair users or of street scenes. On 22 October 2026 the team assembled 7,377 candidates: Open Images V7 (3,488),
@@ -40,7 +40,7 @@ mobility device; these were not queued for annotation. Annotators reviewed 1,050
 photograph, 118 showing a child, 26 with a person identifiable beyond the face, 22 license concerns, 4 clinical
 settings, 1 duplicate). 22 exclusions were reversed on adjudication (never for a child or an identifiable person);
 4 of those, from one street scene with a possible child, are on a safety hold and not released:
-1,050 - 604 + 18 = 464. No minimum image size or single-subject rule was applied.
+1,050 - 604 + 18 = 464; 9 were then excluded for license reasons (see License), leaving 455. No minimum image size or single-subject rule was applied.
 
 **What data does each instance consist of?** A face-blurred JPEG (longer side at most 640 px, no EXIF/ICC/XMP
 metadata) and labels: `device_type`, `occupied`, `propulsion`, `occlusion`, `viewpoint`, `lighting`, `setting`;
@@ -75,7 +75,7 @@ source photos have since been deleted at the source.
 **Offensive content?** None known. Report anything to the contact.
 
 **Does it identify subpopulations or individuals?** No labels describe age, gender, race, disability or diagnosis.
-Faces were blurred; see the privacy section. People are visible in most images (420 of the 458 devices are occupied)
+Faces were blurred; see the privacy section. People are visible in most images (412 of the 449 devices are occupied)
 but are not counted or identified.
 
 **Sensitive data?** The images show people using mobility devices. Wheelchair use can be health-related, so the
@@ -103,7 +103,7 @@ consent of the people shown; see the safeguards below.
 
 * **Face blurring.** Faces were detected with OpenCV YuNet (2023 model) at three scales and on the mirrored image,
   with a lower threshold for small faces, and each face region (padded) was pixelated and Gaussian-blurred:
-  4,962 regions in 445 of the 464 images. A second YuNet pass over the final release copies flagged 235 detections
+  4,962 regions in 445 of the 464 images screened before the license exclusion. A second YuNet pass over the final release copies flagged 235 detections
   outside the blurred regions; each was inspected visually on contact sheets. 7 were visible faces the first pass had missed (mostly
   side profiles); those regions were blurred in 7 training images (`face_recheck.csv`), for 4,969 blurred regions in total. License plates, house numbers
   and signs were not blurred.
@@ -111,7 +111,7 @@ consent of the people shown; see the safeguards below.
 * **Labeling.** Two team members labeled in the team's own web app, which writes every action to an append-only event
   log; annotators did not see each other's labels and labeled only blurred copies. Labels were entered by hand or by
   confirming or correcting a SigLIP 2 zero-shot suggestion; for 108 of the 132 doubly labeled images at least one
-  annotator took the suggestion, and the final label equals the suggestion for 73% of the 458 images (68% of test).
+  annotator took the suggestion, and the final label equals the suggestion for 73% of the 449 images (67% of test).
   15 disagreements were adjudicated by S. Ahmed, who is also an annotator.
 * **Raw data.** The unblurred downloads are kept on a lab computer only and are not distributed.
 
@@ -127,10 +127,10 @@ recognition or re-identification; surveillance of individuals; any decision abou
 use other than providing accommodation. Do not treat scores on these web photos as in-vehicle performance; only 12
 images are at a curb and 15 at a vehicle, and 4 are low-light.
 
-**Known biases.** All images are from Flickr. One U.S. government Flickr account supplies 197 of the 458 split images
+**Known biases.** All images are from Flickr. One U.S. government Flickr account supplies 197 of the 449 split images
 (all in train). Classes are imbalanced (62% manual, 15 ambiguous). Powered chairs are mostly indoors (64 of 96).
 Geography and device brands were not measured. Annotators could confirm SigLIP 2 suggestions, so SigLIP-based scores
-are likely optimistic. The test set is small (69 images; 2 ambiguous), so confidence intervals are wide.
+are likely optimistic. The test set is small (64 images; 2 ambiguous), so confidence intervals are wide.
 
 ## Distribution
 
@@ -138,10 +138,10 @@ are likely optimistic. The test set is small (69 images; 2 ambiguous), so confid
 hosted on GitHub.
 
 **License.** Each image keeps its own license, listed in `LICENSES.csv` with creator, title, source, recorded license
-and modifications: CC BY 2.0 (244), Public Domain Mark 1.0 (205), CC BY-SA 2.0 (9), CC0 1.0 (6). For 9 images that
+and modifications: CC BY 2.0 (235), Public Domain Mark 1.0 (205), CC BY-SA 2.0 (9), CC0 1.0 (6). For 9 images that
 Open Images recorded as CC BY 2.0 at collection, the live Flickr page now shows a different license or cannot be
-checked; the team decided to include them under the license recorded at collection, and `LICENSES.csv` lists both.
-This is a team decision, not a confirmation from the photographers. Annotations, documentation and code are
+checked; they were excluded from the release on 2026-10-29 and are not distributed (`data/license_exclusions.csv` in
+the code repository). Annotations, documentation and code are
 distributed under the terms IEEE DataPort applies to the upload (see README.md). The 9 CC BY-SA images remain under
 CC BY-SA 2.0.
 

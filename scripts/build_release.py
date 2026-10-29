@@ -47,6 +47,10 @@ def rows():
     M = list(csv.DictReader(open(ROOT / "data" / "manifest_v2.csv", encoding="utf-8")))
     hold = {r["image_id"] for r in csv.DictReader(open(ROOT / "data" / "safety_hold.csv", encoding="utf-8"))}
     assert len(M) == len({r["image_id"] for r in M}) == 464, "manifest must have 464 unique images"
+    lx = {r["image_id"] for r in csv.DictReader(open(ROOT / "data" / "license_exclusions.csv", encoding="utf-8"))}
+    assert len(lx) == 9 and lx <= {r["image_id"] for r in M}, "license_exclusions.csv must list 9 manifest images"
+    M = [r for r in M if r["image_id"] not in lx]   # 2026-10-29: excluded for license reasons (Samir); never shipped
+    assert len(M) == 455
     assert not hold & {r["image_id"] for r in M}, "safety-hold image in manifest"
     assert all(r["license_status"] in ("ok", "ok_with_note") for r in M)
     for r in M: r["file"] = f"images/{r['split']}/{r['image_id']}.jpg"

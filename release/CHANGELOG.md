@@ -4,7 +4,8 @@
 
 First public release, prepared for the IEEE AgeTech Global Dataset Competition 2026.
 
-* 464 face-blurred images (458 in train/val/test splits 321/68/69, 6 `excluded` with device type `unclear`).
+* 455 face-blurred images (449 in train/val/test splits 319/66/64, 6 `excluded` with device type `unclear`).
+* 9 images whose Flickr license changed or could not be re-checked after Open Images collection were excluded (2026-10-29).
 * `annotations/labels.csv` (device type plus occupied, propulsion, occlusion, viewpoint, lighting, setting; labeling
   provenance; license and grouping keys), split files, preliminary COCO boxes, per-annotator boxes.
 * `LICENSES.csv` from the 26-28 October 2026 license re-check of every image.

@@ -10,7 +10,7 @@ Prepared on Thu 2026-10-29 (PDT) for Samir Ahmed's handoff. Nothing has been upl
 
 | Item | Location |
 |---|---|
-| Final report (submit this) | `report/final/wheelview_report_final.pdf` (box). 14 PDF pages: body is pages 1–10 including the title page, references 11–12, Appendices A–C 13–14. Source: `wheelview_report_final.tex` and `references.bib` in the same folder. |
+| Final report (submit this) | `report/final/wheelview_report_final_r3.pdf` (box). 16 PDF pages: body is pages 1–10 including the title page, references from page 11, then appendices. Source: `wheelview_report_final_r3.tex` and `wheelview_report_final.bib` in the same folder. Rebuilt 2026-10-29 after the 9-image license exclusion. |
 | Report .docx (convenience only) | `report/final/wheelview_report_final.docx`. A pandoc conversion with rough tables and figures; the PDF is the version of record. |
 | Release zip (DataPort "Dataset Files") | Lab laptop only: `C:\Users\kamoo\wheelview\var\WheelView_v1.0_release.zip`. Size 43,477,473 bytes (43.5 MB), 492 entries. sha256 `11a102c05b90bd8f4fc9c5e39079018da480e9d796c8be9db98f95865f4bfc3e`, also in the `.sha256` file next to it. |
 | Unzipped release | Lab laptop: `C:\Users\kamoo\wheelview\var\release\WheelView_v1.0\` |
@@ -20,7 +20,7 @@ Prepared on Thu 2026-10-29 (PDT) for Samir Ahmed's handoff. Nothing has been upl
 | Competition rules with quotes and sources | `report/final/AGETECH_RULES.md`. Saved source pages are in `report/rules_src/` on the box. |
 
 Zip layout: `WheelView_v1.0/` contains:
-- `images/{train,val,test,excluded}/wv_XXXXXX.jpg` (464 JPEGs, longest side 640 px or less, metadata stripped, faces blurred)
+- `images/{train,val,test,excluded}/wv_XXXXXX.jpg` (455 JPEGs, longest side 640 px or less, metadata stripped, faces blurred)
 - `annotations/labels.csv`, `coco_{train,val,test}.json`, `boxes_per_annotator.csv`
 - `splits/{train,val,test}.txt`
 - `LICENSES.csv`, `README.md`, `DATASHEET.md`, `CHANGELOG.md`, `SHA256SUMS.txt`, `face_recheck.csv`
@@ -31,11 +31,11 @@ Move the zip only by lab-internal means, or upload it straight from the laptop t
 
 ## 2. Headline numbers (all from v3 data; nothing from v1/v2 is in the report)
 
-- **Images:** 464 released. 458 are in splits (train 321 / val 68 / test 69), plus 6 `excluded` (`unclear`).
+- **Images:** 455 released. 449 are in splits (train 319 / val 66 / test 64), plus 6 `excluded` (`unclear`). 9 more were excluded for license reasons on 2026-10-29.
   - Classes in train/val/test: manual 200/43/43, powered 67/14/15, other_aid 43/9/9, ambiguous 11/2/2.
   - 185 leak groups (34 multi-image), each kept within one split.
   - 4 images from one scene are held back because a child may be present.
-- **Licenses:** CC BY 2.0 244, Public Domain Mark 205, CC BY-SA 2.0 9, CC0 6.
+- **Licenses:** CC BY 2.0 235, Public Domain Mark 205, CC BY-SA 2.0 9, CC0 6.
 - **Face blur:** 4,969 regions in total. 4,962 came from the first YuNet pass on 445 images; 7 were added by the final re-check.
 - **Agreement (Cohen's kappa):**
 
@@ -51,17 +51,13 @@ Move the zip only by lab-internal means, or upload it straight from the laptop t
   | occlusion | 0.09 |
 
   108 of the 132 relevant images had at least one annotator confirm the model suggestion.
-- **T1 test results (n=69):**
-  - SigLIP 2 fine-tune: accuracy 0.903±.017, macro-F1 0.841±.073 (3 seeds).
-  - ResNet-50: 0.657 / 0.498. YOLO11s-cls: 0.570 / 0.362. Linear probe: 0.754 / 0.721.
-  - Zero-shot: SigLIP 2 0.681 / 0.723; YOLO-World 0.449 / 0.364. Always-manual: 0.623 / 0.192.
-  - SigLIP-based rows are likely optimistic, because 68% of test labels equal the SigLIP suggestion. The report says so.
-- **T2 robustness, SigLIP 2 FT accuracy:**
-  - occupied .923, unoccupied .750
-  - occlusion none .867, partial 1.000, heavy 1.000 (small n)
-  - rear .879, other lighting .867
-- **T4 (2 ambiguous test images):** Amb-FPR, the share of ambiguous objects predicted as a device, is 0.33±0.29 for SigLIP FT, 0.5 for the probe, 0.83 for ResNet-50 and 1.0 for YOLO11s-cls. False-ambiguous rate is 0.005 or less.
-- **Latency:** batch 1, fp32, median, image in memory, preprocessing plus forward pass.
+- **T1 test results (n=64, after the license exclusion):**
+  - SigLIP 2 fine-tune: accuracy 0.896±.018, macro-F1 0.836±.074 (3 seeds).
+  - ResNet-50: 0.641 / 0.490. YOLO11s-cls: 0.573 / 0.366. Linear probe: 0.734 / 0.710.
+  - Zero-shot SigLIP 2: 0.672 / 0.718. Always-manual: 0.609 / 0.189. YOLO-World stays on the earlier n=69 (no per-image predictions saved); footnoted in the report.
+  - Models were trained before the exclusion (321 train images, 2 since excluded); scores omit the excluded images.
+  - SigLIP-based rows are likely optimistic, because 67% of test labels equal the SigLIP suggestion. The report says so.
+- **T2 robustness:** recomputed on n=64; see the robustness table in the r3 report.
 
   | Model | RTX 3000 Ada laptop GPU | Core Ultra 7 165H CPU |
   |---|---|---|
@@ -88,8 +84,7 @@ Move the zip only by lab-internal means, or upload it straight from the laptop t
    *Recommendation:* leave as is for submission. If UC Merced's IRB office gives a "not human subjects research" determination later, add it in v1.0.1.
 5. **passcal.** All mention of passcal2026 has been removed from the report.
    *Recommendation:* leave it out. It is not needed, and the page budget is full.
-6. **The 9 Open Images photos whose Flickr licenses changed after collection** (3 now non-commercial, 3 all rights reserved, 3 behind a login and not re-checkable). Samir decided on 2026-10-28 to include them under the CC BY 2.0 recorded at collection. The report states this is a team decision, not photographer confirmation, and `LICENSES.csv` flags each one.
-   *Recommendation:* keep them, and remove any image immediately if the photographer asks. The conservative alternative is to drop them in v1.0.1.
+6. **The 9 Open Images photos whose Flickr licenses changed after collection** (3 now non-commercial, 3 all rights reserved, 3 behind a login). **Resolved 2026-10-29: excluded.** Samir reversed the 2026-10-28 decision; the 9 are listed in `data/license_exclusions.csv`, are not in the release, and all reported scores omit them.
 7. **Template and "brief introduction document".** No official REPORT template could be found ([D] mentions one), and it is unclear whether [D]'s "brief introduction document" is a separate file.
    *Recommendation:* email the chair (draft in §5). If there is no reply in time, submit the PDF as is; the title page and abstract serve as the introduction.
 8. **Eligibility.** The FAQ allows existing datasets only if they were "not previously submitted to any competition". WheelView was built during the CivicProgress Challenge.
@@ -118,7 +113,7 @@ Move the zip only by lab-internal means, or upload it straight from the laptop t
 | Geography and brands | "not recorded or measured" | Never measured. |
 | Government account | 197 images "screened under the same rules as every other image" | True. |
 | Licensing §6.3 | Annotations etc. under DataPort's CC-BY terms; images keep their own licenses; CC BY-SA adaptations stay CC BY-SA | Decisions 2–3 are still open. |
-| Changed licenses | Described as a "team decision (S. Ahmed)" on 28 Oct, not photographer confirmation | Samir's decision. |
+| Changed licenses | The 9 images are excluded (29 Oct); report §6.3 says so | Resolved. |
 | IRB | "No IRB determination is recorded for this release." | No determination exists in our records. |
 | DATASHEET | "The authors" (was "student team"); "No IRB review is recorded" (was "no ethics review was carried out") | Accurate and neutral. |
 | Hard-case rules (App. B) | "No separate written rules were issued for hard cases"; the workflow is quoted from the app's help text | That is all that existed. |
@@ -156,14 +151,14 @@ Subject: AgeTech Dataset Competition 2026: questions before our submission (Whee
    - **Dataset Files:** `WheelView_v1.0_release.zip`, uploaded from the laptop.
 3. Choose the access tier (decision 1).
 4. After the DOI appears, it can optionally go on the title page:
-   - In `wheelview_report_final.tex`, replace "assigned by IEEE DataPort on upload" with the DOI.
-   - Recompile with `tectonic -k wheelview_report_final.tex`. The page count is unaffected.
+   - In `wheelview_report_final_r3.tex`, replace "assigned by IEEE DataPort on upload" with the DOI.
+   - Recompile with `tectonic -k wheelview_report_final_r3.tex`. The page count is unaffected.
 5. Submit the report through the DataPort competition page as instructed there [H: "All submissions must be completed through IEEE DataPort"].
 6. Download the zip back from DataPort and check its sha256 against the value in §1.
 
 ## 7. Known limitations (all stated in the report or README)
 
-- Small test set (69). The ambiguous class has 2 test images, so T4 numbers are very noisy.
+- Small test set (64). The ambiguous class has 2 test images, so T4 numbers are very noisy.
 - Web photos only: no in-vehicle imagery and no night imagery. Geography and brands were not measured.
 - 197 images come from one U.S. government Flickr account.
 - SigLIP-based scores are likely optimistic, because labels were partly confirmed from SigLIP suggestions.

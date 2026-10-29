@@ -14,9 +14,9 @@ Contact (questions, label corrections, **removal requests**): Ross Greer, rossgr
 
 | Path | What it is |
 |---|---|
-| `images/{train,val,test}/<image_id>.jpg` | 458 images with a determinable device type (321 / 68 / 69) |
+| `images/{train,val,test}/<image_id>.jpg` | 449 images with a determinable device type (319 / 66 / 64) |
 | `images/excluded/<image_id>.jpg` | 6 images whose device type is `unclear`; in no split, not for training or scoring |
-| `annotations/labels.csv` | one row per image (464 rows): split, labels, provenance, license, grouping keys, sha256 |
+| `annotations/labels.csv` | one row per image (455 rows): split, labels, provenance, license, grouping keys, sha256 |
 | `annotations/coco_{train,val,test}.json` | device bounding boxes in COCO format, **preliminary** (see below) |
 | `annotations/boxes_per_annotator.csv` | the raw boxes as each annotator drew them, before merging |
 | `splits/{train,val,test}.txt` | image IDs per split (fixed; do not re-split) |
@@ -33,11 +33,11 @@ Images are JPEG, at most 640 px on the longer side, with no EXIF/XMP/ICC metadat
 
 | Class (`device_type`) | Train | Val | Test | Total |
 |---|---:|---:|---:|---:|
-| `manual` | 200 | 43 | 43 | 286 |
-| `powered` | 67 | 14 | 15 | 96 |
-| `other_aid` (mobility scooter, walker, rollator) | 43 | 9 | 9 | 61 |
+| `manual` | 200 | 41 | 39 | 280 |
+| `powered` | 66 | 14 | 14 | 94 |
+| `other_aid` (mobility scooter, walker, rollator) | 42 | 9 | 9 | 60 |
 | `ambiguous` (stroller, shopping cart, office chair, ... not clearly a wheelchair) | 11 | 2 | 2 | 15 |
-| **Total** | 321 | 68 | 69 | 458 |
+| **Total** | 319 | 66 | 64 | 449 |
 
 ## How to load
 
@@ -101,15 +101,14 @@ They have not been reviewed as a detection benchmark; treat them as preliminary.
 
 ## License summary
 
-* **Images keep their own licenses**, listed per image in `LICENSES.csv`: CC BY 2.0 (244), Public Domain Mark 1.0
+* **Images keep their own licenses**, listed per image in `LICENSES.csv`: CC BY 2.0 (235), Public Domain Mark 1.0
   (205), CC BY-SA 2.0 (9), CC0 1.0 (6). All are Flickr photographs. Each image was modified for WheelView (resized,
   re-encoded, metadata removed, and detected faces pixelated and blurred); the `attribution` column gives the credit
   line to use. The per-image license in `LICENSES.csv` is the license of that image file.
 * The **9 CC BY-SA 2.0 images** are adaptations distributed under CC BY-SA 2.0; adaptations of them must keep that
   license (ShareAlike).
-* **9 CC BY 2.0 images** (flagged in `license_note`) were recorded as CC BY 2.0 at collection, but their Flickr pages
-  now show a different license or need a login. The team decided to include them under the license recorded at
-  collection; this has not been confirmed with the photographers.
+* **9 images excluded for license reasons** (2026-10-29): Open Images recorded them as CC BY 2.0 at collection,
+  but their Flickr pages later showed a different license or required a login. They are not distributed.
 * **Annotations, documentation and code** written by the WheelView team are made available under the Creative Commons
   Attribution (CC BY) terms that IEEE DataPort applies to uploaded datasets.
 * Please cite the WheelView dataset (DOI assigned by IEEE DataPort) and credit the photographers.
@@ -122,9 +121,9 @@ the test split is otherwise kept fixed across versions.
 
 ## Limitations (short; details in DATASHEET.md)
 
-* 458 images, all from Flickr; one U.S. government Flickr account supplies 197 (all in train).
+* 449 split images, all from Flickr; one U.S. government Flickr account supplies 197 (all in train).
 * Web photos, not vehicle or curb cameras: only 12 curb and 15 vehicle scenes; 4 low-light images.
-* Test set is small (69 images; 2 ambiguous, 9 other aid), so confidence intervals are wide.
+* Test set is small (64 images; 2 ambiguous, 9 other aid), so confidence intervals are wide.
 * Most images have one annotator; 132 were labeled by two. Annotators could confirm SigLIP 2 zero-shot suggestions,
   so labels are not independent of that model, and SigLIP-based scores are likely optimistic.
 * `occlusion` has near-chance agreement; `propulsion` has known inconsistencies (57 manual chairs marked

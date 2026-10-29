@@ -22,7 +22,7 @@ Status key: **MET** means the evidence is in the package. **NEEDS ROSS** means o
 
 | # | Rule | Status | Evidence / action |
 |---|---|---|---|
-| 2.1 | Word (.docx) or PDF [H] | MET | `wheelview_report_final.pdf`. A pandoc .docx is also provided as a convenience copy, but it is rough; the PDF is the version to submit. |
+| 2.1 | Word (.docx) or PDF [H] | MET | `wheelview_report_final_r3.pdf`. A pandoc .docx is also provided as a convenience copy, but it is rough; the PDF is the version to submit. |
 | 2.2 | Max 10 pages excluding references and appendices [H, W] | MET | The body is PDF pages 1–10, *counting the title page* (printed pages 1–9 follow it). References start on PDF page 11, and Appendices A–C are on pages 13–14. The PDF has 14 pages in total. |
 | 2.3 | Single column [H] | MET | `article` class, one column. |
 | 2.4 | Times New Roman 11 pt [H] | MET (assumed) | The PDF uses 11 pt Times via `newtxtext` (TeX Gyre Termes, a Times clone metrically compatible with Times New Roman). Literal TNR is available with `\usetnrtrue` under XeLaTeX on a machine that has the font installed (the box has no TNR). |
@@ -66,7 +66,7 @@ Status key: **MET** means the evidence is in the package. **NEEDS ROSS** means o
 | 5.1 | Uploading makes the dataset available under CC-BY [F]; you must own the rights to share it [H] | MET, with decisions open | Per-image licenses are in `LICENSES.csv`: 244 CC-BY-2.0, 205 Public Domain Mark, 9 CC-BY-SA-2.0, 6 CC0. Our annotations go under DataPort's CC-BY terms. Images keep their own licenses (report §6.3, README). |
 | 5.2 | Share-alike conflict for the 9 CC BY-SA images | **NEEDS ROSS** | They are included and marked CC BY-SA in `LICENSES.csv` and the README (report §6.3). Decision 2 in the handoff. |
 | 5.3 | Privacy and consent compliance [D, H] | MET (blur, no recruitment); IRB/HIPAA is **NEEDS ROSS** | Faces are blurred with YuNet, with a second detector pass and a visual check of the 235 remaining detections; 7 more faces were blurred (`face_recheck.csv`). Plates and signs are **not** blurred, and the report says so. No sensitive attributes are labeled. Decision 4 in the handoff. |
-| 5.4 | Licenses that changed at the source (9 Open Images photos: 3 now non-commercial, 3 all-rights-reserved, 3 behind a login) | Included by team decision; disclosed | Each has a note in `LICENSES.csv`; report §6.3. Decision 6 in the handoff. |
+| 5.4 | Licenses that changed at the source (9 Open Images photos: 3 now non-commercial, 3 all-rights-reserved, 3 behind a login) | MET: excluded 2026-10-29 | Listed in `data/license_exclusions.csv`; not in the release; report §6.3. Decision 6 resolved. |
 | 5.5 | Images not posted to GitHub, Overleaf or shared drives outside the lab (Samir's rule) | MET | GitHub holds only metadata and code (`release/`). Images exist only on the lab laptop and in the zip. |
 
 ## 6. Leakage and integrity (our rules)
@@ -76,7 +76,7 @@ Status key: **MET** means the evidence is in the package. **NEEDS ROSS** means o
 | 6.1 | `check_leakage.py --features --files --runtime --release var/release/WheelView_v1.0` | MET | 0 failures, 2 informational warnings (image_id order correlates with class; old `var/yolo_cls_v2` test folders that the current scripts do not use). Laptop log: `var\leak_release_out2.txt`. |
 | 6.2 | Standalone `code/scripts/check_leakage.py --release .` run inside the built folder | MET | 0 failures, 0 warnings (`var\leak_standalone_out.txt`). |
 | 6.3 | Face re-check rerun after the fix | MET | Detections outside blur dropped from 235 to 228; the 7 fixed faces are no longer detected (`var\face_check_out2.txt`). |
-| 6.4 | Zip integrity | MET | `testzip` OK. Get-FileHash equals the `.sha256` file. 464 images (321/68/69/6 excluded); the internal docs are not inside. |
+| 6.4 | Zip integrity | MET | `testzip` OK. Get-FileHash equals the `.sha256` file. 455 images (319/66/64/6 excluded); the internal docs are not inside. |
 | 6.5 | Loader and scorer smoke tests on the built folder | MET | `wheelview_loader.py --summary` gives the expected split counts. `evaluate.py` on the SigLIP 2 FT seed-0 predictions gives test accuracy 0.913 and macro-F1 0.834, consistent with Table 3. |
 
 ## 7. Administrative dates after submission [D] (tentative)
