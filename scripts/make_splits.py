@@ -4,7 +4,8 @@
 Clean set (wvcore.clean_decision, the one shared rule): images marked _status=done by a human labeler (samir/shaaz)
 where no labeler who marked it done set a non-empty `exclude`, or whose exclude was adjudicated to keep (''/none); the
 adjudication then overrides the labelers' excludes, except that an image any labeler gave child or identifiable_person
-stays out, and one with license_concern stays out unless the license audit cleared it (ok / ok_with_note). Label = device_type (manual / powered / other_aid / ambiguous; `ambiguous` was `lookalike` before 2026-10-28,
+stays out, and one with license_concern stays out unless the license audit cleared it (ok / ok_with_note). Images listed
+in data/safety_hold.csv are always out. Label = device_type (manual / powered / other_aid / ambiguous; `ambiguous` was `lookalike` before 2026-10-28,
 old events are mapped by wvcore.canon) resolved with wvcore's
 consensus/adjudication rules; images with an unresolved conflict, `unclear`, or no device class are dropped.
 Images whose license audit status is needs_ross or exclude are dropped. face_blur_missed is ignored.
@@ -71,12 +72,13 @@ def collect(db, events, lic_arg=None, keep_excluded=False):
     evs, n_db, n_js = load_events(str(db), str(events))
     per, adj = wvcore.fold(evs)
     hist = wvcore.exclude_history(evs); lic_status = {k: r.get("status") for k, r in lic.items()}
+    hold = wvcore.load_safety_hold(str(ROOT / "data"))
     drops = Counter(); rows = []; excluded = []; clean_why = {}
     for img in sorted(per):
         st = wvcore.image_status(img, per, adj)
         if not st["done"]: continue
-        ok, why = wvcore.clean_decision(img, per, adj, history=hist, license_status=lic_status)   # shared clean-set rule
-        if why.startswith("kept_out_"): drops[why] += 1
+        ok, why = wvcore.clean_decision(img, per, adj, history=hist, license_status=lic_status, hold=hold)   # shared clean-set rule
+        if why.startswith("kept_out_") or why == "safety_hold": drops[why] += 1
         if not ok: continue
         clean_why[img] = why
         if why == "adjudicated_keep": drops["clean_set_adjudicated_keep"] += 1

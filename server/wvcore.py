@@ -161,7 +161,8 @@ def image_status(img, per, adjv):
 # An image is in the clean set when at least one annotator marked it done and no done annotator excluded it, OR when
 # its exclude was adjudicated to keep ('' / none): the adjudication then overrides the labelers' excludes, except
 # (safety guard) when any labeler ever gave child or identifiable_person (always out), or license_concern and the
-# license audit has not cleared the image (status ok / ok_with_note).
+# license audit has not cleared the image (status ok / ok_with_note). Images in data/safety_hold.csv are never in the
+# clean set (e.g. a visual check found a person who may be a child; they wait for the normal removal review).
 ALWAYS_OUT_REASONS = ("child", "identifiable_person")
 LICENSE_CLEARED = ("ok", "ok_with_note")
 
@@ -176,9 +177,18 @@ def exclude_history(events, annotators=None):
         if isinstance(v, str) and v not in ("", "none"): h[e["image_id"]].add(v)
     return h
 
-def clean_decision(img, per, adjv, annotators=None, history=None, license_status=None):
+def load_safety_hold(datadir):
+    """{image_id: reason} from data/safety_hold.csv (image_id, flagged, flagged_by, reason); missing file = no holds."""
+    p = os.path.join(datadir, "safety_hold.csv")
+    if not os.path.exists(p): return {}
+    with open(p, encoding="utf-8", newline="") as fh:
+        return {r["image_id"].strip(): r.get("reason", "") for r in csv.DictReader(fh) if r.get("image_id", "").strip()}
+
+def clean_decision(img, per, adjv, annotators=None, history=None, license_status=None, hold=None):
     """(in_clean_set, why). `annotators` limits who counts (default: everyone in `per`); `history` is exclude_history();
-    `license_status` maps image -> license-audit status (only consulted for the license_concern guard)."""
+    `license_status` maps image -> license-audit status (only consulted for the license_concern guard);
+    `hold` is load_safety_hold() (always out)."""
+    if hold and img in hold: return False, "safety_hold"
     anns = per.get(img, {})
     done = sorted(a for a, fv in anns.items() if fv.get("_status") == "done" and (annotators is None or a in annotators))
     if not done: return False, "not_done"

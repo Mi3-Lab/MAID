@@ -67,7 +67,8 @@ def main():
     hist = wvcore.exclude_history(evs, annotators=HUMANS)
     lic_status = {k: r.get("status") for k, r in lic.items()}
     clean = sorted(i for i in per if wvcore.clean_decision(i, per, adjv, annotators=HUMANS, history=hist,
-                                                           license_status=lic_status)[0])   # shared clean-set rule
+                                                           license_status=lic_status,
+                                                           hold=wvcore.load_safety_hold(str(D)))[0])   # shared clean-set rule
     tri = {r["image_id"]: r for r in csv.DictReader(open(D / "v1_triage.csv", encoding="utf-8"))}
     blk = wvcore.load_blocklist_entries(str(D))
     attr = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "derived" / "attributions.csv", encoding="utf-8"))}
