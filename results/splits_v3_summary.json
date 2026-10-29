@@ -1,0 +1,38 @@
+{
+  "seed": 20261027,
+  "fracs": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "group_by": "leak_group (duplicates + uploader + creator + page + burst + title series)",
+  "require_every_class_in": [
+    "train",
+    "val",
+    "test"
+  ],
+  "n": 433,
+  "counts": {
+    "train": {
+      "manual": 193,
+      "powered": 59,
+      "other_aid": 40,
+      "ambiguous": 11
+    },
+    "val": {
+      "manual": 41,
+      "powered": 13,
+      "other_aid": 9,
+      "ambiguous": 2
+    },
+    "test": {
+      "manual": 42,
+      "powered": 13,
+      "other_aid": 8,
+      "ambiguous": 2
+    }
+  },
+  "moved_vs_v2": 142,
+  "license_file": "license_audit_v2.csv",
+  "events_used": 9357
+}
