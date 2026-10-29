@@ -11,28 +11,28 @@
     "val",
     "test"
   ],
-  "n": 442,
+  "n": 458,
   "counts": {
     "train": {
-      "manual": 198,
-      "powered": 61,
-      "other_aid": 40,
+      "manual": 200,
+      "powered": 67,
+      "other_aid": 43,
       "ambiguous": 11
     },
     "val": {
-      "manual": 42,
-      "powered": 13,
+      "manual": 43,
+      "powered": 14,
       "other_aid": 9,
       "ambiguous": 2
     },
     "test": {
-      "manual": 42,
-      "powered": 13,
+      "manual": 43,
+      "powered": 15,
       "other_aid": 9,
       "ambiguous": 2
     }
   },
-  "moved_vs_v2": 142,
+  "moved_vs_v2": 157,
   "license_file": "license_audit_v2.csv",
   "events_used": 9357
 }
