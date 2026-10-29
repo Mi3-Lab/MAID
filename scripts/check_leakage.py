@@ -212,7 +212,7 @@ def phash64(im):
     d = scipy.fft.dctn(g, norm="ortho")[:8, :8].flatten(); bits = d[1:] > np.median(d[1:])
     return int("".join("1" if b else "0" for b in bits), 2)
 
-def check_release(a, T, rep):
+def check_release(a, T, rep, M=None, hold=None):
     """Audit a built release folder: metadata vs manifest, exact image set (no safety-hold, nothing extra), SHA256SUMS,
     no EXIF/XMP/ICC/comment segments, size <= 1280 px, cross-split near-duplicates recomputed from the released pixels
     (pHash incl. mirror), no model-output columns or weights shipped, and predict.py on a released test image."""
@@ -220,12 +220,21 @@ def check_release(a, T, rep):
     from PIL import Image, ImageOps
     R = Path(a.release).resolve(); tag = "--release"
     if not R.is_dir(): fail(f"{tag}: {R} not found"); return
-    M = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "data" / "manifest_v2.csv", encoding="utf-8"))}
-    hold = {r["image_id"] for r in csv.DictReader(open(ROOT / "data" / "safety_hold.csv", encoding="utf-8"))}
+    if M is None:
+        M = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "data" / "manifest_v2.csv", encoding="utf-8"))}
+        hold = {r["image_id"] for r in csv.DictReader(open(ROOT / "data" / "safety_hold.csv", encoding="utf-8"))}
     L = list(csv.DictReader(open(R / "annotations" / "labels.csv", encoding="utf-8")))
     LD = {r["image_id"]: r for r in L}
+    # face_recheck.csv: images whose release copy got extra face regions blurred; their released sha256 is sha256_after,
+    # and sha256_before must equal the manifest's sha256_blurred.
+    FX = {}
+    if (R / "face_recheck.csv").exists():
+        for r in csv.DictReader(open(R / "face_recheck.csv", encoding="utf-8")): FX.setdefault(r["image_id"], r)
+    fxbad = [i for i, r in FX.items() if i not in M or r["sha256_before"] != M[i]["sha256_blurred"] or not r["sha256_after"]]
+    if FX: (fail if fxbad else ok)(f"{tag}: face_recheck.csv lists {len(FX)} images with extra face blur; sha256_before == manifest, sha256_after set: {len(fxbad)} bad {fxbad[:5]}")
+    want = {i: (FX[i]["sha256_after"] if i in FX else M[i]["sha256_blurred"]) for i in M}
     bad = [i for i in M if i not in LD or LD[i]["split"] != M[i]["split"] or wvcore.canon_class(LD[i]["device_type"]) != wvcore.canon_class(M[i]["device_type"])
-           or LD[i]["sha256"] != M[i]["sha256_blurred"] or LD[i]["file"] != f"images/{M[i]['split']}/{i}.jpg"] + [i for i in LD if i not in M]
+           or LD[i]["sha256"] != want[i] or LD[i]["file"] != f"images/{M[i]['split']}/{i}.jpg"] + [i for i in LD if i not in M]
     (fail if bad or len(L) != len(LD) else ok)(f"{tag}: labels.csv has {len(L)} rows == manifest ({len(M)}), same split/label/sha256/file: {len(bad)} mismatches {bad[:5]}")
     cols = [c for c in (L[0] if L else {}) if re.search(r"sugg|confid|prob|score|logit|emb|auto|pred", c.lower())]
     (fail if cols else ok)(f"{tag}: no model-output columns in labels.csv: {cols}")
@@ -270,7 +279,7 @@ def check_release(a, T, rep):
             if x[2] != y[2] and min(bin(x[0] ^ y[0]).count("1"), bin(x[0] ^ y[1]).count("1")) <= tm]
     (fail if near else ok)(f"{tag}: pHash recomputed from released pixels (incl. mirror) <= {tm} across splits: {len(near)} {near[:5]}")
     ag = sum(1 for h, _, _, i in ph if M[i].get("phash_blurred") and int(M[i]["phash_blurred"], 16) == h)
-    ok(f"{tag}: recomputed pHash equals the manifest's phash_blurred for {ag}/{len(ph)} images (informational)")
+    if any(r.get("phash_blurred") for r in M.values()): ok(f"{tag}: recomputed pHash equals the manifest's phash_blurred for {ag}/{len(ph)} images (informational)")
     test = sorted(i for i, r in M.items() if r["split"] == "test")
     if a.runtime and test: check_runtime(T, img=R / "images" / "test" / f"{test[0]}.jpg", tag=tag)
 
@@ -279,6 +288,24 @@ def main():
     ap.add_argument("--features", action="store_true"); ap.add_argument("--files", action="store_true"); ap.add_argument("--runtime", action="store_true")
     ap.add_argument("--release", default=None, help="audit a built release folder (e.g. var/release/WheelView_v1.0)")
     a = ap.parse_args()
+    if a.release and not (ROOT / "data" / "manifest_v2.csv").exists():
+        # Standalone use inside a downloaded release (code/scripts/check_leakage.py --release .): labels.csv is the reference.
+        R = Path(a.release).resolve()
+        L = list(csv.DictReader(open(R / "annotations" / "labels.csv", encoding="utf-8")))
+        M = {r["image_id"]: dict(r, sha256_blurred=r["sha256"]) for r in L}
+        if (R / "face_recheck.csv").exists():   # re-checked images: pre-fix hash is the reference for sha256_before
+            for x in csv.DictReader(open(R / "face_recheck.csv", encoding="utf-8")):
+                if x["image_id"] in M and x["sha256_after"] == M[x["image_id"]]["sha256"]: M[x["image_id"]]["sha256_blurred"] = x["sha256_before"]
+        T = [dict(r, path=r["file"]) for r in L if r["split"] in SPLITS]
+        print("standalone release check: labels.csv is the reference (no repo manifest found)")
+        groups = {}
+        for r in T: groups.setdefault(r["leak_group"], set()).add(r["split"])
+        span = [g for g, v in groups.items() if len(v) > 1]
+        (fail if span else ok)(f"--release: leak groups spanning two splits: {len(span)} {span[:5]}")
+        a.runtime = a.runtime and any((ROOT / "var" / "runs").glob("*")) if (ROOT / "var" / "runs").exists() else False
+        check_release(a, T, {}, M=M, hold=set())
+        print(f"\n{len(FAIL)} failure(s), {len(WARN)} warning(s)")
+        sys.exit(1 if FAIL else 0)
     rp = ROOT / "results" / "leakage_v2.json"; rep = json.load(open(rp, encoding="utf-8")) if rp.exists() else {}
     T = check_data(a, rep)
     if a.features and T: check_features(a, T, rep)

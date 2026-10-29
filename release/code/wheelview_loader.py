@@ -13,7 +13,8 @@ Command line:
     python code/wheelview_loader.py --root . --flatten flat_images   # hard-links (or copies) every image to flat_images/<id>.jpg,
                                                                      # the layout the training scripts in code/scripts expect
 Labels: device_type is one of manual (manual wheelchair), powered (powered wheelchair), other_aid (other mobility aid such as
-a mobility scooter, walker or rollator) and ambiguous (cannot be told apart from the image alone). Rows with split == "excluded" (train_eligible 0) are shipped with their exclusion_reason and are never used for training or
+a mobility scooter, walker or rollator) and ambiguous (a wheelchair-like object that is not clearly a wheelchair, such as a stroller,
+shopping cart or office chair). Rows with split == "excluded" (train_eligible 0) are shipped with their exclusion_reason and are never used for training or
 evaluation. Boxes: annotations/boxes_per_annotator.csv ([x, y, w, h], normalised 0-1, top-left origin) and
 annotations/coco_<split>.json (pixel boxes, marked preliminary)."""
 import argparse, csv, os, shutil, sys

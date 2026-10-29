@@ -15,7 +15,9 @@ splits/{train,val,test}.txt, LICENSES.csv, SHA256SUMS.txt, code/...}. README/DAT
 images copies images_blurred/<id>.jpg -> images/<split>/<id>.jpg byte-for-byte after checking: sha256 equals the
 manifest's sha256_blurred (the copy the face-blur verification ran on), JPEG has no EXIF/XMP/ICC/IPTC/comment segments
 (stripped at byte level if present, pixels untouched), longer side <= 1280 px. Safety-hold images and anything not in
-the manifest are never copied. Then release/ metadata is copied in, SHA256SUMS is verified and (with --zip) the folder is
+the manifest are never copied. Images listed in release/face_recheck.csv (faces missed by the first blur pass and found
+by the release face re-check, scripts/face_check_release.py + a person's review) get those extra regions blurred with the
+same method as scripts/auto_blur.py; their sha256 is the recorded sha256_after. Then release/ metadata is copied in, SHA256SUMS is verified and (with --zip) the folder is
 zipped to var/WheelView_v1.0_release.zip with its sha256 written next to it."""
 import argparse, csv, hashlib, json, os, shutil, sys, zipfile
 from collections import Counter, defaultdict
@@ -49,6 +51,54 @@ def rows():
     assert all(r["license_status"] in ("ok", "ok_with_note") for r in M)
     for r in M: r["file"] = f"images/{r['split']}/{r['image_id']}.jpg"
     return M, hold
+
+FACE_FIX = REL / "face_recheck.csv"
+
+def face_fix_rows():
+    """{image_id: [rows]} from release/face_recheck.csv (extra face regions blurred in the release copy only)."""
+    F = defaultdict(list)
+    if FACE_FIX.exists():
+        for r in csv.DictReader(open(FACE_FIX, encoding="utf-8")): F[r["image_id"]].append(r)
+    return F
+
+def release_sha(r, F):
+    """sha256 of the released file: the manifest's sha256_blurred, or the recorded sha256_after for re-checked images."""
+    fx = F.get(r["image_id"])
+    if not fx: return r["sha256_blurred"]
+    if any(x["sha256_before"] != r["sha256_blurred"] for x in fx): sys.exit(f"{r['image_id']}: face_recheck.csv sha256_before != manifest")
+    after = {x["sha256_after"] for x in fx}
+    if len(after) != 1 or not next(iter(after)): sys.exit(f"{r['image_id']}: sha256_after missing in face_recheck.csv (run sync on the laptop to compute it)")
+    return next(iter(after))
+
+def face_fixed_bytes(r, fx):
+    """images_blurred copy + the extra regions, blurred exactly as scripts/auto_blur.py does (padded box, pixelate, Gaussian), JPEG q92, no metadata."""
+    import numpy as np, cv2
+    sys.path.insert(0, str(ROOT / "scripts")); import auto_blur
+    data = (ROOT / r["path"]).read_bytes()
+    if hashlib.sha256(data).hexdigest() != r["sha256_blurred"]: raise RuntimeError(f"{r['image_id']}: source sha256 differs from manifest")
+    img = cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR); h, w = img.shape[:2]
+    boxes = [[float(x["box_x"]) * w, float(x["box_y"]) * h, float(x["box_w"]) * w, float(x["box_h"]) * h] for x in fx]
+    ok_, buf = cv2.imencode(".jpg", auto_blur.blur(img, boxes), [cv2.IMWRITE_JPEG_QUALITY, 92])
+    if not ok_: raise RuntimeError("encode failed")
+    return buf.tobytes()
+
+def apply_face_fix(M, out):
+    """Write the re-checked images into the built folder. A replaced copy is moved to var/release/pre_face_fix/ (never deleted)."""
+    F = face_fix_rows(); res, problems = {}, []
+    for r in M:
+        fx = F.get(r["image_id"])
+        if not fx: continue
+        b = face_fixed_bytes(r, fx); h = hashlib.sha256(b).hexdigest(); rec = fx[0]["sha256_after"]
+        res[r["image_id"]] = h
+        if not rec: problems.append(f"{r['image_id']}: record sha256_after={h} in release/face_recheck.csv"); continue
+        if rec != h: problems.append(f"{r['image_id']}: blurred bytes {h} != recorded sha256_after {rec}"); continue
+        dst = out / r["file"]
+        if dst.exists() and hashlib.sha256(dst.read_bytes()).hexdigest() == h: continue
+        if dst.exists():
+            bk = ROOT / "var" / "release" / "pre_face_fix" / f"{r['image_id']}.jpg"; bk.parent.mkdir(parents=True, exist_ok=True)
+            if not bk.exists(): shutil.move(str(dst), str(bk))
+        dst.parent.mkdir(parents=True, exist_ok=True); dst.write_bytes(b)
+    return res, problems
 
 def blur_info():
     B = {}
@@ -88,7 +138,9 @@ def write_csv(path, cols, data):
         w = csv.DictWriter(fh, fieldnames=cols, lineterminator="\n"); w.writeheader(); w.writerows(data)
 
 def meta(a):
-    M, _ = rows(); B = blur_info()
+    M, _ = rows(); B = blur_info(); F = face_fix_rows()
+    unknown = set(F) - {r["image_id"] for r in M}
+    if unknown: sys.exit(f"face_recheck.csv lists images not in the release: {sorted(unknown)}")
     audit = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "data" / "license_audit_v2.csv", encoding="utf-8"))}
     attr = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "derived" / "attributions.csv", encoding="utf-8"))}
     cand = {r["candidate_id"]: r for r in csv.DictReader(open(ROOT / "data" / "candidates.csv", encoding="utf-8"))}
@@ -97,7 +149,7 @@ def meta(a):
     for r in M:
         b = B[r["image_id"]]
         d = {k: r.get(k, "") for k in LABEL_COLS}
-        d.update(file=r["file"], width=b["width"], height=b["height"], sha256=r["sha256_blurred"], labelers=pseud(r["labelers"]),
+        d.update(file=r["file"], width=b["width"], height=b["height"], sha256=release_sha(r, F), labelers=pseud(r["labelers"]),
                  adjudicated_by=pseud(r["adjudicated_by"]), labeled_via=pseud(r["labeled_via"]), device_type=wvcore.canon_class(r["device_type"]))
         L.append(d)
     write_csv(REL / "annotations" / "labels.csv", LABEL_COLS, L)
@@ -157,9 +209,10 @@ def meta(a):
         elif au["status"] == "ok_with_note": note = "An annotator raised a license question during labeling; the 2026-10-28 re-check found the recorded license unchanged on the source page."
         if r["license"] == "CC-BY-SA-2.0":
             note = (note + " " if note else "") + "ShareAlike: this adapted image is distributed under CC BY-SA 2.0, and adaptations of it must keep that license."
-        nf = b["n_faces"]
+        nx = len(F.get(i, [])); nf = b["n_faces"] + nx
         mods = ("resized to at most 640 px on the longer side and re-encoded as JPEG (all EXIF/XMP/ICC metadata removed); "
-                + (f"{nf} face region{'s' if nf != 1 else ''} pixelated and blurred" if nf else "no face detected, no blur applied"))
+                + (f"{nf} face region{'s' if nf != 1 else ''} pixelated and blurred" if nf else "no face detected, no blur applied")
+                + (f" ({nx} of them added at the release face re-check)" if nx else ""))
         ln = LIC_NAMES.get(r["license"], r["license"])
         verb = "is marked with" if "PDM" in r["license"] else ("is dedicated to the public domain under" if "CC0" in r["license"] else "is licensed under")
         att = f"\"{title}\" by {r['creator']} ({r['source_url']}) {verb} {ln} ({r['license_url']}). Modified for WheelView: {mods}."
@@ -169,7 +222,7 @@ def meta(a):
                     "license_rechecked_on": au["checked"], "license_on_source_at_recheck": live, "license_note": note,
                     "modifications": mods, "attribution": att})
     write_csv(REL / "LICENSES.csv", LC, out)
-    (REL / "SHA256SUMS.txt").write_text("".join(f"{r['sha256_blurred']}  {r['file']}\n" for r in M), encoding="utf-8")
+    (REL / "SHA256SUMS.txt").write_text("".join(f"{release_sha(r, F)}  {r['file']}\n" for r in M), encoding="utf-8")
     # code snapshot
     for src, dst in CODE_FILES:
         (REL / "code" / dst).parent.mkdir(parents=True, exist_ok=True); shutil.copy2(ROOT / src, REL / "code" / dst)
@@ -208,7 +261,8 @@ def images(a):
         im = Image.open(src); w, h = im.size
         if max(w, h) > 1280: problems.append(f"{r['image_id']}: {w}x{h} > 1280"); continue
         dst = out / r["file"]; dst.parent.mkdir(parents=True, exist_ok=True); dst.write_bytes(clean); rep[r["split"]] += 1
-    finish(a, M, hold, out, dict(rep), problems)
+    fixed, fp = apply_face_fix(M, out); rep["face_recheck_fixed"] = len(fixed)
+    finish(a, M, hold, out, dict(rep), problems + fp)
 
 def finish(a, M, hold, out, copied, problems):
     """Copy release/ metadata into the built folder (overwrites metadata files only; images untouched), verify, optionally zip."""
@@ -237,10 +291,12 @@ def finish(a, M, hold, out, copied, problems):
         print(json.dumps({"zip": str(z), "bytes": z.stat().st_size, "sha256": hz, "files": len(zipfile.ZipFile(z).namelist())}))
 
 def sync(a):
-    """Refresh metadata in an already-built folder (after release/ changed) and re-verify; images are not touched."""
+    """Refresh metadata in an already-built folder (after release/ changed), apply release/face_recheck.csv, re-verify.
+    Other images are not touched."""
     M, hold = rows(); out = ROOT / "var" / "release" / NAME
     if not out.exists(): sys.exit(f"{out} missing; run the images mode first")
-    finish(a, M, hold, out, {}, [])
+    fixed, fp = apply_face_fix(M, out)
+    finish(a, M, hold, out, {"face_recheck": fixed}, fp)
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["meta", "images", "sync"]); ap.add_argument("--zip", action="store_true")
