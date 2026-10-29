@@ -1,0 +1,103 @@
+{
+ "tag": "v3",
+ "split": "val",
+ "n": 68,
+ "models": {
+  "resnet": {
+   "runs": [
+    {
+     "seed": 0,
+     "weights": "var/runs/resnet50_v3/seed0_best.pt",
+     "val_accuracy": 0.7941,
+     "val_macro_f1": 0.7001
+    },
+    {
+     "seed": 1,
+     "weights": "var/runs/resnet50_v3/seed1_best.pt",
+     "val_accuracy": 0.7794,
+     "val_macro_f1": 0.6803
+    },
+    {
+     "seed": 2,
+     "weights": "var/runs/resnet50_v3/seed2_best.pt",
+     "val_accuracy": 0.7941,
+     "val_macro_f1": 0.7097
+    }
+   ],
+   "mean_val_macro_f1": 0.6967,
+   "mean_val_accuracy": 0.7892
+  },
+  "siglip-probe": {
+   "runs": [
+    {
+     "seed": 0,
+     "weights": "var/runs/siglip2_v3/probe_seed0_head.npz",
+     "val_accuracy": 0.7059,
+     "val_macro_f1": 0.6418
+    },
+    {
+     "seed": 1,
+     "weights": "var/runs/siglip2_v3/probe_seed1_head.npz",
+     "val_accuracy": 0.7059,
+     "val_macro_f1": 0.6418
+    },
+    {
+     "seed": 2,
+     "weights": "var/runs/siglip2_v3/probe_seed2_head.npz",
+     "val_accuracy": 0.7059,
+     "val_macro_f1": 0.6418
+    }
+   ],
+   "mean_val_macro_f1": 0.6418,
+   "mean_val_accuracy": 0.7059
+  },
+  "siglip-ft": {
+   "runs": [
+    {
+     "seed": 0,
+     "weights": "var/runs/siglip2_v3/ft_seed0_best.pt",
+     "val_accuracy": 0.8824,
+     "val_macro_f1": 0.812
+    },
+    {
+     "seed": 1,
+     "weights": "var/runs/siglip2_v3/ft_seed1_best.pt",
+     "val_accuracy": 0.8676,
+     "val_macro_f1": 0.8091
+    },
+    {
+     "seed": 2,
+     "weights": "var/runs/siglip2_v3/ft_seed2_best.pt",
+     "val_accuracy": 0.8971,
+     "val_macro_f1": 0.826
+    }
+   ],
+   "mean_val_macro_f1": 0.8157,
+   "mean_val_accuracy": 0.8824
+  },
+  "yolo-cls": {
+   "runs": [
+    {
+     "seed": 0,
+     "weights": "var/runs/yolo11s_cls_v3_seed0/weights/best.pt",
+     "val_accuracy": 0.7647,
+     "val_macro_f1": 0.6339
+    },
+    {
+     "seed": 1,
+     "weights": "var/runs/yolo11s_cls_v3_seed1/weights/best.pt",
+     "val_accuracy": 0.7647,
+     "val_macro_f1": 0.6193
+    },
+    {
+     "seed": 2,
+     "weights": "var/runs/yolo11s_cls_v3_seed2/weights/best.pt",
+     "val_accuracy": 0.75,
+     "val_macro_f1": 0.4677
+    }
+   ],
+   "mean_val_macro_f1": 0.5736,
+   "mean_val_accuracy": 0.7598
+  }
+ }
+}

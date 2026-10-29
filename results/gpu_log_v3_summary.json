@@ -1,0 +1,83 @@
+{
+ "samples": 437,
+ "interval_s": 5,
+ "busy_samples": 274,
+ "max_temp_c": 73,
+ "mean_temp_busy_c": 52.2,
+ "max_power_w": 100.07,
+ "mean_sm_clock_busy_mhz": 1633.0,
+ "max_sm_clock_mhz": 3105.0,
+ "pct_busy_time_thermal_throttled": 0.0,
+ "pct_busy_time_power_capped": 12.77,
+ "pct_busy_time_hw_slowdown": 0.0,
+ "pct_busy_time_any_throttle": 12.77,
+ "reasons_seen_busy": {
+  "GpuIdle": 211,
+  "SwPowerCap": 35
+ },
+ "first_ts": "2026/10/28 22:15:51.821",
+ "last_ts": "2026/10/28 22:52:14.828",
+ "phases": [
+  {
+   "name": "leak_pre",
+   "start": "2026/10/28 22:15:51",
+   "end": "2026/10/28 22:16:41",
+   "rc": 0,
+   "busy_samples": 1,
+   "max_temp_c": 41,
+   "pct_thermal": 0.0,
+   "pct_power_cap": 0.0
+  },
+  {
+   "name": "resnet",
+   "start": "2026/10/28 22:16:41",
+   "end": "2026/10/28 22:21:02",
+   "rc": 0,
+   "busy_samples": 48,
+   "max_temp_c": 58,
+   "pct_thermal": 0.0,
+   "pct_power_cap": 0.0
+  },
+  {
+   "name": "siglip",
+   "start": "2026/10/28 22:21:03",
+   "end": "2026/10/28 22:28:34",
+   "rc": 0,
+   "busy_samples": 63,
+   "max_temp_c": 73,
+   "pct_thermal": 0.0,
+   "pct_power_cap": 55.56
+  },
+  {
+   "name": "yolo",
+   "start": "2026/10/28 22:28:34",
+   "end": "2026/10/28 22:50:53",
+   "rc": 0,
+   "busy_samples": 161,
+   "max_temp_c": 55,
+   "pct_thermal": 0.0,
+   "pct_power_cap": 0.0
+  },
+  {
+   "name": "leak_post",
+   "start": "2026/10/28 22:50:53",
+   "end": "2026/10/28 22:52:16",
+   "rc": 0,
+   "busy_samples": 1,
+   "max_temp_c": 43,
+   "pct_thermal": 0.0,
+   "pct_power_cap": 0.0
+  }
+ ],
+ "thermal_pauses_over_85c": [],
+ "power_plan": {
+  "during_run_ac": {
+   "SYSCOOLPOL": "1 (active cooling; already set)",
+   "PERFBOOSTMODE": "0 (CPU turbo off)",
+   "PROCTHROTTLEMAX": 99,
+   "STANDBYIDLE": "0 (never sleep)",
+   "runner": "SetThreadExecutionState(ES_SYSTEM_REQUIRED)"
+  },
+  "restored_after_from": "var/power_pre_v3.json"
+ }
+}

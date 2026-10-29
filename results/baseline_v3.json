@@ -1,0 +1,1042 @@
+{
+ "test_n": 69,
+ "test_counts": {
+  "manual": 43,
+  "powered": 15,
+  "other_aid": 9,
+  "ambiguous": 2
+ },
+ "best_on_val": "SigLIP2 fine-tune (last 4 blocks)",
+ "models": [
+  {
+   "name": "SigLIP2 zero-shot",
+   "kind": "untrained",
+   "key": "siglip_zs",
+   "n_seeds": 1,
+   "acc": {
+    "mean": 0.6812,
+    "std": 0.0
+   },
+   "acc_ci": [
+    0.5797,
+    0.7826
+   ],
+   "mf1": {
+    "mean": 0.7229,
+    "std": 0.0
+   },
+   "mf1_ci": [
+    0.5437,
+    0.8186
+   ],
+   "mf1_3": {
+    "mean": 0.6306,
+    "std": 0.0
+   },
+   "mf1_3_ci": [
+    0.4701,
+    0.7599
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 0.9333,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.6512,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.7671,
+      "std": 0.0
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.4062,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.8667,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.5532,
+      "std": 0.0
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.8,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.4444,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.5714,
+      "std": 0.0
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 1.0,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 1.0,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 1.0,
+      "std": 0.0
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     28,
+     14,
+     1,
+     0
+    ],
+    [
+     2,
+     13,
+     0,
+     0
+    ],
+    [
+     0,
+     5,
+     4,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2
+    ]
+   ],
+   "val": null,
+   "note": "BIASED UP: final labels equal the SigLIP2 suggestion for 68% of test images (73% of all clean)"
+  },
+  {
+   "name": "YOLO-World v2-s zero-shot",
+   "kind": "untrained",
+   "key": "yolo_world",
+   "n_seeds": 1,
+   "acc": {
+    "mean": 0.4493,
+    "std": 0.0
+   },
+   "acc_ci": [
+    0.3333,
+    0.5652
+   ],
+   "mf1": {
+    "mean": 0.3643,
+    "std": 0.0
+   },
+   "mf1_ci": [
+    0.2567,
+    0.4918
+   ],
+   "mf1_3": {
+    "mean": 0.3968,
+    "std": 0.0
+   },
+   "mf1_3_ci": [
+    0.2723,
+    0.5142
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 0.8,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.4651,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.5882,
+      "std": 0.0
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.3684,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.4667,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.4118,
+      "std": 0.0
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.1667,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.2222,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.1905,
+      "std": 0.0
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 0.1538,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 1.0,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.2667,
+      "std": 0.0
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     20,
+     10,
+     9,
+     4,
+     0
+    ],
+    [
+     4,
+     7,
+     1,
+     3,
+     0
+    ],
+    [
+     1,
+     2,
+     2,
+     4,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2,
+     0
+    ]
+   ],
+   "val": null,
+   "note": "no box (counted wrong) on 0% of test images at conf 0.01"
+  },
+  {
+   "name": "SigLIP2 linear probe",
+   "kind": "trained (head only)",
+   "key": "siglip-probe",
+   "n_seeds": 3,
+   "acc": {
+    "mean": 0.7536,
+    "std": 0.0
+   },
+   "acc_ci": [
+    0.6522,
+    0.8551
+   ],
+   "mf1": {
+    "mean": 0.7206,
+    "std": 0.0
+   },
+   "mf1_ci": [
+    0.4923,
+    0.8624
+   ],
+   "mf1_3": {
+    "mean": 0.7501,
+    "std": 0.0
+   },
+   "mf1_3_ci": [
+    0.6106,
+    0.8552
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 1.0,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.6744,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.8056,
+      "std": 0.0
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.5385,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.9333,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.6829,
+      "std": 0.0
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.6154,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.8889,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.7273,
+      "std": 0.0
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 1.0,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.5,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.6667,
+      "std": 0.0
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     87,
+     33,
+     9,
+     0
+    ],
+    [
+     0,
+     42,
+     3,
+     0
+    ],
+    [
+     0,
+     3,
+     24,
+     0
+    ],
+    [
+     0,
+     0,
+     3,
+     3
+    ]
+   ],
+   "val": {
+    "runs": [
+     {
+      "seed": 0,
+      "weights": "var/runs/siglip2_v3/probe_seed0_head.npz",
+      "val_accuracy": 0.7059,
+      "val_macro_f1": 0.6418
+     },
+     {
+      "seed": 1,
+      "weights": "var/runs/siglip2_v3/probe_seed1_head.npz",
+      "val_accuracy": 0.7059,
+      "val_macro_f1": 0.6418
+     },
+     {
+      "seed": 2,
+      "weights": "var/runs/siglip2_v3/probe_seed2_head.npz",
+      "val_accuracy": 0.7059,
+      "val_macro_f1": 0.6418
+     }
+    ],
+    "mean_val_macro_f1": 0.6418,
+    "mean_val_accuracy": 0.7059
+   },
+   "note": "C=100 chosen on val; deterministic (seeds identical)"
+  },
+  {
+   "name": "SigLIP2 fine-tune (last 4 blocks)",
+   "kind": "trained",
+   "key": "siglip-ft",
+   "n_seeds": 3,
+   "acc": {
+    "mean": 0.9034,
+    "std": 0.0167
+   },
+   "acc_ci": [
+    0.8406,
+    0.971
+   ],
+   "mf1": {
+    "mean": 0.8406,
+    "std": 0.0734
+   },
+   "mf1_ci": [
+    0.6126,
+    0.9711
+   ],
+   "mf1_3": {
+    "mean": 0.8896,
+    "std": 0.014
+   },
+   "mf1_3_ci": [
+    0.7975,
+    0.9741
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 0.9528,
+      "std": 0.0006
+     },
+     "recall": {
+      "mean": 0.938,
+      "std": 0.0135
+     },
+     "f1": {
+      "mean": 0.9453,
+      "std": 0.0071
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.8755,
+      "std": 0.0416
+     },
+     "recall": {
+      "mean": 0.7778,
+      "std": 0.0385
+     },
+     "f1": {
+      "mean": 0.8235,
+      "std": 0.0359
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.7727,
+      "std": 0.0394
+     },
+     "recall": {
+      "mean": 1.0,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.8714,
+      "std": 0.0248
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 0.8333,
+      "std": 0.2887
+     },
+     "recall": {
+      "mean": 0.6667,
+      "std": 0.2887
+     },
+     "f1": {
+      "mean": 0.7222,
+      "std": 0.2546
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     121,
+     5,
+     3,
+     0
+    ],
+    [
+     6,
+     35,
+     3,
+     1
+    ],
+    [
+     0,
+     0,
+     27,
+     0
+    ],
+    [
+     0,
+     0,
+     2,
+     4
+    ]
+   ],
+   "val": {
+    "runs": [
+     {
+      "seed": 0,
+      "weights": "var/runs/siglip2_v3/ft_seed0_best.pt",
+      "val_accuracy": 0.8824,
+      "val_macro_f1": 0.812
+     },
+     {
+      "seed": 1,
+      "weights": "var/runs/siglip2_v3/ft_seed1_best.pt",
+      "val_accuracy": 0.8676,
+      "val_macro_f1": 0.8091
+     },
+     {
+      "seed": 2,
+      "weights": "var/runs/siglip2_v3/ft_seed2_best.pt",
+      "val_accuracy": 0.8971,
+      "val_macro_f1": 0.826
+     }
+    ],
+    "mean_val_macro_f1": 0.8157,
+    "mean_val_accuracy": 0.8824
+   },
+   "note": "last 4/27 encoder blocks + post_layernorm + attention-pool head + linear head"
+  },
+  {
+   "name": "ResNet-50 fine-tune",
+   "kind": "trained",
+   "key": "resnet",
+   "n_seeds": 3,
+   "acc": {
+    "mean": 0.657,
+    "std": 0.0509
+   },
+   "acc_ci": [
+    0.5362,
+    0.7536
+   ],
+   "mf1": {
+    "mean": 0.4976,
+    "std": 0.083
+   },
+   "mf1_ci": [
+    0.3567,
+    0.6839
+   ],
+   "mf1_3": {
+    "mean": 0.6304,
+    "std": 0.0341
+   },
+   "mf1_3_ci": [
+    0.4868,
+    0.7501
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 0.8705,
+      "std": 0.0294
+     },
+     "recall": {
+      "mean": 0.6667,
+      "std": 0.094
+     },
+     "f1": {
+      "mean": 0.752,
+      "std": 0.0554
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.5362,
+      "std": 0.1364
+     },
+     "recall": {
+      "mean": 0.6667,
+      "std": 0.0667
+     },
+     "f1": {
+      "mean": 0.5828,
+      "std": 0.0521
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.4195,
+      "std": 0.0472
+     },
+     "recall": {
+      "mean": 0.7037,
+      "std": 0.0641
+     },
+     "f1": {
+      "mean": 0.5224,
+      "std": 0.0228
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 0.1111,
+      "std": 0.1924
+     },
+     "recall": {
+      "mean": 0.1667,
+      "std": 0.2887
+     },
+     "f1": {
+      "mean": 0.1333,
+      "std": 0.2309
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     86,
+     23,
+     20,
+     0
+    ],
+    [
+     11,
+     30,
+     3,
+     1
+    ],
+    [
+     2,
+     5,
+     19,
+     1
+    ],
+    [
+     0,
+     1,
+     4,
+     1
+    ]
+   ],
+   "val": {
+    "runs": [
+     {
+      "seed": 0,
+      "weights": "var/runs/resnet50_v3/seed0_best.pt",
+      "val_accuracy": 0.7941,
+      "val_macro_f1": 0.7001
+     },
+     {
+      "seed": 1,
+      "weights": "var/runs/resnet50_v3/seed1_best.pt",
+      "val_accuracy": 0.7794,
+      "val_macro_f1": 0.6803
+     },
+     {
+      "seed": 2,
+      "weights": "var/runs/resnet50_v3/seed2_best.pt",
+      "val_accuracy": 0.7941,
+      "val_macro_f1": 0.7097
+     }
+    ],
+    "mean_val_macro_f1": 0.6967,
+    "mean_val_accuracy": 0.7892
+   },
+   "note": "same recipe as v1/v2"
+  },
+  {
+   "name": "YOLO11s-cls fine-tune",
+   "kind": "trained",
+   "key": "yolo-cls",
+   "n_seeds": 3,
+   "acc": {
+    "mean": 0.57,
+    "std": 0.0729
+   },
+   "acc_ci": [
+    0.3768,
+    0.6087
+   ],
+   "mf1": {
+    "mean": 0.3625,
+    "std": 0.0455
+   },
+   "mf1_ci": [
+    0.2126,
+    0.4834
+   ],
+   "mf1_3": {
+    "mean": 0.4937,
+    "std": 0.0648
+   },
+   "mf1_3_ci": [
+    0.2853,
+    0.5512
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 0.7186,
+      "std": 0.0482
+     },
+     "recall": {
+      "mean": 0.6977,
+      "std": 0.0805
+     },
+     "f1": {
+      "mean": 0.7075,
+      "std": 0.0642
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.3116,
+      "std": 0.1067
+     },
+     "recall": {
+      "mean": 0.4,
+      "std": 0.2404
+     },
+     "f1": {
+      "mean": 0.3447,
+      "std": 0.1604
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.5,
+      "std": 0.1667
+     },
+     "recall": {
+      "mean": 0.3704,
+      "std": 0.1698
+     },
+     "f1": {
+      "mean": 0.3976,
+      "std": 0.1114
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.0,
+      "std": 0.0
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     90,
+     31,
+     6,
+     2
+    ],
+    [
+     21,
+     18,
+     4,
+     2
+    ],
+    [
+     11,
+     5,
+     10,
+     1
+    ],
+    [
+     3,
+     1,
+     2,
+     0
+    ]
+   ],
+   "val": {
+    "runs": [
+     {
+      "seed": 0,
+      "weights": "var/runs/yolo11s_cls_v3_seed0/weights/best.pt",
+      "val_accuracy": 0.7647,
+      "val_macro_f1": 0.6339
+     },
+     {
+      "seed": 1,
+      "weights": "var/runs/yolo11s_cls_v3_seed1/weights/best.pt",
+      "val_accuracy": 0.7647,
+      "val_macro_f1": 0.6193
+     },
+     {
+      "seed": 2,
+      "weights": "var/runs/yolo11s_cls_v3_seed2/weights/best.pt",
+      "val_accuracy": 0.75,
+      "val_macro_f1": 0.4677
+     }
+    ],
+    "mean_val_macro_f1": 0.5736,
+    "mean_val_accuracy": 0.7598
+   },
+   "note": "Ultralytics defaults, no class weights"
+  },
+  {
+   "name": "YOLO11s detector (PRELIMINARY)",
+   "kind": "trained",
+   "key": "yolo_det",
+   "n_seeds": 1,
+   "acc": {
+    "mean": 0.7101,
+    "std": 0.0
+   },
+   "acc_ci": [
+    0.6087,
+    0.8116
+   ],
+   "mf1": {
+    "mean": 0.4843,
+    "std": 0.0
+   },
+   "mf1_ci": [
+    0.3799,
+    0.7138
+   ],
+   "mf1_3": {
+    "mean": 0.6618,
+    "std": 0.0
+   },
+   "mf1_3_ci": [
+    0.5139,
+    0.7811
+   ],
+   "per_class": {
+    "manual": {
+     "precision": {
+      "mean": 0.814,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.814,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.814,
+      "std": 0.0
+     }
+    },
+    "powered": {
+     "precision": {
+      "mean": 0.5714,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.5333,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.5517,
+      "std": 0.0
+     }
+    },
+    "other_aid": {
+     "precision": {
+      "mean": 0.5,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.6667,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.5714,
+      "std": 0.0
+     }
+    },
+    "ambiguous": {
+     "precision": {
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "recall": {
+      "mean": 0.0,
+      "std": 0.0
+     },
+     "f1": {
+      "mean": 0.0,
+      "std": 0.0
+     }
+    }
+   },
+   "cm_sum": [
+    [
+     35,
+     5,
+     3,
+     0,
+     0
+    ],
+    [
+     5,
+     8,
+     2,
+     0,
+     0
+    ],
+    [
+     3,
+     0,
+     6,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     1,
+     0,
+     0
+    ]
+   ],
+   "val": null,
+   "note": "image class = top box; box mAP50 0.304"
+  }
+ ],
+ "v2_reference": {
+  "SigLIP2 zero-shot": [
+   0.661,
+   0.44
+  ],
+  "YOLO-World v2-s zero-shot": [
+   0.431,
+   0.345
+  ],
+  "SigLIP2 linear probe": [
+   0.785,
+   0.557
+  ],
+  "SigLIP2 fine-tune (last 4 blocks)": [
+   0.877,
+   0.633
+  ],
+  "ResNet-50 fine-tune": [
+   0.764,
+   0.544
+  ],
+  "YOLO11s-cls fine-tune": [
+   0.769,
+   0.578
+  ],
+  "YOLO11s detector (PRELIMINARY)": [
+   0.677,
+   0.431
+  ]
+ },
+ "v2_v3_test_overlap": {
+  "v3_test_in_v2_test": 13,
+  "v3_test_in_v2_train_val": 51,
+  "v3_test_not_in_v2": 5
+ },
+ "gpu": {
+  "samples": 437,
+  "interval_s": 5,
+  "busy_samples": 274,
+  "max_temp_c": 73,
+  "mean_temp_busy_c": 52.2,
+  "max_power_w": 100.07,
+  "mean_sm_clock_busy_mhz": 1633.0,
+  "max_sm_clock_mhz": 3105.0,
+  "pct_busy_time_thermal_throttled": 0.0,
+  "pct_busy_time_power_capped": 12.77,
+  "pct_busy_time_hw_slowdown": 0.0,
+  "pct_busy_time_any_throttle": 12.77,
+  "reasons_seen_busy": {
+   "GpuIdle": 211,
+   "SwPowerCap": 35
+  },
+  "first_ts": "2026/10/28 22:15:51.821",
+  "last_ts": "2026/10/28 22:52:14.828",
+  "phases": [
+   {
+    "name": "leak_pre",
+    "start": "2026/10/28 22:15:51",
+    "end": "2026/10/28 22:16:41",
+    "rc": 0,
+    "busy_samples": 1,
+    "max_temp_c": 41,
+    "pct_thermal": 0.0,
+    "pct_power_cap": 0.0
+   },
+   {
+    "name": "resnet",
+    "start": "2026/10/28 22:16:41",
+    "end": "2026/10/28 22:21:02",
+    "rc": 0,
+    "busy_samples": 48,
+    "max_temp_c": 58,
+    "pct_thermal": 0.0,
+    "pct_power_cap": 0.0
+   },
+   {
+    "name": "siglip",
+    "start": "2026/10/28 22:21:03",
+    "end": "2026/10/28 22:28:34",
+    "rc": 0,
+    "busy_samples": 63,
+    "max_temp_c": 73,
+    "pct_thermal": 0.0,
+    "pct_power_cap": 55.56
+   },
+   {
+    "name": "yolo",
+    "start": "2026/10/28 22:28:34",
+    "end": "2026/10/28 22:50:53",
+    "rc": 0,
+    "busy_samples": 161,
+    "max_temp_c": 55,
+    "pct_thermal": 0.0,
+    "pct_power_cap": 0.0
+   },
+   {
+    "name": "leak_post",
+    "start": "2026/10/28 22:50:53",
+    "end": "2026/10/28 22:52:16",
+    "rc": 0,
+    "busy_samples": 1,
+    "max_temp_c": 43,
+    "pct_thermal": 0.0,
+    "pct_power_cap": 0.0
+   }
+  ],
+  "thermal_pauses_over_85c": [],
+  "power_plan": {
+   "during_run_ac": {
+    "SYSCOOLPOL": "1 (active cooling; already set)",
+    "PERFBOOSTMODE": "0 (CPU turbo off)",
+    "PROCTHROTTLEMAX": 99,
+    "STANDBYIDLE": "0 (never sleep)",
+    "runner": "SetThreadExecutionState(ES_SYSTEM_REQUIRED)"
+   },
+   "restored_after_from": "var/power_pre_v3.json"
+  }
+ }
+}
