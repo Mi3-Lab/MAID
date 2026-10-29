@@ -156,6 +156,43 @@ def image_status(img, per, adjv):
     out["status"] = st
     return out
 
+# ---------------------------------------------------------------- clean-set rule (the ONE definition)
+# Used by make_splits.collect (-> build_manifest), build_review and anything else that needs "the clean labeled set".
+# An image is in the clean set when at least one annotator marked it done and no done annotator excluded it, OR when
+# its exclude was adjudicated to keep ('' / none): the adjudication then overrides the labelers' excludes, except
+# (safety guard) when any labeler ever gave child or identifiable_person (always out), or license_concern and the
+# license audit has not cleared the image (status ok / ok_with_note).
+ALWAYS_OUT_REASONS = ("child", "identifiable_person")
+LICENSE_CLEARED = ("ok", "ok_with_note")
+
+def exclude_history(events, annotators=None):
+    """{image: set of every non-empty exclude reason ever recorded} (label and adjudication events, any annotator
+    unless `annotators` is given). Lets the safety guard see reasons a labeler later changed."""
+    h = defaultdict(set)
+    for e in events:
+        if e.get("kind") not in ("label", "adjudication") or e.get("field") != "exclude": continue
+        if annotators is not None and e.get("kind") == "label" and e.get("annotator") not in annotators: continue
+        v = canon("exclude", e.get("value"))
+        if isinstance(v, str) and v not in ("", "none"): h[e["image_id"]].add(v)
+    return h
+
+def clean_decision(img, per, adjv, annotators=None, history=None, license_status=None):
+    """(in_clean_set, why). `annotators` limits who counts (default: everyone in `per`); `history` is exclude_history();
+    `license_status` maps image -> license-audit status (only consulted for the license_concern guard)."""
+    anns = per.get(img, {})
+    done = sorted(a for a, fv in anns.items() if fv.get("_status") == "done" and (annotators is None or a in annotators))
+    if not done: return False, "not_done"
+    reasons = {anns[a]["exclude"] for a in done if anns[a].get("exclude") not in (None, "", "none")}
+    if not reasons: return True, "clean"
+    adj = adjv.get((img, "exclude"))
+    if adj is None or (adj[0] or "none") != "none": return False, "labeler_excluded"
+    reasons |= (history or {}).get(img, set())
+    hard = sorted(reasons & set(ALWAYS_OUT_REASONS))
+    if hard: return False, "kept_out_" + "+".join(hard)
+    if "license_concern" in reasons and (license_status or {}).get(img) not in LICENSE_CLEARED:
+        return False, "kept_out_license_concern_not_cleared"
+    return True, "adjudicated_keep"
+
 def cohen(pairs):
     n = len(pairs)
     if n == 0: return None

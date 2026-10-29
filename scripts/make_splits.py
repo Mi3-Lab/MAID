@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Build data/splits_v1.csv for the WheelView v1 baseline (image_id, split, label, creator).
 
-Clean set: images marked _status=done by a human labeler (samir/shaaz) where no labeler who marked it done set a
-non-empty `exclude`. Label = device_type (manual / powered / other_aid / ambiguous; `ambiguous` was `lookalike` before 2026-10-28,
+Clean set (wvcore.clean_decision, the one shared rule): images marked _status=done by a human labeler (samir/shaaz)
+where no labeler who marked it done set a non-empty `exclude`, or whose exclude was adjudicated to keep (''/none); the
+adjudication then overrides the labelers' excludes, except that an image any labeler gave child or identifiable_person
+stays out, and one with license_concern stays out unless the license audit cleared it (ok / ok_with_note). Label = device_type (manual / powered / other_aid / ambiguous; `ambiguous` was `lookalike` before 2026-10-28,
 old events are mapped by wvcore.canon) resolved with wvcore's
 consensus/adjudication rules; images with an unresolved conflict, `unclear`, or no device class are dropped.
 Images whose license audit status is needs_ross or exclude are dropped. face_blur_missed is ignored.
@@ -68,11 +70,16 @@ def collect(db, events, lic_arg=None, keep_excluded=False):
     if ap_.exists(): attr = {r["image_id"]: r for r in csv.DictReader(open(ap_, encoding="utf-8"))}
     evs, n_db, n_js = load_events(str(db), str(events))
     per, adj = wvcore.fold(evs)
-    drops = Counter(); rows = []; excluded = []
+    hist = wvcore.exclude_history(evs); lic_status = {k: r.get("status") for k, r in lic.items()}
+    drops = Counter(); rows = []; excluded = []; clean_why = {}
     for img in sorted(per):
         st = wvcore.image_status(img, per, adj)
         if not st["done"]: continue
-        if any(per[img][ann].get("exclude") for ann in st["done"]): continue   # labeler-excluded: not in clean set
+        ok, why = wvcore.clean_decision(img, per, adj, history=hist, license_status=lic_status)   # shared clean-set rule
+        if why.startswith("kept_out_"): drops[why] += 1
+        if not ok: continue
+        clean_why[img] = why
+        if why == "adjudicated_keep": drops["clean_set_adjudicated_keep"] += 1
         drops["clean_set"] += 1
         val, how, _ = st["fields"].get("device_type", ("", "missing", {}))
         L = lic.get(img)
@@ -92,7 +99,7 @@ def collect(db, events, lic_arg=None, keep_excluded=False):
         if L is None: drops["license_unchecked_kept"] += 1
         rows.append(row)
     info = {"license_file": lic_path.name, "events_used": len(evs), "events_from_db": n_db, "events_only_in_jsonl": n_js,
-            "_events": evs, "_adj": adj}
+            "_events": evs, "_adj": adj, "_clean_why": clean_why}
     return (rows, drops, info, excluded) if keep_excluded else (rows, drops, info)
 
 def assign(rows, seed, fracs, group_field="group", trials=3000, require_all=("test", "val")):

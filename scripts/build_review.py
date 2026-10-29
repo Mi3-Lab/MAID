@@ -62,14 +62,12 @@ def main():
     evs = [e for e in evs if e.get("annotator") in HUMANS or e.get("kind") == "adjudication"]
     per, adjv = wvcore.fold(evs)
 
-    clean = []
-    for i, anns in per.items():
-        done = [h for h in HUMANS if anns.get(h, {}).get("_status") == "done"]
-        if done and not any(anns[h].get("exclude") for h in done): clean.append(i)
-    clean.sort()
-
     D = ROOT / "data"
     lic = {r["image_id"]: r for r in csv.DictReader(open(D / "license_audit_v2.csv", encoding="utf-8"))}
+    hist = wvcore.exclude_history(evs, annotators=HUMANS)
+    lic_status = {k: r.get("status") for k, r in lic.items()}
+    clean = sorted(i for i in per if wvcore.clean_decision(i, per, adjv, annotators=HUMANS, history=hist,
+                                                           license_status=lic_status)[0])   # shared clean-set rule
     tri = {r["image_id"]: r for r in csv.DictReader(open(D / "v1_triage.csv", encoding="utf-8"))}
     blk = wvcore.load_blocklist_entries(str(D))
     attr = {r["image_id"]: r for r in csv.DictReader(open(ROOT / "derived" / "attributions.csv", encoding="utf-8"))}
@@ -117,7 +115,7 @@ def main():
         "with_warnings": sum(1 for x in items if x["warnings"]),
     }
     data = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "events_source": src,
-            "definition": "done by samir or shaaz; no labeler who marked it done excluded it; face_blur_missed ignored",
+            "definition": "done by samir or shaaz; no labeler who marked it done excluded it, or the exclude was adjudicated to keep (never for child / identifiable_person; license_concern only if the license audit cleared it); face_blur_missed ignored",
             "fields": FIELDS, "summary": summary, "items": items}
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as fh:

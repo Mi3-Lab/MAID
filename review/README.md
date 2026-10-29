@@ -1,6 +1,6 @@
 # WheelView offline review (lab members only)
 
-This folder is a review viewer for the current clean labeled set: every image Samir or Shaaz marked done and nobody excluded. It runs entirely on your own computer. You don't need a server, tunnel, access code, or internet connection, and nothing you do in it is uploaded anywhere.
+This folder is a review viewer for the current clean labeled set: every image Samir or Shaaz marked done and nobody excluded, plus images whose exclude was adjudicated to keep (never for child or identifiable_person; license_concern only after the license audit cleared it). It runs entirely on your own computer. You don't need a server, tunnel, access code, or internet connection, and nothing you do in it is uploaded anywhere.
 
 ## What you need
 
