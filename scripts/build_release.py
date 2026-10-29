@@ -264,10 +264,13 @@ def images(a):
     fixed, fp = apply_face_fix(M, out); rep["face_recheck_fixed"] = len(fixed)
     finish(a, M, hold, out, dict(rep), problems + fp)
 
+# Team-internal handoff documents kept in release/ for the repo but never shipped in the dataset folder or zip.
+INTERNAL = {"HANDOFF_TO_ROSS.md", "SUBMISSION_CHECKLIST.md"}
+
 def finish(a, M, hold, out, copied, problems):
     """Copy release/ metadata into the built folder (overwrites metadata files only; images untouched), verify, optionally zip."""
     for p in REL.rglob("*"):
-        if p.is_file() and "__pycache__" not in p.parts:
+        if p.is_file() and "__pycache__" not in p.parts and p.relative_to(REL).as_posix() not in INTERNAL:
             d = out / p.relative_to(REL); d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(p, d)
     bad = []
     for line in (out / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
@@ -284,7 +287,7 @@ def finish(a, M, hold, out, copied, problems):
         if z.exists(): sys.exit(f"{z} exists; move it aside first")
         with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
             for p in sorted(out.rglob("*")):
-                if p.is_file() and "__pycache__" not in p.parts:
+                if p.is_file() and "__pycache__" not in p.parts and p.relative_to(out).as_posix() not in INTERNAL:
                     zf.write(p, (Path(NAME) / p.relative_to(out)).as_posix(), compress_type=zipfile.ZIP_STORED if p.suffix == ".jpg" else zipfile.ZIP_DEFLATED)
         hz = hashlib.sha256(z.read_bytes()).hexdigest()
         Path(str(z) + ".sha256").write_text(f"{hz}  {z.name}\n", encoding="ascii")

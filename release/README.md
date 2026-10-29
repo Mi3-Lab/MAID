@@ -130,7 +130,7 @@ the test split is otherwise kept fixed across versions.
 * `occlusion` has near-chance agreement; `propulsion` has known inconsistencies (57 manual chairs marked
   `not_applicable`, 7 non-manual devices marked `self`/`attendant`). No baseline is reported for propulsion in v1.0.
 * Faces were blurred automatically (YuNet). A second YuNet pass over the final release copies flagged 235 detections
-  outside the blurred regions; a person reviewed all of them, and 7 were visible faces the first pass had missed (mostly
+  outside the blurred regions; each was inspected visually on contact sheets, and 7 were visible faces the first pass had missed (mostly
   side profiles). Those 7 regions were blurred in the release copies of 7 training images (`face_recheck.csv`). The
   rest were tiny background faces a few pixels wide, already-blurred regions, or non-faces. Automated detection can
   still miss faces (e.g. strong profiles or partly hidden faces); report any you find (contact below) and the image will

@@ -104,7 +104,7 @@ consent of the people shown; see the safeguards below.
 * **Face blurring.** Faces were detected with OpenCV YuNet (2023 model) at three scales and on the mirrored image,
   with a lower threshold for small faces, and each face region (padded) was pixelated and Gaussian-blurred:
   4,962 regions in 445 of the 464 images. A second YuNet pass over the final release copies flagged 235 detections
-  outside the blurred regions; a person reviewed all of them. 7 were visible faces the first pass had missed (mostly
+  outside the blurred regions; each was inspected visually on contact sheets. 7 were visible faces the first pass had missed (mostly
   side profiles); those regions were blurred in 7 training images (`face_recheck.csv`), for 4,969 blurred regions in total. License plates, house numbers
   and signs were not blurred.
 * **Resizing and metadata.** Longer side at most 640 px; JPEG re-encoded with no EXIF/ICC/XMP (so no GPS).
