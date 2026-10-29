@@ -152,7 +152,7 @@ def main():
                "v2_reference": v2, "v2_v3_test_overlap": ov, "gpu": g}, open(RES / "baseline_v3.json", "w"), indent=1)
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
     mets = [("acc", "accuracy"), ("mf1", "macro-F1"), ("mf1_3", "macro-F1\n(3 cls)")] + [(c, f"F1 {c}") for c in CLASSES]
-    fig, ax = plt.subplots(figsize=(13, 5), dpi=150); W = 0.8 / len(M); x = np.arange(len(mets))
+    fig, ax = plt.subplots(figsize=(13, 6), dpi=150); W = 0.8 / len(M); x = np.arange(len(mets))
     for j, m in enumerate(M):
         g_ = lambda k: m[k] if k in m else m["per_class"][k]["f1"]
         ax.bar(x + (j - (len(M) - 1) / 2) * W, [g_(k)["mean"] for k, _ in mets], W, yerr=[g_(k)["std"] for k, _ in mets], capsize=2,
@@ -160,7 +160,7 @@ def main():
     ax.axhline(maj, ls="--", c="gray", lw=0.8); ax.text(len(mets) - 0.5, maj + 0.01, "majority-class acc", fontsize=7, color="gray", ha="right")
     ax.set_xticks(x, [l for _, l in mets]); ax.set_ylim(0, 1.05); ax.set_ylabel("score on v3 test")
     ax.set_title(f"WheelView v3 test (n={N}): untrained (hatched) vs trained; error bars = sd over seeds\n* SigLIP2 zero-shot biased upward: labels were confirmed from its suggestions", fontsize=9)
-    ax.legend(fontsize=7, ncol=2, loc="upper right"); fig.tight_layout(); fig.savefig(RES / "baseline_v3_comparison.png"); plt.close(fig)
+    ax.legend(fontsize=7, ncol=4, loc="upper center", bbox_to_anchor=(0.5, -0.1)); fig.tight_layout(); fig.savefig(RES / "baseline_v3_comparison.png"); plt.close(fig)
     nc = 4; nr = int(np.ceil(len(M) / nc)); fig, axs = plt.subplots(nr, nc, figsize=(4 * nc, 3.8 * nr), dpi=130)
     for a_, m in zip(axs.flat, M):
         cm = np.asarray(m["cm_sum"]); cols = CLASSES + (["no box"] if cm.shape[1] > 4 else [])
