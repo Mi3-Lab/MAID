@@ -5,15 +5,15 @@
     "all_done_human_labels": {
      "accuracy": 0.7411,
      "confusion": {
-      "lookalike|lookalike": 11,
-      "lookalike|powered": 5,
+      "ambiguous|ambiguous": 11,
+      "ambiguous|powered": 5,
       "manual|manual": 271,
       "manual|other_aid": 11,
       "manual|powered": 74,
       "other_aid|manual": 8,
       "other_aid|other_aid": 18,
       "other_aid|powered": 36,
-      "powered|lookalike": 1,
+      "powered|ambiguous": 1,
       "powered|manual": 4,
       "powered|other_aid": 3,
       "powered|powered": 135,
@@ -41,15 +41,15 @@
     "reviewed": {
      "accuracy": 0.7297,
      "confusion": {
-      "lookalike|lookalike": 11,
-      "lookalike|powered": 5,
+      "ambiguous|ambiguous": 11,
+      "ambiguous|powered": 5,
       "manual|manual": 182,
       "manual|other_aid": 8,
       "manual|powered": 56,
       "other_aid|manual": 6,
       "other_aid|other_aid": 18,
       "other_aid|powered": 28,
-      "powered|lookalike": 1,
+      "powered|ambiguous": 1,
       "powered|manual": 4,
       "powered|powered": 94,
       "unclear|manual": 1,
@@ -61,7 +61,7 @@
     "vs_final_labels": {
      "accuracy": 0.8387,
      "confusion": {
-      "lookalike|powered": 2,
+      "ambiguous|powered": 2,
       "manual|manual": 64,
       "manual|other_aid": 2,
       "manual|powered": 8,
