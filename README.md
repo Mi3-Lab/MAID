@@ -1,4 +1,4 @@
-# WheelView Annotate
+# MAID Annotate
 
 An offline-first annotation and correction tool for the WheelView candidate pool (IEEE AgeTech Global Dataset
 Competition 2026, Track 3). It consists of:
