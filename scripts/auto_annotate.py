@@ -25,6 +25,11 @@ Usage:
   python scripts/auto_annotate.py --detect                 # also run OWLv2 boxes (≈2 s/image on CPU)
   python scripts/auto_annotate.py --score-only             # re-score from cache (e.g. after editing prompts)
   python scripts/auto_annotate.py --eval                   # model-vs-human agreement on derived/per_annotator_labels.csv
+  python scripts/auto_annotate.py --attr --score-only      # v1.1 attribute suggestions (control, environment, weather,
+                                                           # ground_wet, size_class) from the SAME embedding cache ->
+                                                           # annotations/auto/siglip2-so400m-224_attr-v1.jsonl
+v1.1 attribute suggestions are a separate machine source (model tag contains "_attr-"): the app shows them only in the
+Attributes pass, as hints; they are never written as labels and never selected as the review-mode model.
 """
 import argparse, csv, hashlib, io, json, os, sqlite3, sys, time
 from pathlib import Path
@@ -94,6 +99,52 @@ P = {
   "indoor": ["inside a building", "an indoor room or hallway", "inside a shop or office"],
   "other": ["in a park or garden", "on a beach or trail", "at a sports court", "on a stage or at an event",
             "a plain studio background"],
+ },
+}
+# ---------- v1.1 attribute prompts (separate tag; "unknown" is never suggested: it is the annotator's choice) ----------
+ATTR_PROMPT_VERSION = "attr-v1"
+ATTR_TAG = "siglip2-so400m-224_" + ATTR_PROMPT_VERSION
+P_V11 = {
+ "control": {
+  "joystick": ["a power wheelchair with a joystick control on the armrest", "a hand on the joystick of an electric wheelchair",
+               "a joystick controller box on a wheelchair armrest"],
+  "attendant_control": ["a caregiver steering a power wheelchair with an attendant control at the back",
+                        "a helper behind a wheelchair holding the push handles", "a person pushing someone in a wheelchair"],
+  "push_rims": ["hands on the push rims of a manual wheelchair wheel", "a person pushing the hand rims of their wheelchair",
+                "the metal hand rims on the large rear wheels of a wheelchair"],
+  "tiller": ["the handlebar tiller of a mobility scooter", "a person steering a mobility scooter with handlebars"],
+  "none_visible": ["a wheelchair where no controls or hand rims are visible", "a wheelchair photographed from far away",
+                   "a mobility device with its controls hidden"],
+ },
+ "environment": {
+  "indoor": ["inside a building", "an indoor room or hallway", "inside a shop, office or home"],
+  "sidewalk": ["a wheelchair on a sidewalk", "a pavement or footpath in a city street"],
+  "curbside": ["a wheelchair at the curb at the edge of the road", "a curb ramp at a street corner",
+               "waiting at the curb beside the street"],
+  "crosswalk_road": ["a wheelchair crossing the road at a crosswalk", "a wheelchair on the street among cars",
+                     "a zebra crossing with a wheelchair user"],
+  "vehicle_interior": ["inside a bus or van with a wheelchair", "a wheelchair secured inside a vehicle",
+                       "a wheelchair space inside a train or bus"],
+  "ramp_lift": ["a wheelchair on a vehicle ramp", "a wheelchair lift on a van or bus", "a wheelchair boarding a bus via a ramp"],
+  "parking_lot": ["a wheelchair in a parking lot", "a car park with parked cars", "an accessible parking space"],
+  "other_outdoor": ["in a park or garden", "on a beach, trail or grass", "at an outdoor sports court or event"],
+ },
+ "weather": {
+  "sunny_clear": ["a sunny day with clear blue sky", "bright sunshine and hard shadows outdoors"],
+  "overcast": ["an overcast cloudy grey day outdoors", "a dull cloudy sky with soft light"],
+  "rain": ["a rainy day with wet streets and umbrellas", "rain falling outdoors", "people with umbrellas in the rain"],
+  "snow": ["snow on the ground in winter", "a snowy street", "snow falling outdoors"],
+  "fog": ["a foggy misty day outdoors", "thick fog with low visibility"],
+  "night": ["a night-time street with streetlights", "outdoors at night in the dark"],
+  "indoor_na": ["inside a building", "an indoor room under artificial light"],
+ },
+ "ground_wet": {
+  "yes": ["a wet road surface with puddles", "wet shiny pavement after rain", "a puddle on the ground"],
+  "no": ["a dry road surface", "dry pavement on a sunny day", "a dry indoor floor"],
+ },
+ "size_class": {
+  "standard": ["a standard size wheelchair", "a typical folding wheelchair", "an ordinary power wheelchair"],
+  "wide": ["an extra wide heavy-duty wheelchair", "a very wide wheelchair with a broad seat", "a large wide power wheelchair"],
  },
 }
 SCREEN = {   # flag -> (positive prompts, negative prompts); score = P(positive) under a 2-way softmax
@@ -182,12 +233,14 @@ def text_bank(torch, m, p):
             t = torch.nn.functional.normalize(t, dim=-1); t = torch.nn.functional.normalize(t.mean(0), dim=-1)
         return t.numpy()
     bank = {f: {o: enc(ds) for o, ds in opts.items()} for f, opts in P.items()}
+    bank_v11 = {f: {o: enc(ds) for o, ds in opts.items()} for f, opts in P_V11.items()}
     scr = {k: (enc(pos), enc(neg)) for k, (pos, neg) in SCREEN.items()}
     scale = float(m.logit_scale.exp()) if hasattr(m, "logit_scale") else 100.0
-    return bank, scr, scale
+    return bank, scr, scale, bank_v11
 
 def prompts_for(field):
-    """P[field] keyed by canonical option names (e.g. prompt key 'lookalike' -> class 'ambiguous')."""
+    """P[field] (or P_V11[field]) keyed by canonical option names (e.g. prompt key 'lookalike' -> class 'ambiguous')."""
+    if field in P_V11: return dict(P_V11[field])
     return {wvcore.canon(field, o): ds for o, ds in P[field].items()}
 
 def softmax(z):
@@ -216,7 +269,7 @@ def score(E, bank, scr):
     for j, o in enumerate(pn): prop[:, names.index(o)] += pman * pp[:, j]
     prop[:, names.index("not_applicable")] += 1 - pman
     prob["propulsion"] = (names, prop)
-    for f in wvcore.FIELD_OPTS:
+    for f in wvcore.V10_FIELDS:   # v1.0 fields only (v1.1 attributes: score_attr, separate tag)
         names, pr = prob[f]; names = [wvcore.canon(f, n) for n in names]   # renamed options -> canonical names
         for i in range(len(E)):
             k = int(pr[i].argmax())
@@ -229,6 +282,42 @@ def score(E, bank, scr):
         s = {k: round(float(v[i]), 4) for k, v in scrs.items()}
         out[i] = {"suggestions": sug[i], "screening": s, "flags": [k for k, v in s.items() if v >= SCREEN_THRESH[k]]}
     return out
+
+def score_attr(E, bank_v11):
+    """v1.1 attribute suggestions: per field softmax over the prompted options (never 'unknown')."""
+    import numpy as np
+    sug = [dict() for _ in range(len(E))]
+    for f in wvcore.V11_FIELDS:
+        if f not in bank_v11: continue
+        names = list(bank_v11[f]); pr = softmax((E @ np.stack([bank_v11[f][o] for o in names]).T) / TEMP)
+        for i in range(len(E)):
+            k = int(pr[i].argmax())
+            sug[i][f] = {"value": names[k], "confidence": round(float(pr[i, k]), 4), "probs": {n: round(float(pr[i, j]), 4) for j, n in enumerate(names)}}
+    return [{"suggestions": s} for s in sug]
+
+def write_attr_output(c, cands, meta_extra, outdir=None):
+    import numpy as np, torch
+    from transformers import AutoModel, AutoProcessor
+    rows = [r for r in c.execute("SELECT image_id, sha1, emb FROM emb ORDER BY image_id").fetchall() if r[0] in cands]
+    m = AutoModel.from_pretrained(CLS_MODEL).eval(); p = AutoProcessor.from_pretrained(CLS_MODEL)
+    _, _, _, bank_v11 = text_bank(torch, m, p)
+    E = np.stack([np.frombuffer(r[2], dtype="float32") for r in rows]) if rows else np.zeros((0, 1))
+    res = score_attr(E, bank_v11) if rows else []
+    outdir = Path(outdir) if outdir else ROOT / "annotations" / "auto"; outdir.mkdir(parents=True, exist_ok=True)
+    fn = outdir / f"{ATTR_TAG}.jsonl"
+    with open(fn, "w", encoding="utf-8", newline="\n") as fh:
+        for (cid, h, _), r in zip(rows, res):
+            fh.write(json.dumps({"image_id": cid, "model_tag": ATTR_TAG, "image_sha1": h, **r}, sort_keys=True, separators=(",", ":")) + "\n")
+    meta = {"model_tag": ATTR_TAG, "kind": "machine_suggestions_v11_attributes", "never_counts_as_human_annotation": True,
+            "shown_in": "Attributes pass only, as hints; never bulk-accepted",
+            "classifier": {"model": CLS_MODEL, "revision": rev(CLS_MODEL), "license": CLS_LICENSE,
+                           "method": "zero-shot prompt ensemble, softmax at temperature %.3g; 'unknown' is never suggested" % TEMP},
+            "prompt_version": ATTR_PROMPT_VERSION, "prompts": P_V11, "images": len(rows), "generated_at": now(),
+            "accuracy": "not evaluated (no human v1.1 labels yet); see derived/auto_vs_human_v11.json once they exist", **meta_extra}
+    meta.pop("run", None)
+    json.dump(meta, open(outdir / f"{ATTR_TAG}.meta.json", "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
+    print(f"wrote {fn}: {len(rows)} images (v1.1 attribute suggestions)")
+    return fn
 
 def detect(todo, c, limit, threads):
     import torch
@@ -276,7 +365,7 @@ def write_output(c, cands, meta_extra):
     rows = [r for r in rows if r[0] in cands]
     dets = {r[0]: (r[1], json.loads(r[2])) for r in c.execute("SELECT image_id, sha1, boxes FROM det")}
     m = AutoModel.from_pretrained(CLS_MODEL).eval(); p = AutoProcessor.from_pretrained(CLS_MODEL)
-    bank, scr, _ = text_bank(torch, m, p)
+    bank, scr, _, _ = text_bank(torch, m, p)
     E = np.stack([np.frombuffer(r[2], dtype="float32") for r in rows]) if rows else np.zeros((0, 1))
     res = score(E, bank, scr) if rows else []
     outdir = ROOT / "annotations" / "auto"; outdir.mkdir(parents=True, exist_ok=True)
@@ -334,9 +423,15 @@ if __name__ == "__main__":
     ap.add_argument("--detect-classes", default="wheelchair,other_aid", help="proposed_class substrings to run the detector on ('' = all)")
     ap.add_argument("--score-only", action="store_true")
     ap.add_argument("--eval", action="store_true")
+    ap.add_argument("--attr", action="store_true", help="write v1.1 attribute suggestions (separate _attr- tag) instead of the v1.0 file")
+    ap.add_argument("--out-dir", default=None, help="--attr output directory (default annotations/auto; use a scratch dir for tests)")
+    ap.add_argument("--contributed", default=ROOT / "data" / "contributed.csv")
+    ap.add_argument("--with-contributed", action="store_true", help="also embed/score contributed images (always on with --attr)")
     a = ap.parse_args()
     if a.eval: evaluate(); sys.exit(0)
     cands = wvcore.load_candidates(a.candidates)
+    if a.attr or a.with_contributed:   # opt-in for the v1.0 file so the existing suggestion file only changes when asked
+        for k, r in wvcore.load_contributed(str(a.contributed)).items(): cands.setdefault(k, r)
     c = cache(MODEL_TAG)
     have = {r[0]: r[1] for r in c.execute("SELECT image_id, sha1 FROM emb")}
     hdet = {r[0]: r[1] for r in c.execute("SELECT image_id, sha1 FROM det")}
@@ -357,6 +452,7 @@ if __name__ == "__main__":
         run.update(detected=n, detect_seconds=round(el, 1))
     run["finished"] = now()
     remaining = len([t for t in avail if have.get(t[0]) != t[2]]) if a.score_only else None
-    write_output(c, cands, {"run": run})
+    if a.attr: write_attr_output(c, cands, {"run": run}, a.out_dir)
+    else: write_output(c, cands, {"run": run})
     left = sum(1 for t in avail if (c.execute("SELECT sha1 FROM emb WHERE image_id=?", (t[0],)).fetchone() or [None])[0] != t[2])
     print(f"{left} locally available images still need embedding" + (" -> re-run the same command to resume" if left else ""))

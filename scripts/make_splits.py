@@ -69,6 +69,9 @@ def collect(db, events, lic_arg=None, keep_excluded=False):
     attr = {}
     ap_ = ROOT / "derived" / "attributions.csv"
     if ap_.exists(): attr = {r["image_id"]: r for r in csv.DictReader(open(ap_, encoding="utf-8"))}
+    # v1.1: contributed (own, open-licensed) images carry creator/license in data/contributed.csv. No-op for v1.0 ids.
+    contrib = wvcore.load_contributed(str(ROOT / "data" / "contributed.csv"))
+    for k, r in contrib.items(): attr.setdefault(k, {"image_id": k, "creator": r.get("creator", ""), "license": r.get("license", ""), "source_url": ""})
     evs, n_db, n_js = load_events(str(db), str(events))
     per, adj = wvcore.fold(evs)
     hist = wvcore.exclude_history(evs); lic_status = {k: r.get("status") for k, r in lic.items()}

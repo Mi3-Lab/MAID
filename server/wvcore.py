@@ -6,8 +6,14 @@ from itertools import combinations
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
-FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}
-COMPARE = [f["name"] for f in SCHEMA["fields"] if f.get("compare")] + ["exclude"]
+FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}   # every field (v1.0 + v1.1): used for validation
+# v1.0 fields (no "since") keep their exact v1.0 behaviour: status, consensus, kappa, labels.csv, per_annotator_labels.csv.
+# v1.1 attribute fields ("since": "1.1") are resolved separately (image_status_v11, labels_v11.csv) so labelling them can
+# never re-open, re-assign or change a v1.0 image or any v1.0 derived file.
+V10_FIELDS = [f["name"] for f in SCHEMA["fields"] if not f.get("since")]
+V11_FIELDS = [f["name"] for f in SCHEMA["fields"] if f.get("since") == "1.1"]
+COMPARE = [f["name"] for f in SCHEMA["fields"] if f.get("compare") is True and not f.get("since")] + ["exclude"]
+COMPARE_V11 = [f["name"] for f in SCHEMA["fields"] if f.get("since") == "1.1" and f.get("compare")]
 # Renamed values: {field: {historical value: canonical value}} (schema.json "value_aliases"; e.g. device_type
 # 'lookalike' -> 'ambiguous', renamed 2026-10-28). The event log is append-only and is NEVER rewritten: old events
 # keep the value they were recorded with, and every reader maps it through canon() (fold() does this for all
@@ -39,13 +45,13 @@ def canon_keys(obj, field="device_type"):
 def canon_class(value):
     """Canonical device class name (e.g. 'lookalike' -> 'ambiguous'); other values unchanged."""
     return canon("device_type", value)
-ALL_FIELDS = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status"]
+ALL_FIELDS = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status", "_status_v11"]
 EVENT_KEYS = ["uuid", "image_id", "annotator", "field", "value", "ts", "device_id", "kind"]
 # Optional provenance on HUMAN events made in review mode ("model-suggested, human-confirmed/corrected").
 # source: "auto_review"; model_tag: which machine suggestion file; suggested: the model's value for this field (or null);
 # confidence: the model's confidence for that value. Absent on ordinary events (old lines stay byte-identical).
 PROV_KEYS = ["source", "model_tag", "suggested", "confidence"]
-PROV_SOURCES = ("auto_review",)
+PROV_SOURCES = ("auto_review", "auto_attr")   # auto_attr: v1.1 attribute pass, human clicked a field while its suggestion was shown
 TAG_RE = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
 UUID_RE = re.compile(r"^[0-9a-fA-F-]{8,64}$")
 ID_RE = re.compile(r"^wv_\d{6}$")
@@ -85,11 +91,11 @@ def validate(ev):
     elif f == "bbox":
         if not (isinstance(v, list) and all(isinstance(b, list) and len(b) == 4 and all(isinstance(x, (int, float)) and -0.01 <= x <= 1.01 for x in b) for b in v)):
             return None, "bad bbox"
-    elif f == "_status":
-        if v not in ("done", "todo"): return None, "bad _status"
+    elif f in ("_status", "_status_v11"):
+        if v not in ("done", "todo"): return None, f"bad {f}"
     else:
         return None, "unknown field"
-    if e["kind"] == "adjudication" and f not in COMPARE + ["face_blur_missed"]: return None, "field not adjudicable"
+    if e["kind"] == "adjudication" and f not in COMPARE + COMPARE_V11 + ["face_blur_missed"]: return None, "field not adjudicable"
     if ev.get("source") is not None or ev.get("model_tag") is not None:
         if ev.get("source") not in PROV_SOURCES: return None, "bad source"
         if not isinstance(ev.get("model_tag"), str) or not TAG_RE.match(ev["model_tag"]): return None, "bad model_tag"
@@ -155,6 +161,51 @@ def image_status(img, per, adjv):
     else: st = "final"
     out["status"] = st
     return out
+
+def image_status_v11(img, per, adjv):
+    """v1.1 attribute-pass resolution, same consensus rules as image_status but over COMPARE_V11 and the annotators whose
+    _status_v11 is 'done'. Independent of the v1.0 status (an image can be v1.0-final and v1.1-unlabelled)."""
+    anns = per.get(img, {})
+    done = sorted(a for a, fv in anns.items() if fv.get("_status_v11") == "done")
+    out = {"done": done, "fields": {}, "conflicts": []}
+    for f in COMPARE_V11:
+        vals = {a: anns[a].get(f) for a in done if anns[a].get(f) is not None}
+        if (img, f) in adjv:
+            out["fields"][f] = (adjv[(img, f)][0], "adjudicated", vals); continue
+        if len(vals) < 2:
+            out["fields"][f] = (next(iter(vals.values())) if vals else "", "single" if vals else "missing", vals); continue
+        c = Counter(vals.values()); top, n = c.most_common(1)[0]
+        if n == len(vals): out["fields"][f] = (top, "consensus", vals)
+        elif len(vals) >= 3 and n > len(vals) / 2: out["fields"][f] = (top, "majority", vals)
+        else: out["fields"][f] = ("", "conflict", vals); out["conflicts"].append(f)
+    nd = len(done); base = SCHEMA.get("annotators_per_image_v11", SCHEMA["annotators_per_image"])
+    touched = any(f in anns[a] for a in anns for f in COMPARE_V11 + ["_status_v11"])
+    if nd < base: st = "in_progress" if touched else "unlabelled"
+    elif out["conflicts"]: st = "needs_third_annotator" if nd < SCHEMA["max_annotators_per_image"] else "needs_adjudication"
+    else: st = "final"
+    out["status"] = st
+    return out
+
+def has_v11(events):
+    return any(e.get("field") in COMPARE_V11 + ["_status_v11"] for e in events)
+
+def kappa_fields(per, fields, status_key):
+    """kappa() for an arbitrary field list / done flag (used for v1.1 fields)."""
+    res = {}
+    for f in fields:
+        pooled, pair = [], defaultdict(list)
+        for img, anns in per.items():
+            done = sorted(a for a, fv in anns.items() if fv.get(status_key) == "done")
+            vals = {a: anns[a].get(f) for a in done if anns[a].get(f) is not None}
+            ks = sorted(vals)
+            if len(ks) >= 2: pooled.append((vals[ks[0]], vals[ks[1]]))
+            for a, b in combinations(ks, 2): pair[(a, b)].append((vals[a], vals[b]))
+        res[f] = {"pooled_kappa": cohen(pooled), "n_items": len(pooled),
+                  "pairwise": {f"{a}|{b}": {"kappa": cohen(p), "n": len(p)} for (a, b), p in sorted(pair.items()) if len(p) >= 5}}
+    return res
+
+ATTR_TAG_MARK = "_attr-"   # annotations/auto/<model>_attr-vN.jsonl: v1.1 attribute suggestions (never the review-mode default)
+def is_attr_tag(tag): return ATTR_TAG_MARK in (tag or "")
 
 # ---------------------------------------------------------------- clean-set rule (the ONE definition)
 # Used by make_splits.collect (-> build_manifest), build_review and anything else that needs "the clean labeled set".
@@ -262,6 +313,19 @@ def load_candidates(path):
     with open(path, newline="", encoding="utf-8") as fh:
         return {r["candidate_id"]: r for r in csv.DictReader(fh)}
 
+CONTRIB_ID_MIN = 900001   # contributed (own) images: wv_900001 ... (separate range, never reused by the web candidates)
+def load_contributed(path):
+    """data/contributed.csv (scripts/import_contributed.py) -> candidate-like rows keyed by image_id. Missing file = {}."""
+    if not path or not os.path.exists(path): return {}
+    with open(path, newline="", encoding="utf-8") as fh:
+        out = {}
+        for r in csv.DictReader(fh):
+            if not ID_RE.match(r.get("image_id", "")) or r.get("status", "active") != "active": continue
+            out[r["image_id"]] = r | {"candidate_id": r["image_id"], "source": "contributed", "proposed_class": r.get("proposed_class", ""),
+                                      "needs_visual_screen": "yes" if r.get("identifiable_people") == "yes" else "no",
+                                      "screen_reasons": "contributed: identifiable people, consent " + r.get("consent", "") if r.get("identifiable_people") == "yes" else ""}
+        return out
+
 def materialize(events, cands, outdir, auto=None, blocked=None):
     """Blocked ids (data/removed_*.txt) are dropped from events, candidates and machine suggestions first. Write labels.csv, per_annotator_labels.csv, adjudication_needed.csv, kappa.json, progress.json
     (+ auto_vs_human.json when machine suggestions are given). Machine suggestions NEVER enter labels/kappa:
@@ -283,7 +347,7 @@ def materialize(events, cands, outdir, auto=None, blocked=None):
             w.writerow([i, s["status"], len(s["done"]), ";".join(s["done"])] + [x for f in COMPARE for x in s["fields"][f][:2]] +
                        [s["face_blur_missed"], c.get("proposed_class", ""), c.get("source", ""), c.get("license", ""), c.get("source_page_url", "")])
     with open(os.path.join(outdir, "per_annotator_labels.csv"), "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh); fl = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status"]
+        w = csv.writer(fh); fl = list(V10_FIELDS) + ["exclude", "face_blur_missed", "bbox", "_status"]
         w.writerow(["image_id", "annotator"] + fl)
         for i in imgs:
             for a, fv in sorted(per.get(i, {}).items()):
@@ -297,10 +361,52 @@ def materialize(events, cands, outdir, auto=None, blocked=None):
     json.dump(k, open(os.path.join(outdir, "kappa.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
     prog = progress(events, cands, stat)
     if auto is not None:
-        json.dump(auto_agreement(per, auto, events, stat), open(os.path.join(outdir, "auto_vs_human.json"), "w", encoding="utf-8", newline="\n"),
+        a10 = {t: r for t, r in auto.items() if not is_attr_tag(t)}
+        json.dump(auto_agreement(per, a10, events, stat), open(os.path.join(outdir, "auto_vs_human.json"), "w", encoding="utf-8", newline="\n"),
                   indent=1, sort_keys=True)
+    if has_v11(events):   # v1.1 outputs only once v1.1 labelling has started (v1.0 derived files stay byte-identical)
+        materialize_v11(events, per, adjv, cands, outdir, auto)
     json.dump(prog, open(os.path.join(outdir, "progress.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
     return stat, k, prog
+
+def materialize_v11(events, per, adjv, cands, outdir, auto=None):
+    """derived/labels_v11.csv, per_annotator_labels_v11.csv, adjudication_needed_v11.csv, kappa_v11.json (+ auto_vs_human_v11.json)."""
+    imgs = sorted(i for i in set(per) | {k[0] for k in adjv} if any(f in fv for fv in per.get(i, {}).values() for f in COMPARE_V11 + ["_status_v11"]))
+    st = {i: image_status_v11(i, per, adjv) for i in imgs}
+    with open(os.path.join(outdir, "labels_v11.csv"), "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["image_id", "status_v11", "n_done_v11", "annotators_v11"] + [x for f in COMPARE_V11 for x in (f, f + "_agreement")] + ["source"])
+        for i in imgs:
+            s = st[i]
+            w.writerow([i, s["status"], len(s["done"]), ";".join(s["done"])] + [x for f in COMPARE_V11 for x in s["fields"][f][:2]] + [cands.get(i, {}).get("source", "")])
+    with open(os.path.join(outdir, "per_annotator_labels_v11.csv"), "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh); fl = list(V11_FIELDS) + ["_status_v11"]; w.writerow(["image_id", "annotator"] + fl)
+        for i in imgs:
+            for a, fv in sorted(per.get(i, {}).items()):
+                if any(f in fv for f in fl): w.writerow([i, a] + [fv.get(f, "") for f in fl])
+    with open(os.path.join(outdir, "adjudication_needed_v11.csv"), "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh); w.writerow(["image_id", "status_v11", "field", "values_by_annotator"])
+        for i in imgs:
+            for f in st[i]["conflicts"]: w.writerow([i, st[i]["status"], f, json.dumps(st[i]["fields"][f][2], sort_keys=True)])
+    json.dump(kappa_fields(per, COMPARE_V11, "_status_v11"), open(os.path.join(outdir, "kappa_v11.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
+    if auto:
+        a11 = {t: r for t, r in auto.items() if is_attr_tag(t)}
+        if a11:
+            res = {}
+            for tag, recs in sorted(a11.items()):
+                r = {"images_with_suggestions": len(recs), "fields": {}}
+                for f in V11_FIELDS:
+                    allp, fin = [], []
+                    for img, anns in per.items():
+                        sg = (recs.get(img) or {}).get("suggestions", {}).get(f)
+                        if not sg: continue
+                        for a, fv in anns.items():
+                            if fv.get("_status_v11") == "done" and fv.get(f) is not None: allp.append((fv[f], sg["value"]))
+                        if img in st and st[img]["fields"][f][1] in ("consensus", "majority", "adjudicated"): fin.append((st[img]["fields"][f][0], sg["value"]))
+                    r["fields"][f] = {"all_done_human_labels": _agree(allp), "vs_final_labels": _agree(fin)}
+                res[tag] = r
+            json.dump(res, open(os.path.join(outdir, "auto_vs_human_v11.json"), "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
+    return st
 
 def progress(events, cands, stat):
     by_ann = Counter(); done_by_ann = Counter(); rev_by_ann = Counter()
@@ -363,11 +469,11 @@ def auto_agreement(per, auto, events=None, stat=None):
             reviewed.add((e["image_id"], e["annotator"], e.get("model_tag")))
     fl = {}
     for e in sorted(events or [], key=lambda e: (e["ts"], e["uuid"])):   # latest prov per (img, ann, field)
-        if e.get("source") == "auto_review" and e["field"] in FIELD_OPTS: fl[(e["image_id"], e["annotator"], e["field"])] = e
+        if e.get("source") == "auto_review" and e["field"] in V10_FIELDS: fl[(e["image_id"], e["annotator"], e["field"])] = e
     res = {}
     for tag, recs in sorted(auto.items()):
         r = {"images_with_suggestions": len(recs), "fields": {}, "screening": {}}
-        for f in FIELD_OPTS:
+        for f in V10_FIELDS:
             allp, ind, rev, fin = [], [], [], []
             for img, anns in per.items():
                 if img not in recs or f not in recs[img]["suggestions"]: continue

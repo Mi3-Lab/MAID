@@ -1,7 +1,7 @@
 'use strict';
 // ---------- IndexedDB (stores: kv, images, events) ----------
 const DBP = new Promise((res, rej) => {
-  const r = indexedDB.open('wheelview', 2);
+  const r = indexedDB.open('wheelview', 3);
   r.onupgradeneeded = ev0 => {
     const d = r.result;
     if (ev0.oldVersion < 1) {
@@ -11,6 +11,7 @@ const DBP = new Promise((res, rej) => {
       ev.createIndex('synced', 'synced'); ev.createIndex('image_id', 'image_id');
     }
     if (ev0.oldVersion < 2) d.createObjectStore('auto', { keyPath: 'image_id' });   // machine suggestions, cached with review batches
+    if (ev0.oldVersion < 3) d.createObjectStore('auto11', { keyPath: 'image_id' }); // v1.1 attribute suggestions (Attributes pass)
   };
   r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
 });
@@ -29,7 +30,7 @@ const allOf = store => tx(store, 'readonly', s => req(s.getAll()));
 
 // ---------- state ----------
 const S = { schema: null, annotator: null, device: null, images: [], idx: 0, mine: {}, row: 0, exclMode: false, bboxMode: false, syncing: false,
-  mode: 'label', order: 'lowconf', auto: {}, armed: null, faces: true };   // faces: show the blur detector's face boxes (review mode)   // mode: 'label' | 'review' (Review auto labels)
+  mode: 'label', order: 'lowconf', auto: {}, auto11: {}, armed: null, faces: true };   // mode 'attr': v1.1 Attributes pass   // faces: show the blur detector's face boxes (review mode)   // mode: 'label' | 'review' (Review auto labels)
 const RISK = { child: 'likely child', clinical_setting: 'likely clinical setting', not_a_photo: 'likely not a photo' };   // need a 2nd 'a' press
 const $ = id => document.getElementById(id);
 const _fetch = window.fetch.bind(window);
@@ -52,8 +53,16 @@ function foldMine(events) {   // latest value per (image, field) for this annota
 }
 async function refreshMine() { S.mine = foldMine(await allOf('events')); }
 const val = (img, f) => S.mine[img]?.[f]?.v;
+// v1.0 fields (label/review modes, unchanged) vs v1.1 attribute fields (Attributes pass only; separate done flag)
+const FL = () => S.schema.fields.filter(f => S.mode === 'attr' ? f.since === '1.1' : !f.since);
+const STATUS = () => S.mode === 'attr' ? '_status_v11' : '_status';
+const ORDK = { label: 'order', review: 'rorder', attr: 'aorder' };
 
 function prov(image_id, field) {   // review mode: every human edit carries "model-suggested" provenance
+  if (S.mode === 'attr') {          // Attributes pass: record what the hint said when the human chose a value
+    const a = S.auto11[image_id], sg = a?.suggestions?.[field]; if (!sg) return {};
+    return { source: 'auto_attr', model_tag: a.model_tag, suggested: sg.value, confidence: sg.confidence };
+  }
   const a = S.mode === 'review' && S.auto[image_id]; if (!a) return {};
   let sv = null, cf = null;
   if (a.suggestions?.[field]) { sv = canon(field, a.suggestions[field].value); cf = a.suggestions[field].confidence; }
@@ -88,17 +97,18 @@ async function sync() {
       const bad = new Map(j.rejected.map(x => [x.uuid, x.reason]));
       await tx('events', 'readwrite', s => { for (const e of q.slice(i, i + 500)) { if (ok.has(e.uuid)) s.put({ ...e, synced: 1 }); else if (bad.has(e.uuid)) s.put({ ...e, synced: -1, error: bad.get(e.uuid) }); } });
     }
-    let since = (await kvGet('last_seq_' + S.annotator)) || 0, newImgs = new Set();
+    let since = (await kvGet('last_seq_' + S.annotator)) || 0, newImgs = new Map();
+    const v11f = new Set(S.schema.fields.filter(f => f.since === '1.1').map(f => f.name).concat(['_status_v11']));
     for (;;) {
       const r = await fetch(`/api/events?annotator=${encodeURIComponent(S.annotator)}&since=${since}`);
       if (!r.ok) throw new Error('pull ' + r.status);
       const j = await r.json(); if (!j.events.length) break;
       await tx('events', 'readwrite', s => { for (const { seq, ...e } of j.events) s.put({ ...e, synced: 1 }); });
-      j.events.forEach(e => newImgs.add(e.image_id)); since = j.max_seq; await kvSet('last_seq_' + S.annotator, since);
+      j.events.forEach(e => newImgs.set(e.image_id, (newImgs.get(e.image_id) ?? true) && v11f.has(e.field))); since = j.max_seq; await kvSet('last_seq_' + S.annotator, since);
     }
     const known = new Set(S.images.map(i => i.image_id));
-    for (const id of newImgs) if (!known.has(id)) {      // labelled on another device -> make it correctable here
-      const r = await fetch('/api/images/' + id); if (r.ok) { const m = await r.json(); await addImages([m]); }
+    for (const [id, attrOnly] of newImgs) if (!known.has(id)) {      // labelled on another device -> make it correctable here
+      const r = await fetch('/api/images/' + id); if (r.ok) { const m = await r.json(); await addImages([m], attrOnly ? 'attr' : 'label'); }
     }
     await refreshMine(); render();
     $('net').title = 'last sync ' + new Date().toLocaleTimeString();
@@ -110,28 +120,45 @@ window.addEventListener('offline', setNet);
 setInterval(() => { if (navigator.onLine) sync(); }, 15000);   // periodic retry
 
 // ---------- batch ----------
-async function addImages(list, review = false) {
+async function addImages(list, mode = 'label') {
+  if (mode === true) mode = 'review';
+  const k = ORDK[mode] || 'order';
   const have = new Map((await allOf('images')).map(h => [h.image_id, h]));
-  let ord = Math.max(-1, ...[...have.values()].map(h => h.order ?? -1)) + 1, rord = Math.max(-1, ...[...have.values()].map(h => h.rorder ?? -1)) + 1;
+  let ord = Math.max(-1, ...[...have.values()].map(h => h[k] ?? -1)) + 1;
   await tx('images', 'readwrite', s => {
-    for (const { auto, ...m } of list) {
+    for (const { auto, auto11, ...m } of list) {
       const h = have.get(m.image_id);
       // existing records get fresh metadata (e.g. a face-blurred copy now exists) but keep their queue positions
-      if (!h) s.put({ ...m, annotator: S.annotator, ...(review ? { rorder: rord++ } : { order: ord++ }) });
-      else s.put({ ...h, ...m, ...(review ? { rorder: h.rorder ?? rord++ } : { order: h.order ?? ord++ }) });
+      if (!h) s.put({ ...m, annotator: S.annotator, [k]: ord++ });
+      else s.put({ ...h, ...m, [k]: h[k] ?? ord++ });
     }
   });
-  if (review) await tx('auto', 'readwrite', s => { for (const m of list) if (m.auto) s.put(m.auto); });
+  if (mode === 'review') await tx('auto', 'readwrite', s => { for (const m of list) if (m.auto) s.put(m.auto); });
+  if (mode === 'attr') await tx('auto11', 'readwrite', s => { for (const m of list) if (m.auto11) s.put(m.auto11); });
   await loadImages();
   if ('caches' in window) { const c = await caches.open('wv-img-v2'); for (const m of list) { try { if (!(await c.match(m.img))) await c.add(m.img); } catch (e) { } } }
 }
 async function loadImages() {
-  const k = S.mode === 'review' ? 'rorder' : 'order';
+  const k = ORDK[S.mode] || 'order';
   S.images = (await allOf('images')).filter(i => i.annotator === S.annotator && i[k] !== undefined).sort((a, b) => a[k] - b[k]);
   if (S.mode === 'review') { S.auto = {}; for (const a of await allOf('auto')) S.auto[a.image_id] = a; }
+  if (S.mode === 'attr') { S.auto11 = {}; for (const a of await allOf('auto11')) S.auto11[a.image_id] = a; }
+}
+async function getAttrBatch() {
+  $('btnBatch').disabled = true;
+  try {
+    const r = await fetch(`/api/attr/assign?annotator=${encodeURIComponent(S.annotator)}&n=30`);
+    if (r.status === 404) { alert('This server has no Attributes pass yet (it needs the v1.1 update and a restart).'); $('btnBatch').disabled = false; return; }
+    if (r.status === 503) { alert((await r.json()).detail); $('btnBatch').disabled = false; return; }
+    if (!r.ok) throw new Error(r.status); const j = await r.json();
+    if (!j.images.length) alert('No images need v1.1 attributes from you right now (images enter this pass after their v1.0 labels).');
+    await addImages(j.images, 'attr'); firstOpen(); render();
+  } catch (e) { alert('Could not fetch an attributes batch (offline?). You can keep labelling what is already cached.'); }
+  $('btnBatch').disabled = false;
 }
 async function getBatch() {
   if (S.mode === 'review') return getReviewBatch();
+  if (S.mode === 'attr') return getAttrBatch();
   $('btnBatch').disabled = true;
   try {
     const r = await fetch(`/api/assign?annotator=${encodeURIComponent(S.annotator)}&n=30`);
@@ -153,7 +180,7 @@ async function getReviewBatch() {
   } catch (e) { alert('Could not fetch a review batch (offline?). You can keep reviewing what is already cached.'); }
   $('btnBatch').disabled = false;
 }
-const isDone = id => val(id, '_status') === 'done';
+const isDone = id => val(id, STATUS()) === 'done';
 function firstOpen() { const i = S.images.findIndex(m => !isDone(m.image_id)); S.idx = i < 0 ? Math.min(S.idx, Math.max(0, S.images.length - 1)) : i; }
 function hashKey(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; }
 async function reorder() {   // re-sort the cached, not-yet-done review queue by the chosen order (done ones stay first)
@@ -167,41 +194,46 @@ async function reorder() {   // re-sort the cached, not-yet-done review queue by
 }
 async function setMode(m) {
   S.mode = m; S.images = []; S.idx = 0; S.exclMode = false; S.armed = null; await kvSet('mode', m);
-  document.body.classList.toggle('review', m === 'review');
+  document.body.classList.toggle('review', m === 'review'); document.body.classList.toggle('attr', m === 'attr');
   $('btnReview').classList.toggle('primary', m === 'review'); $('btnReview').textContent = m === 'review' ? 'Review auto labels: ON' : 'Review auto labels';
-  $('rorder').hidden = m !== 'review';
+  $('btnAttr').classList.toggle('primary', m === 'attr'); $('btnAttr').textContent = m === 'attr' ? 'Attributes v1.1: ON' : 'Attributes v1.1';
+  $('rorder').hidden = m !== 'review'; S.row = 0;
   await loadImages();
   if (m === 'review') { firstOpen(); if (!S.images.length && navigator.onLine) await getReviewBatch(); }
+  if (m === 'attr') { firstOpen(); if (!S.images.length && navigator.onLine) await getAttrBatch(); }
   render();
 }
 
 // ---------- rendering ----------
 const cur = () => S.images[S.idx];
-function autoSug(img, f) { const s = S.mode === 'review' ? S.auto[img.image_id]?.suggestions?.[f] : null; return s ? { ...s, value: canon(f, s.value) } : s; }
+function autoSug(img, f) { const s = S.mode === 'review' ? S.auto[img.image_id]?.suggestions?.[f] : S.mode === 'attr' ? S.auto11[img.image_id]?.suggestions?.[f] : null; return s ? { ...s, value: canon(f, s.value) } : s; }
 function suggestion(img, f) {
-  if (S.mode === 'review') return autoSug(img, f)?.value ?? null;
+  if (S.mode === 'review' || S.mode === 'attr') return autoSug(img, f)?.value ?? null;   // attr: a hint only, never saved by Done
   return S.schema.prefill[img.proposed_class]?.[f] ?? null;
 }
 const pct = c => Math.round((c || 0) * 100) + '%';
 // suggest "face blur missed" only when the classifier sees a face that the blur pass did not cover (or no blurred copy exists)
 function missSug(im) { const A = S.auto[im.image_id]; return !!A && (A.flags || []).includes('visible_face') && !(im.blurred && (im.faces || []).length); }
-function rows() { return [...S.schema.fields.map(f => f.name)]; }
+function rows() { return FL().map(f => f.name); }
 function render() {
   if (!S.images.length) { $('pos').textContent = 'No images yet — press "Get batch".'; $('fields').innerHTML = ''; $('img').removeAttribute('src'); return; }
   const im = cur(); const id = im.image_id;
   if ($('img').dataset.id !== id) { $('img').dataset.id = id; $('img').src = im.img; }
-  const done = val(id, '_status') === 'done', A = S.mode === 'review' ? S.auto[id] : null;
-  $('pos').innerHTML = `${S.mode === 'review' ? '<span class="tag ai">REVIEW</span> ' : ''}${S.idx + 1} / ${S.images.length} · ${id} ${done ? '<span class="tag done">done</span>' : ''} ${val(id, 'exclude') ? '<span class="tag excl">excluded</span>' : ''}`;
+  const done = isDone(id), A = S.mode === 'review' ? S.auto[id] : null, A11 = S.mode === 'attr' ? S.auto11[id] : null;
+  $('pos').innerHTML = `${S.mode === 'review' ? '<span class="tag ai">REVIEW</span> ' : ''}${S.mode === 'attr' ? '<span class="tag ai">ATTRIBUTES v1.1</span> ' : ''}${S.idx + 1} / ${S.images.length} · ${id} ${done ? '<span class="tag done">done</span>' : ''} ${val(id, 'exclude') ? '<span class="tag excl">excluded</span>' : ''}`;
   const risks = A ? (A.flags || []).filter(k => RISK[k]) : [];
-  $('aibanner').hidden = !A;
+  $('aibanner').hidden = !A && S.mode !== 'attr';
+  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — choose every row yourself (click or number keys); pick <b>unknown</b> when you cannot tell. ` +
+    (A11 ? `Orange = machine hint (${A11.model_tag}) with its confidence; it is never saved unless you click it. ` : 'No machine hints for this image. ') +
+    `<kbd>Enter</kbd> = done once every row has a value.` + (im.context ? `<div class="muted">v1.0 labels: ${Object.entries(im.context).map(([k, v]) => `${k}=<b>${v}</b>`).join(' · ')}</div>` : '');
   if (A) $('aibanner').innerHTML = `<b>Machine suggestions</b> (${A.model_tag}) — orange = model's guess with its confidence; <kbd>a</kbd>/<kbd>Enter</kbd> confirms all, number keys fix a field.` +
     (risks.length ? `<div class="risk">⚠ screening: ${risks.map(k => `${RISK[k]} (${pct(A.screening[k])})`).join(', ')} — check it; exclude with <kbd>e</kbd> if true.${S.armed === id ? ' <b>Press a again to confirm anyway.</b>' : ''}</div>` : '') +
     (missSug(im) ? `<div class="risk">model sees a face (${pct(A.screening.visible_face)}) but the blur found none → "face blur missed" is pre-checked; untick (<kbd>f</kbd>) if no face is visible</div>` : '') +
     (im.blurred ? `<div class="muted">image shown face-blurred (${(im.faces || []).length} face box${(im.faces || []).length === 1 ? '' : 'es'}, <kbd>o</kbd> toggles overlay). Any face still recognisable? press <kbd>f</kbd>.</div>` : '');
   $('meta').innerHTML = `weak label: <b>${im.proposed_class || '—'}</b> · ${im.source} · ${im.license}<br><a href="${im.source_page_url}" target="_blank" rel="noopener">source page</a> · ${(im.title || '').slice(0, 80)}${['1','yes','True','true'].includes(im.needs_visual_screen) ? '<br>⚠ screen: ' + im.screen_reasons : ''}`;
-  $('fields').innerHTML = S.schema.fields.map((f, ri) => {
+  $('fields').innerHTML = FL().map((f, ri) => {
     const v = val(id, f.name), sug = v === undefined ? suggestion(im, f.name) : null, as = autoSug(im, f.name);
-    const cls = S.mode === 'review' ? 'ai' : 'sug';
+    const cls = S.mode === 'review' || S.mode === 'attr' ? 'ai' : 'sug';
     return `<div class="row ${ri === S.row && !S.exclMode ? 'active' : ''}" data-r="${ri}"><span class="lbl">${f.label}</span>` +
       f.options.map((o, oi) => `<span class="opt ${v === o ? 'sel' : ''} ${sug === o ? cls : ''}" data-f="${f.name}" data-v="${o}"><kbd>${oi + 1}</kbd> ${o}${sug === o && as ? ` <small class="conf">${pct(as.confidence)}</small>` : ''}</span>`).join('') +
       (as ? `<span class="aiv ${v === undefined ? '' : v === as.value ? 'ok' : 'fixed'}" title="model suggestion">AI: ${as.value} ${pct(as.confidence)}${v !== undefined ? (v === as.value ? ' ✓' : ' ✎') : ''}</span>` : '') + '</div>';
@@ -215,6 +247,7 @@ function render() {
   const bb = val(id, 'bbox') || []; $('bboxinfo').textContent = bb.length + ' box(es)' + (S.bboxMode ? ' — drag on image' : '');
   $('btnBbox').classList.toggle('primary', S.bboxMode);
   const h = S.mine[id] || {}; const edits = Object.values(h).reduce((a, x) => a + x.n, 0);
+  if (S.attrMsg === id) { $('hist').textContent = 'Every attribute row needs a value before Done (use "unknown" when you cannot tell).'; S.attrMsg = null; } else
   $('hist').textContent = edits ? `${edits} edit event(s) by you on this image; any field can be changed — the latest edit wins for you only.` : '';
   drawBoxes();
 }
@@ -271,7 +304,16 @@ async function acceptBoxes() {
   const A = S.auto[cur()?.image_id]; if (!A?.boxes?.length) return;
   emit('bbox', A.boxes.map(b => b.box));
 }
+async function doneAttr() {   // Attributes pass: no auto-fill, every v1.1 row must be chosen explicitly
+  const im = cur(); if (!im) return; const id = im.image_id;
+  const miss = rows().findIndex(f => val(id, f) == null);
+  if (miss >= 0 && !val(id, 'exclude')) { S.row = miss; S.attrMsg = id; render(); return; }
+  await emit('_status_v11', 'done');
+  const nx = S.images.findIndex((m, i) => i > S.idx && !isDone(m.image_id));
+  if (nx >= 0) { S.idx = nx; S.exclMode = false; render(); } else if (S.idx < S.images.length - 1) go(1); else render();
+}
 async function done() {
+  if (S.mode === 'attr') return doneAttr();
   if (S.mode === 'review' && S.auto[cur()?.image_id]) return confirmAll();
   const im = cur(); if (!im) return; const id = im.image_id;
   if (!val(id, 'exclude')) for (const f of rows()) { const s = suggestion(im, f); if (val(id, f) === undefined && s != null) await emit(f, s); }
@@ -287,14 +329,15 @@ $('btnBboxClear').onclick = () => emit('bbox', []);
 $('btnPrev').onclick = () => go(-1); $('btnNext').onclick = () => go(1); $('btnDone').onclick = done;
 $('btnSync').onclick = sync; $('btnBatch').onclick = getBatch; $('btnHelp').onclick = () => $('help').showModal();
 $('btnReview').onclick = () => setMode(S.mode === 'review' ? 'label' : 'review');
+$('btnAttr').onclick = () => setMode(S.mode === 'attr' ? 'label' : 'attr');
 $('rorder').onchange = async e => { S.order = e.target.value; e.target.blur(); await kvSet('order', S.order); reorder(); };
 $('btnLogout').onclick = async () => { await kvSet('annotator', null); location.reload(); };
 $('btnList').onclick = () => {
   const l = $('list'); const show = l.hidden; l.hidden = !show; $('main').hidden = show;
   if (!show) return render();
-  l.innerHTML = '<h3>My images (click to open / correct)</h3><table><tr><th>#</th><th>id</th><th>status</th>' + S.schema.fields.map(f => `<th>${f.name}</th>`).join('') + '<th>exclude</th></tr>' +
-    S.images.map((im, i) => `<tr data-i="${i}" style="cursor:pointer"><td>${i + 1}</td><td>${im.image_id}</td><td>${val(im.image_id, '_status') || ''}</td>` +
-      S.schema.fields.map(f => `<td>${val(im.image_id, f.name) ?? ''}</td>`).join('') + `<td>${val(im.image_id, 'exclude') || ''}</td></tr>`).join('') + '</table>';
+  l.innerHTML = '<h3>My images (click to open / correct)</h3><table><tr><th>#</th><th>id</th><th>status</th>' + FL().map(f => `<th>${f.name}</th>`).join('') + '<th>exclude</th></tr>' +
+    S.images.map((im, i) => `<tr data-i="${i}" style="cursor:pointer"><td>${i + 1}</td><td>${im.image_id}</td><td>${val(im.image_id, STATUS()) || ''}</td>` +
+      FL().map(f => `<td>${val(im.image_id, f.name) ?? ''}</td>`).join('') + `<td>${val(im.image_id, 'exclude') || ''}</td></tr>`).join('') + '</table>';
 };
 $('list').addEventListener('click', e => { const tr = e.target.closest('tr[data-i]'); if (tr) { S.idx = +tr.dataset.i; $('list').hidden = true; $('main').hidden = false; render(); } });
 
@@ -303,14 +346,15 @@ document.addEventListener('keydown', e => {
   const k = e.key; const id = cur()?.image_id; let handled = true;
   if (S.exclMode && /^[0-9]$/.test(k)) { S.exclMode = false; const r = k === '0' ? '' : S.schema.exclude_reasons[+k - 1]; if (r !== undefined) emit('exclude', r); else render(); }
   else if (k === 'ArrowUp') { S.row = Math.max(0, S.row - 1); S.exclMode = false; render(); }
-  else if (k === 'ArrowDown') { S.row = Math.min(S.schema.fields.length - 1, S.row + 1); S.exclMode = false; render(); }
-  else if (/^[0-9]$/.test(k) && id) { const f = S.schema.fields[S.row]; if (k === '0') emit(f.name, null); else if (f.options[+k - 1]) { emit(f.name, f.options[+k - 1]); if (S.row < S.schema.fields.length - 1) S.row++; } }
+  else if (k === 'ArrowDown') { S.row = Math.min(FL().length - 1, S.row + 1); S.exclMode = false; render(); }
+  else if (/^[0-9]$/.test(k) && id) { const F = FL(), f = F[S.row]; if (!f) return; if (k === '0') emit(f.name, null); else if (f.options[+k - 1]) { emit(f.name, f.options[+k - 1]); if (S.row < F.length - 1) S.row++; } }
   else if (k === 'ArrowLeft' || k === 'p') go(-1);
   else if (k === 'ArrowRight' || k === 'n') go(1);
   else if (k === 'Enter') done();
   else if (k === 'a' && S.mode === 'review') confirmAll();
   else if (k === 'B' && S.mode === 'review') acceptBoxes();
   else if (k === 'r') setMode(S.mode === 'review' ? 'label' : 'review');
+  else if (k === 'v') setMode(S.mode === 'attr' ? 'label' : 'attr');
   else if (k === 'o' && S.mode === 'review') { S.faces = !S.faces; render(); }
   else if (k === 'e') { S.exclMode = !S.exclMode; render(); }
   else if (k === 'f' && id) emit('face_blur_missed', !$('face').checked); // relative to what is shown (review may pre-tick it)
@@ -329,7 +373,7 @@ async function start(name) {
   S.order = (await kvGet('order')) || 'lowconf'; $('rorder').value = S.order;
   const m = (await kvGet('mode')) || 'label';
   await refreshMine();
-  if (m === 'review') await setMode('review'); else { await loadImages(); render(); }
+  if (m === 'review' || m === 'attr') await setMode(m); else { await loadImages(); render(); }
   updQueue();
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
 }

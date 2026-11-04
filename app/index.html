@@ -14,6 +14,7 @@
   <button id="btnSync" title="Sync now">Sync</button>
   <button id="btnBatch" title="Download more assigned images for offline work">Get batch</button>
   <button id="btnReview" title="Review machine pre-labels: confirm or fix (r)">Review auto labels</button>
+  <button id="btnAttr" title="v1.1 Attributes pass: control, environment, weather, wet ground, size (v)">Attributes v1.1</button>
   <select id="rorder" hidden title="Review queue order">
     <option value="lowconf">lowest confidence first</option>
     <option value="wheelchair">untyped wheelchairs first</option>
@@ -64,7 +65,14 @@
 <tr><td><kbd>a</kbd> <kbd>a</kbd></td><td>on images with a ⚠ screening flag (child / clinical / not a photo), press twice — or exclude with <kbd>e</kbd></td></tr>
 <tr><td><kbd>Shift</kbd>+<kbd>B</kbd></td><td>accept the model's dashed device boxes as your bbox</td></tr>
 <tr><td><kbd>o</kbd></td><td>show / hide the face-blur detector's boxes (magenta)</td></tr>
-<tr><td><kbd>f</kbd></td><td>a face is still recognisable after blurring → "face blur missed" (works in both modes)</td></tr></table>
+<tr><td><kbd>f</kbd></td><td>a face is still recognisable after blurring → "face blur missed" (works in both modes)</td></tr>
+<tr><th colspan="2" style="text-align:left;padding-top:8px">Attributes v1.1 (<kbd>v</kbd> or the header button)</th></tr>
+<tr><td><kbd>v</kbd></td><td>switch to the v1.1 pass: control (joystick, push rims, attendant control, tiller), environment, weather, wet ground, size class</td></tr>
+<tr><td><kbd>1</kbd>–<kbd>9</kbd></td><td>choose a value; <b>unknown</b> when you cannot tell (never guess)</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>done — only once every row has a value; orange machine hints are <b>never</b> saved unless you choose them</td></tr></table>
+<p><b>Attributes v1.1</b> shows images that already have their v1.0 labels (shown as context) and asks for the new attributes only;
+it never changes v1.0 labels or their done status. Weather is what you can see: <i>indoor_na</i> indoors, <i>night</i> for outdoor
+night shots. <i>size_class</i> is a visual impression (standard / wide), not a measurement.</p>
 <p>Images are shown <b>face-blurred</b> (as they will be released) wherever <code>scripts/auto_blur.py</code> has processed them.
 If you can still recognise a face, press <kbd>f</kbd>; those images get re-blurred by hand before release.</p>
 <p>Dashed blue = weak-label suggestion from <code>proposed_class</code> (normal mode); it is only saved when you press Done or click it.

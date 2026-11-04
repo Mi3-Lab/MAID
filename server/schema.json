@@ -1,5 +1,5 @@
 {
- "version": 2,
+ "version": 3,
  "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation.",
  "value_aliases": {
   "device_type": {
@@ -83,6 +83,75 @@
     "other"
    ],
    "compare": true
+  },
+  {
+   "name": "control",
+   "label": "Control",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "joystick",
+    "attendant_control",
+    "push_rims",
+    "tiller",
+    "none_visible",
+    "unknown"
+   ]
+  },
+  {
+   "name": "environment",
+   "label": "Environment",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "indoor",
+    "sidewalk",
+    "curbside",
+    "crosswalk_road",
+    "vehicle_interior",
+    "ramp_lift",
+    "parking_lot",
+    "other_outdoor",
+    "unknown"
+   ]
+  },
+  {
+   "name": "weather",
+   "label": "Weather",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "sunny_clear",
+    "overcast",
+    "rain",
+    "snow",
+    "fog",
+    "night",
+    "indoor_na",
+    "unknown"
+   ]
+  },
+  {
+   "name": "ground_wet",
+   "label": "Ground wet",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "yes",
+    "no",
+    "unknown"
+   ]
+  },
+  {
+   "name": "size_class",
+   "label": "Size (visual)",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "standard",
+    "wide",
+    "unknown"
+   ]
   }
  ],
  "exclude_reasons": [
@@ -97,7 +166,8 @@
   "exclude": "one of exclude_reasons or '' (= not excluded); compared between annotators",
   "face_blur_missed": "true/false; OR-combined across annotators (safety flag)",
   "bbox": "JSON list of [x,y,w,h] in 0..1 image coordinates, or []; not compared, kept per annotator",
-  "_status": "'done' when the annotator has finished the image; only 'done' annotators count towards consensus"
+  "_status": "'done' when the annotator has finished the image; only 'done' annotators count towards consensus",
+  "_status_v11": "'done' when the annotator has finished the v1.1 attribute pass on the image (independent of _status)"
  },
  "prefill": {
   "manual_wheelchair": {
@@ -138,5 +208,78 @@
   }
  },
  "annotators_per_image": 2,
- "max_annotators_per_image": 3
+ "max_annotators_per_image": 3,
+ "note_v11": "v1.1 (2026-11-04): fields with \"since\": \"1.1\" are labelled in a separate attribute pass (app mode 'Attributes', own done flag _status_v11, own assignments). They never change v1.0 status/consensus/kappa or derived/labels.csv; they are resolved into derived/labels_v11.csv. Every v1.1 field has an explicit 'unknown' (cannot be determined from the photo). Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json 'definitions' and docs/DATA_DICTIONARY_v1.1.md.",
+ "definitions": {
+  "control": {
+   "joystick": "a powered-chair joystick / hand control is visible (usually on an armrest)",
+   "attendant_control": "a rear/attendant joystick or the push handles are being used by a second person to steer the device",
+   "push_rims": "hand rims on the large wheels are visible and are the user's means of propulsion (manual chair, no attendant steering)",
+   "tiller": "handlebar tiller steering of a mobility scooter",
+   "none_visible": "the device's control is not in view or the device has none (e.g. walker, ambiguous look-alike)",
+   "unknown": "cannot be determined from the photo"
+  },
+  "environment": {
+   "indoor": "inside a building (not a vehicle)",
+   "sidewalk": "pedestrian sidewalk / footpath away from the curb edge",
+   "curbside": "at the curb edge or curb ramp, i.e. the boarding/alighting position next to the roadway",
+   "crosswalk_road": "in a crosswalk or on the roadway itself",
+   "vehicle_interior": "inside a car, van, bus or train",
+   "ramp_lift": "on a vehicle ramp or lift, or a building ramp used for boarding",
+   "parking_lot": "in a parking lot / garage",
+   "other_outdoor": "any other outdoor place (park, beach, sports court, trail, plain studio background)",
+   "unknown": "cannot be determined from the photo"
+  },
+  "environment_from_v10_setting": {
+   "curb": "curbside",
+   "vehicle": "vehicle_interior or ramp_lift",
+   "sidewalk": "sidewalk",
+   "indoor": "indoor",
+   "other": "other_outdoor / parking_lot / crosswalk_road / unknown",
+   "_note": "used ONLY as an (unconfirmed) suggestion in the attribute pass; never written as a label"
+  },
+  "weather": {
+   "sunny_clear": "outdoor, direct sun or clear sky",
+   "overcast": "outdoor, cloudy / diffuse light, no precipitation visible",
+   "rain": "rain visible (falling drops, umbrellas in use, rain gear) ",
+   "snow": "falling snow or snow on the ground",
+   "fog": "fog / mist visibly limits range",
+   "night": "outdoor at night (weather otherwise not judgeable)",
+   "indoor_na": "indoor or vehicle interior: weather not applicable",
+   "unknown": "outdoor but weather cannot be judged (e.g. tight crop)"
+  },
+  "ground_wet": {
+   "yes": "visibly wet / puddles / snow-slush on the ground",
+   "no": "visibly dry ground",
+   "unknown": "ground not visible or cannot be judged"
+  },
+  "size_class": {
+   "standard": "device looks like a typical adult chair width",
+   "wide": "device is visibly wider than a typical chair (e.g. bariatric-width or large power base) relative to the user/surroundings",
+   "unknown": "cannot be judged (occluded, no reference, not a chair)",
+   "_note": "a coarse VISUAL judgement only, never a measurement; metric sizes only come from data/measurements.csv"
+  }
+ },
+ "annotators_per_image_v11": 2,
+ "measurement_sources": [
+  "user_measured",
+  "manufacturer_spec",
+  "depth_sensor",
+  "reference_object",
+  "none"
+ ],
+ "contributed_licenses": [
+  "CC0-1.0",
+  "CC-BY-4.0",
+  "CC-BY-SA-4.0",
+  "CC-BY-2.0",
+  "CC-BY-3.0",
+  "CC-BY-SA-2.0",
+  "CC-BY-SA-3.0",
+  "PDM"
+ ],
+ "estimate_sources": [
+  "rough_estimate"
+ ],
+ "measurement_note": "Measured dimensions (height_cm, width_cm, length_cm) live in data/measurements.csv and are only filled from a real source (measurement_sources). Rough estimates (est_*_cm with a low/high range) are written by scripts/size_estimate.py with measurement_source='rough_estimate' into a SEPARATE file and are never copied into the measured columns. Monocular web photos have no metric scale."
 }

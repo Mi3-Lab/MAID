@@ -25,7 +25,20 @@ ASSIGN_NO_IMAGE = os.environ.get("WV_ASSIGN_WITHOUT_LOCAL_IMAGE", "0") == "1"  #
 UA = {"User-Agent": "WheelViewAnnotate/0.1 (UC Merced Mi3 Lab; research dataset annotation)"}
 for d in (DB_PATH.parent, CACHE_DIR, EXPORT_DIR): d.mkdir(parents=True, exist_ok=True)
 
+CONTRIB = Path(os.environ.get("WV_CONTRIBUTED", ROOT / "data" / "contributed.csv"))   # v1.1: own open-licensed images (scripts/import_contributed.py)
 CANDIDATES = wvcore.load_candidates(CANDS)
+_CONTRIB_SIG = [None]
+def refresh_candidates():
+    """Merge data/contributed.csv into CANDIDATES (in place) whenever it changes, so imported images need no restart.
+    Contributed ids are a separate range (wv_9xxxxx) and never collide with candidates.csv."""
+    try: st = CONTRIB.stat(); sig = (st.st_mtime_ns, st.st_size)
+    except OSError: sig = None
+    if sig == _CONTRIB_SIG[0]: return
+    _CONTRIB_SIG[0] = sig
+    if sig is None: return
+    for k, r in wvcore.load_contributed(CONTRIB).items():
+        if k not in CANDIDATES or CANDIDATES[k].get("source") == "contributed": CANDIDATES[k] = r
+refresh_candidates()
 BLOCK_DIR = Path(os.environ.get("WV_BLOCKLIST_DIR", ROOT / "data"))   # data/removed_*.txt: removed entirely (files stay on disk)
 _BLOCK = {"sig": None, "entries": {}, "ids": set(), "dec_ver": -1, "dec": {}, "eff": set()}
 _DEC_VER = [0]       # bumped whenever a kind=removal event is stored
@@ -63,6 +76,8 @@ with db() as c:
     CREATE INDEX IF NOT EXISTS ev_img ON events(image_id);
     CREATE TABLE IF NOT EXISTS assignments(image_id TEXT NOT NULL, annotator TEXT NOT NULL, assigned_at TEXT NOT NULL, round INTEGER NOT NULL,
         PRIMARY KEY(image_id, annotator));
+    CREATE TABLE IF NOT EXISTS assignments_v11(image_id TEXT NOT NULL, annotator TEXT NOT NULL, assigned_at TEXT NOT NULL, round INTEGER NOT NULL,
+        PRIMARY KEY(image_id, annotator));
     """)
     if "prov" not in [r[1] for r in c.execute("PRAGMA table_info(events)")]:
         c.execute("ALTER TABLE events ADD COLUMN prov TEXT")      # migration: review-mode provenance
@@ -74,14 +89,18 @@ def row_event(r):
     return e
 
 # ---------- machine suggestions: annotations/auto/*.jsonl, reloaded whenever the files change (e.g. after git pull) ----------
-_AUTO = {"sig": None, "data": {}, "active": ""}
+_AUTO = {"sig": None, "data": {}, "active": "", "attr_active": ""}
+AUTO_ATTR_MODEL = os.environ.get("WV_AUTO_ATTR_MODEL", "").strip()                # v1.1 attribute suggestions (default: newest *_attr-*.jsonl)
 def auto_state():
     try: files = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in AUTO_DIR.glob("*.jsonl"))
     except OSError: files = []
     if files != _AUTO["sig"]:
         data = wvcore.load_auto(AUTO_DIR)
-        newest = max(files, key=lambda f: f[1])[0][:-6] if files else ""
-        _AUTO.update(sig=files, data=data, active=AUTO_MODEL if AUTO_MODEL in data else newest)
+        main = [f for f in files if not wvcore.is_attr_tag(f[0][:-6])]; attr = [f for f in files if wvcore.is_attr_tag(f[0][:-6])]
+        newest = max(main, key=lambda f: f[1])[0][:-6] if main else ""
+        newest_attr = max(attr, key=lambda f: f[1])[0][:-6] if attr else ""
+        _AUTO.update(sig=files, data=data, active=AUTO_MODEL if AUTO_MODEL in data else newest,
+                     attr_active=AUTO_ATTR_MODEL if AUTO_ATTR_MODEL in data else newest_attr)
     return _AUTO
 
 def auto_rec(i, tag=None):
@@ -91,6 +110,7 @@ def all_events(c):
     return [row_event(r) for r in c.execute("SELECT * FROM events ORDER BY seq")]
 
 def insert_events(evs):
+    refresh_candidates()
     acc, dup, rej = [], [], []
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     with LOCK, db() as c:
@@ -206,7 +226,8 @@ def health():
     a = auto_state()
     out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
            "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
-           "features": ["review", "blur"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "models": {t: len(r) for t, r in a["data"].items()}}}
+           "features": ["review", "blur", "attr_v11", "contributed"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
+           "contributed": sum(1 for r in CANDIDATES.values() if r.get("source") == "contributed")}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
 
@@ -239,6 +260,10 @@ def get_image(image_id: str):
     if image_id not in CANDIDATES or image_id in blocked(): raise HTTPException(404)
     return image_meta(image_id)
 
+def statuses11(c):
+    per, adjv = wvcore.fold(all_events(c))
+    return per, adjv, {i: wvcore.image_status_v11(i, per, adjv) for i in set(per) | {k[0] for k in adjv}}
+
 def statuses(c):
     per, adjv = wvcore.fold(all_events(c))
     return {i: wvcore.image_status(i, per, adjv) for i in set(per) | {k[0] for k in adjv}}
@@ -248,6 +273,7 @@ def order_key(i):  # deterministic shuffle so batches mix classes/sources
 
 @app.get("/api/assign")
 def assign(annotator: str, n: int = Query(30, ge=1, le=200)):
+    refresh_candidates()
     ann = wvcore.slug(annotator)
     if not ann or ann != annotator: raise HTTPException(400, "annotator must be a slug (lowercase, a-z0-9._-)")
     if not images_ready(): raise HTTPException(503, "server is still downloading images; try again in a minute")
@@ -337,14 +363,78 @@ def review_assign(annotator: str, n: int = Query(30, ge=1, le=200), order: str =
     return {"annotator": ann, "model_tag": tag, "order": order,
             "images": [image_meta(i) | {"auto": recs[i]} for i in out]}
 
+# ---------- v1.1 attribute pass: control / environment / weather / ground_wet / size_class ----------
+CONTEXT_FIELDS = ("device_type", "occupied", "propulsion", "setting", "lighting", "viewpoint")
+def _release_ids():
+    p = ROOT / "data" / "manifest_v2.csv"
+    if not p.exists(): return set()
+    with open(p, encoding="utf-8", newline="") as fh:
+        return {r["image_id"] for r in csv.DictReader(fh) if r.get("train_eligible") == "1" or r.get("split") == "excluded"}
+
+def v11_flagged(img, per):
+    """Exclude / face-blur flags raised by anyone (v1.0 or v1.1 pass) that the v1.0 rules would not see: keep the image
+    out of the attribute pass until the normal removal review has handled it."""
+    for a, fv in per.get(img, {}).items():
+        if fv.get("exclude") not in (None, "", "none") or fv.get("face_blur_missed") is True: return True
+    return False
+
+@app.get("/api/attr/assign")
+def attr_assign(annotator: str, n: int = Query(30, ge=1, le=200)):
+    """A batch for the v1.1 attribute pass. Pool: images in the v1.0 clean set (>=1 human done, not labeler-excluded,
+    not on a safety hold / blocklist) incl. contributed images once they have their v1.0 labels. Order: third v1.1
+    annotator for disagreements, then a second v1.1 annotator, then fresh -- release (manifest_v2) images first.
+    Each image comes with the v1.0 resolved labels as context and the v1.1 machine suggestion (shown, never saved)."""
+    refresh_candidates()
+    ann = wvcore.slug(annotator)
+    if not ann or ann != annotator: raise HTTPException(400, "annotator must be a slug (lowercase, a-z0-9._-)")
+    if not images_ready(): raise HTTPException(503, "server is still downloading images; try again in a minute")
+    a = auto_state(); recs = a["data"].get(a["attr_active"], {})
+    maxn = wvcore.SCHEMA["max_annotators_per_image"]; base = wvcore.SCHEMA.get("annotators_per_image_v11", 2)
+    hold = wvcore.load_safety_hold(str(BLOCK_DIR)); rel = _release_ids()
+    with LOCK, db() as c:
+        per, adjv, st11 = statuses11(c)
+        asg = {}
+        for r in c.execute("SELECT image_id, annotator FROM assignments_v11"): asg.setdefault(r[0], set()).add(r[1])
+        B = blocked()
+        def clean(i):
+            if i not in CANDIDATES or i in B or v11_flagged(i, per): return False
+            ok, _ = wvcore.clean_decision(i, per, adjv, hold=hold); return ok
+        ok = lambda i: clean(i) and (ASSIGN_NO_IMAGE or local_image(i) is not None)
+        done11 = lambda i: set(st11.get(i, {}).get("done", []))
+        mine_open = [i for i, s in asg.items() if ann in s and ann not in done11(i)]
+        third = [i for i, s in st11.items() if s["status"] == "needs_third_annotator" and ann not in asg.get(i, set()) and ann not in s["done"] and len(asg.get(i, set())) < maxn]
+        second = [i for i, s in asg.items() if len(s | done11(i)) < base and ann not in s and ann not in done11(i)]
+        fresh = [i for i in per if i not in asg and not done11(i)]
+        key = lambda i: (i not in rel, order_key(i))
+        out, now = [], time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        for pool, rnd in ((mine_open, 0), (sorted(third, key=key), 3), (sorted(second, key=key), 2), (sorted(fresh, key=key), 1)):
+            for i in pool:
+                if len(out) >= n: break
+                if i in out or not ok(i): continue
+                if rnd: c.execute("INSERT OR IGNORE INTO assignments_v11 VALUES(?,?,?,?)", (i, ann, now, rnd))
+                out.append(i)
+    imgs = []
+    for i in out:
+        s10 = wvcore.image_status(i, per, adjv)
+        ctx = {f: s10["fields"][f][0] for f in CONTEXT_FIELDS if f in s10["fields"] and s10["fields"][f][0]}
+        m = image_meta(i) | {"context": ctx}
+        if i in recs: m["auto11"] = recs[i]
+        imgs.append(m)
+    return {"annotator": ann, "model_tag": a["attr_active"], "images": imgs}
+
 @app.get("/api/conflicts")
 def conflicts():
-    with db() as c: st = statuses(c)
+    with db() as c: per, adjv, st11 = statuses11(c)
+    st = {i: wvcore.image_status(i, per, adjv) for i in set(per) | {k[0] for k in adjv}}
     rows = []; B = blocked()
-    for i, s in sorted(st.items()):
-        if s["conflicts"] and i not in B:
-            rows.append(image_meta(i) | {"status": s["status"], "done": s["done"],
-                        "conflicts": {f: s["fields"][f][2] for f in s["conflicts"]}})
+    for i in sorted(set(st) | set(st11)):
+        s = st.get(i); s11 = st11.get(i)
+        cf = {f: s["fields"][f][2] for f in s["conflicts"]} if s else {}
+        if s11 and s11["status"] == "needs_adjudication":   # v1.1 conflicts only once 3 people disagree (or 2 at max)
+            cf |= {f: s11["fields"][f][2] for f in s11["conflicts"]}
+        if cf and i not in B and i in CANDIDATES:
+            rows.append(image_meta(i) | {"status": s["status"] if s and s["conflicts"] else "v1.1:" + s11["status"],
+                        "done": sorted(set((s or {}).get("done", [])) | set((s11 or {}).get("done", []))), "conflicts": cf})
     return {"conflicts": rows}
 
 @app.get("/api/stats")
@@ -352,14 +442,19 @@ def stats():
     with db() as c: evs = all_events(c)
     stat, k, prog = wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"], blocked=blocked())
     with db() as c: prog["assignments"] = c.execute("SELECT COUNT(*) FROM assignments").fetchone()[0]
-    return {"progress": prog, "kappa": k}
+    out = {"progress": prog, "kappa": k}
+    kp = EXPORT_DIR / "kappa_v11.json"
+    if wvcore.has_v11(evs) and kp.exists(): out["kappa_v11"] = json.load(open(kp, encoding="utf-8"))
+    return out
 
 @app.get("/export/{name}")
 def export(name: str):
-    allowed = {"labels.csv", "per_annotator_labels.csv", "adjudication_needed.csv", "kappa.json", "progress.json", "auto_vs_human.json"}
+    allowed = {"labels.csv", "per_annotator_labels.csv", "adjudication_needed.csv", "kappa.json", "progress.json", "auto_vs_human.json",
+               "labels_v11.csv", "per_annotator_labels_v11.csv", "adjudication_needed_v11.csv", "kappa_v11.json", "auto_vs_human_v11.json"}
     if name not in allowed: raise HTTPException(404)
     with db() as c: evs = all_events(c)
     wvcore.materialize(evs, CANDIDATES, EXPORT_DIR, auto=auto_state()["data"], blocked=blocked())
+    if not (EXPORT_DIR / name).exists(): raise HTTPException(404, "not generated yet (no v1.1 labels)")
     return FileResponse(EXPORT_DIR / name, media_type="text/csv" if name.endswith(".csv") else "application/json",
                         headers={"Cache-Control": "no-store"})
 

@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "server")); import wvcore
 CLASSES = list(wvcore.DEVICE_CLASSES); SPLITS = ("train", "val", "test")
 ALL_CLASS_WORDS = set(CLASSES) | {"lookalike", "unclear", "wheelchair", "stroller", "walker", "rollator", "scooter"}
-MODEL_SCRIPTS = ["train_baseline.py", "train_siglip.py", "train_yolo.py", "compare_v2.py", "predict.py"]
+MODEL_SCRIPTS = ["train_baseline.py", "train_siglip.py", "train_yolo.py", "compare_v2.py", "predict.py", "train_multitask.py"]
 FAIL, WARN = [], []
 def fail(m): FAIL.append(m); print("FAIL", m)
 def warn(m): WARN.append(m); print("warn", m)
@@ -152,6 +152,27 @@ def audit_script(p):
         if not m or "test:" in m.group(1): probs.append("YOLO-det training data.yaml declares a test split")
     if name == "train_baseline.py" and 'dl("train", tf_tr, True)' not in src: probs.append("train loader not shuffled")
     return probs
+
+def check_data_v11(path):
+    """--v11 data/manifest_v11.csv: frozen v1.0 splits unchanged, no leak group / creator / pHash near-dup across splits
+    among v1.1-trainable rows, no model-output columns (rough size estimates are est_* and allowed: they are features)."""
+    M = list(csv.DictReader(open(path, encoding="utf-8")))
+    T = [r for r in M if r.get("v11_eligible") == "1"]
+    ok(f"--v11: {len(M)} rows, {len(T)} v1.1-trainable")
+    mf = ROOT / "data" / "manifest_v2.csv"
+    if mf.exists():
+        V = {r["image_id"]: r["split"] for r in csv.DictReader(open(mf, encoding="utf-8"))}
+        moved = [r["image_id"] for r in M if r["image_id"] in V and r["split"] != V[r["image_id"]]]
+        (fail if moved else ok)(f"--v11: v1.0 images keep their frozen split: {len(moved)} moved {moved[:5]}")
+    one_split(T, lambda r: r["leak_group"], "--v11 leak_group")
+    one_split(T, lambda r: norm_name(r["creator"]), "--v11 creator name", skip=("", "unknown", "anonymous"))
+    hs = [(int(r["phash_blurred"], 16), r["split"], r["image_id"]) for r in T if r.get("phash_blurred")]
+    near = [(x[2], y[2]) for i, x in enumerate(hs) for y in hs[i + 1:] if x[1] != y[1] and bin(x[0] ^ y[0]).count("1") <= 8]
+    (fail if near else ok)(f"--v11: pHash <= 8 across splits: {len(near)} {near[:5]}")
+    cols = [c for c in (M[0] if M else {}) if re.search(r"sugg|confid|prob|score|logit|emb|auto|pred", c.lower())]
+    (fail if cols else ok)(f"--v11: no model-output columns: {cols}")
+    kids = [r["image_id"] for r in T if "child" in (r.get("v11_exclusion_reason") or "")]
+    (fail if kids else ok)(f"--v11: no child-flagged rows trainable: {len(kids)}")
 
 def check_code():
     for s in MODEL_SCRIPTS:
@@ -287,6 +308,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--features", action="store_true"); ap.add_argument("--files", action="store_true"); ap.add_argument("--runtime", action="store_true")
     ap.add_argument("--release", default=None, help="audit a built release folder (e.g. var/release/WheelView_v1.0)")
+    ap.add_argument("--v11", default=None, help="also audit a v1.1 manifest (scripts/build_manifest_v11.py output)")
     a = ap.parse_args()
     if a.release and not (ROOT / "data" / "manifest_v2.csv").exists():
         # Standalone use inside a downloaded release (code/scripts/check_leakage.py --release .): labels.csv is the reference.
@@ -310,6 +332,7 @@ def main():
     T = check_data(a, rep)
     if a.features and T: check_features(a, T, rep)
     if a.files and T: check_files(T)
+    if a.v11: check_data_v11(a.v11)
     check_code()
     if a.runtime and T: check_runtime(T)
     if a.release and T: check_release(a, T, rep)
