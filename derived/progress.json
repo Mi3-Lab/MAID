@@ -1,22 +1,26 @@
 {
  "auto_review_events_by_annotator": {
+  "devin": 68,
   "samir": 4011,
   "shaaz": 1080
  },
  "candidates": 5417,
- "events": 8251,
+ "events": 8702,
  "events_by_annotator": {
   "deploytest": 8,
+  "devin": 451,
   "samir": 4460,
   "shaaz": 3482
  },
  "images_done_by_annotator": {
+  "devin": 48,
   "samir": 661,
   "shaaz": 327
  },
  "images_touched": 787,
  "status_counts": {
-  "final": 205,
-  "in_progress": 582
+  "final": 201,
+  "in_progress": 582,
+  "needs_adjudication": 4
  }
 }
