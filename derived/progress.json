@@ -5,22 +5,22 @@
   "shaaz": 1080
  },
  "candidates": 5417,
- "events": 8585,
+ "events": 8702,
  "events_by_annotator": {
   "deploytest": 8,
-  "devin": 334,
+  "devin": 451,
   "samir": 4460,
   "shaaz": 3482
  },
  "images_done_by_annotator": {
-  "devin": 35,
+  "devin": 48,
   "samir": 661,
   "shaaz": 327
  },
  "images_touched": 787,
  "status_counts": {
-  "final": 203,
+  "final": 201,
   "in_progress": 582,
-  "needs_adjudication": 2
+  "needs_adjudication": 4
  }
 }
