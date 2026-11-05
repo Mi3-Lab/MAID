@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 import wvcore
+import assistant_review as AR
 
 ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = Path(os.environ.get("WV_DB", ROOT / "var" / "wheelview.db"))
@@ -18,6 +19,9 @@ EXPORT_DIR = Path(os.environ.get("WV_EXPORT_DIR", ROOT / "var" / "exports"))
 AUTO_DIR = Path(os.environ.get("WV_AUTO_DIR", ROOT / "annotations" / "auto"))     # machine suggestions (never human events)
 REVIEW_AUTO_DIR = Path(os.environ.get("WV_REVIEW_AUTO_DIR", ROOT / "var" / "assist"))  # gitignored extra suggestion files (e.g. assistant_visual_review_attr-v1.jsonl); never labels
 ADJ_QUEUE = Path(os.environ.get("WV_ADJ_QUEUE", ROOT / "var" / "adjudication" / "queue.jsonl"))  # gitignored review-request queue (concerns, not decisions)
+AR_SUGG = Path(os.environ.get("WV_ASSIST_REVIEW_FILE", REVIEW_AUTO_DIR / (AR.TAG + ".jsonl")))      # assistant suggestions under human review
+AR_FLAGS = Path(os.environ.get("WV_ASSIST_REVIEW_FLAGS", REVIEW_AUTO_DIR / "assistant_visual_review_flagged.ndjson"))
+AR_OUTCOMES = Path(os.environ.get("WV_REVIEW_OUTCOMES", REVIEW_AUTO_DIR / "review_outcomes.jsonl"))   # gitignored review outcomes (never labels)
 AUTO_MODEL = os.environ.get("WV_AUTO_MODEL", "").strip()                          # default: newest annotations/auto/*.jsonl
 BLUR_DIR = Path(os.environ.get("WV_BLUR_DIR", ROOT / "images_blurred"))            # scripts/auto_blur.py output (originals untouched)
 BLUR_MANIFESTS = [Path(p) for p in os.environ.get("WV_BLUR_MANIFESTS", "").split(os.pathsep) if p] or \
@@ -449,6 +453,7 @@ def _filter(q: str, ids: list | None, limit: int, counts: bool):
     a = auto_state(); prefer = [a["active"]] * bool(a["active"]) + (a.get("attr_order") or [])
     pool = [i for i in (ids if ids is not None else sorted(CANDIDATES, key=order_key)) if i in CANDIDATES and i not in B]
     ctx = filter_context()
+    if "review_status" in flt or counts: ctx = {**ctx, "review_status": ar_status_map()}
     facts = {i: wvcore.image_facts(i, per, adjv, wvcore.merged_suggestions(i, a["data"], prefer), ctx) for i in pool}
     res = wvcore.run_filter(pool, facts, flt, basis, counts=counts)
     res["truncated"] = len(res["ids"]) > limit; res["ids"] = res["ids"][:limit]
@@ -530,6 +535,90 @@ def adjudication_queue(reason: str | None = None, source: str | None = None):
         meta = image_meta(i) if i in CANDIDATES and i not in B else {"image_id": i, "img": ""}
         rows.append(meta | {k: v for k, v in r.items() if k != "img"} | {"blocked": i in B, "human_device_type": human.get(i, {})})
     return {"items": rows, "counts": counts, "total": len(items)}
+
+# ---------- human review of the assistant's suggestions (suggestions never become labels without a human action) ----------
+def ar_excluded():
+    """Never shown: not a candidate, blocked/removed, safety-held, or flagged as (possibly) showing a child."""
+    hold = wvcore.load_safety_hold(str(BLOCK_DIR))
+    return blocked() | set(hold) | AR.child_ids(AR.load_flags(AR_FLAGS))
+
+def ar_items(per=None, adjv=None):
+    refresh_candidates()
+    if per is None:
+        with db() as c: per, adjv = wvcore.fold(all_events(c))
+    sugg = {i: v for i, v in AR.load_suggestions(AR_SUGG).items() if i in CANDIDATES}
+    a = auto_state(); prefer = [t for t in [a["active"]] + (a.get("attr_order") or []) if t and t != AR.TAG]
+    other = {i: wvcore.merged_suggestions(i, {t: d for t, d in a["data"].items() if t != AR.TAG}, prefer) for i in sugg}
+    return AR.build_items(sugg, per, adjv, other, ar_excluded(), wvcore.hval)
+
+def ar_status_map():
+    out = AR.load_outcomes(AR_OUTCOMES)
+    return {it["image_id"]: AR.review_status(it, out) for it in ar_items()}
+
+@app.get("/api/assistant_review/queue")
+def ar_queue(status: str = "pending", tier: str | None = None, limit: int = Query(2000, ge=1, le=5000)):
+    """Ordered review items: disagreements (with humans or SigLIP) first, then lowest confidence, then a stratified ~5%
+    audit sample of high-confidence ones, then the rest. status: pending | partial | reviewed | open (pending+partial) | all."""
+    if status not in ("pending", "partial", "reviewed", "open", "all"): raise HTTPException(400, "bad status")
+    items = ar_items(); out = AR.load_outcomes(AR_OUTCOMES); rows = []
+    for it in items:
+        st = AR.review_status(it, out)
+        if status != "all" and not (st == status or (status == "open" and st != "reviewed")): continue
+        if tier and it["tier"] != tier: continue
+        for x in it["fields"]:
+            o = out.get((it["image_id"], x["field"]))
+            x["outcome"] = {k: o.get(k) for k in ("action", "value", "reviewer", "result", "ts")} if o else None
+        rows.append(image_meta(it["image_id"]) | it | {"review_status": st})
+    return {"items": rows[:limit], "count": len(rows), "progress": AR.summary(out, items)["progress"]}
+
+@app.get("/api/assistant_review/summary")
+def ar_summary():
+    return AR.summary(AR.load_outcomes(AR_OUTCOMES), ar_items())
+
+@app.post("/api/assistant_review/decide")
+async def ar_decide(req: Request):
+    """{reviewer, image_id, decisions: [{field, action: accept|edit|reject, value?}]}. Accept/edit write a normal HUMAN label
+    (annotator = reviewer, provenance source=auto_review) via the same insert path as POST /api/events, but only when no
+    human label exists for that field; otherwise a differing value goes to the adjudication queue. Reject writes no label."""
+    b = await req.json()
+    rev = str(b.get("reviewer") or ""); img = str(b.get("image_id") or ""); decs = b.get("decisions")
+    if not rev or wvcore.slug(rev) != rev: raise HTTPException(400, "reviewer must be a slug (lowercase, a-z0-9._-)")
+    if AR.NON_HUMAN.search(rev): raise HTTPException(400, "reviewer must be a human annotator name")
+    if not isinstance(decs, list) or not decs or len(decs) > 50: raise HTTPException(400, "decisions must be a non-empty list")
+    with db() as c: per, adjv = wvcore.fold(all_events(c))
+    item = next((it for it in ar_items(per, adjv) if it["image_id"] == img), None)
+    if not item: raise HTTPException(404, "no reviewable assistant suggestion for this image")
+    F = {x["field"]: x for x in item["fields"]}; res = []
+    for d in decs:
+        f = d.get("field") if isinstance(d, dict) else None; act = (d or {}).get("action") if isinstance(d, dict) else None
+        if f not in F or act not in AR.ACTIONS: res.append({"field": f, "error": "unknown field or action"}); continue
+        x = F[f]; val = x["value"] if act == "accept" else d.get("value") if act == "edit" else None
+        rec = {"ts": AR.now(), "reviewer": rev, "image_id": img, "field": f, "action": act, "assistant_value": x["value"],
+               "assistant_confidence": x["confidence"], "value": val, "tier": item["tier"], "audit": item["audit"], "source": AR.SOURCE}
+        if act == "edit" and wvcore.hval(val) == wvcore.hval(x["value"]): rec["action"] = act = "accept"
+        if act == "reject":
+            rec |= {"result": "rejected_no_label", "label_written": False}
+        else:
+            ev = {"uuid": str(uuid.uuid4()), "image_id": img, "annotator": rev, "field": f, "value": val, "kind": "label",
+                  "ts": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime()), "device_id": "assistant-review-web",
+                  "source": "auto_review", "model_tag": AR.TAG, "suggested": x["value"], "confidence": x["confidence"]}
+            e, why = wvcore.validate(ev)
+            if not e: res.append({"field": f, "error": why}); continue
+            h = AR.human_values(img, f, per, adjv, wvcore.hval)
+            if h:   # never override an existing human label
+                if all(v == wvcore.hval(val) for v in h.values()): rec |= {"result": "matches_existing_human", "label_written": False}
+                else:
+                    AR.append_jsonl(ADJ_QUEUE, {"image_id": img, "reason": "assistant_review_conflict", "source": "assistant_review",
+                                                "category": "review", "queued_at": rec["ts"], "field": f, "reviewer": rev,
+                                                "reviewer_value": val, "assistant": {f: x["value"]}, "human_at_queue": h,
+                                                "detail": f"reviewer value for {f} differs from existing human label(s)"})
+                    rec |= {"result": "conflict_routed", "label_written": False}
+            else:
+                r = insert_events([ev])
+                if r["rejected"]: res.append({"field": f, "error": r["rejected"][0]["reason"]}); continue
+                rec |= {"result": "label_written", "label_written": True, "event_uuid": ev["uuid"]}
+        AR.append_jsonl(AR_OUTCOMES, rec); res.append({"field": f, "action": act, "result": rec["result"]})
+    return {"image_id": img, "results": res}
 
 @app.get("/api/stats")
 def stats():

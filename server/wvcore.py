@@ -574,6 +574,7 @@ PSEUDO_KEYS = {
     "size_basis": ["measured", "estimate_only", "none"],
     "label_source": ["human", "model_only", "unlabeled"],
     "excluded": ["yes", "no"],
+    "review_status": ["pending", "partial", "reviewed", "none"],   # human review of the assistant visual review suggestions
 }
 FILTER_FIELDS = list(FIELD_OPTS)
 FILTER_KEYS = FILTER_FIELDS + list(PSEUDO_KEYS)
@@ -658,7 +659,8 @@ def image_facts(img, per, adjv, sugg=None, extra=None, st10=None, st11=None):
         any(fv.get("exclude") for fv in anns.values()) else "no"
     pseudo = {"split": split if split in PSEUDO_KEYS["split"] else "none", "approval": st10["status"], "status_v11": st11["status"],
               "synthetic": "yes" if syn else "no", "size_basis": size,
-              "label_source": "human" if any_h else "model_only" if model else "unlabeled", "excluded": excluded}
+              "label_source": "human" if any_h else "model_only" if model else "unlabeled", "excluded": excluded,
+              "review_status": extra.get("review_status", {}).get(img, "none")}
     return {"human": human, "model": model, "pseudo": pseudo}
 
 def field_values(facts, f, basis="human"):
