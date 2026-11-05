@@ -5,22 +5,23 @@
   "shaaz": 1080
  },
  "candidates": 5417,
- "events": 8702,
+ "events": 9346,
  "events_by_annotator": {
   "deploytest": 8,
   "devin": 451,
   "samir": 4460,
-  "shaaz": 3482
+  "shaaz": 4097
  },
  "images_done_by_annotator": {
   "devin": 48,
   "samir": 661,
-  "shaaz": 327
+  "shaaz": 441
  },
- "images_touched": 787,
+ "images_touched": 870,
  "status_counts": {
-  "final": 201,
-  "in_progress": 582,
-  "needs_adjudication": 4
+  "final": 230,
+  "in_progress": 635,
+  "needs_adjudication": 4,
+  "needs_third_annotator": 1
  }
 }

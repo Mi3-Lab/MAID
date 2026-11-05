@@ -1,6 +1,6 @@
 {
  "device_type": {
-  "n_items": 131,
+  "n_items": 148,
   "pairwise": {
    "devin|samir": {
     "kappa": 0.0,
@@ -11,14 +11,14 @@
     "n": 29
    },
    "samir|shaaz": {
-    "kappa": 0.7473,
-    "n": 124
+    "kappa": 0.7425,
+    "n": 141
    }
   },
-  "pooled_kappa": 0.7422
+  "pooled_kappa": 0.7358
  },
  "exclude": {
-  "n_items": 205,
+  "n_items": 235,
   "pairwise": {
    "devin|samir": {
     "kappa": 0.7412,
@@ -29,14 +29,14 @@
     "n": 48
    },
    "samir|shaaz": {
-    "kappa": 0.5592,
-    "n": 205
+    "kappa": 0.5682,
+    "n": 235
    }
   },
-  "pooled_kappa": 0.6445
+  "pooled_kappa": 0.6433
  },
  "lighting": {
-  "n_items": 129,
+  "n_items": 146,
   "pairwise": {
    "devin|samir": {
     "kappa": 1.0,
@@ -47,14 +47,14 @@
     "n": 28
    },
    "samir|shaaz": {
-    "kappa": 0.7091,
-    "n": 123
+    "kappa": 0.7189,
+    "n": 140
    }
   },
-  "pooled_kappa": 0.776
+  "pooled_kappa": 0.7774
  },
  "occlusion": {
-  "n_items": 131,
+  "n_items": 148,
   "pairwise": {
    "devin|samir": {
     "kappa": -0.098,
@@ -65,14 +65,14 @@
     "n": 29
    },
    "samir|shaaz": {
-    "kappa": 0.0917,
-    "n": 124
+    "kappa": 0.0946,
+    "n": 141
    }
   },
-  "pooled_kappa": -0.0393
+  "pooled_kappa": -0.0174
  },
  "occupied": {
-  "n_items": 130,
+  "n_items": 147,
   "pairwise": {
    "devin|samir": {
     "kappa": 0.7812,
@@ -83,14 +83,14 @@
     "n": 29
    },
    "samir|shaaz": {
-    "kappa": 0.7416,
-    "n": 123
+    "kappa": 0.7162,
+    "n": 140
    }
   },
-  "pooled_kappa": 0.6549
+  "pooled_kappa": 0.6529
  },
  "propulsion": {
-  "n_items": 130,
+  "n_items": 147,
   "pairwise": {
    "devin|samir": {
     "kappa": -0.0275,
@@ -101,14 +101,14 @@
     "n": 29
    },
    "samir|shaaz": {
-    "kappa": 0.6893,
-    "n": 123
+    "kappa": 0.7079,
+    "n": 140
    }
   },
-  "pooled_kappa": 0.6875
+  "pooled_kappa": 0.7024
  },
  "setting": {
-  "n_items": 130,
+  "n_items": 147,
   "pairwise": {
    "devin|samir": {
     "kappa": 0.6275,
@@ -119,14 +119,14 @@
     "n": 28
    },
    "samir|shaaz": {
-    "kappa": 0.5886,
-    "n": 124
+    "kappa": 0.6092,
+    "n": 141
    }
   },
-  "pooled_kappa": 0.5589
+  "pooled_kappa": 0.5841
  },
  "viewpoint": {
-  "n_items": 129,
+  "n_items": 146,
   "pairwise": {
    "devin|samir": {
     "kappa": 0.5645,
@@ -137,10 +137,10 @@
     "n": 29
    },
    "samir|shaaz": {
-    "kappa": 0.4669,
-    "n": 123
+    "kappa": 0.5099,
+    "n": 140
    }
   },
-  "pooled_kappa": 0.4362
+  "pooled_kappa": 0.4824
  }
 }

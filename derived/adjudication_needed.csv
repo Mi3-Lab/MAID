@@ -6,3 +6,4 @@ wv_000250,needs_adjudication,occlusion,"{""devin"": ""none"", ""samir"": ""heavy
 wv_000250,needs_adjudication,viewpoint,"{""devin"": ""side"", ""samir"": ""front""}"
 wv_000250,needs_adjudication,setting,"{""devin"": ""other"", ""samir"": ""sidewalk""}"
 wv_000277,needs_adjudication,occlusion,"{""devin"": ""none"", ""samir"": ""heavy""}"
+wv_000304,needs_third_annotator,exclude,"{""samir"": ""none"", ""shaaz"": ""not_a_photo""}"
