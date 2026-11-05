@@ -17,6 +17,7 @@ CACHE_DIR = Path(os.environ.get("WV_CACHE_DIR", ROOT / "var" / "imgcache"))
 EXPORT_DIR = Path(os.environ.get("WV_EXPORT_DIR", ROOT / "var" / "exports"))
 AUTO_DIR = Path(os.environ.get("WV_AUTO_DIR", ROOT / "annotations" / "auto"))     # machine suggestions (never human events)
 REVIEW_AUTO_DIR = Path(os.environ.get("WV_REVIEW_AUTO_DIR", ROOT / "var" / "assist"))  # gitignored extra suggestion files (e.g. assistant_visual_review_attr-v1.jsonl); never labels
+ADJ_QUEUE = Path(os.environ.get("WV_ADJ_QUEUE", ROOT / "var" / "adjudication" / "queue.jsonl"))  # gitignored review-request queue (concerns, not decisions)
 AUTO_MODEL = os.environ.get("WV_AUTO_MODEL", "").strip()                          # default: newest annotations/auto/*.jsonl
 BLUR_DIR = Path(os.environ.get("WV_BLUR_DIR", ROOT / "images_blurred"))            # scripts/auto_blur.py output (originals untouched)
 BLUR_MANIFESTS = [Path(p) for p in os.environ.get("WV_BLUR_MANIFESTS", "").split(os.pathsep) if p] or \
@@ -495,6 +496,40 @@ def conflicts():
             rows.append(image_meta(i) | {"status": s["status"] if s and s["conflicts"] else "v1.1:" + s11["status"],
                         "done": sorted(set((s or {}).get("done", [])) | set((s11 or {}).get("done", []))), "conflicts": cf})
     return {"conflicts": rows}
+
+def load_adj_queue(path=None):
+    """Read the review-request queue (JSONL). Items are concerns for an adjudicator, never labels or decisions.
+    Each line needs image_id, reason, source; later lines with the same (image_id, reason, source) replace earlier ones."""
+    path = Path(path or ADJ_QUEUE); out = {}
+    if not path.exists(): return []
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        line = line.strip()
+        if not line: continue
+        try: r = json.loads(line)
+        except ValueError: continue
+        if not isinstance(r, dict) or not all(isinstance(r.get(k), str) and r.get(k) for k in ("image_id", "reason", "source")): continue
+        out[(r["image_id"], r["reason"], r["source"])] = r | {"line": n}
+    return list(out.values())
+
+@app.get("/api/adjudication_queue")
+def adjudication_queue(reason: str | None = None, source: str | None = None):
+    """Queued concerns joined with the current human device_type labels. Read-only: resolving is done with normal
+    adjudication/label events in the UI; this endpoint never writes events."""
+    items = load_adj_queue(); B = blocked()
+    with db() as c: evs = all_events(c)
+    human = {}
+    for e in evs:
+        if e.get("field") == "device_type" and e.get("kind", "label") in ("label", "adjudication"):
+            human.setdefault(e["image_id"], {})[("adj:" if e.get("kind") == "adjudication" else "") + e["annotator"]] = e["value"]
+    counts = {}
+    for r in items: counts[r["reason"]] = counts.get(r["reason"], 0) + 1
+    rows = []
+    for r in items:
+        if (reason and r["reason"] != reason) or (source and r["source"] != source): continue
+        i = r["image_id"]
+        meta = image_meta(i) if i in CANDIDATES and i not in B else {"image_id": i, "img": ""}
+        rows.append(meta | {k: v for k, v in r.items() if k != "img"} | {"blocked": i in B, "human_device_type": human.get(i, {})})
+    return {"items": rows, "counts": counts, "total": len(items)}
 
 @app.get("/api/stats")
 def stats():
