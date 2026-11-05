@@ -26,7 +26,7 @@ def build(a):
     per, adjv = wvcore.fold(evs)
     cands = wvcore.load_candidates(a.candidates) if os.path.exists(a.candidates) else {}
     if a.contributed and os.path.exists(a.contributed): cands.update(wvcore.load_contributed(a.contributed))
-    auto = wvcore.load_auto(a.auto_dir)
+    auto = wvcore.load_auto(a.auto_dir); auto.update({k: v for k, v in wvcore.load_auto(str(ROOT / "var" / "assist")).items() if k not in auto})
     ctx = wvcore.load_filter_context(a.manifest_v11, a.manifest_v2, a.synthetic, a.measurements, a.size_estimates)
     blocked = wvcore.effective_blocklist(a.blocklist_dir, evs) if a.blocklist_dir and os.path.isdir(a.blocklist_dir) else set()
     ids = sorted(i for i in cands if i not in blocked)

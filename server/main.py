@@ -16,6 +16,7 @@ IMAGE_DIR = Path(os.environ.get("WV_IMAGE_DIR", ROOT / "images"))          # <im
 CACHE_DIR = Path(os.environ.get("WV_CACHE_DIR", ROOT / "var" / "imgcache"))
 EXPORT_DIR = Path(os.environ.get("WV_EXPORT_DIR", ROOT / "var" / "exports"))
 AUTO_DIR = Path(os.environ.get("WV_AUTO_DIR", ROOT / "annotations" / "auto"))     # machine suggestions (never human events)
+REVIEW_AUTO_DIR = Path(os.environ.get("WV_REVIEW_AUTO_DIR", ROOT / "var" / "assist"))  # gitignored extra suggestion files (e.g. assistant_visual_review_attr-v1.jsonl); never labels
 AUTO_MODEL = os.environ.get("WV_AUTO_MODEL", "").strip()                          # default: newest annotations/auto/*.jsonl
 BLUR_DIR = Path(os.environ.get("WV_BLUR_DIR", ROOT / "images_blurred"))            # scripts/auto_blur.py output (originals untouched)
 BLUR_MANIFESTS = [Path(p) for p in os.environ.get("WV_BLUR_MANIFESTS", "").split(os.pathsep) if p] or \
@@ -92,10 +93,10 @@ def row_event(r):
 _AUTO = {"sig": None, "data": {}, "active": "", "attr_active": "", "attr_order": []}
 AUTO_ATTR_MODEL = os.environ.get("WV_AUTO_ATTR_MODEL", "").strip()                # v1.1 attribute suggestions (default: newest *_attr-*.jsonl)
 def auto_state():
-    try: files = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in AUTO_DIR.glob("*.jsonl"))
+    try: files = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for d in (AUTO_DIR, REVIEW_AUTO_DIR) for p in d.glob("*.jsonl"))
     except OSError: files = []
     if files != _AUTO["sig"]:
-        data = wvcore.load_auto(AUTO_DIR)
+        data = wvcore.load_auto(AUTO_DIR); data.update({k: v for k, v in wvcore.load_auto(REVIEW_AUTO_DIR).items() if k not in data})
         main = [f for f in files if not wvcore.is_attr_tag(f[0][:-6])]; attr = [f for f in files if wvcore.is_attr_tag(f[0][:-6])]
         newest = max(main, key=lambda f: f[1])[0][:-6] if main else ""
         newest_attr = max(attr, key=lambda f: f[1])[0][:-6] if attr else ""
