@@ -20,6 +20,7 @@
     <option value="wheelchair">untyped wheelchairs first</option>
     <option value="random">random</option>
   </select>
+  <button id="btnFilter" title="Filter: focus on images with specific labels (Shift+F)">Filter</button>
   <button id="btnList">My images</button>
   <a href="/adjudicate.html">Adjudicate</a>
   <a href="/removed.html" title="Review images the removal rules took out; restore any that are OK">Removed</a>
@@ -36,6 +37,7 @@
   <div id="imgwrap"><img id="img" alt=""><canvas id="cv"></canvas><div id="imgmsg"></div></div>
   <aside id="panel">
     <div id="pos"></div>
+    <div id="fpos" class="muted"></div>
     <div id="meta" class="muted"></div>
     <div id="aibanner" hidden></div>
     <div id="fields"></div>
@@ -49,6 +51,7 @@
   </aside>
 </main>
 <section id="list" hidden></section>
+<aside id="fpanel" hidden></aside>
 <dialog id="help"><h3>Keyboard</h3><table>
 <tr><td><kbd>↑</kbd><kbd>↓</kbd></td><td>select field row</td></tr>
 <tr><td><kbd>1</kbd>–<kbd>9</kbd></td><td>set value in selected row (<kbd>0</kbd> clears)</td></tr>
@@ -58,6 +61,7 @@
 <tr><td><kbd>f</kbd></td><td>toggle "face blur missed"</td></tr>
 <tr><td><kbd>b</kbd> / <kbd>Backspace</kbd></td><td>draw bbox (drag on image) / clear bboxes</td></tr>
 <tr><td><kbd>?</kbd></td><td>this help</td></tr>
+<tr><td><kbd>Shift</kbd>+<kbd>F</kbd></td><td>filter panel: pick values (OR within a field, AND across fields); prev / next then visit matching images only; the filter is kept in the link (Copy link) and on this device; Clear removes it</td></tr>
 <tr><th colspan="2" style="text-align:left;padding-top:8px">Review auto labels (<kbd>r</kbd> or the header button)</th></tr>
 <tr><td><kbd>r</kbd></td><td>switch between normal labelling and reviewing machine suggestions</td></tr>
 <tr><td><kbd>a</kbd> / <kbd>Enter</kbd></td><td>confirm all remaining orange suggestions as your labels, mark done, go to next open image</td></tr>
@@ -72,7 +76,10 @@
 <tr><td><kbd>Enter</kbd></td><td>done — only once every row has a value; orange machine hints are <b>never</b> saved unless you choose them</td></tr></table>
 <p><b>Attributes v1.1</b> shows images that already have their v1.0 labels (shown as context) and asks for the new attributes only;
 it never changes v1.0 labels or their done status. Weather is what you can see: <i>indoor_na</i> indoors, <i>night</i> for outdoor
-night shots. <i>size_class</i> is a visual impression (standard / wide), not a measurement.</p>
+night shots. <i>size_class</i> is a visual impression (standard / wide / pediatric_size), not a measurement.
+<b>Chair subtype</b> appears right below device type once the chair is manual or powered (yours, the v1.0 label, or — marked "AI" — the model's guess); it is optional here, so number keys skip it — tap it or use ↑/↓;
+<b>drive wheels</b> for powered chairs. <b>Ramp deployment</b> is a research judgement of the scene (safe / unsafe / not needed / unknown),
+not a safety assessment; <b>ramp reasons</b> is multi-select (number keys toggle; <i>unknown</i> alone).</p>
 <p>Images are shown <b>face-blurred</b> (as they will be released) wherever <code>scripts/auto_blur.py</code> has processed them.
 If you can still recognise a face, press <kbd>f</kbd>; those images get re-blurred by hand before release.</p>
 <p>Dashed blue = weak-label suggestion from <code>proposed_class</code> (normal mode); it is only saved when you press Done or click it.

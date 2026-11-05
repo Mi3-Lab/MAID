@@ -174,7 +174,61 @@ def check_data_v11(path):
     kids = [r["image_id"] for r in T if "child" in (r.get("v11_exclusion_reason") or "")]
     (fail if kids else ok)(f"--v11: no child-flagged rows trainable: {len(kids)}")
 
+SYNTH_REQUIRED = ["image_id", "synthetic", "split", "leak_group", "source_image_id", "background_id", "background_license", "background_url"]
+def check_synthetic(path, manifest=None):
+    """--synthetic var/synthetic/synthetic_manifest.csv: every synthetic row is train-only, derives from a TRAIN image (and
+    inherits its leak group), never from an excluded / child-flagged image, has licensed people-free background provenance,
+    never reuses a real image id, never uses a val/test image as background, and carries no model-output columns."""
+    S = list(csv.DictReader(open(path, encoding="utf-8")))
+    mp = Path(manifest) if manifest else next((p for p in (ROOT / "data" / "manifest_v11.csv", ROOT / "data" / "manifest_v2.csv") if p.exists()), None)
+    M = {r["image_id"]: r for r in csv.DictReader(open(mp, encoding="utf-8"))} if mp and mp.exists() else {}
+    ok(f"--synthetic: {len(S)} rows vs {mp.name if mp else 'no manifest'} ({len(M)} real images)")
+    miss = [c for c in SYNTH_REQUIRED if S and c not in S[0]]
+    (fail if miss else ok)(f"--synthetic: provenance columns present: missing {miss}")
+    def bad(test): return [r.get("image_id") for r in S if test(r)]
+    (lambda x: (fail if x else ok)(f"--synthetic: all rows tagged synthetic=true: {len(x)} not {x[:5]}"))(bad(lambda r: r.get("synthetic") not in ("1", "true", "True")))
+    (lambda x: (fail if x else ok)(f"--synthetic: all rows split=train: {len(x)} not {x[:5]}"))(bad(lambda r: r.get("split") != "train"))
+    (lambda x: (fail if x else ok)(f"--synthetic: ids never collide with real images: {len(x)} {x[:5]}"))(bad(lambda r: r.get("image_id") in M))
+    (lambda x: (fail if x else ok)(f"--synthetic: source is a train image of the manifest: {len(x)} not {x[:5]}"))(
+        bad(lambda r: M.get(r.get("source_image_id"), {}).get("split") != "train"))
+    (lambda x: (fail if x else ok)(f"--synthetic: leak_group equals the source's: {len(x)} differ {x[:5]}"))(
+        bad(lambda r: r.get("source_image_id") in M and r.get("leak_group") != M[r["source_image_id"]].get("leak_group")))
+    def excl(src):
+        m = M.get(src, {}); why = " ".join(m.get(k) or "" for k in ("exclusion_reason", "v11_exclusion_reason"))
+        return "child" in why or why.strip() not in ("", "none")
+    (lambda x: (fail if x else ok)(f"--synthetic: no excluded / child-flagged source: {len(x)} {x[:5]}"))(bad(lambda r: excl(r.get("source_image_id"))))
+    (lambda x: (fail if x else ok)(f"--synthetic: background license + url recorded: {len(x)} missing {x[:5]}"))(
+        bad(lambda r: not (r.get("background_license") or "").strip() or not (r.get("background_url") or "").strip()))
+    dsb = [r["image_id"] for r in S if (r.get("background_source") or "").startswith("dataset:")
+           and M.get(r["background_source"].split(":", 1)[1], {}).get("split") != "train"]
+    (fail if dsb else ok)(f"--synthetic: dataset backgrounds are train images only: {len(dsb)} not {dsb[:5]}")
+    cols = [c for c in (S[0] if S else {}) if re.search(r"sugg|confid|prob|score|logit|emb|auto|pred", c.lower())]
+    (fail if cols else ok)(f"--synthetic: no model-output columns: {cols}")
+    bgp = ROOT / "data" / "backgrounds" / "backgrounds.csv"
+    if bgp.exists():
+        B = {r.get("background_id"): r for r in csv.DictReader(open(bgp, encoding="utf-8"))}
+        ppl = [r["image_id"] for r in S if r.get("background_id") in B and (B[r["background_id"]].get("people") or "").strip().lower() != "none"]
+        (fail if ppl else ok)(f"--synthetic: backgrounds are people-free (people=none in backgrounds.csv): {len(ppl)} {ppl[:5]}")
+
+# Label-free inference: assist models see pixels only. These scripts must not read events, folds, manifests, candidates or labels.
+LABEL_FREE_SCRIPTS = ["assist_models.py", "assist_annotate.py"]
+LABEL_SOURCES = re.compile(r"annotations[/\\]events|\bevents\b|\.fold\(|load_events|manifest_v|candidates\.csv|labels\.csv|splits_v|wheelview\.db|WV_DB|load_candidates|^fold$")
+def audit_label_free(p):
+    tree = ast.parse(open(p, encoding="utf-8").read()); probs = []
+    for s in strs(tree):
+        if LABEL_SOURCES.search(s) and len(s) < 200: probs.append(f"references a label source: {s!r}")
+    for n in ast.walk(tree):
+        nm = n.id if isinstance(n, ast.Name) else n.attr if isinstance(n, ast.Attribute) else None
+        if nm and LABEL_SOURCES.search(nm): probs.append(f"uses {nm}")
+    return sorted(set(probs))
+
 def check_code():
+    for s in LABEL_FREE_SCRIPTS:
+        p = ROOT / "scripts" / s
+        if not p.exists(): continue
+        pr = audit_label_free(p)
+        for x in pr: fail(f"code: {s}: {x}")
+        if not pr: ok(f"code: {s}: label-free (no events / manifests / candidates / labels read)")
     for s in MODEL_SCRIPTS:
         p = ROOT / "scripts" / s
         if not p.exists(): fail(f"code: scripts/{s} missing"); continue
@@ -309,6 +363,7 @@ def main():
     ap.add_argument("--features", action="store_true"); ap.add_argument("--files", action="store_true"); ap.add_argument("--runtime", action="store_true")
     ap.add_argument("--release", default=None, help="audit a built release folder (e.g. var/release/WheelView_v1.0)")
     ap.add_argument("--v11", default=None, help="also audit a v1.1 manifest (scripts/build_manifest_v11.py output)")
+    ap.add_argument("--synthetic", default=None, help="also audit a synthetic manifest (scripts/synth_augment.py output)")
     a = ap.parse_args()
     if a.release and not (ROOT / "data" / "manifest_v2.csv").exists():
         # Standalone use inside a downloaded release (code/scripts/check_leakage.py --release .): labels.csv is the reference.
@@ -333,6 +388,7 @@ def main():
     if a.features and T: check_features(a, T, rep)
     if a.files and T: check_files(T)
     if a.v11: check_data_v11(a.v11)
+    if a.synthetic: check_synthetic(a.synthetic, a.v11)
     check_code()
     if a.runtime and T: check_runtime(T)
     if a.release and T: check_release(a, T, rep)

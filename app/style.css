@@ -27,3 +27,15 @@ main{display:flex;gap:12px;padding:10px;height:calc(100vh - 44px)}
 #aibanner{border:1px solid #ff8c00;background:#fff8ee;border-radius:5px;padding:6px;margin:6px 0;font-size:12px}
 #aibanner .risk{color:#b00020;margin-top:4px}label.ai{outline:2px dashed #ff8c00;border-radius:3px;padding:0 3px}
 .tag.ai{background:#ff8c00;color:#fff}body.review header{background:#7a3e00}#rorder{font:inherit;padding:3px}
+#fpanel{position:fixed;top:44px;right:0;bottom:0;width:400px;max-width:100vw;overflow:auto;background:#fff;box-shadow:-3px 0 12px #0003;padding:10px;z-index:20}
+#fpanel .fhead{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px}#fpanel .fhead b{flex:1}
+#fpanel details{border-top:1px solid #e3e6ea;padding:4px 0}#fpanel summary{cursor:pointer;font-weight:600;font-size:13px;padding:4px 0}
+.fsel{font-weight:400;color:#1d4e89;font-size:12px}
+.chip{display:inline-block;margin:2px;padding:4px 9px;border:1px solid #c5ccd3;border-radius:14px;font-size:12px;cursor:pointer;background:#fff;user-select:none}
+.chip.sel{background:#1d4e89;color:#fff;border-color:#1d4e89}.chip small{opacity:.7}
+#fpos{color:#1d4e89}
+@media (max-width:760px){
+  main{flex-direction:column;height:auto}#imgwrap{min-height:45vh;flex:none}#panel{width:100%}
+  .lbl{width:100%}.opt{padding:6px 10px;font-size:14px}.chip{padding:8px 12px;font-size:14px}
+  #fpanel{top:0;width:100vw}header{gap:4px}header button{padding:4px 7px}
+}

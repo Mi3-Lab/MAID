@@ -27,7 +27,7 @@ Usage:
   python scripts/auto_annotate.py --eval                   # model-vs-human agreement on derived/per_annotator_labels.csv
   python scripts/auto_annotate.py --attr --score-only      # v1.1 attribute suggestions (control, environment, weather,
                                                            # ground_wet, size_class) from the SAME embedding cache ->
-                                                           # annotations/auto/siglip2-so400m-224_attr-v1.jsonl
+                                                           # annotations/auto/siglip2-so400m-224_attr-v2.jsonl
 v1.1 attribute suggestions are a separate machine source (model tag contains "_attr-"): the app shows them only in the
 Attributes pass, as hints; they are never written as labels and never selected as the review-mode model.
 """
@@ -102,7 +102,7 @@ P = {
  },
 }
 # ---------- v1.1 attribute prompts (separate tag; "unknown" is never suggested: it is the annotator's choice) ----------
-ATTR_PROMPT_VERSION = "attr-v1"
+ATTR_PROMPT_VERSION = "attr-v2"   # v2: + chair_subtype, drive_position, ramp_deploy, ramp_reasons
 ATTR_TAG = "siglip2-so400m-224_" + ATTR_PROMPT_VERSION
 P_V11 = {
  "control": {
@@ -146,7 +146,54 @@ P_V11 = {
   "standard": ["a standard size wheelchair", "a typical folding wheelchair", "an ordinary power wheelchair"],
   "wide": ["an extra wide heavy-duty wheelchair", "a very wide wheelchair with a broad seat", "a large wide power wheelchair"],
  },
+ # chair_subtype is scored within the parent's list (manual or powered); the parent comes from P_V11_PARENT
+ "chair_subtype": {
+  "standard_folding": ["a standard folding manual wheelchair with a sling seat", "a basic steel folding wheelchair",
+                       "a hospital-style folding wheelchair with swing-away footrests"],
+  "lightweight_rigid": ["a lightweight rigid-frame manual wheelchair", "a sporty ultralight active wheelchair with cambered wheels",
+                        "a compact rigid wheelchair with no push handles"],
+  "transport_attendant": ["a transport wheelchair with four small wheels pushed by a caregiver",
+                          "an attendant-propelled wheelchair with small rear wheels", "a companion chair with small wheels"],
+  "tilt_recline": ["a tilt-in-space wheelchair with a high padded backrest and headrest", "a reclining wheelchair with a tall back",
+                   "a positioning wheelchair tilted back"],
+  "bariatric": ["a bariatric heavy-duty extra wide manual wheelchair", "a reinforced extra wide wheelchair"],
+  "power_standard": ["a standard power wheelchair with a captain's seat", "an electric wheelchair with a joystick and batteries",
+                     "a compact powered wheelchair"],
+  "power_tilt_recline": ["a complex rehab power wheelchair with tilt and recline", "a power wheelchair tilted back with a headrest",
+                         "a power wheelchair with powered seating functions"],
+ },
+ "drive_position": {
+  "mid_wheel": ["a mid-wheel drive power wheelchair with the large drive wheels under the seat",
+                "a power wheelchair with six wheels and drive wheels in the middle"],
+  "front_wheel": ["a front-wheel drive power wheelchair with big wheels at the front", "a power wheelchair with large front drive wheels"],
+  "rear_wheel": ["a rear-wheel drive power wheelchair with big wheels at the back", "a power wheelchair with large rear drive wheels and small front casters"],
+ },
+ "ramp_deploy": {   # research judgement of the scene, not a safety assessment
+  "safe": ["a vehicle ramp deployed onto a clear level sidewalk with plenty of room",
+           "an open wide flat space beside a van where a wheelchair ramp can be lowered", "a clear accessible boarding area"],
+  "unsafe": ["a vehicle ramp blocked by a pole or obstacle", "a crowded narrow sidewalk with no room for a ramp",
+             "a ramp onto a steep, broken or icy surface", "a ramp deployed into moving traffic"],
+  "not_needed": ["a street scene with no wheelchair user waiting", "a person walking without any mobility device",
+                 "an empty road with nobody needing a ramp"],
+ },
 }
+# ramp_reasons (multi-select): each reason is scored on its own, P(positive) under a 2-way softmax; suggested = reasons >= 0.5
+P_V11_MULTI = {
+ "ramp_reasons": {
+  "insufficient_space": (["a very narrow sidewalk with no room", "a cramped space between a car and a wall"], ["a wide open sidewalk with lots of room"]),
+  "obstruction": (["a pole, bin or bench blocking the curb", "parked bikes or objects in the way on the sidewalk"], ["a clear unobstructed curb"]),
+  "uneven_surface": (["broken uneven pavement", "a gravel or cobblestone surface"], ["smooth level pavement"]),
+  "steep_slope": (["a steep hill street", "a steeply sloping sidewalk"], ["a flat level street"]),
+  "curb_height_issue": (["a very high curb", "a large drop from the curb to the road"], ["a flush curb cut at road level"]),
+  "wet_icy_surface": (["an icy slippery sidewalk", "wet slippery ground with puddles", "snow on the pavement"], ["dry pavement"]),
+  "traffic_hazard": (["cars driving close by in busy traffic", "a vehicle stopped in a live traffic lane"], ["a quiet street with no traffic"]),
+  "no_wheelchair_user": (["a street with no wheelchair user", "people walking without wheelchairs"], ["a wheelchair user waiting at the curb"]),
+  "user_not_waiting_unclear": (["a wheelchair user moving away, not waiting for a vehicle", "a wheelchair user far from the road"],
+                               ["a wheelchair user waiting at the curb for a bus"]),
+ },
+}
+P_V11_PARENT = {"manual": ["a manual wheelchair with large push wheels", "a person in a manual wheelchair"],
+                "powered": ["an electric power wheelchair with a joystick", "a motorised power wheelchair with batteries"]}
 SCREEN = {   # flag -> (positive prompts, negative prompts); score = P(positive) under a 2-way softmax
  "child": (["a photo of a child", "a young kid", "a toddler", "a baby", "children playing"],
            ["a photo of an adult", "an elderly person", "a photo with no people", "an adult man or woman"]),
@@ -234,6 +281,8 @@ def text_bank(torch, m, p):
         return t.numpy()
     bank = {f: {o: enc(ds) for o, ds in opts.items()} for f, opts in P.items()}
     bank_v11 = {f: {o: enc(ds) for o, ds in opts.items()} for f, opts in P_V11.items()}
+    bank_v11["_parent"] = {o: enc(ds) for o, ds in P_V11_PARENT.items()}
+    for f, opts in P_V11_MULTI.items(): bank_v11["_multi_" + f] = {o: (enc(pos), enc(neg)) for o, (pos, neg) in opts.items()}
     scr = {k: (enc(pos), enc(neg)) for k, (pos, neg) in SCREEN.items()}
     scale = float(m.logit_scale.exp()) if hasattr(m, "logit_scale") else 100.0
     return bank, scr, scale, bank_v11
@@ -284,11 +333,38 @@ def score(E, bank, scr):
     return out
 
 def score_attr(E, bank_v11):
-    """v1.1 attribute suggestions: per field softmax over the prompted options (never 'unknown')."""
+    """v1.1 attribute suggestions: per field softmax over the prompted options (never 'unknown').
+    chair_subtype: the softmax runs within the manual or powered list, picked by a manual-vs-powered prompt pair
+    (stored as 'parent'/'parent_confidence'); the app shows the row when a human (or the v1.0 model) says manual/powered.
+    Multi-select fields (ramp_reasons): one positive-vs-negative score per reason; value = reasons with p >= 0.5."""
     import numpy as np
     sug = [dict() for _ in range(len(E))]
+    par = None
+    if "_parent" in bank_v11 and len(E):
+        pn = list(bank_v11["_parent"]); par = (pn, softmax((E @ np.stack([bank_v11["_parent"][o] for o in pn]).T) / TEMP))
     for f in wvcore.V11_FIELDS:
+        if f in wvcore.MULTI_FIELDS:
+            mb = bank_v11.get("_multi_" + f)
+            if not mb: continue
+            ps = {o: softmax(np.stack([E @ pos, E @ neg], 1) / TEMP)[:, 0] for o, (pos, neg) in mb.items()}
+            for i in range(len(E)):
+                sc = {o: round(float(v[i]), 4) for o, v in ps.items()}; on = sorted(o for o, v in sc.items() if v >= 0.5)
+                if on: sug[i][f] = {"value": on, "confidence": round(min(sc[o] for o in on), 4), "scores": sc}
+            continue
         if f not in bank_v11: continue
+        if f in wvcore.OPTIONS_BY_PARENT and par:
+            pn, pp = par
+            for parent, opts in wvcore.OPTIONS_BY_PARENT[f].items():
+                names = [o for o in opts if o in bank_v11[f]]
+                if not names: continue
+                pr = softmax((E @ np.stack([bank_v11[f][o] for o in names]).T) / TEMP)
+                for i in range(len(E)):
+                    j = int(pp[i].argmax())
+                    if pn[j] != parent: continue
+                    k = int(pr[i].argmax())
+                    sug[i][f] = {"value": names[k], "confidence": round(float(pr[i, k]), 4), "parent": parent,
+                                 "parent_confidence": round(float(pp[i, j]), 4), "probs": {n: round(float(pr[i, q]), 4) for q, n in enumerate(names)}}
+            continue
         names = list(bank_v11[f]); pr = softmax((E @ np.stack([bank_v11[f][o] for o in names]).T) / TEMP)
         for i in range(len(E)):
             k = int(pr[i].argmax())
@@ -312,7 +388,7 @@ def write_attr_output(c, cands, meta_extra, outdir=None):
             "shown_in": "Attributes pass only, as hints; never bulk-accepted",
             "classifier": {"model": CLS_MODEL, "revision": rev(CLS_MODEL), "license": CLS_LICENSE,
                            "method": "zero-shot prompt ensemble, softmax at temperature %.3g; 'unknown' is never suggested" % TEMP},
-            "prompt_version": ATTR_PROMPT_VERSION, "prompts": P_V11, "images": len(rows), "generated_at": now(),
+            "prompt_version": ATTR_PROMPT_VERSION, "prompts": P_V11, "prompts_multi": {f: {o: {"pos": a, "neg": b} for o, (a, b) in d.items()} for f, d in P_V11_MULTI.items()}, "prompts_parent": P_V11_PARENT, "images": len(rows), "generated_at": now(),
             "accuracy": "not evaluated (no human v1.1 labels yet); see derived/auto_vs_human_v11.json once they exist", **meta_extra}
     meta.pop("run", None)
     json.dump(meta, open(outdir / f"{ATTR_TAG}.meta.json", "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)

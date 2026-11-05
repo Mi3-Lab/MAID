@@ -89,7 +89,7 @@ def row_event(r):
     return e
 
 # ---------- machine suggestions: annotations/auto/*.jsonl, reloaded whenever the files change (e.g. after git pull) ----------
-_AUTO = {"sig": None, "data": {}, "active": "", "attr_active": ""}
+_AUTO = {"sig": None, "data": {}, "active": "", "attr_active": "", "attr_order": []}
 AUTO_ATTR_MODEL = os.environ.get("WV_AUTO_ATTR_MODEL", "").strip()                # v1.1 attribute suggestions (default: newest *_attr-*.jsonl)
 def auto_state():
     try: files = sorted((p.name, p.stat().st_mtime_ns, p.stat().st_size) for p in AUTO_DIR.glob("*.jsonl"))
@@ -99,8 +99,10 @@ def auto_state():
         main = [f for f in files if not wvcore.is_attr_tag(f[0][:-6])]; attr = [f for f in files if wvcore.is_attr_tag(f[0][:-6])]
         newest = max(main, key=lambda f: f[1])[0][:-6] if main else ""
         newest_attr = max(attr, key=lambda f: f[1])[0][:-6] if attr else ""
-        _AUTO.update(sig=files, data=data, active=AUTO_MODEL if AUTO_MODEL in data else newest,
-                     attr_active=AUTO_ATTR_MODEL if AUTO_ATTR_MODEL in data else newest_attr)
+        aa = AUTO_ATTR_MODEL if AUTO_ATTR_MODEL in data else newest_attr
+        # every attr tag, active first then newest first: other assist models (VLM, ...) fill fields the active one lacks
+        order = [aa] * bool(aa) + [f[0][:-6] for f in sorted(attr, key=lambda f: -f[1]) if f[0][:-6] != aa]
+        _AUTO.update(sig=files, data=data, active=AUTO_MODEL if AUTO_MODEL in data else newest, attr_active=aa, attr_order=order)
     return _AUTO
 
 def auto_rec(i, tag=None):
@@ -226,7 +228,7 @@ def health():
     a = auto_state()
     out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
            "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
-           "features": ["review", "blur", "attr_v11", "contributed"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
+           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
            "contributed": sum(1 for r in CANDIDATES.values() if r.get("source") == "contributed")}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -388,7 +390,7 @@ def attr_assign(annotator: str, n: int = Query(30, ge=1, le=200)):
     ann = wvcore.slug(annotator)
     if not ann or ann != annotator: raise HTTPException(400, "annotator must be a slug (lowercase, a-z0-9._-)")
     if not images_ready(): raise HTTPException(503, "server is still downloading images; try again in a minute")
-    a = auto_state(); recs = a["data"].get(a["attr_active"], {})
+    a = auto_state(); order = a.get("attr_order") or []
     maxn = wvcore.SCHEMA["max_annotators_per_image"]; base = wvcore.SCHEMA.get("annotators_per_image_v11", 2)
     hold = wvcore.load_safety_hold(str(BLOCK_DIR)); rel = _release_ids()
     with LOCK, db() as c:
@@ -418,9 +420,65 @@ def attr_assign(annotator: str, n: int = Query(30, ge=1, le=200)):
         s10 = wvcore.image_status(i, per, adjv)
         ctx = {f: s10["fields"][f][0] for f in CONTEXT_FIELDS if f in s10["fields"] and s10["fields"][f][0]}
         m = image_meta(i) | {"context": ctx}
-        if i in recs: m["auto11"] = recs[i]
+        sg = wvcore.merged_suggestions(i, a["data"], order)   # per field: active attr model first, then other attr models
+        if sg: m["auto11"] = {"image_id": i, "model_tag": a["attr_active"] or order[0], "suggestions": sg}
+        dv = (auto_rec(i) or {}).get("suggestions", {}).get("device_type")   # v1.0 model's device guess: offers subtypes
+        if dv and dv.get("value"): m["auto_device"] = {"value": wvcore.canon("device_type", dv["value"]), "confidence": dv.get("confidence"), "model_tag": a["active"]}
         imgs.append(m)
     return {"annotator": ann, "model_tag": a["attr_active"], "images": imgs}
+
+# ---------- filtering (logic: wvcore.parse_filter / image_facts / run_filter; same as scripts/filter_images.py) ----------
+FILTER_CTX = {"manifest_v11": Path(os.environ.get("WV_MANIFEST_V11", ROOT / "data" / "manifest_v11.csv")),
+              "manifest_v2": Path(os.environ.get("WV_MANIFEST_V2", ROOT / "data" / "manifest_v2.csv")),
+              "synthetic": Path(os.environ.get("WV_SYNTHETIC_MANIFEST", ROOT / "var" / "synthetic" / "synthetic_manifest.csv")),
+              "measurements": Path(os.environ.get("WV_MEASUREMENTS", ROOT / "data" / "measurements.csv")),
+              "size_estimates": Path(os.environ.get("WV_SIZE_ESTIMATES", ROOT / "var" / "v11" / "size_estimates.csv"))}
+_FCTX = {"sig": None, "data": None}
+def filter_context():
+    sig = tuple((str(p), p.stat().st_mtime_ns if p.exists() else 0) for p in FILTER_CTX.values())
+    if sig != _FCTX["sig"]: _FCTX.update(sig=sig, data=wvcore.load_filter_context(**{k: str(v) for k, v in FILTER_CTX.items()}))
+    return _FCTX["data"]
+
+def _filter(q: str, ids: list | None, limit: int, counts: bool):
+    try: flt, basis = wvcore.parse_filter(q)
+    except ValueError as e: raise HTTPException(400, str(e))
+    refresh_candidates(); B = blocked()
+    with db() as c: per, adjv = wvcore.fold(all_events(c))
+    a = auto_state(); prefer = [a["active"]] * bool(a["active"]) + (a.get("attr_order") or [])
+    pool = [i for i in (ids if ids is not None else sorted(CANDIDATES, key=order_key)) if i in CANDIDATES and i not in B]
+    ctx = filter_context()
+    facts = {i: wvcore.image_facts(i, per, adjv, wvcore.merged_suggestions(i, a["data"], prefer), ctx) for i in pool}
+    res = wvcore.run_filter(pool, facts, flt, basis, counts=counts)
+    res["truncated"] = len(res["ids"]) > limit; res["ids"] = res["ids"][:limit]
+    return res
+
+@app.get("/api/filter")
+def filter_get(q: str = "", limit: int = Query(500, ge=0, le=20000), counts: bool = True):
+    """Images matching a filter over every served image: {total, count, ids (first `limit`), counts, match_counts}.
+    q: 'device_type:manual,powered;weather:rain;basis:human' -- OR within a field, AND across fields."""
+    return _filter(q, None, limit, counts)
+
+@app.post("/api/filter")
+async def filter_post(req: Request):
+    """{q, ids?: [...]} -> same as GET, restricted to `ids` (the app sends its cached queue)."""
+    b = await req.json(); ids = b.get("ids")
+    if ids is not None and (not isinstance(ids, list) or len(ids) > 20000 or not all(isinstance(i, str) for i in ids)): raise HTTPException(400, "ids must be a list of image ids")
+    return _filter(str(b.get("q") or ""), ids, int(b.get("limit") or 20000), bool(b.get("counts", True)))
+
+@app.get("/api/filter/keys")
+def filter_keys():
+    """Filter keys and their selectable values (for UIs)."""
+    return {"keys": {k: wvcore.filter_values(k) for k in wvcore.FILTER_KEYS}, "pseudo": list(wvcore.PSEUDO_KEYS),
+            "bases": list(wvcore.FILTER_BASES), "special": [wvcore.UNLABELED, wvcore.MODEL_ONLY]}
+
+@app.get("/api/assist/status")
+def assist_status():
+    """Which annotation-assist models (scripts/assist_models.py) are configured and usable; never loads weights."""
+    import importlib, sys as _sys
+    sp = str(ROOT / "scripts")
+    if sp not in _sys.path: _sys.path.insert(0, sp)
+    try: return importlib.import_module("assist_models").status()
+    except Exception as e: return {"error": type(e).__name__}
 
 @app.get("/api/conflicts")
 def conflicts():

@@ -8,7 +8,9 @@ events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v
 ## 1. v1.0 fields (unchanged)
 `device_type` (manual = non-powered / powered / other_aid / ambiguous / unclear), `setting`, `occupied`, `occlusion`,
 `propulsion`, `viewpoint`, `lighting`, `bbox`, `exclude`, `face_blur_missed`. Definitions are in `server/schema.json`.
-v1.1 adds **no** wheelchair subtype: device type stays powered vs non-powered (manual), plus other_aid and ambiguous.
+`device_type` itself is unchanged (manual = non-powered / powered / other_aid / ambiguous / unclear). v1.1 adds a
+**dependent** `chair_subtype` (and `drive_position` for powered chairs) below it; see section 2a. Scooters stay under
+`other_aid`; "pediatric" is a size descriptor (`size_class = pediatric_size`), never a subtype.
 
 ## 2. New human-labelled fields (since 1.1; 2 annotators, 3rd on disagreement)
 | field | values | meaning |
@@ -17,7 +19,29 @@ v1.1 adds **no** wheelchair subtype: device type stays powered vs non-powered (m
 | `environment` | indoor, sidewalk, curbside, crosswalk_road, vehicle_interior, ramp_lift, parking_lot, other_outdoor, unknown | Where the device is. curbside = at the kerb edge or kerb cut. crosswalk_road = on the roadway or a crossing. ramp_lift = on a vehicle or building ramp or lift. |
 | `weather` | sunny_clear, overcast, rain, snow, fog, night, indoor_na, unknown | Visible conditions. indoor_na for indoor scenes. night when it is dark outdoors. |
 | `ground_wet` | yes, no, unknown | Wet, snowy or icy ground visible. |
-| `size_class` | standard, wide, unknown | Visual impression only (e.g. a clearly extra-wide frame). **Not a measurement.** |
+| `size_class` | standard, wide, pediatric_size, unknown | Visual impression only (e.g. a clearly extra-wide frame; pediatric_size = a visibly child-sized chair, judged from the chair alone). **Not a measurement.** Never machine-suggested. |
+| `chair_subtype` | manual: standard_folding, lightweight_rigid, transport_attendant, tilt_recline, bariatric, unknown · powered: power_standard, power_tilt_recline, unknown | Dependent on `device_type` (section 2a). |
+| `drive_position` | mid_wheel, front_wheel, rear_wheel, unknown | Powered chairs only: which wheels are the large drive wheels. |
+| `ramp_deploy` | safe, unsafe, not_needed, unknown | Research judgement of the **scene**: could a vehicle wheelchair ramp be deployed here? See section 2b. |
+| `ramp_reasons` | multi-select: insufficient_space, obstruction, uneven_surface, steep_slope, curb_height_issue, wet_icy_surface, traffic_hazard, no_wheelchair_user, user_not_waiting_unclear, unknown | Shown when `ramp_deploy` is unsafe or not_needed. Stored as a JSON list; in CSVs as sorted values joined with `+` (e.g. `insufficient_space+obstruction`). `unknown` cannot be combined. |
+
+### 2a. Chair subtype (dependent field)
+* Shown only when the device is `manual` or `powered`: when **the annotator** picked it in this pass, else the final v1.0
+  label, else the model's v1.0 suggestion (the app then marks the row "(AI: manual)"). The option list follows that
+  parent: the manual list for manual chairs, the powered list for powered chairs.
+* `chair_subtype` and `drive_position` also appear in the normal v1.0 labelling pass, right after device type, marked
+  "v1.1, optional". They're stored as v1.1 fields and never change v1.0 derived files.
+* Manual definitions: standard_folding = cross-brace folding frame; lightweight_rigid = rigid/active-user frame, often no
+  push handles; transport_attendant = small rear wheels, pushed by an attendant; tilt_recline = tilting or reclining seat
+  system (manual); bariatric = visibly heavy-duty / extra-wide frame. Powered: power_standard; power_tilt_recline = power
+  seat functions visible. Choose `unknown` when you can't tell.
+* A value whose parent no longer applies (e.g. the device was later set to other_aid) is ignored by consensus
+  (`wvcore.dep_ok`).
+
+### 2b. Ramp deployment labels: research judgement, not validated
+`ramp_deploy` records what an annotator judges from **one photo**: is there room and a suitable surface to deploy a
+vehicle ramp here, and is someone actually waiting? It is **not** a safety assessment and must not be used to decide a
+real deployment. See `docs/RAMP_LABELS_v1.1.md`.
 
 Rules for annotators: choose `unknown` when you can't tell. Machine suggestions are shown in orange and never saved,
 so a human value is only recorded when a human sets it. v1.0 labels appear as read-only context and are never changed.
@@ -31,8 +55,25 @@ blocklist). Any image that has **ever** had an exclude or face-blur flag is kept
 adjudicated as keep). Contributed images join once they're `active` and have v1.0 labels.
 
 ## 3. Machine suggestions (never labels)
-`python scripts\auto_annotate.py --attr` writes `annotations/auto/siglip2-so400m-224_attr-v1.jsonl` (SigLIP2
-zero-shot, separate `_attr-` tag). The app shows these as hints. They aren't validated and can't be bulk-accepted.
+`python scripts\auto_annotate.py --attr` writes `annotations/auto/siglip2-so400m-224_attr-v2.jsonl` (SigLIP2
+zero-shot, separate `_attr-` tag; attr-v2 adds chair_subtype within the manual/powered list, drive_position, ramp_deploy and
+per-reason ramp_reasons scores). Optional assist models (`scripts/assist_annotate.py`, `docs/ANNOTATION_MODELS_v1.1.md`)
+write `annotations/auto/<vlm>_attr-vlm-v1.jsonl` the same way, plus boxes/masks in `var/assist/` (local only).
+The app shows these as orange hints with the model name. They aren't validated and can't be bulk-accepted. When a
+human picks a hint, the event carries provenance (`source=auto_attr`, `model_tag`), but it counts as that human's label.
+`pediatric_size` and `unknown` are never suggested.
+
+## 3a. Synthetic images (train-only augmentation)
+`var/synthetic/synthetic_manifest.csv` (local, gitignored) from `scripts/synth_augment.py`: `image_id` (`wv_800001`+),
+`synthetic=true`, `split=train`, `leak_group` (the source's), `source_image_id`, background provenance
+(`background_id, background_source, background_license, background_author, background_url`), `scene, environment,
+weather, ground_wet, weather_variant, lighting_variant, mask_source, box_source, transform_params, generator,
+generated_at`, inherited chair labels, and empty `ramp_deploy/ramp_reasons`. They are never in val/test, never in
+metrics, never in a release. See `docs/SYNTHETIC_AUGMENTATION_v1.1.md`.
+
+## 3b. Filtering
+Any field above (plus split, approval, status_v11, synthetic, size_basis, label_source, excluded) can be filtered in the
+app, the server (`/api/filter`) and `scripts/filter_images.py`. See `docs/FILTERING_v1.1.md`.
 
 ## 4. Wheelchair size: three separate layers
 For in-vehicle systems. Monocular web photos have **no metric scale**, so the three layers below are kept strictly apart.
@@ -73,7 +114,7 @@ sha256, width, height, n_faces_blurred, chair_ref, series, notes`.
 ## 6. `data/manifest_v11.csv` (built by `scripts/build_manifest_v11.py`)
 `image_id, source, split, split_origin, train_eligible_v10, v11_eligible, v11_exclusion_reason, device_type,
 setting, occupied, occlusion, propulsion, viewpoint, lighting, v11_status, v11_annotators, control, environment, weather,
-ground_wet, size_class` (final values only), `license, creator, leak_group, path, phash_blurred`, size proxy + `est_*`
+ground_wet, size_class, chair_subtype, drive_position, ramp_deploy, ramp_reasons` (final values only; multi as `a+b`), `license, creator, leak_group, path, phash_blurred`, size proxy + `est_*`
 columns (single-box images only), and the measured columns (real sources only).
 
 * v1.0 images keep their **frozen** v1.0 split (`split_origin=v1.0`).
@@ -104,4 +145,14 @@ columns (single-box images only), and the measured columns (real sources only).
 .venv\Scripts\python.exe scripts\build_manifest_v11.py
 .venv\Scripts\python.exe scripts\check_leakage.py --v11 data\manifest_v11.csv
 .venv\Scripts\python.exe scripts\train_multitask.py            # add --joint for the shared-adapter model
+
+# focus on one detail (same syntax as the app's filter panel and URL #filter=...)
+.venv\Scripts\python.exe scripts\filter_images.py --filter "device_type:manual;chair_subtype:_unlabeled" --counts
+
+# optional: assist models (see docs\ANNOTATION_MODELS_v1.1.md) and synthetic train-only augmentation
+.venv\Scripts\python.exe scripts\assist_models.py
+.venv\Scripts\python.exe scripts\assist_annotate.py --tasks vlm,detect,segment --limit 50
+.venv\Scripts\python.exe scripts\synth_augment.py --n 200
+.venv\Scripts\python.exe scripts\check_leakage.py --v11 data\manifest_v11.csv --synthetic var\synthetic\synthetic_manifest.csv
+.venv\Scripts\python.exe scripts\train_multitask.py --synthetic var\synthetic\synthetic_manifest.csv
 ```

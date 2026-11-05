@@ -1,0 +1,14 @@
+{
+ "_comment": "Annotation-assist models (scripts/assist_models.py). Weights are NOT in git: fetch them once (docs/ANNOTATION_MODELS_v1.1.md), then they load from the Hugging Face cache (or 'path'). allow_download=false means nothing is downloaded at run time. Set enabled=false to switch a model off.",
+ "device": "auto",
+ "allow_download": false,
+ "detector": {"enabled": true, "backend": "owlv2", "model": "google/owlv2-base-patch16-ensemble", "revision": null, "path": null,
+              "queries": ["a wheelchair", "a power wheelchair", "a mobility scooter", "a vehicle wheelchair ramp", "a wheelchair lift", "a curb ramp"],
+              "min_score": 0.2},
+ "segmenter": {"enabled": true, "backend": "sam2", "model": "facebook/sam2.1-hiera-small", "revision": null, "path": null},
+ "vlm": {"enabled": true, "backend": "florence2", "model": "microsoft/Florence-2-base", "revision": null, "path": null, "max_new_tokens": 24},
+ "alternatives": {
+  "detector": [{"backend": "grounding_dino", "model": "IDEA-Research/grounding-dino-tiny"}, {"backend": "yolo_world", "model": "yolov8s-worldv2.pt"}],
+  "vlm": [{"backend": "qwen2vl", "model": "Qwen/Qwen2-VL-2B-Instruct"}]
+ }
+}

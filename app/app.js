@@ -30,7 +30,8 @@ const allOf = store => tx(store, 'readonly', s => req(s.getAll()));
 
 // ---------- state ----------
 const S = { schema: null, annotator: null, device: null, images: [], idx: 0, mine: {}, row: 0, exclMode: false, bboxMode: false, syncing: false,
-  mode: 'label', order: 'lowconf', auto: {}, auto11: {}, armed: null, faces: true };   // mode 'attr': v1.1 Attributes pass   // faces: show the blur detector's face boxes (review mode)   // mode: 'label' | 'review' (Review auto labels)
+  mode: 'label', order: 'lowconf', auto: {}, auto11: {}, armed: null, faces: true,
+  filter: {}, basis: 'human', fmatch: null, fsrc: '', fcounts: null, ftotal: null, fopen: false };   // filter: {key: [values]}; fmatch: Set of matching ids in the queue (null = no filter)   // mode 'attr': v1.1 Attributes pass   // faces: show the blur detector's face boxes (review mode)   // mode: 'label' | 'review' (Review auto labels)
 const RISK = { child: 'likely child', clinical_setting: 'likely clinical setting', not_a_photo: 'likely not a photo' };   // need a 2nd 'a' press
 const $ = id => document.getElementById(id);
 const _fetch = window.fetch.bind(window);
@@ -53,15 +54,49 @@ function foldMine(events) {   // latest value per (image, field) for this annota
 }
 async function refreshMine() { S.mine = foldMine(await allOf('events')); }
 const val = (img, f) => S.mine[img]?.[f]?.v;
-// v1.0 fields (label/review modes, unchanged) vs v1.1 attribute fields (Attributes pass only; separate done flag)
-const FL = () => S.schema.fields.filter(f => S.mode === 'attr' ? f.since === '1.1' : !f.since);
+// v1.0 fields (label/review modes, unchanged) vs v1.1 attribute fields (Attributes pass only; separate done flag).
+// Dependent fields (schema show_when, e.g. chair_subtype for manual/powered) appear only when their parent applies;
+// fields with also_in_v10_pass (chair subtype, drive wheels) also appear, optional, right after device_type in the
+// normal pass so picking "manual" offers the subtypes at once. They are v1.1 fields (counted with _status_v11 only).
+const MODEF = () => S.mode === 'attr' ? S.schema.fields.filter(f => f.since === '1.1') : S.schema.fields.filter(f => !f.since);
+function parentVal(im, p) {   // {v, model}: human value (mine, then v1.0 context) or, failing that, the model's guess
+  const id = im.image_id, mv = val(id, p);
+  if (mv != null && mv !== '') return { v: mv, model: false };
+  if (im.context?.[p]) return { v: im.context[p], model: false };
+  const s = p === 'device_type' ? (S.mode === 'review' ? S.auto[id]?.suggestions?.device_type : S.mode === 'attr' ? im.auto_device : null) ?? (S.mode === 'label' && S.schema.prefill[im.proposed_class]?.device_type ? { value: S.schema.prefill[im.proposed_class].device_type } : null)
+    : autoSug(im, p);
+  return s?.value ? { v: canon(p, s.value), model: true } : { v: null, model: false };
+}
+function shown(im, f) {
+  if (!f.show_when) return true;
+  return Object.entries(f.show_when).every(([p, ok]) => ok.includes(parentVal(im, p).v));
+}
+function optsFor(im, f) { const ob = f.options_by_parent; if (!ob) return f.options; const pv = parentVal(im, f.depends_on).v; return ob[pv] || f.options; }
+function FL(im = cur()) {   // fields shown for image `im` (null: every field of the mode)
+  let F = MODEF();
+  if (S.mode !== 'attr') {
+    const extra = S.schema.fields.filter(f => f.also_in_v10_pass);
+    const at = F.findIndex(f => f.name === 'device_type') + 1; F = [...F.slice(0, at), ...extra, ...F.slice(at)];
+  }
+  return im ? F.filter(f => shown(im, f)) : F;
+}
+const isMulti = f => !!f.multi;
+// after a number key: go to the next row, but in label/review skip the optional v1.1 extras (chair subtype, drive
+// wheels) so the v1.0 key sequence is unchanged; reach them with the arrow keys or a tap (they sit right below).
+function nextRow(f) {
+  const F = FL(); let j = F.findIndex(x => x.name === f.name); if (j < 0) return Math.min(S.row, F.length - 1);
+  j++; if (S.mode !== 'attr' && !f.also_in_v10_pass) while (j < F.length && F[j].also_in_v10_pass) j++;
+  return Math.max(0, Math.min(j, F.length - 1));
+}
+const hasVal = v => Array.isArray(v) ? v.length > 0 : v != null;
 const STATUS = () => S.mode === 'attr' ? '_status_v11' : '_status';
 const ORDK = { label: 'order', review: 'rorder', attr: 'aorder' };
 
 function prov(image_id, field) {   // review mode: every human edit carries "model-suggested" provenance
   if (S.mode === 'attr') {          // Attributes pass: record what the hint said when the human chose a value
     const a = S.auto11[image_id], sg = a?.suggestions?.[field]; if (!sg) return {};
-    return { source: 'auto_attr', model_tag: a.model_tag, suggested: sg.value, confidence: sg.confidence };
+    const sv = Array.isArray(sg.value) ? sg.value.slice(0, 12) : sg.value;
+    return { source: 'auto_attr', model_tag: sg.model_tag || a.model_tag, suggested: sv, confidence: typeof sg.confidence === 'number' ? sg.confidence : null };
   }
   const a = S.mode === 'review' && S.auto[image_id]; if (!a) return {};
   let sv = null, cf = null;
@@ -135,7 +170,7 @@ async function addImages(list, mode = 'label') {
   });
   if (mode === 'review') await tx('auto', 'readwrite', s => { for (const m of list) if (m.auto) s.put(m.auto); });
   if (mode === 'attr') await tx('auto11', 'readwrite', s => { for (const m of list) if (m.auto11) s.put(m.auto11); });
-  await loadImages();
+  await loadImages(); if (S.fmatch) applyFilter(false);
   if ('caches' in window) { const c = await caches.open('wv-img-v2'); for (const m of list) { try { if (!(await c.match(m.img))) await c.add(m.img); } catch (e) { } } }
 }
 async function loadImages() {
@@ -201,7 +236,7 @@ async function setMode(m) {
   await loadImages();
   if (m === 'review') { firstOpen(); if (!S.images.length && navigator.onLine) await getReviewBatch(); }
   if (m === 'attr') { firstOpen(); if (!S.images.length && navigator.onLine) await getAttrBatch(); }
-  render();
+  await applyFilter(false); render();
 }
 
 // ---------- rendering ----------
@@ -215,11 +250,19 @@ const pct = c => Math.round((c || 0) * 100) + '%';
 // suggest "face blur missed" only when the classifier sees a face that the blur pass did not cover (or no blurred copy exists)
 function missSug(im) { const A = S.auto[im.image_id]; return !!A && (A.flags || []).includes('visible_face') && !(im.blurred && (im.faces || []).length); }
 function rows() { return FL().map(f => f.name); }
+function v10rows() { return FL().filter(f => !f.since).map(f => f.name); }   // Done / confirm-all auto-fill: v1.0 fields only
+function toggleMulti(f, o) {   // multi-select: toggle one option; 'unknown' is exclusive
+  const id = cur().image_id; let v = [...(val(id, f.name) || [])];
+  if (v.includes(o)) v = v.filter(x => x !== o); else v = o === 'unknown' ? ['unknown'] : [...v.filter(x => x !== 'unknown'), o];
+  v.sort(); emit(f.name, v.length ? v : null);
+}
 function render() {
   if (!S.images.length) { $('pos').textContent = 'No images yet — press "Get batch".'; $('fields').innerHTML = ''; $('img').removeAttribute('src'); return; }
   const im = cur(); const id = im.image_id;
   if ($('img').dataset.id !== id) { $('img').dataset.id = id; $('img').src = im.img; }
   const done = isDone(id), A = S.mode === 'review' ? S.auto[id] : null, A11 = S.mode === 'attr' ? S.auto11[id] : null;
+  const fm = S.fmatch ? [...S.images].filter(m => S.fmatch.has(m.image_id)) : null, fi = fm ? fm.findIndex(m => m.image_id === id) : -1;
+  $('fpos').innerHTML = fm ? `filter: ${fi >= 0 ? `match ${fi + 1} / ${fm.length}` : `<b>this image does not match</b> (${fm.length} match)`} in this queue` : '';
   $('pos').innerHTML = `${S.mode === 'review' ? '<span class="tag ai">REVIEW</span> ' : ''}${S.mode === 'attr' ? '<span class="tag ai">ATTRIBUTES v1.1</span> ' : ''}${S.idx + 1} / ${S.images.length} · ${id} ${done ? '<span class="tag done">done</span>' : ''} ${val(id, 'exclude') ? '<span class="tag excl">excluded</span>' : ''}`;
   const risks = A ? (A.flags || []).filter(k => RISK[k]) : [];
   $('aibanner').hidden = !A && S.mode !== 'attr';
@@ -231,12 +274,17 @@ function render() {
     (missSug(im) ? `<div class="risk">model sees a face (${pct(A.screening.visible_face)}) but the blur found none → "face blur missed" is pre-checked; untick (<kbd>f</kbd>) if no face is visible</div>` : '') +
     (im.blurred ? `<div class="muted">image shown face-blurred (${(im.faces || []).length} face box${(im.faces || []).length === 1 ? '' : 'es'}, <kbd>o</kbd> toggles overlay). Any face still recognisable? press <kbd>f</kbd>.</div>` : '');
   $('meta').innerHTML = `weak label: <b>${im.proposed_class || '—'}</b> · ${im.source} · ${im.license}<br><a href="${im.source_page_url}" target="_blank" rel="noopener">source page</a> · ${(im.title || '').slice(0, 80)}${['1','yes','True','true'].includes(im.needs_visual_screen) ? '<br>⚠ screen: ' + im.screen_reasons : ''}`;
-  $('fields').innerHTML = FL().map((f, ri) => {
-    const v = val(id, f.name), sug = v === undefined ? suggestion(im, f.name) : null, as = autoSug(im, f.name);
-    const cls = S.mode === 'review' || S.mode === 'attr' ? 'ai' : 'sug';
-    return `<div class="row ${ri === S.row && !S.exclMode ? 'active' : ''}" data-r="${ri}"><span class="lbl">${f.label}</span>` +
-      f.options.map((o, oi) => `<span class="opt ${v === o ? 'sel' : ''} ${sug === o ? cls : ''}" data-f="${f.name}" data-v="${o}"><kbd>${oi + 1}</kbd> ${o}${sug === o && as ? ` <small class="conf">${pct(as.confidence)}</small>` : ''}</span>`).join('') +
-      (as ? `<span class="aiv ${v === undefined ? '' : v === as.value ? 'ok' : 'fixed'}" title="model suggestion">AI: ${as.value} ${pct(as.confidence)}${v !== undefined ? (v === as.value ? ' ✓' : ' ✎') : ''}</span>` : '') + '</div>';
+  const FLs = FL(im); if (S.row >= FLs.length) S.row = Math.max(0, FLs.length - 1);
+  $('fields').innerHTML = FLs.map((f, ri) => {
+    const v = val(id, f.name), as = autoSug(im, f.name), sug = v === undefined ? (f.since && S.mode !== 'attr' ? as?.value ?? null : suggestion(im, f.name)) : null;
+    const cls = S.mode === 'review' || S.mode === 'attr' || f.since ? 'ai' : 'sug';
+    const isSel = o => isMulti(f) ? (v || []).includes(o) : v === o, isSug = o => Array.isArray(sug) ? sug.includes(o) : sug === o;
+    const av = as ? (Array.isArray(as.value) ? as.value.join('+') || '—' : as.value) : '', same = as && JSON.stringify(v) === JSON.stringify(as.value);
+    const dep = f.depends_on ? parentVal(im, f.depends_on) : null;
+    const note = (dep?.model ? ` <small class="conf" title="shown because the model suggests ${dep.v}">(AI: ${dep.v})</small>` : '') + (f.since && S.mode !== 'attr' ? ' <small class="muted">v1.1, optional</small>' : '') + (isMulti(f) ? ' <small class="muted">multi</small>' : '');
+    return `<div class="row ${ri === S.row && !S.exclMode ? 'active' : ''}" data-r="${ri}"><span class="lbl">${f.label}${note}</span>` +
+      optsFor(im, f).map((o, oi) => `<span class="opt ${isSel(o) ? 'sel' : ''} ${isSug(o) ? cls : ''}" data-f="${f.name}" data-v="${o}"${isMulti(f) ? ' data-m="1"' : ''}><kbd>${oi + 1}</kbd> ${o}${isSug(o) && as && typeof as.confidence === 'number' ? ` <small class="conf">${pct(as.confidence)}</small>` : ''}</span>`).join('') +
+      (as ? `<span class="aiv ${v === undefined ? '' : same ? 'ok' : 'fixed'}" title="model suggestion${as.model_tag ? ' (' + as.model_tag + ')' : ''}">AI: ${av}${typeof as.confidence === 'number' ? ' ' + pct(as.confidence) : ''}${v !== undefined ? (same ? ' ✓' : ' ✎') : ''}</span>` : '') + '</div>';
   }).join('');
   const ex = val(id, 'exclude') || '';
   $('excl').innerHTML = S.schema.exclude_reasons.map((r, i) => `<span class="opt ex ${ex === r ? 'sel' : ''}" data-f="exclude" data-v="${r}">${S.exclMode ? `<kbd>${i + 1}</kbd> ` : ''}${r}</span>`).join('') +
@@ -284,7 +332,13 @@ $('img').addEventListener('error', () => { $('imgmsg').textContent = 'image not 
 $('img').addEventListener('load', () => { $('imgmsg').textContent = ''; });
 
 // ---------- actions ----------
-function go(d) { if (!S.images.length) return; S.idx = Math.max(0, Math.min(S.images.length - 1, S.idx + d)); S.exclMode = false; render(); }
+const inF = m => !S.fmatch || S.fmatch.has(m.image_id);
+function go(d) {   // with a filter: step through matching images only
+  if (!S.images.length) return;
+  if (S.fmatch) { let i = S.idx + d; while (i >= 0 && i < S.images.length && !inF(S.images[i])) i += d; if (i >= 0 && i < S.images.length) S.idx = i; }
+  else S.idx = Math.max(0, Math.min(S.images.length - 1, S.idx + d));
+  S.exclMode = false; render();
+}
 async function confirmAll() {   // review mode: accept every remaining suggestion as MY label (with provenance), then done
   const im = cur(); if (!im) return; const id = im.image_id, A = S.auto[id];
   if (!A) return done();
@@ -292,12 +346,12 @@ async function confirmAll() {   // review mode: accept every remaining suggestio
   if (risks.length && !val(id, 'exclude') && S.armed !== id) { S.armed = id; render(); return; }   // screening flag: 2nd press needed
   S.armed = null;
   if (!val(id, 'exclude')) {
-    for (const f of rows()) { const s = canon(f, A.suggestions?.[f]?.value); if (val(id, f) === undefined && s != null) await emit(f, s); }
+    for (const f of v10rows()) { const s = canon(f, A.suggestions?.[f]?.value); if (val(id, f) === undefined && s != null) await emit(f, s); }
     if (val(id, 'face_blur_missed') === undefined && missSug(im)) await emit('face_blur_missed', true);
   }
   if (val(id, 'exclude') === undefined) await emit('exclude', '');
   await emit('_status', 'done');
-  const nx = S.images.findIndex((m, i) => i > S.idx && !isDone(m.image_id));
+  const nx = S.images.findIndex((m, i) => i > S.idx && !isDone(m.image_id) && inF(m));
   if (nx >= 0) { S.idx = nx; S.exclMode = false; render(); } else if (S.idx < S.images.length - 1) go(1); else render();
 }
 async function acceptBoxes() {
@@ -306,22 +360,26 @@ async function acceptBoxes() {
 }
 async function doneAttr() {   // Attributes pass: no auto-fill, every v1.1 row must be chosen explicitly
   const im = cur(); if (!im) return; const id = im.image_id;
-  const miss = rows().findIndex(f => val(id, f) == null);
+  const miss = rows().findIndex(f => !hasVal(val(id, f)));
   if (miss >= 0 && !val(id, 'exclude')) { S.row = miss; S.attrMsg = id; render(); return; }
   await emit('_status_v11', 'done');
-  const nx = S.images.findIndex((m, i) => i > S.idx && !isDone(m.image_id));
+  const nx = S.images.findIndex((m, i) => i > S.idx && !isDone(m.image_id) && inF(m));
   if (nx >= 0) { S.idx = nx; S.exclMode = false; render(); } else if (S.idx < S.images.length - 1) go(1); else render();
 }
 async function done() {
   if (S.mode === 'attr') return doneAttr();
   if (S.mode === 'review' && S.auto[cur()?.image_id]) return confirmAll();
   const im = cur(); if (!im) return; const id = im.image_id;
-  if (!val(id, 'exclude')) for (const f of rows()) { const s = suggestion(im, f); if (val(id, f) === undefined && s != null) await emit(f, s); }
+  if (!val(id, 'exclude')) for (const f of v10rows()) { const s = suggestion(im, f); if (val(id, f) === undefined && s != null) await emit(f, s); }
   if (val(id, 'exclude') === undefined) await emit('exclude', '');
   await emit('_status', 'done');
   if (S.idx < S.images.length - 1) go(1); else render();
 }
-$('fields').addEventListener('click', e => { const o = e.target.closest('.opt'); if (o) { S.row = +o.closest('.row').dataset.r; emit(o.dataset.f, val(cur().image_id, o.dataset.f) === o.dataset.v ? null : o.dataset.v); } });
+$('fields').addEventListener('click', e => {
+  const o = e.target.closest('.opt'); if (!o) return; S.row = +o.closest('.row').dataset.r;
+  if (o.dataset.m) return toggleMulti(S.schema.fields.find(f => f.name === o.dataset.f), o.dataset.v);
+  emit(o.dataset.f, val(cur().image_id, o.dataset.f) === o.dataset.v ? null : o.dataset.v);
+});
 $('excl').addEventListener('click', e => { const o = e.target.closest('.opt'); if (o) { S.exclMode = false; emit('exclude', o.dataset.v); } });
 $('face').addEventListener('change', e => emit('face_blur_missed', e.target.checked));
 $('btnBbox').onclick = () => { S.bboxMode = !S.bboxMode; render(); };
@@ -335,9 +393,10 @@ $('btnLogout').onclick = async () => { await kvSet('annotator', null); location.
 $('btnList').onclick = () => {
   const l = $('list'); const show = l.hidden; l.hidden = !show; $('main').hidden = show;
   if (!show) return render();
-  l.innerHTML = '<h3>My images (click to open / correct)</h3><table><tr><th>#</th><th>id</th><th>status</th>' + FL().map(f => `<th>${f.name}</th>`).join('') + '<th>exclude</th></tr>' +
-    S.images.map((im, i) => `<tr data-i="${i}" style="cursor:pointer"><td>${i + 1}</td><td>${im.image_id}</td><td>${val(im.image_id, STATUS()) || ''}</td>` +
-      FL().map(f => `<td>${val(im.image_id, f.name) ?? ''}</td>`).join('') + `<td>${val(im.image_id, 'exclude') || ''}</td></tr>`).join('') + '</table>';
+  const LF = FL(null);
+  l.innerHTML = '<h3>My images (click to open / correct)' + (S.fmatch ? ' — filtered' : '') + '</h3><table><tr><th>#</th><th>id</th><th>status</th>' + LF.map(f => `<th>${f.name}</th>`).join('') + '<th>exclude</th></tr>' +
+    S.images.map((im, i) => inF(im) ? `<tr data-i="${i}" style="cursor:pointer"><td>${i + 1}</td><td>${im.image_id}</td><td>${val(im.image_id, STATUS()) || ''}</td>` +
+      LF.map(f => { const v = val(im.image_id, f.name); return `<td>${Array.isArray(v) ? v.join('+') : v ?? ''}</td>`; }).join('') + `<td>${val(im.image_id, 'exclude') || ''}</td></tr>` : '').join('') + '</table>';
 };
 $('list').addEventListener('click', e => { const tr = e.target.closest('tr[data-i]'); if (tr) { S.idx = +tr.dataset.i; $('list').hidden = true; $('main').hidden = false; render(); } });
 
@@ -347,7 +406,15 @@ document.addEventListener('keydown', e => {
   if (S.exclMode && /^[0-9]$/.test(k)) { S.exclMode = false; const r = k === '0' ? '' : S.schema.exclude_reasons[+k - 1]; if (r !== undefined) emit('exclude', r); else render(); }
   else if (k === 'ArrowUp') { S.row = Math.max(0, S.row - 1); S.exclMode = false; render(); }
   else if (k === 'ArrowDown') { S.row = Math.min(FL().length - 1, S.row + 1); S.exclMode = false; render(); }
-  else if (/^[0-9]$/.test(k) && id) { const F = FL(), f = F[S.row]; if (!f) return; if (k === '0') emit(f.name, null); else if (f.options[+k - 1]) { emit(f.name, f.options[+k - 1]); if (S.row < F.length - 1) S.row++; } }
+  else if (/^[0-9]$/.test(k) && id) {
+    const F = FL(), f = F[S.row]; if (!f) return; const O = optsFor(cur(), f);
+    if (k === '0') emit(f.name, null);
+    else if (O[+k - 1] && isMulti(f)) toggleMulti(f, O[+k - 1]);          // multi-select: number keys toggle, row stays
+    else if (O[+k - 1]) {   // rows may appear/disappear once the value lands (e.g. subtype after "manual"): re-aim by name
+      const r0 = S.row = nextRow(f);
+      emit(f.name, O[+k - 1]).then(() => { if (S.row === r0) { S.row = nextRow(f); render(); } });
+    }
+  }
   else if (k === 'ArrowLeft' || k === 'p') go(-1);
   else if (k === 'ArrowRight' || k === 'n') go(1);
   else if (k === 'Enter') done();
@@ -356,6 +423,7 @@ document.addEventListener('keydown', e => {
   else if (k === 'r') setMode(S.mode === 'review' ? 'label' : 'review');
   else if (k === 'v') setMode(S.mode === 'attr' ? 'label' : 'attr');
   else if (k === 'o' && S.mode === 'review') { S.faces = !S.faces; render(); }
+  else if (k === 'F') toggleFilterPanel();
   else if (k === 'e') { S.exclMode = !S.exclMode; render(); }
   else if (k === 'f' && id) emit('face_blur_missed', !$('face').checked); // relative to what is shown (review may pre-tick it)
   else if (k === 'b' && !e.shiftKey) { S.bboxMode = !S.bboxMode; render(); }
@@ -366,6 +434,111 @@ document.addEventListener('keydown', e => {
   if (handled) e.preventDefault();
 });
 
+// ---------- filter ----------
+// Same grammar as server/wvcore.parse_filter and scripts/filter_images.py: 'device_type:manual,powered;weather:rain;basis:either'.
+// OR within a key, AND across keys. The match set for the cached queue comes from POST /api/filter (all human labels,
+// approvals, splits, synthetic/measurement facts); offline the app falls back to a local check over YOUR labels, the
+// v1.0 context and cached machine suggestions (approximate; status/split/synthetic/size keys are then ignored).
+// The filter lives in the URL hash (#filter=...) and localStorage, so a link reproduces it on another device.
+const FKEY = 'wv_filter';
+function fText() {
+  const p = Object.keys(S.filter).filter(k => S.filter[k]?.length).sort().map(k => `${k}:${[...S.filter[k]].sort().join(',')}`);
+  if (S.basis !== 'human') p.push('basis:' + S.basis); return p.join(';');
+}
+function fParse(txt) {
+  const f = {}; let b = 'human';
+  for (const part of (txt || '').replace(/&/g, ';').split(';')) {
+    const i = part.indexOf(':'); if (i < 1) continue;
+    const k = part.slice(0, i).trim(), vs = part.slice(i + 1).split(',').map(s => s.trim()).filter(Boolean);
+    if (k === 'basis') { if (['human', 'model', 'either'].includes(vs[0])) b = vs[0]; } else if (vs.length) f[k] = vs;
+  }
+  return { f, b };
+}
+function fActive() { return Object.values(S.filter).some(v => v?.length); }
+function fSave() {
+  const t = fText(); try { localStorage.setItem(FKEY, t); } catch (e) {}
+  const h = t ? '#filter=' + encodeURIComponent(t) : ''; if (location.hash !== h) history.replaceState(null, '', location.pathname + location.search + h);
+}
+function fLoad() {
+  const m = location.hash.match(/filter=([^&]*)/); let t = m ? decodeURIComponent(m[1]) : null;
+  if (t == null) try { t = localStorage.getItem(FKEY) || ''; } catch (e) { t = ''; }
+  const { f, b } = fParse(t); S.filter = f; S.basis = b;
+}
+function fKeys() {   // {key: [values]} from the server (cached) or, offline, from the schema
+  if (S.fkeys) return S.fkeys;
+  const k = {}; for (const f of S.schema.fields) k[f.name] = [...f.options, '_unlabeled', '_model_only'];
+  return k;
+}
+function localFacts(im) {   // offline approximation of wvcore.image_facts for one cached image
+  const id = im.image_id, H = {}, M = {}, add = (o, f, v) => { if (v == null || v === '') return; (o[f] ||= new Set()); (Array.isArray(v) ? v : [v]).forEach(x => o[f].add(canon(f, String(x)))); };
+  for (const f of S.schema.fields) { add(H, f.name, val(id, f.name)); if (!H[f.name]) add(H, f.name, im.context?.[f.name]); }
+  for (const src of [S.auto[id]?.suggestions, S.auto11[id]?.suggestions]) for (const [f, s] of Object.entries(src || {})) if (!M[f]) add(M, f, s?.value);
+  return { H, M };
+}
+function localMatch(im) {
+  const { H, M } = localFacts(im);
+  return Object.entries(S.filter).every(([k, want]) => {
+    if (!want?.length || !S.schema.fields.some(f => f.name === k)) return true;       // pseudo keys: unknown offline
+    const h = H[k] || new Set(), m = M[k] || new Set();
+    const vals = S.basis === 'model' ? m : S.basis === 'either' ? new Set([...h, ...m]) : h;
+    return want.some(w => w === '_unlabeled' ? !h.size : w === '_model_only' ? !h.size && m.size > 0 : vals.has(w));
+  });
+}
+async function applyFilter(withCounts = S.fopen) {
+  fSave();
+  if (!fActive()) { S.fmatch = null; S.fsrc = ''; if (withCounts) await fCounts(); render(); fRender(); return; }
+  const q = fText(), ids = S.images.map(m => m.image_id);
+  try {
+    if (!navigator.onLine) throw new Error('offline');
+    const r = await fetch('/api/filter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ q, ids, counts: false, limit: 20000 }) });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || r.status);
+    const j = await r.json(); S.fmatch = new Set(j.ids); S.fsrc = 'server';
+  } catch (e) { S.fmatch = new Set(S.images.filter(localMatch).map(m => m.image_id)); S.fsrc = 'local (offline: your labels + cached suggestions only)'; }
+  if (S.images.length && !inF(cur())) { const i = S.images.findIndex((m, i) => i >= S.idx && inF(m)), j = S.images.findIndex(inF); S.idx = i >= 0 ? i : j >= 0 ? j : S.idx; }
+  if (withCounts) await fCounts();
+  render(); fRender();
+}
+async function fCounts() {   // dataset-wide counts for the panel (online only)
+  if (!navigator.onLine) return;
+  try {
+    if (!S.fkeys) { const k = await (await fetch('/api/filter/keys')).json(); S.fkeys = k.keys; }
+    const j = await (await fetch('/api/filter?limit=0&counts=true&q=' + encodeURIComponent(fText()))).json();
+    S.fcounts = j.counts; S.fmcounts = j.match_counts; S.ftotal = j.total; S.fall = j.count;
+  } catch (e) { console.warn('filter counts', e); }
+}
+const FLAB = { split: 'Split', approval: 'Approval (v1.0)', status_v11: 'Status v1.1', synthetic: 'Synthetic', size_basis: 'Size: measured / estimate', label_source: 'Label source', excluded: 'Excluded' };
+function fRender() {
+  const n = Object.values(S.filter).reduce((a, v) => a + (v?.length || 0), 0);
+  $('btnFilter').textContent = n ? `Filter (${n})` : 'Filter'; $('btnFilter').classList.toggle('primary', n > 0);
+  const P = $('fpanel'); P.hidden = !S.fopen; if (!S.fopen) return;
+  const K = fKeys(), lab = k => FLAB[k] || S.schema.fields.find(f => f.name === k)?.label || k;
+  const qn = S.fmatch ? S.fmatch.size : S.images.length;
+  const order = Object.keys(K).sort((a, b) => (a in FLAB) - (b in FLAB));
+  P.innerHTML = `<div class="fhead"><b>Filter</b>
+      <select id="fbasis" title="Field values from human labels, machine suggestions (orange), or either">
+        ${['human', 'model', 'either'].map(b => `<option value="${b}" ${S.basis === b ? 'selected' : ''}>${b === 'human' ? 'human labels' : b === 'model' ? 'model suggestions' : 'human or model'}</option>`).join('')}</select>
+      <button id="fclear">Clear</button><button id="fcopy" title="Copy a link that opens this filter">Copy link</button><button id="fclose">✕</button></div>
+    <div class="muted">${S.fmatch ? `<b>${qn}</b> of ${S.images.length} in this queue match` : `${S.images.length} in this queue (no filter)`}${S.ftotal != null ? ` · <b>${S.fall}</b> of ${S.ftotal} dataset-wide` : ''}${S.fsrc ? ` · ${S.fsrc}` : ''}
+      <br>OR within a field, AND across fields. ← / → step through matches only. <code>_unlabeled</code> = no human label; <code>_model_only</code> = only a machine suggestion.</div>` +
+    order.map(k => {
+      const sel = S.filter[k] || [], c = S.fcounts?.[k] || {}, mc = S.fmcounts?.[k] || {};
+      return `<details ${sel.length ? 'open' : ''}><summary>${lab(k)}${sel.length ? ` <span class="fsel">${sel.join(' | ')}</span>` : ''}</summary>` +
+        K[k].map(v => `<span class="chip ${sel.includes(v) ? 'sel' : ''}" data-k="${k}" data-v="${v}">${v}${c[v] != null ? ` <small>${fActive() ? (mc[v] ?? 0) + '/' : ''}${c[v]}</small>` : ''}</span>`).join('') + '</details>';
+    }).join('');
+}
+function toggleFilterPanel(open = !S.fopen) { S.fopen = open; fRender(); if (open) fCounts().then(fRender); }
+$('btnFilter').onclick = () => toggleFilterPanel();
+$('fpanel').addEventListener('click', async e => {
+  const c = e.target.closest('.chip');
+  if (c) { const k = c.dataset.k, v = c.dataset.v, s = new Set(S.filter[k] || []); s.has(v) ? s.delete(v) : s.add(v); S.filter[k] = [...s]; if (!s.size) delete S.filter[k]; return applyFilter(true); }
+  if (e.target.id === 'fclear') { S.filter = {}; S.basis = 'human'; return applyFilter(true); }
+  if (e.target.id === 'fclose') return toggleFilterPanel(false);
+  if (e.target.id === 'fcopy') { fSave(); try { await navigator.clipboard.writeText(location.href); e.target.textContent = 'Copied'; } catch (_) { prompt('Filter link', location.href); } }
+});
+$('fpanel').addEventListener('change', e => { if (e.target.id === 'fbasis') { S.basis = e.target.value; applyFilter(true); } });
+window.addEventListener('hashchange', () => { if (/filter=/.test(location.hash) || !location.hash) { const before = fText(); fLoad(); if (fText() !== before) applyFilter(); } });
+fLoad();
+
 // ---------- boot ----------
 async function start(name) {
   S.annotator = name; await kvSet('annotator', name);
@@ -373,7 +546,7 @@ async function start(name) {
   S.order = (await kvGet('order')) || 'lowconf'; $('rorder').value = S.order;
   const m = (await kvGet('mode')) || 'label';
   await refreshMine();
-  if (m === 'review' || m === 'attr') await setMode(m); else { await loadImages(); render(); }
+  if (m === 'review' || m === 'attr') await setMode(m); else { await loadImages(); await applyFilter(false); }
   updQueue();
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
 }
