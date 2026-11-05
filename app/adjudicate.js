@@ -30,5 +30,21 @@ document.getElementById('list').addEventListener('click', async e => {
   const j = await r.json(); if (j.rejected.length) alert('rejected: ' + j.rejected[0].reason);
   load();
 });
-document.getElementById('reload').onclick = load;
-load();
+const esc = x => String(x ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+const qSel = document.getElementById('qreason');
+async function loadQueue() {
+  const q = await (await fetch('/api/adjudication_queue' + (qSel.value ? '?reason=' + encodeURIComponent(qSel.value) : ''))).json();
+  const keep = qSel.value;
+  qSel.innerHTML = '<option value="">all reasons</option>' + Object.entries(q.counts).map(([k, v]) => `<option value="${esc(k)}">${esc(k)} (${v})</option>`).join('');
+  qSel.value = keep;
+  document.getElementById('qcount').textContent = `${q.items.length} shown of ${q.total}`;
+  document.getElementById('queue').innerHTML = q.items.length ? q.items.map(it => `<div class="card">${it.img ? `<img src="${esc(it.img)}" loading="lazy">` : '<div class="muted" style="width:300px">image held / blocked</div>'}<div>
+    <b>${esc(it.image_id)}</b> <span class="tag">${esc(it.reason)}</span> <span class="muted">from ${esc(it.source)}${it.category ? ' \u00b7 group ' + esc(it.category) : ''}</span>
+    ${it.detail ? `<div>${esc(it.detail)}</div>` : ''}
+    ${it.assistant ? `<div class="muted">assistant: ${esc(JSON.stringify(it.assistant))}</div>` : ''}
+    <div class="muted">human device_type: ${Object.entries(it.human_device_type).map(([a, v]) => `${esc(a)}=<b>${esc(v)}</b>`).join(' ') || 'none'}</div>
+    <div>${it.source_page_url ? `<a href="${esc(it.source_page_url)}" target="_blank" rel="noopener">source</a>` : ''}</div></div></div>`).join('') : '<p>Queue empty</p>';
+}
+qSel.onchange = loadQueue;
+document.getElementById('reload').onclick = () => { load(); loadQueue(); };
+load(); loadQueue();

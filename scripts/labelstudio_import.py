@@ -29,7 +29,7 @@ def labeling_config():
          '  <RectangleLabels name="bbox" toName="image" strokeWidth="2">',
          '    <Label value="device" background="#ff7f0e"/>', '  </RectangleLabels>',
          '  <View style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">']
-    for f in SCHEMA["fields"]:
+    for f in [f for f in SCHEMA["fields"] if not f.get("since")]:   # v1.1 attribute fields are not part of the Label Studio config
         hk = HOTKEYS.get(f["name"], [])
         x.append(f'    <View><Header value={quoteattr(f["label"])} size="6"/>')
         x.append(f'    <Choices name="{f["name"]}" toName="image" choice="single-radio" showInline="false" required="false">')
@@ -81,7 +81,7 @@ def read_credentials(path):
 
 def prediction(a, size=None):
     res = []
-    for f in SCHEMA["fields"]:
+    for f in [f for f in SCHEMA["fields"] if not f.get("since")]:   # v1.1 attribute fields are not part of the Label Studio config
         s = (a.get("suggestions") or {}).get(f["name"])
         if s and s.get("value") in f["options"]:
             res.append({"from_name": f["name"], "to_name": "image", "type": "choices",

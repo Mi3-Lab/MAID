@@ -38,7 +38,7 @@ _ids = sorted(r["candidate_id"] for r in csv.DictReader(open(ROOT / "data/candid
 CHILD = None
 with open(AUTO / f"{TAG}.jsonl", "w") as fh:
     for n, i in enumerate(_ids):
-        sug = {f["name"]: {"value": ("manual" if f["name"] == "device_type" else f["options"][0]), "confidence": round(0.3 + (n % 60) / 100, 2)} for f in wvcore.SCHEMA["fields"]}
+        sug = {f["name"]: {"value": ("manual" if f["name"] == "device_type" else f["options"][0]), "confidence": round(0.3 + (n % 60) / 100, 2)} for f in wvcore.SCHEMA["fields"] if not f.get("since")}
         flags = []
         if n < 5: sug["device_type"]["confidence"] = round(0.10 + n / 100, 2)                  # the 5 least confident come first
         fh.write(json.dumps({"image_id": i, "model_tag": TAG, "suggestions": sug, "screening": {"child": 0.9 if flags else 0.1, "visible_face": 0.2},
@@ -46,7 +46,8 @@ with open(AUTO / f"{TAG}.jsonl", "w") as fh:
 
 BLUR = TMP / "blurred"; BLUR.mkdir(); BLUR_MAN = TMP / "blur_manifest.jsonl"; BLUR_MAN.write_text("")
 env = dict(os.environ, WV_DB=str(TMP / "e2e.db"), WV_EXPORT_DIR=str(TMP / "exports"), WV_IMAGE_PROXY="0", WV_AUTO_DIR=str(AUTO),
-           WV_BLUR_DIR=str(BLUR), WV_BLUR_MANIFESTS=str(BLUR_MAN), WV_BLOCKLIST_DIR=str(TMP / "block"))
+           WV_BLUR_DIR=str(BLUR), WV_BLUR_MANIFESTS=str(BLUR_MAN), WV_BLOCKLIST_DIR=str(TMP / "block"),
+           WV_CONTRIBUTED=str(TMP / "contributed.csv"))   # v1.1: never read the real contributed list
 (TMP / "block").mkdir(); BLOCKED_ID = _ids[-1]; (TMP / "block" / "removed_test.txt").write_text("# test\n" + BLOCKED_ID + "\n")
 srv = subprocess.Popen([sys.executable, "-m", "uvicorn", "main:app", "--port", str(PORT), "--log-level", "warning"],
                        cwd=ROOT / "server", env=env, stdout=open(TMP / "server.log", "w"), stderr=subprocess.STDOUT)
@@ -195,7 +196,7 @@ try:
         ev = api("/api/events?annotator=dave").json()["events"]
         e1 = {e["field"]: e for e in ev if e["image_id"] == r1}; e2 = {e["field"]: e for e in ev if e["image_id"] == r2}
         check("confirm-all: every suggested field saved as dave's label + done",
-              all(e1.get(f["name"], {}).get("value") == (f["options"][0] if f["name"] != "device_type" else "manual") for f in wvcore.SCHEMA["fields"]) and e1["_status"]["value"] == "done",
+              all(e1.get(f["name"], {}).get("value") == (f["options"][0] if f["name"] != "device_type" else "manual") for f in wvcore.SCHEMA["fields"] if not f.get("since")) and e1["_status"]["value"] == "done",
               json.dumps({k: v["value"] for k, v in e1.items()}))
         check("provenance recorded on review events", all(e1[f].get("source") == "auto_review" and e1[f].get("model_tag") == TAG for f in e1)
               and e1["device_type"]["suggested"] == "manual" and isinstance(e1["device_type"]["confidence"], float), json.dumps(e1["device_type"]))

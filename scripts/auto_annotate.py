@@ -25,6 +25,11 @@ Usage:
   python scripts/auto_annotate.py --detect                 # also run OWLv2 boxes (≈2 s/image on CPU)
   python scripts/auto_annotate.py --score-only             # re-score from cache (e.g. after editing prompts)
   python scripts/auto_annotate.py --eval                   # model-vs-human agreement on derived/per_annotator_labels.csv
+  python scripts/auto_annotate.py --attr --score-only      # v1.1 attribute suggestions (control, environment, weather,
+                                                           # ground_wet, size_class) from the SAME embedding cache ->
+                                                           # annotations/auto/siglip2-so400m-224_attr-v2.jsonl
+v1.1 attribute suggestions are a separate machine source (model tag contains "_attr-"): the app shows them only in the
+Attributes pass, as hints; they are never written as labels and never selected as the review-mode model.
 """
 import argparse, csv, hashlib, io, json, os, sqlite3, sys, time
 from pathlib import Path
@@ -96,6 +101,99 @@ P = {
             "a plain studio background"],
  },
 }
+# ---------- v1.1 attribute prompts (separate tag; "unknown" is never suggested: it is the annotator's choice) ----------
+ATTR_PROMPT_VERSION = "attr-v2"   # v2: + chair_subtype, drive_position, ramp_deploy, ramp_reasons
+ATTR_TAG = "siglip2-so400m-224_" + ATTR_PROMPT_VERSION
+P_V11 = {
+ "control": {
+  "joystick": ["a power wheelchair with a joystick control on the armrest", "a hand on the joystick of an electric wheelchair",
+               "a joystick controller box on a wheelchair armrest"],
+  "attendant_control": ["a caregiver steering a power wheelchair with an attendant control at the back",
+                        "a helper behind a wheelchair holding the push handles", "a person pushing someone in a wheelchair"],
+  "push_rims": ["hands on the push rims of a manual wheelchair wheel", "a person pushing the hand rims of their wheelchair",
+                "the metal hand rims on the large rear wheels of a wheelchair"],
+  "tiller": ["the handlebar tiller of a mobility scooter", "a person steering a mobility scooter with handlebars"],
+  "none_visible": ["a wheelchair where no controls or hand rims are visible", "a wheelchair photographed from far away",
+                   "a mobility device with its controls hidden"],
+ },
+ "environment": {
+  "indoor": ["inside a building", "an indoor room or hallway", "inside a shop, office or home"],
+  "sidewalk": ["a wheelchair on a sidewalk", "a pavement or footpath in a city street"],
+  "curbside": ["a wheelchair at the curb at the edge of the road", "a curb ramp at a street corner",
+               "waiting at the curb beside the street"],
+  "crosswalk_road": ["a wheelchair crossing the road at a crosswalk", "a wheelchair on the street among cars",
+                     "a zebra crossing with a wheelchair user"],
+  "vehicle_interior": ["inside a bus or van with a wheelchair", "a wheelchair secured inside a vehicle",
+                       "a wheelchair space inside a train or bus"],
+  "ramp_lift": ["a wheelchair on a vehicle ramp", "a wheelchair lift on a van or bus", "a wheelchair boarding a bus via a ramp"],
+  "parking_lot": ["a wheelchair in a parking lot", "a car park with parked cars", "an accessible parking space"],
+  "other_outdoor": ["in a park or garden", "on a beach, trail or grass", "at an outdoor sports court or event"],
+ },
+ "weather": {
+  "sunny_clear": ["a sunny day with clear blue sky", "bright sunshine and hard shadows outdoors"],
+  "overcast": ["an overcast cloudy grey day outdoors", "a dull cloudy sky with soft light"],
+  "rain": ["a rainy day with wet streets and umbrellas", "rain falling outdoors", "people with umbrellas in the rain"],
+  "snow": ["snow on the ground in winter", "a snowy street", "snow falling outdoors"],
+  "fog": ["a foggy misty day outdoors", "thick fog with low visibility"],
+  "night": ["a night-time street with streetlights", "outdoors at night in the dark"],
+  "indoor_na": ["inside a building", "an indoor room under artificial light"],
+ },
+ "ground_wet": {
+  "yes": ["a wet road surface with puddles", "wet shiny pavement after rain", "a puddle on the ground"],
+  "no": ["a dry road surface", "dry pavement on a sunny day", "a dry indoor floor"],
+ },
+ "size_class": {
+  "standard": ["a standard size wheelchair", "a typical folding wheelchair", "an ordinary power wheelchair"],
+  "wide": ["an extra wide heavy-duty wheelchair", "a very wide wheelchair with a broad seat", "a large wide power wheelchair"],
+ },
+ # chair_subtype is scored within the parent's list (manual or powered); the parent comes from P_V11_PARENT
+ "chair_subtype": {
+  "standard_folding": ["a standard folding manual wheelchair with a sling seat", "a basic steel folding wheelchair",
+                       "a hospital-style folding wheelchair with swing-away footrests"],
+  "lightweight_rigid": ["a lightweight rigid-frame manual wheelchair", "a sporty ultralight active wheelchair with cambered wheels",
+                        "a compact rigid wheelchair with no push handles"],
+  "transport_attendant": ["a transport wheelchair with four small wheels pushed by a caregiver",
+                          "an attendant-propelled wheelchair with small rear wheels", "a companion chair with small wheels"],
+  "tilt_recline": ["a tilt-in-space wheelchair with a high padded backrest and headrest", "a reclining wheelchair with a tall back",
+                   "a positioning wheelchair tilted back"],
+  "bariatric": ["a bariatric heavy-duty extra wide manual wheelchair", "a reinforced extra wide wheelchair"],
+  "power_standard": ["a standard power wheelchair with a captain's seat", "an electric wheelchair with a joystick and batteries",
+                     "a compact powered wheelchair"],
+  "power_tilt_recline": ["a complex rehab power wheelchair with tilt and recline", "a power wheelchair tilted back with a headrest",
+                         "a power wheelchair with powered seating functions"],
+ },
+ "drive_position": {
+  "mid_wheel": ["a mid-wheel drive power wheelchair with the large drive wheels under the seat",
+                "a power wheelchair with six wheels and drive wheels in the middle"],
+  "front_wheel": ["a front-wheel drive power wheelchair with big wheels at the front", "a power wheelchair with large front drive wheels"],
+  "rear_wheel": ["a rear-wheel drive power wheelchair with big wheels at the back", "a power wheelchair with large rear drive wheels and small front casters"],
+ },
+ "ramp_deploy": {   # research judgement of the scene, not a safety assessment
+  "safe": ["a vehicle ramp deployed onto a clear level sidewalk with plenty of room",
+           "an open wide flat space beside a van where a wheelchair ramp can be lowered", "a clear accessible boarding area"],
+  "unsafe": ["a vehicle ramp blocked by a pole or obstacle", "a crowded narrow sidewalk with no room for a ramp",
+             "a ramp onto a steep, broken or icy surface", "a ramp deployed into moving traffic"],
+  "not_needed": ["a street scene with no wheelchair user waiting", "a person walking without any mobility device",
+                 "an empty road with nobody needing a ramp"],
+ },
+}
+# ramp_reasons (multi-select): each reason is scored on its own, P(positive) under a 2-way softmax; suggested = reasons >= 0.5
+P_V11_MULTI = {
+ "ramp_reasons": {
+  "insufficient_space": (["a very narrow sidewalk with no room", "a cramped space between a car and a wall"], ["a wide open sidewalk with lots of room"]),
+  "obstruction": (["a pole, bin or bench blocking the curb", "parked bikes or objects in the way on the sidewalk"], ["a clear unobstructed curb"]),
+  "uneven_surface": (["broken uneven pavement", "a gravel or cobblestone surface"], ["smooth level pavement"]),
+  "steep_slope": (["a steep hill street", "a steeply sloping sidewalk"], ["a flat level street"]),
+  "curb_height_issue": (["a very high curb", "a large drop from the curb to the road"], ["a flush curb cut at road level"]),
+  "wet_icy_surface": (["an icy slippery sidewalk", "wet slippery ground with puddles", "snow on the pavement"], ["dry pavement"]),
+  "traffic_hazard": (["cars driving close by in busy traffic", "a vehicle stopped in a live traffic lane"], ["a quiet street with no traffic"]),
+  "no_wheelchair_user": (["a street with no wheelchair user", "people walking without wheelchairs"], ["a wheelchair user waiting at the curb"]),
+  "user_not_waiting_unclear": (["a wheelchair user moving away, not waiting for a vehicle", "a wheelchair user far from the road"],
+                               ["a wheelchair user waiting at the curb for a bus"]),
+ },
+}
+P_V11_PARENT = {"manual": ["a manual wheelchair with large push wheels", "a person in a manual wheelchair"],
+                "powered": ["an electric power wheelchair with a joystick", "a motorised power wheelchair with batteries"]}
 SCREEN = {   # flag -> (positive prompts, negative prompts); score = P(positive) under a 2-way softmax
  "child": (["a photo of a child", "a young kid", "a toddler", "a baby", "children playing"],
            ["a photo of an adult", "an elderly person", "a photo with no people", "an adult man or woman"]),
@@ -182,12 +280,16 @@ def text_bank(torch, m, p):
             t = torch.nn.functional.normalize(t, dim=-1); t = torch.nn.functional.normalize(t.mean(0), dim=-1)
         return t.numpy()
     bank = {f: {o: enc(ds) for o, ds in opts.items()} for f, opts in P.items()}
+    bank_v11 = {f: {o: enc(ds) for o, ds in opts.items()} for f, opts in P_V11.items()}
+    bank_v11["_parent"] = {o: enc(ds) for o, ds in P_V11_PARENT.items()}
+    for f, opts in P_V11_MULTI.items(): bank_v11["_multi_" + f] = {o: (enc(pos), enc(neg)) for o, (pos, neg) in opts.items()}
     scr = {k: (enc(pos), enc(neg)) for k, (pos, neg) in SCREEN.items()}
     scale = float(m.logit_scale.exp()) if hasattr(m, "logit_scale") else 100.0
-    return bank, scr, scale
+    return bank, scr, scale, bank_v11
 
 def prompts_for(field):
-    """P[field] keyed by canonical option names (e.g. prompt key 'lookalike' -> class 'ambiguous')."""
+    """P[field] (or P_V11[field]) keyed by canonical option names (e.g. prompt key 'lookalike' -> class 'ambiguous')."""
+    if field in P_V11: return dict(P_V11[field])
     return {wvcore.canon(field, o): ds for o, ds in P[field].items()}
 
 def softmax(z):
@@ -216,7 +318,7 @@ def score(E, bank, scr):
     for j, o in enumerate(pn): prop[:, names.index(o)] += pman * pp[:, j]
     prop[:, names.index("not_applicable")] += 1 - pman
     prob["propulsion"] = (names, prop)
-    for f in wvcore.FIELD_OPTS:
+    for f in wvcore.V10_FIELDS:   # v1.0 fields only (v1.1 attributes: score_attr, separate tag)
         names, pr = prob[f]; names = [wvcore.canon(f, n) for n in names]   # renamed options -> canonical names
         for i in range(len(E)):
             k = int(pr[i].argmax())
@@ -229,6 +331,69 @@ def score(E, bank, scr):
         s = {k: round(float(v[i]), 4) for k, v in scrs.items()}
         out[i] = {"suggestions": sug[i], "screening": s, "flags": [k for k, v in s.items() if v >= SCREEN_THRESH[k]]}
     return out
+
+def score_attr(E, bank_v11):
+    """v1.1 attribute suggestions: per field softmax over the prompted options (never 'unknown').
+    chair_subtype: the softmax runs within the manual or powered list, picked by a manual-vs-powered prompt pair
+    (stored as 'parent'/'parent_confidence'); the app shows the row when a human (or the v1.0 model) says manual/powered.
+    Multi-select fields (ramp_reasons): one positive-vs-negative score per reason; value = reasons with p >= 0.5."""
+    import numpy as np
+    sug = [dict() for _ in range(len(E))]
+    par = None
+    if "_parent" in bank_v11 and len(E):
+        pn = list(bank_v11["_parent"]); par = (pn, softmax((E @ np.stack([bank_v11["_parent"][o] for o in pn]).T) / TEMP))
+    for f in wvcore.V11_FIELDS:
+        if f in wvcore.MULTI_FIELDS:
+            mb = bank_v11.get("_multi_" + f)
+            if not mb: continue
+            ps = {o: softmax(np.stack([E @ pos, E @ neg], 1) / TEMP)[:, 0] for o, (pos, neg) in mb.items()}
+            for i in range(len(E)):
+                sc = {o: round(float(v[i]), 4) for o, v in ps.items()}; on = sorted(o for o, v in sc.items() if v >= 0.5)
+                if on: sug[i][f] = {"value": on, "confidence": round(min(sc[o] for o in on), 4), "scores": sc}
+            continue
+        if f not in bank_v11: continue
+        if f in wvcore.OPTIONS_BY_PARENT and par:
+            pn, pp = par
+            for parent, opts in wvcore.OPTIONS_BY_PARENT[f].items():
+                names = [o for o in opts if o in bank_v11[f]]
+                if not names: continue
+                pr = softmax((E @ np.stack([bank_v11[f][o] for o in names]).T) / TEMP)
+                for i in range(len(E)):
+                    j = int(pp[i].argmax())
+                    if pn[j] != parent: continue
+                    k = int(pr[i].argmax())
+                    sug[i][f] = {"value": names[k], "confidence": round(float(pr[i, k]), 4), "parent": parent,
+                                 "parent_confidence": round(float(pp[i, j]), 4), "probs": {n: round(float(pr[i, q]), 4) for q, n in enumerate(names)}}
+            continue
+        names = list(bank_v11[f]); pr = softmax((E @ np.stack([bank_v11[f][o] for o in names]).T) / TEMP)
+        for i in range(len(E)):
+            k = int(pr[i].argmax())
+            sug[i][f] = {"value": names[k], "confidence": round(float(pr[i, k]), 4), "probs": {n: round(float(pr[i, j]), 4) for j, n in enumerate(names)}}
+    return [{"suggestions": s} for s in sug]
+
+def write_attr_output(c, cands, meta_extra, outdir=None):
+    import numpy as np, torch
+    from transformers import AutoModel, AutoProcessor
+    rows = [r for r in c.execute("SELECT image_id, sha1, emb FROM emb ORDER BY image_id").fetchall() if r[0] in cands]
+    m = AutoModel.from_pretrained(CLS_MODEL).eval(); p = AutoProcessor.from_pretrained(CLS_MODEL)
+    _, _, _, bank_v11 = text_bank(torch, m, p)
+    E = np.stack([np.frombuffer(r[2], dtype="float32") for r in rows]) if rows else np.zeros((0, 1))
+    res = score_attr(E, bank_v11) if rows else []
+    outdir = Path(outdir) if outdir else ROOT / "annotations" / "auto"; outdir.mkdir(parents=True, exist_ok=True)
+    fn = outdir / f"{ATTR_TAG}.jsonl"
+    with open(fn, "w", encoding="utf-8", newline="\n") as fh:
+        for (cid, h, _), r in zip(rows, res):
+            fh.write(json.dumps({"image_id": cid, "model_tag": ATTR_TAG, "image_sha1": h, **r}, sort_keys=True, separators=(",", ":")) + "\n")
+    meta = {"model_tag": ATTR_TAG, "kind": "machine_suggestions_v11_attributes", "never_counts_as_human_annotation": True,
+            "shown_in": "Attributes pass only, as hints; never bulk-accepted",
+            "classifier": {"model": CLS_MODEL, "revision": rev(CLS_MODEL), "license": CLS_LICENSE,
+                           "method": "zero-shot prompt ensemble, softmax at temperature %.3g; 'unknown' is never suggested" % TEMP},
+            "prompt_version": ATTR_PROMPT_VERSION, "prompts": P_V11, "prompts_multi": {f: {o: {"pos": a, "neg": b} for o, (a, b) in d.items()} for f, d in P_V11_MULTI.items()}, "prompts_parent": P_V11_PARENT, "images": len(rows), "generated_at": now(),
+            "accuracy": "not evaluated (no human v1.1 labels yet); see derived/auto_vs_human_v11.json once they exist", **meta_extra}
+    meta.pop("run", None)
+    json.dump(meta, open(outdir / f"{ATTR_TAG}.meta.json", "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)
+    print(f"wrote {fn}: {len(rows)} images (v1.1 attribute suggestions)")
+    return fn
 
 def detect(todo, c, limit, threads):
     import torch
@@ -276,7 +441,7 @@ def write_output(c, cands, meta_extra):
     rows = [r for r in rows if r[0] in cands]
     dets = {r[0]: (r[1], json.loads(r[2])) for r in c.execute("SELECT image_id, sha1, boxes FROM det")}
     m = AutoModel.from_pretrained(CLS_MODEL).eval(); p = AutoProcessor.from_pretrained(CLS_MODEL)
-    bank, scr, _ = text_bank(torch, m, p)
+    bank, scr, _, _ = text_bank(torch, m, p)
     E = np.stack([np.frombuffer(r[2], dtype="float32") for r in rows]) if rows else np.zeros((0, 1))
     res = score(E, bank, scr) if rows else []
     outdir = ROOT / "annotations" / "auto"; outdir.mkdir(parents=True, exist_ok=True)
@@ -334,9 +499,15 @@ if __name__ == "__main__":
     ap.add_argument("--detect-classes", default="wheelchair,other_aid", help="proposed_class substrings to run the detector on ('' = all)")
     ap.add_argument("--score-only", action="store_true")
     ap.add_argument("--eval", action="store_true")
+    ap.add_argument("--attr", action="store_true", help="write v1.1 attribute suggestions (separate _attr- tag) instead of the v1.0 file")
+    ap.add_argument("--out-dir", default=None, help="--attr output directory (default annotations/auto; use a scratch dir for tests)")
+    ap.add_argument("--contributed", default=ROOT / "data" / "contributed.csv")
+    ap.add_argument("--with-contributed", action="store_true", help="also embed/score contributed images (always on with --attr)")
     a = ap.parse_args()
     if a.eval: evaluate(); sys.exit(0)
     cands = wvcore.load_candidates(a.candidates)
+    if a.attr or a.with_contributed:   # opt-in for the v1.0 file so the existing suggestion file only changes when asked
+        for k, r in wvcore.load_contributed(str(a.contributed)).items(): cands.setdefault(k, r)
     c = cache(MODEL_TAG)
     have = {r[0]: r[1] for r in c.execute("SELECT image_id, sha1 FROM emb")}
     hdet = {r[0]: r[1] for r in c.execute("SELECT image_id, sha1 FROM det")}
@@ -357,6 +528,7 @@ if __name__ == "__main__":
         run.update(detected=n, detect_seconds=round(el, 1))
     run["finished"] = now()
     remaining = len([t for t in avail if have.get(t[0]) != t[2]]) if a.score_only else None
-    write_output(c, cands, {"run": run})
+    if a.attr: write_attr_output(c, cands, {"run": run}, a.out_dir)
+    else: write_output(c, cands, {"run": run})
     left = sum(1 for t in avail if (c.execute("SELECT sha1 FROM emb WHERE image_id=?", (t[0],)).fetchone() or [None])[0] != t[2])
     print(f"{left} locally available images still need embedding" + (" -> re-run the same command to resume" if left else ""))

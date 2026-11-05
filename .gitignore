@@ -28,3 +28,27 @@ images_blurred/
 
 # offline review viewer: images are handed over in person, never committed
 review/images/
+
+# v1.1: synthetic augmentation output (images + manifest, train-only) and assist-model outputs (boxes, masks) stay local
+var/synthetic/
+synthetic/
+var/assist/
+# licensed scene backgrounds: only the manifest is committed, never the photos
+data/backgrounds/*
+!data/backgrounds/backgrounds.csv
+!data/backgrounds/README.md
+# model weights are never committed (see docs/ANNOTATION_MODELS_v1.1.md for how to fetch them)
+*.pt
+*.pth
+*.safetensors
+*.ckpt
+*.bin
+*.onnx
+*.gguf
+weights/
+models/assist/
+hf_cache/
+*.webp
+*.bmp
+*.tif
+*.tiff

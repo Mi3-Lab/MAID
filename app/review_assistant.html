@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WheelView - Review assistant suggestions</title><link rel="stylesheet" href="/style.css">
+<style>.wrap{display:flex;gap:14px;flex-wrap:wrap}.wrap img{max-width:520px;max-height:520px;object-fit:contain;background:#222}
+table.r{border-collapse:collapse;font-size:13px}table.r td,table.r th{padding:3px 8px;border-bottom:1px solid #ddd;text-align:left}
+.dis{background:#fff3cd}.done td{opacity:.6}.tag{margin-right:4px}</style>
+</head><body>
+<header><b>Review assistant suggestions</b><span class="grow"></span>
+<label>Reviewer <input id="rev" placeholder="your name" size="12"></label>
+<label>Show <select id="status"><option value="open">pending + partial</option><option value="pending">pending</option><option value="reviewed">reviewed</option><option value="all">all</option></select></label>
+<a href="/api/assistant_review/summary" target="_blank">summary</a><a href="/adjudicate.html">adjudicate</a><a href="/">annotate</a></header>
+<section>
+<div id="progress" class="muted"></div>
+<p class="muted">These are machine suggestions from the assistant visual review, not labels. Accept or Edit writes a human label in <b>your</b> name;
+Reject records only a review outcome. If a field already has a human label it is never overwritten: a different value goes to the adjudication queue.</p>
+<div><button id="prev">&larr; prev</button> <span id="pos"></span> <button id="next">next &rarr;</button>
+<button id="acceptAll">Accept all open fields</button> <button id="rejectAll">Reject all open fields</button></div>
+<div id="item"></div>
+</section>
+<script src="/review_assistant.js"></script></body></html>
