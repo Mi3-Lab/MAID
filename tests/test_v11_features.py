@@ -37,6 +37,12 @@ check("schema: pediatric is a size descriptor, not a subtype", "pediatric_size" 
 check("schema: ramp_deploy options", wvcore.FIELD_OPTS["ramp_deploy"] == ["safe", "unsafe", "not_needed", "unknown"])
 check("schema: ramp_reasons is multi-select", "ramp_reasons" in wvcore.MULTI_FIELDS)
 check("options_for: manual list", "standard_folding" in wvcore.options_for("chair_subtype", "manual") and "power_standard" not in wvcore.options_for("chair_subtype", "manual"))
+check("options_for: negative_camber is a manual subtype only",
+      "negative_camber" in wvcore.options_for("chair_subtype", "manual")
+      and "negative_camber" not in wvcore.options_for("chair_subtype", "powered")
+      and "negative_camber" in wvcore.FIELD_OPTS["chair_subtype"])
+check("validate: negative_camber accepted for chair_subtype",
+      wvcore.validate(ev("wv_000001", "alice", "chair_subtype", "negative_camber"))[0] is not None)
 check("options_for: powered list", "power_tilt_recline" in wvcore.options_for("chair_subtype", "powered") and "bariatric" not in wvcore.options_for("chair_subtype", "powered"))
 check("dep_ok: subtype hidden for other_aid", not wvcore.dep_ok("chair_subtype", {"device_type": "other_aid"}))
 check("dep_ok: subtype shown for manual (from context)", wvcore.dep_ok("chair_subtype", {}, {"device_type": "manual"}))
@@ -123,6 +129,7 @@ bank["_parent"] = {"manual": E[0], "powered": E[1]}
 bank["_multi_ramp_reasons"] = {o: (unit(rng.normal(size=D)).astype("float32"), unit(rng.normal(size=D)).astype("float32")) for o in wvcore.FIELD_OPTS["ramp_reasons"] if o != "unknown"}
 S = AA.score_attr(E, bank)
 cs = [s["suggestions"].get("chair_subtype") for s in S]
+check("auto prompts include negative_camber (attr-v3)", "negative_camber" in AA.P_V11["chair_subtype"] and AA.ATTR_PROMPT_VERSION == "attr-v3")
 check("score_attr: chair_subtype within the parent's list",
       cs[0] and cs[0]["parent"] == "manual" and cs[0]["value"] in wvcore.options_for("chair_subtype", "manual")
       and cs[1] and cs[1]["parent"] == "powered" and cs[1]["value"] in wvcore.options_for("chair_subtype", "powered"), json.dumps(cs[:2]))
@@ -249,6 +256,7 @@ for d in ("FILTERING_v1.1.md", "SYNTHETIC_AUGMENTATION_v1.1.md", "RAMP_LABELS_v1
     check(f"docs/{d} exists", (ROOT / "docs" / d).exists())
 dd = (ROOT / "docs" / "DATA_DICTIONARY_v1.1.md").read_text(encoding="utf-8")
 check("data dictionary documents subtypes + ramp + attr-v2", "chair_subtype" in dd and "ramp_deploy" in dd and "attr-v2" in dd and "adds **no** wheelchair subtype" not in dd)
+check("data dictionary lists negative_camber in the manual subtypes", "negative_camber" in dd)
 ign = [subprocess.run(["git", "check-ignore", "-q", "--no-index", p], cwd=ROOT).returncode == 0
        for p in ("var/synthetic/images/wv_800001.jpg", "var/assist/x/masks/a.png", "data/backgrounds/a.jpg", "x/model.safetensors", "y.pt", "weights/z.bin")]
 kept = subprocess.run(["git", "check-ignore", "-q", "--no-index", "data/backgrounds/backgrounds.csv"], cwd=ROOT).returncode != 0

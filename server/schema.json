@@ -1,6 +1,6 @@
 {
- "version": 3,
- "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation.",
+ "version": 4,
+ "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: adds chair_subtype=negative_camber to the manual list.",
  "value_aliases": {
   "device_type": {
    "lookalike": "ambiguous"
@@ -170,6 +170,7 @@
     "manual": [
      "standard_folding",
      "lightweight_rigid",
+     "negative_camber",
      "transport_attendant",
      "tilt_recline",
      "bariatric",
@@ -185,6 +186,7 @@
    "options": [
     "standard_folding",
     "lightweight_rigid",
+    "negative_camber",
     "transport_attendant",
     "tilt_recline",
     "bariatric",
@@ -306,7 +308,7 @@
  },
  "annotators_per_image": 2,
  "max_annotators_per_image": 3,
- "note_v11": "v1.1 (2026-11-04): fields with \"since\": \"1.1\" are labelled in a separate attribute pass (app mode 'Attributes', own done flag _status_v11, own assignments). They never change v1.0 status/consensus/kappa or derived/labels.csv; they are resolved into derived/labels_v11.csv. Every v1.1 field has an explicit 'unknown' (cannot be determined from the photo). Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json 'definitions' and docs/DATA_DICTIONARY_v1.1.md.",
+ "note_v11": "v1.1 (2026-11-04): fields with \"since\": \"1.1\" are labelled in a separate attribute pass (app mode 'Attributes', own done flag _status_v11, own assignments). They never change v1.0 status/consensus/kappa or derived/labels.csv; they are resolved into derived/labels_v11.csv. Every v1.1 field has an explicit 'unknown' (cannot be determined from the photo). Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json 'definitions' and docs/DATA_DICTIONARY_v1.1.md. Schema v4 adds chair_subtype=negative_camber to the manual options_by_parent list (powered list unchanged).",
  "definitions": {
   "control": {
    "joystick": "a powered-chair joystick / hand control is visible (usually on an armrest)",
@@ -360,6 +362,7 @@
   "chair_subtype": {
    "standard_folding": "manual: standard folding (cross-brace) frame, usually with swing-away footrests and push handles",
    "lightweight_rigid": "manual: lightweight rigid / sport / active-user frame (fixed frame, often cambered wheels, low back, no or small push handles)",
+   "negative_camber": "manual: negative camber (wheels angled in at the top / out at the ground; sports/active chairs ? distinct from a plain lightweight_rigid frame)",
    "transport_attendant": "manual: transport / attendant-propelled chair (small rear wheels, no push rims; pushed by a second person)",
    "tilt_recline": "manual: tilt-in-space or reclining chair (large padded seat and headrest, tilt mechanism)",
    "bariatric": "manual: bariatric (visibly extra-wide, heavy-duty frame)",
