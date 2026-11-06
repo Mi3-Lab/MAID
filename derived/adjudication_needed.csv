@@ -2,3 +2,7 @@ image_id,status,field,values_by_annotator
 wv_000229,needs_adjudication,occlusion,"{""devin"": ""partial"", ""shaaz"": ""none""}"
 wv_000229,needs_adjudication,viewpoint,"{""devin"": ""three-quarter"", ""shaaz"": ""front""}"
 wv_000239,needs_adjudication,viewpoint,"{""devin"": ""front"", ""shaaz"": ""side""}"
+wv_000250,needs_adjudication,occlusion,"{""devin"": ""none"", ""samir"": ""heavy""}"
+wv_000250,needs_adjudication,viewpoint,"{""devin"": ""side"", ""samir"": ""front""}"
+wv_000250,needs_adjudication,setting,"{""devin"": ""other"", ""samir"": ""sidewalk""}"
+wv_000277,needs_adjudication,occlusion,"{""devin"": ""none"", ""samir"": ""heavy""}"
