@@ -23,7 +23,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "server")); import wvcore
 
-HUMANS = ("samir", "shaaz")
+HUMANS = ("samir", "shaaz", "devin", "wesley")  # v1.1: all known human annotators (machine tags never match)
+# Also accept --humans a,b to override.
 CLASSES = list(wvcore.DEVICE_CLASSES)   # manual, powered, other_aid, ambiguous
 BAD_LICENSE = ("needs_ross", "exclude")
 
