@@ -102,7 +102,7 @@ P = {
  },
 }
 # ---------- v1.1 attribute prompts (separate tag; "unknown" is never suggested: it is the annotator's choice) ----------
-ATTR_PROMPT_VERSION = "attr-v2"   # v2: + chair_subtype, drive_position, ramp_deploy, ramp_reasons
+ATTR_PROMPT_VERSION = "attr-v3"   # v3: + negative_camber manual subtype (v2: chair_subtype, drive_position, ramp_deploy, ramp_reasons)
 ATTR_TAG = "siglip2-so400m-224_" + ATTR_PROMPT_VERSION
 P_V11 = {
  "control": {
@@ -152,6 +152,9 @@ P_V11 = {
                        "a hospital-style folding wheelchair with swing-away footrests"],
   "lightweight_rigid": ["a lightweight rigid-frame manual wheelchair", "a sporty ultralight active wheelchair with cambered wheels",
                         "a compact rigid wheelchair with no push handles"],
+  "negative_camber": ["a sports wheelchair with wheels angled in at the top (negative camber)",
+                      "an active wheelchair with pronounced cambered wheels",
+                      "a racing wheelchair with wheels tilted inward at the top"],
   "transport_attendant": ["a transport wheelchair with four small wheels pushed by a caregiver",
                           "an attendant-propelled wheelchair with small rear wheels", "a companion chair with small wheels"],
   "tilt_recline": ["a tilt-in-space wheelchair with a high padded backrest and headrest", "a reclining wheelchair with a tall back",

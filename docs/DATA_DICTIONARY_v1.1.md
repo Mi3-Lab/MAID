@@ -20,7 +20,7 @@ events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v
 | `weather` | sunny_clear, overcast, rain, snow, fog, night, indoor_na, unknown | Visible conditions. indoor_na for indoor scenes. night when it is dark outdoors. |
 | `ground_wet` | yes, no, unknown | Wet, snowy or icy ground visible. |
 | `size_class` | standard, wide, pediatric_size, unknown | Visual impression only (e.g. a clearly extra-wide frame; pediatric_size = a visibly child-sized chair, judged from the chair alone). **Not a measurement.** Never machine-suggested. |
-| `chair_subtype` | manual: standard_folding, lightweight_rigid, transport_attendant, tilt_recline, bariatric, unknown · powered: power_standard, power_tilt_recline, unknown | Dependent on `device_type` (section 2a). |
+| `chair_subtype` | manual: standard_folding, lightweight_rigid, negative_camber, transport_attendant, tilt_recline, bariatric, unknown · powered: power_standard, power_tilt_recline, unknown | Dependent on `device_type` (section 2a). |
 | `drive_position` | mid_wheel, front_wheel, rear_wheel, unknown | Powered chairs only: which wheels are the large drive wheels. |
 | `ramp_deploy` | safe, unsafe, not_needed, unknown | Research judgement of the **scene**: could a vehicle wheelchair ramp be deployed here? See section 2b. |
 | `ramp_reasons` | multi-select: insufficient_space, obstruction, uneven_surface, steep_slope, curb_height_issue, wet_icy_surface, traffic_hazard, no_wheelchair_user, user_not_waiting_unclear, unknown | Shown when `ramp_deploy` is unsafe or not_needed. Stored as a JSON list; in CSVs as sorted values joined with `+` (e.g. `insufficient_space+obstruction`). `unknown` cannot be combined. |
@@ -32,9 +32,10 @@ events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v
 * `chair_subtype` and `drive_position` also appear in the normal v1.0 labelling pass, right after device type, marked
   "v1.1, optional". They're stored as v1.1 fields and never change v1.0 derived files.
 * Manual definitions: standard_folding = cross-brace folding frame; lightweight_rigid = rigid/active-user frame, often no
-  push handles; transport_attendant = small rear wheels, pushed by an attendant; tilt_recline = tilting or reclining seat
-  system (manual); bariatric = visibly heavy-duty / extra-wide frame. Powered: power_standard; power_tilt_recline = power
-  seat functions visible. Choose `unknown` when you can't tell.
+  push handles; negative_camber = wheels angled in at the top (sports/active); transport_attendant = small rear wheels,
+  pushed by an attendant; tilt_recline = tilting or reclining seat system (manual); bariatric = visibly heavy-duty /
+  extra-wide frame. Powered: power_standard; power_tilt_recline = power seat functions visible. Choose `unknown` when
+  you can't tell.
 * A value whose parent no longer applies (e.g. the device was later set to other_aid) is ignored by consensus
   (`wvcore.dep_ok`).
 
@@ -56,7 +57,7 @@ adjudicated as keep). Contributed images join once they're `active` and have v1.
 
 ## 3. Machine suggestions (never labels)
 `python scripts\auto_annotate.py --attr` writes `annotations/auto/siglip2-so400m-224_attr-v2.jsonl` (SigLIP2
-zero-shot, separate `_attr-` tag; attr-v2 adds chair_subtype within the manual/powered list, drive_position, ramp_deploy and
+zero-shot, separate `_attr-` tag; attr-v2/v3 adds chair_subtype within the manual/powered list, drive_position, ramp_deploy and
 per-reason ramp_reasons scores). Optional assist models (`scripts/assist_annotate.py`, `docs/ANNOTATION_MODELS_v1.1.md`)
 write `annotations/auto/<vlm>_attr-vlm-v1.jsonl` the same way, plus boxes/masks in `var/assist/` (local only).
 The app shows these as orange hints with the model name. They aren't validated and can't be bulk-accepted. When a
