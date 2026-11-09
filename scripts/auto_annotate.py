@@ -102,7 +102,7 @@ P = {
  },
 }
 # ---------- v1.1 attribute prompts (separate tag; "unknown" is never suggested: it is the annotator's choice) ----------
-ATTR_PROMPT_VERSION = "attr-v3"   # v3: + negative_camber manual subtype (v2: chair_subtype, drive_position, ramp_deploy, ramp_reasons)
+ATTR_PROMPT_VERSION = "attr-v4"   # v4: + securement_hardware (low-conf -> unclear); v3: negative_camber; v2: subtype/drive/ramp
 ATTR_TAG = "siglip2-so400m-224_" + ATTR_PROMPT_VERSION
 P_V11 = {
  "control": {
@@ -170,6 +170,17 @@ P_V11 = {
                 "a power wheelchair with six wheels and drive wheels in the middle"],
   "front_wheel": ["a front-wheel drive power wheelchair with big wheels at the front", "a power wheelchair with large front drive wheels"],
   "rear_wheel": ["a rear-wheel drive power wheelchair with big wheels at the back", "a power wheelchair with large rear drive wheels and small front casters"],
+ },
+ "securement_hardware": {   # label only what is visible; low confidence -> unclear (see ATTR_LOW_CONF)
+  "docking_bracket": ["a wheelchair with a docking pin or bracket under the seat",
+                      "an EZ Lock style docking bracket under a wheelchair seat",
+                      "a Q'Straint docking pin underneath a power wheelchair"],
+  "tiedown_points": ["a wheelchair with visible tiedown loops or securement brackets",
+                     "WC19 style securement rings on a wheelchair frame",
+                     "marked 4-point tiedown attachment points on a wheelchair"],
+  "not_visible": ["a wheelchair with no docking hardware or tiedown loops visible",
+                  "a wheelchair photographed from an angle where securement fittings cannot be seen",
+                  "a mobility device with a plain frame and no securement brackets in view"],
  },
  "ramp_deploy": {   # research judgement of the scene, not a safety assessment
   "safe": ["a vehicle ramp deployed onto a clear level sidewalk with plenty of room",
@@ -303,6 +314,7 @@ def softmax(z):
 # no human labels used) so options whose prompts are simply "closer to everything" (e.g. 'vehicle') stop winning.
 CALIB = float(os.environ.get("WV_AUTO_CALIB", "0"))   # off: on the 73 labelled images it helped device_type/occupied but hurt setting/lighting
 TEMP = 0.01   # softmax temperature on cosine similarity (≈ CLIP's 1/100); SigLIP's own logit scale is far sharper
+ATTR_LOW_CONF = {"securement_hardware": 0.45}   # below this top-1 prob, suggest unclear (never guess hardware)
 
 def score(E, bank, scr):
     """E: (n, d) normalised image embeddings -> list of per-image dicts."""
@@ -369,9 +381,15 @@ def score_attr(E, bank_v11):
                                  "parent_confidence": round(float(pp[i, j]), 4), "probs": {n: round(float(pr[i, q]), 4) for q, n in enumerate(names)}}
             continue
         names = list(bank_v11[f]); pr = softmax((E @ np.stack([bank_v11[f][o] for o in names]).T) / TEMP)
+        thr = ATTR_LOW_CONF.get(f)
         for i in range(len(E)):
             k = int(pr[i].argmax())
-            sug[i][f] = {"value": names[k], "confidence": round(float(pr[i, k]), 4), "probs": {n: round(float(pr[i, j]), 4) for j, n in enumerate(names)}}
+            conf = float(pr[i, k]); val = names[k]
+            # securement_hardware (and any ATTR_LOW_CONF field): low top-1 -> unclear (defer; do not guess)
+            if thr is not None and conf < thr and "unclear" in (wvcore.FIELD_OPTS.get(f) or []):
+                val = "unclear"
+            sug[i][f] = {"value": val, "confidence": round(conf, 4), "probs": {n: round(float(pr[i, j]), 4) for j, n in enumerate(names)},
+                         **({"low_conf_to_unclear": True, "threshold": thr} if thr is not None and val == "unclear" and names[k] != "unclear" else {})}
     return [{"suggestions": s} for s in sug]
 
 def write_attr_output(c, cands, meta_extra, outdir=None):
@@ -390,8 +408,8 @@ def write_attr_output(c, cands, meta_extra, outdir=None):
     meta = {"model_tag": ATTR_TAG, "kind": "machine_suggestions_v11_attributes", "never_counts_as_human_annotation": True,
             "shown_in": "Attributes pass only, as hints; never bulk-accepted",
             "classifier": {"model": CLS_MODEL, "revision": rev(CLS_MODEL), "license": CLS_LICENSE,
-                           "method": "zero-shot prompt ensemble, softmax at temperature %.3g; 'unknown' is never suggested" % TEMP},
-            "prompt_version": ATTR_PROMPT_VERSION, "prompts": P_V11, "prompts_multi": {f: {o: {"pos": a, "neg": b} for o, (a, b) in d.items()} for f, d in P_V11_MULTI.items()}, "prompts_parent": P_V11_PARENT, "images": len(rows), "generated_at": now(),
+                           "method": "zero-shot prompt ensemble, softmax at temperature %.3g; 'unknown' is never suggested; securement_hardware top-1 below ATTR_LOW_CONF -> unclear" % TEMP},
+            "prompt_version": ATTR_PROMPT_VERSION, "attr_low_conf": ATTR_LOW_CONF, "prompts": P_V11, "prompts_multi": {f: {o: {"pos": a, "neg": b} for o, (a, b) in d.items()} for f, d in P_V11_MULTI.items()}, "prompts_parent": P_V11_PARENT, "images": len(rows), "generated_at": now(),
             "accuracy": "not evaluated (no human v1.1 labels yet); see derived/auto_vs_human_v11.json once they exist", **meta_extra}
     meta.pop("run", None)
     json.dump(meta, open(outdir / f"{ATTR_TAG}.meta.json", "w", encoding="utf-8", newline="\n"), indent=1, sort_keys=True)

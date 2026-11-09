@@ -23,6 +23,7 @@ events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v
 | `chair_subtype` | manual: standard_folding, lightweight_rigid, negative_camber, transport_attendant, tilt_recline, bariatric, unknown · powered: power_standard, power_tilt_recline, unknown | Dependent on `device_type` (section 2a). |
 | `drive_position` | mid_wheel, front_wheel, rear_wheel, unknown | Powered chairs only: which wheels are the large drive wheels. |
 | `ramp_deploy` | safe, unsafe, not_needed, unknown | Research judgement of the **scene**: could a vehicle wheelchair ramp be deployed here? See section 2b. |
+| `securement_hardware` | docking_bracket, tiedown_points, not_visible, unclear | Visible securement fittings only. docking_bracket = under-seat docking pin/bracket (e.g. EZ Lock / Q'Straint). tiedown_points = marked 4-point / WC19 loops or brackets. not_visible = none in view. unclear = cannot tell. **Not a safety certification.** See §2c. |
 | `ramp_reasons` | multi-select: insufficient_space, obstruction, uneven_surface, steep_slope, curb_height_issue, wet_icy_surface, traffic_hazard, no_wheelchair_user, user_not_waiting_unclear, unknown | Shown when `ramp_deploy` is unsafe or not_needed. Stored as a JSON list; in CSVs as sorted values joined with `+` (e.g. `insufficient_space+obstruction`). `unknown` cannot be combined. |
 
 ### 2a. Chair subtype (dependent field)
@@ -38,6 +39,14 @@ events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v
   you can't tell.
 * A value whose parent no longer applies (e.g. the device was later set to other_aid) is ignored by consensus
   (`wvcore.dep_ok`).
+
+
+### 2c. Securement hardware (visible fittings only; not a certification)
+`securement_hardware` records what an annotator can **see** in one photo: under-seat docking hardware, tiedown loops/brackets, nothing visible, or unclear. It does **not** certify crashworthiness, WC19 compliance, or that a vehicle may secure the chair.
+
+**Vehicle-system guidance (model/API):** when the model (or a human label) reports `docking_bracket` at **high confidence**, a boarding stack may *prepare* a docking station as a prior — still confirm with the rider. `not_visible`, `unclear`, or **low confidence** => defer to rider confirmation / additional sensing. Never use this field alone to authorize securement or boarding.
+
+SigLIP attr-v4 scores this field; top-1 probability below the configured threshold (default 0.45) is rewritten to `unclear`.
 
 ### 2b. Ramp deployment labels: research judgement, not validated
 `ramp_deploy` records what an annotator judges from **one photo**: is there room and a suitable surface to deploy a
@@ -57,7 +66,7 @@ adjudicated as keep). Contributed images join once they're `active` and have v1.
 
 ## 3. Machine suggestions (never labels)
 `python scripts\auto_annotate.py --attr` writes `annotations/auto/siglip2-so400m-224_attr-v2.jsonl` (SigLIP2
-zero-shot, separate `_attr-` tag; attr-v2/v3 adds chair_subtype within the manual/powered list, drive_position, ramp_deploy and
+zero-shot, separate `_attr-` tag; attr-v2/v3/v4 adds chair_subtype within the manual/powered list, drive_position, ramp_deploy and
 per-reason ramp_reasons scores). Optional assist models (`scripts/assist_annotate.py`, `docs/ANNOTATION_MODELS_v1.1.md`)
 write `annotations/auto/<vlm>_attr-vlm-v1.jsonl` the same way, plus boxes/masks in `var/assist/` (local only).
 The app shows these as orange hints with the model name. They aren't validated and can't be bulk-accepted. When a
@@ -115,7 +124,7 @@ sha256, width, height, n_faces_blurred, chair_ref, series, notes`.
 ## 6. `data/manifest_v11.csv` (built by `scripts/build_manifest_v11.py`)
 `image_id, source, split, split_origin, train_eligible_v10, v11_eligible, v11_exclusion_reason, device_type,
 setting, occupied, occlusion, propulsion, viewpoint, lighting, v11_status, v11_annotators, control, environment, weather,
-ground_wet, size_class, chair_subtype, drive_position, ramp_deploy, ramp_reasons` (final values only; multi as `a+b`), `license, creator, leak_group, path, phash_blurred`, size proxy + `est_*`
+ground_wet, size_class, chair_subtype, drive_position, ramp_deploy, ramp_reasons, securement_hardware` (final values only; multi as `a+b`), `license, creator, leak_group, path, phash_blurred`, size proxy + `est_*`
 columns (single-box images only), and the measured columns (real sources only).
 
 * v1.0 images keep their **frozen** v1.0 split (`split_origin=v1.0`).

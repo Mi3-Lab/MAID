@@ -257,7 +257,7 @@ def health():
     a = auto_state()
     out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
            "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
-           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
+           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved", "securement_hardware"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
            "contributed": sum(1 for r in CANDIDATES.values() if r.get("source") == "contributed")}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -396,6 +396,43 @@ def auto_one(image_id: str, model_tag: str | None = None):
     r = auto_rec(image_id, model_tag)
     if not r: raise HTTPException(404, "no machine suggestion for this image")
     return r
+
+@app.get("/api/vehicle/securement/{image_id}")
+def vehicle_securement(image_id: str, model_tag: str | None = None):
+    """Securement hardware label + confidence for a boarding/vehicle stack (research prior only).
+
+    Returns human consensus when final, else the active attr-model suggestion. Guidance is always included:
+    docking_bracket at high confidence may INFORM preparing a docking station; not_visible / unclear / low
+    confidence => defer to rider confirmation. NEVER a safety certification — do not authorize securement from this alone.
+    """
+    refresh_candidates()
+    if image_id not in CANDIDATES: raise HTTPException(404, "unknown image")
+    with db() as c: per, adjv = wvcore.fold(all_events(c))
+    st = wvcore.image_status_v11(image_id, per, adjv)
+    field = "securement_hardware"
+    human = st["fields"].get(field)
+    a = auto_state(); prefer = [a["attr_active"]] * bool(a.get("attr_active")) + (a.get("attr_order") or [])
+    sg = wvcore.merged_suggestions(image_id, a["data"], prefer).get(field) or {}
+    if model_tag:
+        rec = auto_rec(image_id, model_tag) or {}
+        sg = (rec.get("suggestions") or {}).get(field) or sg
+    high = 0.7
+    if human and human[0] not in (None, "", []) and human[1] in ("consensus", "majority", "adjudicated", "single") and st["status"] == "final":
+        label, how = human[0], human[1]; conf = 1.0; source = "human_" + how
+    elif sg.get("value") not in (None, "", []):
+        label = sg["value"]; conf = float(sg.get("confidence") or 0)
+        source = "model:" + (a.get("attr_active") or "attr")
+    else:
+        label, conf, source = None, None, "none"
+    defer = label in (None, "not_visible", "unclear") or (conf is not None and conf < high)
+    return {
+        "image_id": image_id, "field": field, "label": label, "confidence": conf, "source": source,
+        "defer_to_rider": defer,
+        "guidance": (wvcore.SCHEMA.get("definitions") or {}).get(field, {}).get("_vehicle_guidance")
+                    or "Defer to rider confirmation. Not a safety certification.",
+        "options": wvcore.FIELD_OPTS.get(field, []),
+    }
+
 
 def conf_key(rec):   # "lowest confidence first" uses the device_type confidence (the field that matters most)
     return rec["suggestions"].get("device_type", {}).get("confidence", 1.0)

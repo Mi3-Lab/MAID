@@ -80,7 +80,10 @@
 it never changes v1.0 labels or their done status. Weather is what you can see: <i>indoor_na</i> indoors, <i>night</i> for outdoor
 night shots. <i>size_class</i> is a visual impression (standard / wide / pediatric_size), not a measurement.
 <b>Chair subtype</b> appears right below device type once the chair is manual or powered (yours, the v1.0 label, or — marked "AI" — the model's guess); it is optional here, so number keys skip it — tap it or use ↑/↓;
-<b>drive wheels</b> for powered chairs. <b>Ramp deployment</b> is a research judgement of the scene (safe / unsafe / not needed / unknown),
+<b>drive wheels</b> for powered chairs. <b>Securement hardware</b> (docking bracket / tiedown points / not visible / unclear):
+label <b>only what is visible</b> — e.g. an EZ&nbsp;Lock / Q'Straint docking pin under the seat, or WC19-style tiedown loops;
+never guess from brand alone; prefer <i>unclear</i>. This is <b>not</b> a safety certification.
+<b>Ramp deployment</b> is a research judgement of the scene (safe / unsafe / not needed / unknown),
 not a safety assessment; <b>ramp reasons</b> is multi-select (number keys toggle; <i>unknown</i> alone).</p>
 <p>Images are shown <b>face-blurred</b> (as they will be released) wherever <code>scripts/auto_blur.py</code> has processed them.
 If you can still recognise a face, press <kbd>f</kbd>; those images get re-blurred by hand before release.</p>

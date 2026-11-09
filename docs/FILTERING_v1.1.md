@@ -10,7 +10,7 @@ key:value[,value];key:value[;basis:human|model|either]
 ```
 * OR within a key, AND across keys: `device_type:manual,powered;weather:rain` = (manual or powered) and rain.
 * Keys: every label field (`device_type, occupied, propulsion, occlusion, viewpoint, lighting, setting, control,
-  environment, weather, ground_wet, size_class, chair_subtype, drive_position, ramp_deploy, ramp_reasons`) plus:
+  environment, weather, ground_wet, size_class, chair_subtype, drive_position, ramp_deploy, ramp_reasons, securement_hardware`) plus:
 
 | pseudo key | values |
 |---|---|

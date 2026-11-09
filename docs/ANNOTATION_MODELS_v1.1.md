@@ -50,7 +50,5 @@ Sizes (approx.): OWLv2-base 0.6 GB, SAM 2.1 small 0.2 GB, Florence-2-base 0.5 GB
 ```
 The server picks up new files in annotations/auto automatically; reload the app to see VLM hints in the Attributes v1.1 pass.
 
-## SigLIP (existing) attr-v2 / attr-v3
-`scripts\auto_annotate.py --attr` (SigLIP2 zero-shot) now writes `..._attr-v2.jsonl` (attr-v3 adds the `negative_camber` manual subtype): chair_subtype is scored within the
-manual or powered list chosen by a manual-vs-powered prompt pair, plus drive_position, ramp_deploy and per-reason
-ramp_reasons scores. `train_multitask.py` trains subtype / drive / ramp heads on human labels only.
+## SigLIP (existing) attr-v2 / attr-v3 / attr-v4
+`scripts\auto_annotate.py --attr` (SigLIP2 zero-shot) writes `..._attr-vN.jsonl`. attr-v3 adds the `negative_camber` manual subtype; **attr-v4** adds `securement_hardware` (docking_bracket / tiedown_points / not_visible; top-1 below `ATTR_LOW_CONF` → `unclear`). chair_subtype is scored within the manual or powered list chosen by a manual-vs-powered prompt pair, plus drive_position, ramp_deploy and per-reason ramp_reasons scores. `train_multitask.py` trains subtype / drive / ramp heads on human labels only. Securement suggestions are **hints only** — never a safety certification; see DATA_DICTIONARY §2c and `/api/vehicle/securement/{image_id}`.

@@ -1,6 +1,6 @@
 {
- "version": 4,
- "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: adds chair_subtype=negative_camber to the manual list.",
+ "version": 5,
+ "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: chair_subtype=negative_camber. v5: adds securement_hardware (docking_bracket / tiedown_points / not_visible / unclear) — label only what is visible; not a safety certification.",
  "value_aliases": {
   "device_type": {
    "lookalike": "ambiguous"
@@ -251,6 +251,19 @@
     "user_not_waiting_unclear",
     "unknown"
    ]
+  },
+  {
+   "name": "securement_hardware",
+   "label": "Securement hardware",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "docking_bracket",
+    "tiedown_points",
+    "not_visible",
+    "unclear"
+   ],
+   "also_in_v10_pass": true
   }
  ],
  "exclude_reasons": [
@@ -397,6 +410,14 @@
    "user_not_waiting_unclear": "a user is present but not waiting to board, or intent is unclear",
    "unknown": "reason not clear",
    "_note": "multi-select, recorded only when ramp_deploy is unsafe or not_needed. Stored as a JSON list; derived files join the sorted values with '+'"
+  },
+  "securement_hardware": {
+   "docking_bracket": "a docking pin/bracket under the seat is clearly visible (e.g. EZ Lock / Q'Straint-style docking hardware)",
+   "tiedown_points": "marked securement loops or brackets for 4-point tiedowns are clearly visible (WC19-style)",
+   "not_visible": "the photo shows a wheelchair/mobility device but no docking or tiedown hardware is in view",
+   "unclear": "cannot tell from this photo whether securement hardware is present (too small, occluded, or ambiguous)",
+   "_annotator_rule": "Label only what is visible. Do not infer hardware from chair brand alone. Prefer unclear over guessing.",
+   "_vehicle_guidance": "docking_bracket at high model confidence may INFORM preparing a docking station for boarding; not_visible, unclear, or low confidence => defer to rider confirmation. This field is NOT a safety certification and must never alone authorize securement or boarding."
   }
  },
  "annotators_per_image_v11": 2,
