@@ -20,7 +20,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "server")); import wvcore
 CLASSES = list(wvcore.DEVICE_CLASSES)   # manual, powered, other_aid, ambiguous (canonical names, fixed order)
-DEFAULT_SPLITS = ROOT / "data" / "manifest_v2.csv"
+DEFAULT_SPLITS = ROOT / "data" / "splits_v11_with_auto.csv"  # v1.1 human+model_consensus; frozen v1.0: data/manifest_v2.csv or data/splits_v3.csv
 
 def read_split_rows(path):
     """Rows {image_id, split, label, ...} for train/val/test from the dataset manifest (scripts/build_manifest.py:

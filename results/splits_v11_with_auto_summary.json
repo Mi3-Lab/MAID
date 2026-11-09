@@ -1,0 +1,105 @@
+{
+  "n": 1080,
+  "class_counts": {
+    "powered": 330,
+    "other_aid": 256,
+    "manual": 477,
+    "ambiguous": 17
+  },
+  "split_counts": {
+    "train": {
+      "manual": 334,
+      "powered": 231,
+      "other_aid": 179,
+      "ambiguous": 12
+    },
+    "val": {
+      "manual": 72,
+      "powered": 49,
+      "other_aid": 38,
+      "ambiguous": 3
+    },
+    "test": {
+      "manual": 71,
+      "powered": 50,
+      "other_aid": 39,
+      "ambiguous": 2
+    }
+  },
+  "split_sizes": {
+    "train": 756,
+    "val": 162,
+    "test": 162
+  },
+  "n_groups": 668,
+  "largest_groups": [
+    [
+      "flickr:44636446@n04",
+      190
+    ],
+    [
+      "flickr:gmarziou",
+      13
+    ],
+    [
+      "flickr:56705607@n00",
+      13
+    ],
+    [
+      "flickr:clustermunitioncoalition",
+      12
+    ],
+    [
+      "flickr:ufv",
+      11
+    ],
+    [
+      "flickr:jeanlouis_zimmermann",
+      9
+    ],
+    [
+      "flickr:rhythmstrip",
+      8
+    ],
+    [
+      "flickr:departmentofed",
+      8
+    ]
+  ],
+  "seed": 11,
+  "fracs": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "license_file": "license_audit_v2.csv",
+  "filters": {
+    "clean_set_adjudicated_keep": 19,
+    "clean_set": 466,
+    "drop_device_unclear": 6,
+    "safety_hold": 4,
+    "license_unchecked_kept": 13,
+    "auto_approved_added": 620
+  },
+  "events_used": 13683,
+  "events_from_db": 13683,
+  "events_only_in_jsonl": 0,
+  "label_resolution": {
+    "consensus": 114,
+    "majority": 3,
+    "adjudicated": 16,
+    "single": 327,
+    "model_consensus": 620
+  },
+  "label_source": {
+    "human": 460,
+    "model_consensus": 620
+  },
+  "include_auto_approved": true,
+  "auto_approved_added": 620,
+  "license_status": {
+    "ok": 399,
+    "ok_with_note": 48,
+    "unchecked": 633
+  }
+}
