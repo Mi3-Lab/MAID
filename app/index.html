@@ -21,6 +21,8 @@
     <option value="random">random</option>
   </select>
   <button id="btnFilter" title="Filter: focus on images with specific labels (Shift+F)">Filter</button>
+  <label class="muted" title="Open any image by id to edit (writes a correction event)">Go to <input id="jump" placeholder="wv_000123" size="10" autocomplete="off"></label>
+  <button id="btnJump" title="Open this image for editing">Open</button>
   <button id="btnList">My images</button>
   <a href="/adjudicate.html">Adjudicate</a>
   <a href="/removed.html" title="Review images the removal rules took out; restore any that are OK">Removed</a>
@@ -31,7 +33,7 @@
   <h2>Who is annotating?</h2>
   <p>Enter your name (no password). It is used as your annotator id; labels are attributed to it.</p>
   <input id="name" placeholder="e.g. samir" autocomplete="off"> <button id="btnLogin">Start</button>
-  <p class="muted">Your labels are stored on this device and synced when online. Others' labels are never shown to you (independent annotation).</p>
+  <p class="muted">Your labels are stored on this device and synced when online. Independent annotation still applies to new labels. To fix a mistake on <b>any</b> image (yours or someone else's), use <b>Go to</b> with the image id; edits are saved as corrections and become the current label.</p>
 </section>
 <main id="main" hidden>
   <div id="imgwrap"><img id="img" alt=""><canvas id="cv"></canvas><div id="imgmsg"></div></div>

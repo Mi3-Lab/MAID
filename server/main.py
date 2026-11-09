@@ -126,12 +126,28 @@ def insert_events(evs):
             e, why = wvcore.validate(ev)
             if not e: rej.append({"uuid": ev.get("uuid") if isinstance(ev, dict) else None, "reason": why}); continue
             if e["image_id"] not in CANDIDATES: rej.append({"uuid": e["uuid"], "reason": "unknown image_id"}); continue
+            # Clearing a child / identifiable_person exclude cannot be a silent correction or label: queue for adjudication.
+            if e["field"] == "exclude" and e["kind"] in ("label", "correction") and e.get("value") in ("", None, "none"):
+                per0, adj0 = wvcore.fold([row_event(r) for r in c.execute("SELECT * FROM events WHERE image_id=? ORDER BY seq", (e["image_id"],))])
+                st0 = wvcore.image_status(e["image_id"], per0, adj0)
+                cur_ex = (st0["fields"].get("exclude") or ("", ""))[0]
+                any_child = any((fv.get("exclude") in getattr(wvcore, "ALWAYS_OUT_REASONS", ("child", "identifiable_person")))
+                                for fv in per0.get(e["image_id"], {}).values())
+                if cur_ex in getattr(wvcore, "ALWAYS_OUT_REASONS", ("child", "identifiable_person")) or any_child:
+                    AR.append_jsonl(ADJ_QUEUE, {"image_id": e["image_id"], "reason": "child_exclude_clearance_requested",
+                        "source": "annotator_correction", "category": "safety", "queued_at": now, "field": "exclude",
+                        "reviewer": e["annotator"], "reviewer_value": e.get("value") or "",
+                        "human_at_queue": {a: fv.get("exclude") for a, fv in per0.get(e["image_id"], {}).items() if fv.get("exclude")},
+                        "detail": "clearing child/identifiable_person exclude requires adjudication; not applied as a silent edit"})
+                    rej.append({"uuid": e["uuid"], "reason": "child_exclude_clearance_requires_adjudication"}); continue
             pv = wvcore.prov_of(e)
             cur = c.execute("INSERT OR IGNORE INTO events(uuid,image_id,annotator,field,value,ts,device_id,kind,received_at,prov) VALUES(?,?,?,?,?,?,?,?,?,?)",
                             (e["uuid"], e["image_id"], e["annotator"], e["field"], json.dumps(e["value"]), e["ts"], e["device_id"], e["kind"], now,
                              json.dumps(pv, sort_keys=True) if pv else None))
             (acc if cur.rowcount else dup).append(e["uuid"])
             if cur.rowcount and e["kind"] == "removal": _DEC_VER[0] += 1
+            if cur.rowcount and e["kind"] == "correction":
+                _log_v10_correction(e)
     return {"accepted": acc, "duplicate": dup, "rejected": rej}
 
 _BLUR = {"sig": None, "data": {}}
@@ -267,6 +283,57 @@ def get_events(since: int = 0, annotator: str | None = None, image_id: str | Non
 def get_image(image_id: str):
     if image_id not in CANDIDATES or image_id in blocked(): raise HTTPException(404)
     return image_meta(image_id)
+
+
+# ---------- open / correct any image (append-only corrections; never rewrite events) ----------
+V10_SPLIT_IDS = None
+def v10_split_ids():
+    """Frozen v1.0 release split image ids (train/val/test/excluded). Corrections are recorded; release artifacts are not altered."""
+    global V10_SPLIT_IDS
+    if V10_SPLIT_IDS is None:
+        ids = set()
+        for name in ("train", "val", "test", "excluded"):
+            p = ROOT / "release" / "splits" / f"{name}.txt"
+            if not p.exists(): p = ROOT / "var" / "release" / "WheelView_v1.0" / "splits" / f"{name}.txt"
+            if p.exists():
+                for line in p.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if line.startswith("wv_"): ids.add(line.split()[0])
+        # also from release labels.csv
+        lp = ROOT / "release" / "annotations" / "labels.csv"
+        if lp.exists():
+            import csv as _csv
+            with open(lp, encoding="utf-8", newline="") as fh:
+                ids |= {r["image_id"] for r in _csv.DictReader(fh) if r.get("image_id")}
+        V10_SPLIT_IDS = ids
+    return V10_SPLIT_IDS
+
+def _log_v10_correction(e):
+    if e["image_id"] not in v10_split_ids(): return
+    p = ROOT / "var" / "corrections_on_v10.jsonl"   # gitignored
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with open(p, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps({"ts": e["ts"], "image_id": e["image_id"], "field": e["field"], "value": e["value"],
+                             "annotator": e["annotator"], "previous": e.get("previous"), "previous_by": e.get("previous_by")}) + "\n")
+
+@app.get("/api/images/{image_id}/history")
+def image_history(image_id: str):
+    """All events for one image (any annotator), resolved status, and a short per-field history. Read-only."""
+    if image_id not in CANDIDATES: raise HTTPException(404)
+    with db() as c:
+        evs = [row_event(r) for r in c.execute("SELECT * FROM events WHERE image_id=? ORDER BY seq", (image_id,))]
+    per, adjv = wvcore.fold(evs)
+    st = wvcore.image_status(image_id, per, adjv)
+    st11 = wvcore.image_status_v11(image_id, per, adjv)
+    # chronological history (labels, adjudications, corrections); skip _status spam optionally kept
+    hist = []
+    for e in evs:
+        if e.get("kind") == "removal": continue
+        hist.append({k: e.get(k) for k in ("uuid", "annotator", "field", "value", "ts", "kind", "previous", "previous_by", "source", "model_tag") if k in e or k in ("uuid","annotator","field","value","ts","kind")})
+    meta = image_meta(image_id) if image_id not in blocked() else {"image_id": image_id, "img": "", "blocked": True}
+    return meta | {"events": hist, "status": st, "status_v11": st11, "annotators": sorted(per.get(image_id, {})),
+                   "in_v10_release": image_id in v10_split_ids(), "blocked": image_id in blocked()}
+
 
 def statuses11(c):
     per, adjv = wvcore.fold(all_events(c))

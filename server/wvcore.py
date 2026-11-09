@@ -79,10 +79,12 @@ def canon_class(value):
     return canon("device_type", value)
 ALL_FIELDS = list(FIELD_OPTS) + ["exclude", "face_blur_missed", "bbox", "_status", "_status_v11"]
 EVENT_KEYS = ["uuid", "image_id", "annotator", "field", "value", "ts", "device_id", "kind"]
+# kind=correction: a human edit that supersedes the resolved value for that field (latest wins), attributed to the editor.
+# Optional previous / previous_by are stored in the prov column (who/what was overridden).
 # Optional provenance on HUMAN events made in review mode ("model-suggested, human-confirmed/corrected").
 # source: "auto_review"; model_tag: which machine suggestion file; suggested: the model's value for this field (or null);
 # confidence: the model's confidence for that value. Absent on ordinary events (old lines stay byte-identical).
-PROV_KEYS = ["source", "model_tag", "suggested", "confidence"]
+PROV_KEYS = ["source", "model_tag", "suggested", "confidence", "previous", "previous_by"]
 PROV_SOURCES = ("auto_review", "auto_attr")   # auto_attr: v1.1 attribute pass, human clicked a field while its suggestion was shown
 TAG_RE = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
 UUID_RE = re.compile(r"^[0-9a-fA-F-]{8,64}$")
@@ -103,7 +105,7 @@ def validate(ev):
     if not isinstance(e["uuid"], str) or not UUID_RE.match(e["uuid"]): return None, "bad uuid"
     if not isinstance(e["image_id"], str) or not ID_RE.match(e["image_id"]): return None, "bad image_id"
     if not e["annotator"] or slug(e["annotator"]) != e["annotator"]: return None, "annotator must be a slug"
-    if e["kind"] not in ("label", "adjudication", "removal"): return None, "bad kind"
+    if e["kind"] not in ("label", "adjudication", "removal", "correction"): return None, "bad kind"
     if not isinstance(e["ts"], str) or len(e["ts"]) < 19: return None, "bad ts"
     if not isinstance(e["device_id"], str) or not e["device_id"]: return None, "bad device_id"
     f, v = e["field"], e["value"]
@@ -133,6 +135,22 @@ def validate(ev):
     else:
         return None, "unknown field"
     if e["kind"] == "adjudication" and f not in COMPARE + COMPARE_V11 + ["face_blur_missed"]: return None, "field not adjudicable"
+    # correction provenance: previous resolved value + who had it (optional; stored in prov)
+    if e["kind"] == "correction":
+        pv, pb = ev.get("previous"), ev.get("previous_by")
+        if pv is not None:
+            if isinstance(pv, list):
+                if len(pv) > MULTI_MAX or any(not isinstance(x, str) or len(x) > 40 for x in pv): return None, "bad previous"
+            elif isinstance(pv, bool): pass
+            elif isinstance(pv, str) and len(pv) <= 80: pass
+            elif pv is None: pass
+            else: return None, "bad previous"
+            e["previous"] = pv
+        if pb is not None:
+            if not isinstance(pb, str) or (pb and slug(pb) != pb and pb != "adj" and not pb.startswith("adj:")): return None, "bad previous_by"
+            e["previous_by"] = pb
+        if ev.get("source") is not None or ev.get("model_tag") is not None: return None, "model provenance not on corrections"
+        return e, None
     if ev.get("source") is not None or ev.get("model_tag") is not None:
         if ev.get("source") not in PROV_SOURCES: return None, "bad source"
         if not isinstance(ev.get("model_tag"), str) or not TAG_RE.match(ev["model_tag"]): return None, "bad model_tag"
@@ -147,25 +165,30 @@ def validate(ev):
     return e, None
 
 def prov_of(e):
-    """Provenance dict of an event (or None) — what the DB stores in its `prov` column."""
-    return {k: e[k] for k in PROV_KEYS if k in e} if e.get("source") else None
+    """Provenance dict of an event (or None) ? what the DB stores in its `prov` column."""
+    if e.get("source"): return {k: e[k] for k in PROV_KEYS if k in e}
+    if e.get("kind") == "correction" and ("previous" in e or "previous_by" in e):
+        return {k: e[k] for k in ("previous", "previous_by") if k in e}
+    return None
 
 def fold(events):
-    """Latest value per (image, annotator, field) for labels and per (image, field) for adjudications.
-    Ordering: client ts, then uuid (deterministic tie-break). Nothing is ever overwritten across annotators."""
+    """Latest value per (image, annotator, field) for labels and per (image, field) for adjudications/corrections.
+    Ordering: client ts, then uuid (deterministic tie-break). Nothing is ever overwritten across annotators.
+    Corrections and adjudications both supersede the resolved value for that field (latest wins); adjv stores
+    (value, who, how) with how in ('adjudicated','corrected'). Older callers that unpack (value, who) still work."""
     lab, adj = {}, {}
     for e in events:
         if e["kind"] == "removal": continue        # removal-review decisions are not labels (see removal_decisions)
         key = (e["ts"], e["uuid"]); v = canon(e["field"], e["value"])   # historical aliases -> canonical (read-side only)
-        if e["kind"] == "adjudication":
-            k = (e["image_id"], e["field"])
-            if k not in adj or key > adj[k][0]: adj[k] = (key, v, e["annotator"])
+        if e["kind"] in ("adjudication", "correction"):
+            k = (e["image_id"], e["field"]); how = "corrected" if e["kind"] == "correction" else "adjudicated"
+            if k not in adj or key > adj[k][0]: adj[k] = (key, v, e["annotator"], how)
         else:
             k = (e["image_id"], e["annotator"], e["field"])
             if k not in lab or key > lab[k][0]: lab[k] = (key, v)
     per = defaultdict(lambda: defaultdict(dict))   # image -> annotator -> field -> value
     for (img, ann, f), (_, v) in lab.items(): per[img][ann][f] = [canon(f, x) for x in v] if isinstance(v, list) and f in MULTI_FIELDS else v
-    adjv = {k: (v, who) for k, (_, v, who) in adj.items()}
+    adjv = {k: (v, who, how) for k, (_, v, who, how) in adj.items()}
     return per, adjv
 
 def norm(f, v):
@@ -179,7 +202,8 @@ def image_status(img, per, adjv):
     for f in COMPARE:
         vals = {a: norm(f, anns[a].get(f)) for a in done if anns[a].get(f) is not None or f == "exclude"}
         if (img, f) in adjv:
-            out["fields"][f] = (norm(f, adjv[(img, f)][0]), "adjudicated", vals); continue
+            how = adjv[(img, f)][2] if len(adjv[(img, f)]) > 2 else "adjudicated"
+            out["fields"][f] = (norm(f, adjv[(img, f)][0]), how, vals); continue
         if len(vals) < 2:
             out["fields"][f] = (next(iter(vals.values())) if vals else "", "single" if vals else "missing", vals); continue
         c = Counter(vals.values()); top, n = c.most_common(1)[0]
@@ -217,7 +241,8 @@ def image_status_v11(img, per, adjv, ctx=None):
     for f in COMPARE_V11:
         vals = {a: cmp[a][f] for a in done if f in cmp[a]}
         if (img, f) in adjv:
-            out["fields"][f] = (hval(adjv[(img, f)][0]), "adjudicated", vals); continue
+            how = adjv[(img, f)][2] if len(adjv[(img, f)]) > 2 else "adjudicated"
+            out["fields"][f] = (hval(adjv[(img, f)][0]), how, vals); continue
         if len(vals) < 2:
             out["fields"][f] = (next(iter(vals.values())) if vals else "", "single" if vals else "missing", vals); continue
         c = Counter(vals.values()); top, n = c.most_common(1)[0]
@@ -655,7 +680,7 @@ def image_facts(img, per, adjv, sugg=None, extra=None, st10=None, st11=None):
     size = "measured" if img in extra.get("measured", set()) else "estimate_only" if img in extra.get("estimated", set()) else "none"
     any_h = any(f in fv for fv in anns.values() for f in FILTER_FIELDS + ["_status", "_status_v11"])
     ex = st10["fields"].get("exclude", ("", ""))
-    excluded = "yes" if (ex[1] in ("consensus", "majority", "adjudicated", "single") and ex[0] not in ("", "none")) or \
+    excluded = "yes" if (ex[1] in ("consensus", "majority", "adjudicated", "corrected", "single") and ex[0] not in ("", "none")) or \
         any(fv.get("exclude") for fv in anns.values()) else "no"
     pseudo = {"split": split if split in PSEUDO_KEYS["split"] else "none", "approval": st10["status"], "status_v11": st11["status"],
               "synthetic": "yes" if syn else "no", "size_basis": size,

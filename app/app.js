@@ -31,7 +31,8 @@ const allOf = store => tx(store, 'readonly', s => req(s.getAll()));
 // ---------- state ----------
 const S = { schema: null, annotator: null, device: null, images: [], idx: 0, mine: {}, row: 0, exclMode: false, bboxMode: false, syncing: false,
   mode: 'label', order: 'lowconf', auto: {}, auto11: {}, armed: null, faces: true,
-  filter: {}, basis: 'human', fmatch: null, fsrc: '', fcounts: null, ftotal: null, fopen: false };   // filter: {key: [values]}; fmatch: Set of matching ids in the queue (null = no filter)   // mode 'attr': v1.1 Attributes pass   // faces: show the blur detector's face boxes (review mode)   // mode: 'label' | 'review' (Review auto labels)
+  filter: {}, basis: 'human', fmatch: null, fsrc: '', fcounts: null, ftotal: null, fopen: false,
+  history: null, editAny: false };   // filter: {key: [values]}; fmatch: Set of matching ids in the queue (null = no filter)   // mode 'attr': v1.1 Attributes pass   // faces: show the blur detector's face boxes (review mode)   // mode: 'label' | 'review' (Review auto labels)
 const RISK = { child: 'likely child', clinical_setting: 'likely clinical setting', not_a_photo: 'likely not a photo' };   // need a 2nd 'a' press
 const $ = id => document.getElementById(id);
 const _fetch = window.fetch.bind(window);
@@ -53,7 +54,14 @@ function foldMine(events) {   // latest value per (image, field) for this annota
   return m;
 }
 async function refreshMine() { S.mine = foldMine(await allOf('events')); }
-const val = (img, f) => S.mine[img]?.[f]?.v;
+const val = (img, f) => {
+  if (S.editAny && S.history?.status?.fields?.[f] && S.history.status.fields[f][1] !== 'missing') {
+    const v = S.history.status.fields[f][0];
+    return f === 'exclude' && v === 'none' ? '' : v;
+  }
+  // also prefer a just-emitted correction stored in mine
+  return S.mine[img]?.[f]?.v;
+};
 // v1.0 fields (label/review modes, unchanged) vs v1.1 attribute fields (Attributes pass only; separate done flag).
 // Dependent fields (schema show_when, e.g. chair_subtype for manual/powered) appear only when their parent applies;
 // fields with also_in_v10_pass (chair subtype, drive wheels) also appear, optional, right after device_type in the
@@ -106,10 +114,33 @@ function prov(image_id, field) {   // review mode: every human edit carries "mod
 }
 async function emit(field, value, image_id) {
   image_id ||= cur().image_id;
-  const e = { uuid: uuid(), image_id, annotator: S.annotator, field, value, ts: new Date().toISOString(), device_id: S.device, kind: 'label', ...prov(image_id, field), synced: 0 };
+  const useCorr = S.editAny;   // opened via Go-to: every field change is an append-only correction
+  let extra = useCorr ? {} : prov(image_id, field);
+  if (useCorr) {
+    const prev = resolvedVal(image_id, field), who = resolvedWho(image_id, field);
+    if (prev !== undefined) extra = { previous: prev, previous_by: who || '' };
+  }
+  const e = { uuid: uuid(), image_id, annotator: S.annotator, field, value, ts: new Date().toISOString(), device_id: S.device,
+              kind: useCorr ? 'correction' : 'label', ...extra, synced: 0 };
   await tx('events', 'readwrite', s => { s.put(e); });
   const im = S.mine[image_id] ||= {}; im[field] = { v: value, k: [e.ts, e.uuid], n: (im[field]?.n || 0) + 1 };
+  if (useCorr && S.history) {   // keep the on-screen history in sync before the next pull
+    S.history.events = (S.history.events || []).concat([{ annotator: S.annotator, field, value, ts: e.ts, kind: 'correction', ...extra }]);
+  }
   render(); updQueue(); scheduleSync(800);
+}
+function resolvedVal(id, field) {
+  const st = S.history?.status?.fields?.[field];
+  if (st) return st[0] === 'none' && field === 'exclude' ? '' : st[0];
+  if (S.mine[id]?.[field]) return S.mine[id][field].v;
+  return undefined;
+}
+function resolvedWho(id, field) {
+  const st = S.history?.status?.fields?.[field];
+  if (st && st[1] === 'corrected') return 'corr';
+  if (st && st[1] === 'adjudicated') return 'adj';
+  if (st && st[2]) return Object.keys(st[2]).join('+');
+  return S.history?.annotators?.join('+') || S.annotator;
 }
 
 // ---------- sync: push queued events, pull own events from other devices ----------
@@ -295,7 +326,10 @@ function render() {
   const bb = val(id, 'bbox') || []; $('bboxinfo').textContent = bb.length + ' box(es)' + (S.bboxMode ? ' — drag on image' : '');
   $('btnBbox').classList.toggle('primary', S.bboxMode);
   const h = S.mine[id] || {}; const edits = Object.values(h).reduce((a, x) => a + x.n, 0);
-  if (S.attrMsg === id) { $('hist').textContent = 'Every attribute row needs a value before Done (use "unknown" when you cannot tell).'; S.attrMsg = null; } else
+  if (S.attrMsg === id) { $('hist').textContent = 'Every attribute row needs a value before Done (use "unknown" when you cannot tell).'; S.attrMsg = null; }
+  else if (S.editAny && S.history?.image_id === id) {
+    $('hist').textContent = (S.editAny ? 'EDIT ANY ? corrections append; latest wins.\n' : '') + historyText(id);
+  } else
   $('hist').textContent = edits ? `${edits} edit event(s) by you on this image; any field can be changed — the latest edit wins for you only.` : '';
   drawBoxes();
 }
@@ -337,7 +371,10 @@ function go(d) {   // with a filter: step through matching images only
   if (!S.images.length) return;
   if (S.fmatch) { let i = S.idx + d; while (i >= 0 && i < S.images.length && !inF(S.images[i])) i += d; if (i >= 0 && i < S.images.length) S.idx = i; }
   else S.idx = Math.max(0, Math.min(S.images.length - 1, S.idx + d));
-  S.exclMode = false; render();
+  S.exclMode = false;
+  // leaving an Edit-any image clears correction mode unless we jump again
+  if (S.editAny && S.history && S.images[S.idx]?.image_id !== S.history.image_id) { S.editAny = false; S.history = null; }
+  render();
 }
 async function confirmAll() {   // review mode: accept every remaining suggestion as MY label (with provenance), then done
   const im = cur(); if (!im) return; const id = im.image_id, A = S.auto[id];
@@ -390,6 +427,52 @@ $('btnReview').onclick = () => setMode(S.mode === 'review' ? 'label' : 'review')
 $('btnAttr').onclick = () => setMode(S.mode === 'attr' ? 'label' : 'attr');
 $('rorder').onchange = async e => { S.order = e.target.value; e.target.blur(); await kvSet('order', S.order); reorder(); };
 $('btnLogout').onclick = async () => { await kvSet('annotator', null); location.reload(); };
+$('btnJump').onclick = () => openImage($('jump').value);
+$('jump').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); openImage($('jump').value); } });
+
+async function openImage(id) {
+  id = (id || '').trim().toLowerCase();
+  if (!/^wv_\d{6}$/.test(id)) { alert('Enter an image id like wv_000123'); return; }
+  try {
+    const h = await (await fetch('/api/images/' + encodeURIComponent(id) + '/history')).json();
+    if (h.blocked) { alert(id + ' is blocked/removed; open it from Removed if you need to restore it.'); return; }
+    S.history = h; S.editAny = true;
+    let i = S.images.findIndex(m => m.image_id === id);
+    if (i < 0) {
+      const meta = { image_id: id, img: h.img, title: h.title, creator: h.creator, license: h.license,
+                     source_page_url: h.source_page_url, proposed_class: h.proposed_class, annotator: S.annotator, ord_label: S.images.length };
+      await tx('images', 'readwrite', s => { s.put(meta); });
+      S.images.push(meta); i = S.images.length - 1;
+    }
+    // seed mine from resolved status so the form shows current values
+    const im = S.mine[id] ||= {};
+    for (const [f, trip] of Object.entries(h.status?.fields || {})) {
+      if (trip[1] === 'missing') continue;
+      const v = f === 'exclude' && trip[0] === 'none' ? '' : trip[0];
+      if (im[f] === undefined) im[f] = { v, k: ['', ''], n: 0 };
+    }
+    if (h.status?.face_blur_missed && im.face_blur_missed === undefined) im.face_blur_missed = { v: true, k: ['',''], n: 0 };
+    S.idx = i; $('list').hidden = true; $('main').hidden = false; render();
+  } catch (e) { alert('Could not open ' + id + ': ' + (e.message || e)); }
+}
+function historyText(id) {
+  const h = S.history;
+  if (!h || h.image_id !== id) return '';
+  const who = (h.annotators || []).join(', ') || 'none yet';
+  const lines = [`Original labelers: ${who}` + (h.in_v10_release ? ' ? in v1.0 release (correction recorded; release files unchanged)' : '')];
+  const byField = {};
+  for (const e of (h.events || [])) {
+    if (['_status','_status_v11'].includes(e.field)) continue;
+    (byField[e.field] ||= []).push(e);
+  }
+  for (const [f, es] of Object.entries(byField)) {
+    const last = es[es.length - 1];
+    const bits = es.map(e => `${e.annotator}=${Array.isArray(e.value) ? e.value.join('+') : e.value}` + (e.kind !== 'label' ? ` (${e.kind})` : '')).join(' ? ');
+    lines.push(`${f}: ${bits}`);
+  }
+  return lines.join("\n");
+}
+
 $('btnList').onclick = () => {
   const l = $('list'); const show = l.hidden; l.hidden = !show; $('main').hidden = show;
   if (!show) return render();
@@ -398,7 +481,7 @@ $('btnList').onclick = () => {
     S.images.map((im, i) => inF(im) ? `<tr data-i="${i}" style="cursor:pointer"><td>${i + 1}</td><td>${im.image_id}</td><td>${val(im.image_id, STATUS()) || ''}</td>` +
       LF.map(f => { const v = val(im.image_id, f.name); return `<td>${Array.isArray(v) ? v.join('+') : v ?? ''}</td>`; }).join('') + `<td>${val(im.image_id, 'exclude') || ''}</td></tr>` : '').join('') + '</table>';
 };
-$('list').addEventListener('click', e => { const tr = e.target.closest('tr[data-i]'); if (tr) { S.idx = +tr.dataset.i; $('list').hidden = true; $('main').hidden = false; render(); } });
+$('list').addEventListener('click', e => { const tr = e.target.closest('tr[data-i]'); if (tr) { S.idx = +tr.dataset.i; S.editAny = false; S.history = null; $('list').hidden = true; $('main').hidden = false; render(); } });
 
 document.addEventListener('keydown', e => {
   if (!S.annotator || $('main').hidden || e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' || e.metaKey || e.ctrlKey) return;
