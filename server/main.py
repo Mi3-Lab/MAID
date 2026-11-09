@@ -9,6 +9,12 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Red
 from fastapi.staticfiles import StaticFiles
 import wvcore
 import assistant_review as AR
+import importlib.util as _ilu
+def _load_auto_consensus():
+    path = Path(__file__).resolve().parent / "auto_consensus.py"
+    spec = _ilu.spec_from_file_location("wv_auto_consensus", path)
+    mod = _ilu.module_from_spec(spec); spec.loader.exec_module(mod); return mod
+AC = _load_auto_consensus()
 
 ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = Path(os.environ.get("WV_DB", ROOT / "var" / "wheelview.db"))
@@ -21,7 +27,8 @@ REVIEW_AUTO_DIR = Path(os.environ.get("WV_REVIEW_AUTO_DIR", ROOT / "var" / "assi
 ADJ_QUEUE = Path(os.environ.get("WV_ADJ_QUEUE", ROOT / "var" / "adjudication" / "queue.jsonl"))  # gitignored review-request queue (concerns, not decisions)
 AR_SUGG = Path(os.environ.get("WV_ASSIST_REVIEW_FILE", REVIEW_AUTO_DIR / (AR.TAG + ".jsonl")))      # assistant suggestions under human review
 AR_FLAGS = Path(os.environ.get("WV_ASSIST_REVIEW_FLAGS", REVIEW_AUTO_DIR / "assistant_visual_review_flagged.ndjson"))
-AR_OUTCOMES = Path(os.environ.get("WV_REVIEW_OUTCOMES", REVIEW_AUTO_DIR / "review_outcomes.jsonl"))   # gitignored review outcomes (never labels)
+AR_OUTCOMES = Path(os.environ.get("WV_REVIEW_OUTCOMES", REVIEW_AUTO_DIR / "review_outcomes.jsonl"))   # gitignored
+AR_AUTO_APPROVED = Path(os.environ.get("WV_AUTO_APPROVED", REVIEW_AUTO_DIR / "auto_approved.jsonl"))  # gitignored model-consensus review outcomes (never labels)
 AUTO_MODEL = os.environ.get("WV_AUTO_MODEL", "").strip()                          # default: newest annotations/auto/*.jsonl
 BLUR_DIR = Path(os.environ.get("WV_BLUR_DIR", ROOT / "images_blurred"))            # scripts/auto_blur.py output (originals untouched)
 BLUR_MANIFESTS = [Path(p) for p in os.environ.get("WV_BLUR_MANIFESTS", "").split(os.pathsep) if p] or \
@@ -250,7 +257,7 @@ def health():
     a = auto_state()
     out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
            "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
-           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
+           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
            "contributed": sum(1 for r in CANDIDATES.values() if r.get("source") == "contributed")}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -521,6 +528,7 @@ def _filter(q: str, ids: list | None, limit: int, counts: bool):
     pool = [i for i in (ids if ids is not None else sorted(CANDIDATES, key=order_key)) if i in CANDIDATES and i not in B]
     ctx = filter_context()
     if "review_status" in flt or counts: ctx = {**ctx, "review_status": ar_status_map()}
+    ctx = {**ctx, "auto_approved": ar_auto_approved()}
     facts = {i: wvcore.image_facts(i, per, adjv, wvcore.merged_suggestions(i, a["data"], prefer), ctx) for i in pool}
     res = wvcore.run_filter(pool, facts, flt, basis, counts=counts)
     res["truncated"] = len(res["ids"]) > limit; res["ids"] = res["ids"][:limit]
@@ -618,19 +626,25 @@ def ar_items(per=None, adjv=None):
     other = {i: wvcore.merged_suggestions(i, {t: d for t, d in a["data"].items() if t != AR.TAG}, prefer) for i in sugg}
     return AR.build_items(sugg, per, adjv, other, ar_excluded(), wvcore.hval)
 
+def ar_auto_approved():
+    """image_id -> auto_approved record (model consensus; never a human label)."""
+    return AC.load_auto_approved(AR_AUTO_APPROVED)
+
 def ar_status_map():
-    out = AR.load_outcomes(AR_OUTCOMES)
-    return {it["image_id"]: AR.review_status(it, out) for it in ar_items()}
+    out = AR.load_outcomes(AR_OUTCOMES); auto = ar_auto_approved()
+    return {it["image_id"]: AR.review_status(it, out, auto) for it in ar_items()}
 
 @app.get("/api/assistant_review/queue")
 def ar_queue(status: str = "pending", tier: str | None = None, limit: int = Query(2000, ge=1, le=5000)):
     """Ordered review items: disagreements (with humans or SigLIP) first, then lowest confidence, then a stratified ~5%
-    audit sample of high-confidence ones, then the rest. status: pending | partial | reviewed | open (pending+partial) | all."""
-    if status not in ("pending", "partial", "reviewed", "open", "all"): raise HTTPException(400, "bad status")
-    items = ar_items(); out = AR.load_outcomes(AR_OUTCOMES); rows = []
+    audit sample of high-confidence ones, then the rest.
+    status: pending | partial | reviewed | auto_approved | open (pending+partial) | all.
+    auto_approved = assistant+SigLIP consensus (scripts/auto_consensus.py); a human Accept/Edit/Reject overrides it."""
+    if status not in ("pending", "partial", "reviewed", "auto_approved", "open", "all"): raise HTTPException(400, "bad status")
+    items = ar_items(); out = AR.load_outcomes(AR_OUTCOMES); auto = ar_auto_approved(); rows = []
     for it in items:
-        st = AR.review_status(it, out)
-        if status != "all" and not (st == status or (status == "open" and st != "reviewed")): continue
+        st = AR.review_status(it, out, auto)
+        if status != "all" and not (st == status or (status == "open" and st in ("pending", "partial"))): continue
         if tier and it["tier"] != tier: continue
         for x in it["fields"]:
             o = out.get((it["image_id"], x["field"]))

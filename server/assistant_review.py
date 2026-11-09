@@ -108,9 +108,19 @@ def build_items(sugg, per, adjv, other, excluded, hval):
     for k, it in enumerate(items): it["rank"] = k + 1
     return items
 
-def review_status(item, outcomes):
+def review_status(item, outcomes, auto_approved=None):
+    """pending | partial | reviewed | auto_approved.
+
+    auto_approved is a set/dict of image_ids from var/assist/auto_approved.jsonl (model consensus).
+    Human review outcomes always win: once any field has an outcome, status is partial/reviewed
+    and never auto_approved (so Accept/Edit/Reject override model consensus).
+    """
     n = sum((item["image_id"], x["field"]) in outcomes for x in item["fields"])
-    return "pending" if n == 0 else "reviewed" if n == len(item["fields"]) else "partial"
+    if n == 0:
+        if auto_approved is not None and item["image_id"] in auto_approved:
+            return "auto_approved"
+        return "pending"
+    return "reviewed" if n == len(item["fields"]) else "partial"
 
 def summary(outcomes, items=None):
     """Accept/edit/reject rates per field (an estimate of the assistant's error rate), overall and on the audit sample."""

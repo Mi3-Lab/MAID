@@ -7,12 +7,11 @@ table.r{border-collapse:collapse;font-size:13px}table.r td,table.r th{padding:3p
 </head><body>
 <header><b>Review assistant suggestions</b><span class="grow"></span>
 <label>Reviewer <input id="rev" placeholder="your name" size="12"></label>
-<label>Show <select id="status"><option value="open">pending + partial</option><option value="pending">pending</option><option value="reviewed">reviewed</option><option value="all">all</option></select></label>
+<label>Show <select id="status"><option value="open">pending + partial</option><option value="pending">pending</option><option value="auto_approved">auto-approved (model consensus)</option><option value="reviewed">reviewed</option><option value="all">all</option></select></label>
 <a href="/api/assistant_review/summary" target="_blank">summary</a><a href="/adjudicate.html">adjudicate</a><a href="/">annotate</a></header>
 <section>
 <div id="progress" class="muted"></div>
-<p class="muted">These are machine suggestions from the assistant visual review, not labels. Accept or Edit writes a human label in <b>your</b> name;
-Reject records only a review outcome. If a field already has a human label it is never overwritten: a different value goes to the adjudication queue.</p>
+<p class="muted">These are machine suggestions from the assistant visual review, not labels. Accept or Edit writes a human label in <b>your</b> name; Reject records only a review outcome. <b>auto-approved (model consensus)</b> means the assistant and SigLIP agreed on device_type (scripts/auto_consensus.py) — that is <em>not</em> a human label; Accept/Edit/Reject here overrides it. If a field already has a human label it is never overwritten: a different value goes to the adjudication queue.</p>
 <div><button id="prev">&larr; prev</button> <span id="pos"></span> <button id="next">next &rarr;</button>
 <button id="acceptAll">Accept all open fields</button> <button id="rejectAll">Reject all open fields</button></div>
 <div id="item"></div>

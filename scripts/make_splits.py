@@ -27,6 +27,7 @@ HUMANS = ("samir", "shaaz", "devin", "wesley")  # v1.1: all known human annotato
 # Also accept --humans a,b to override.
 CLASSES = list(wvcore.DEVICE_CLASSES)   # manual, powered, other_aid, ambiguous
 BAD_LICENSE = ("needs_ross", "exclude")
+FROZEN_SPLIT_OUTS = {"splits_v1.csv", "splits_v2.csv", "splits_v3.csv", "manifest_v2.csv"}
 
 def load_events(db, evdir):
     evs, seen = [], set()
@@ -141,6 +142,35 @@ def assign(rows, seed, fracs, group_field="group", trials=3000, require_all=("te
         if best is None or sc < best[0]: best = (sc, assign)
     return best[1]
 
+def load_auto_approved_rows(path, human_ids, lic_path):
+    """Optional model-consensus rows for images with no human clean-set label.
+    Returns list of row dicts with label_source=model_consensus (never overrides human_ids)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("wv_auto_consensus", ROOT / "server" / "auto_consensus.py")
+    AC = importlib.util.module_from_spec(spec); spec.loader.exec_module(AC)
+    auto = AC.load_auto_approved(path)
+    lic = {r["image_id"]: r for r in csv.DictReader(open(lic_path, encoding="utf-8"))} if Path(lic_path).exists() else {}
+    attr = {}
+    ap_ = ROOT / "derived" / "attributions.csv"
+    if ap_.exists():
+        attr = {r["image_id"]: r for r in csv.DictReader(open(ap_, encoding="utf-8"))}
+    rows = []
+    for img, rec in sorted(auto.items()):
+        if img in human_ids:
+            continue
+        val = wvcore.hval(rec.get("device_type"))
+        if val not in CLASSES:
+            continue
+        L = lic.get(img)
+        if L is not None and L.get("status") in BAD_LICENSE:
+            continue
+        src = L or attr.get(img) or {}
+        g = group_key(src) or group_key(attr.get(img, {})) or ("image:" + img)
+        creator = (src.get("creator") or attr.get(img, {}).get("creator") or "").strip()
+        rows.append({"image_id": img, "label": val, "label_how": "model_consensus", "label_source": "model_consensus",
+                     "group": g, "creator": creator, "license_status": (L or {}).get("status", "unchecked")})
+    return rows
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", default=ROOT / "var" / "wheelview.db")
@@ -150,19 +180,34 @@ def main():
     ap.add_argument("--summary", default=ROOT / "results" / "splits_v1_summary.json")
     ap.add_argument("--seed", type=int, default=20261027)
     ap.add_argument("--fracs", default="0.70,0.15,0.15")
+    ap.add_argument("--include-auto-approved", action="store_true",
+                    help="opt-in: also include var/assist/auto_approved.jsonl model-consensus labels "
+                         "(never overrides human labels; refuses to overwrite frozen v1.0 split files)")
+    ap.add_argument("--auto-approved", default=ROOT / "var" / "assist" / "auto_approved.jsonl")
     a = ap.parse_args()
+    out = Path(a.out)
+    if a.include_auto_approved and out.name in FROZEN_SPLIT_OUTS:
+        sys.exit(f"refusing to write --include-auto-approved into frozen {out.name}; pass e.g. --out data/splits_v11_with_auto.csv")
     rows, drops, info = collect(a.db, a.events, a.license)
+    for r in rows:
+        r["label_source"] = "human"
+    auto_n = 0
+    if a.include_auto_approved:
+        lic_path = license_path(a.license)
+        extra = load_auto_approved_rows(a.auto_approved, {r["image_id"] for r in rows}, lic_path)
+        rows.extend(extra); auto_n = len(extra)
+        drops["auto_approved_added"] = auto_n
     fr = [float(x) for x in a.fracs.split(",")]; names = ["train", "val", "test"]
     groups = defaultdict(list)
     for r in rows: groups[r["group"]].append(r)
     tot = Counter(r["label"] for r in rows)
     assign_ = assign(rows, a.seed, fr)
     for r in rows: r["split"] = assign_[r["group"]]
-    os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     with open(a.out, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh); w.writerow(["image_id", "split", "label", "creator", "group", "label_how", "license_status"])
+        w = csv.writer(fh); w.writerow(["image_id", "split", "label", "creator", "group", "label_how", "license_status", "label_source"])
         for r in sorted(rows, key=lambda r: r["image_id"]):
-            w.writerow([r["image_id"], r["split"], r["label"], r["creator"], r["group"], r["label_how"], r["license_status"]])
+            w.writerow([r["image_id"], r["split"], r["label"], r["creator"], r["group"], r["label_how"], r["license_status"], r.get("label_source", "human")])
     counts = {s: {c: sum(1 for r in rows if r["split"] == s and r["label"] == c) for c in CLASSES} for s in names}
     summ = {"n": len(rows), "class_counts": dict(tot), "split_counts": counts,
             "split_sizes": {s: sum(counts[s].values()) for s in names}, "n_groups": len(groups),
@@ -170,8 +215,10 @@ def main():
             "seed": a.seed, "fracs": fr, "license_file": info["license_file"], "filters": dict(drops),
             "events_used": info["events_used"], "events_from_db": info["events_from_db"], "events_only_in_jsonl": info["events_only_in_jsonl"],
             "label_resolution": dict(Counter(r["label_how"] for r in rows)),
+            "label_source": dict(Counter(r.get("label_source", "human") for r in rows)),
+            "include_auto_approved": bool(a.include_auto_approved), "auto_approved_added": auto_n,
             "license_status": dict(Counter(r["license_status"] for r in rows))}
-    os.makedirs(os.path.dirname(a.summary), exist_ok=True)
+    os.makedirs(os.path.dirname(a.summary) or ".", exist_ok=True)
     json.dump(summ, open(a.summary, "w", encoding="utf-8"), indent=2)
     print(json.dumps(summ, indent=2))
 

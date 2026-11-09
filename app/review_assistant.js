@@ -20,7 +20,7 @@ function render() {
   const it = items[pos];
   $('pos').textContent = items.length ? `${pos + 1} / ${items.length}` : '';
   if (!it) { $('item').innerHTML = '<p>Nothing to review here.</p>'; return; }
-  $('item').innerHTML = `<h3>${esc(it.image_id)} <span class="tag">${esc(it.tier)}</span>${it.audit ? '<span class="tag">audit sample</span>' : ''}<span class="tag">${esc(it.review_status)}</span>
+  $('item').innerHTML = `<h3>${esc(it.image_id)} <span class="tag">${esc(it.tier)}</span>${it.audit ? '<span class="tag">audit sample</span>' : ''}<span class="tag">${esc(it.review_status === 'auto_approved' ? 'auto-approved (model consensus)' : it.review_status)}</span>
     <span class="muted">rank ${it.rank}</span></h3><div class="wrap"><img src="${esc(it.img)}"><div><table class="r">
     <tr><th>field</th><th>assistant (confidence)</th><th>other model</th><th>human labels</th><th>your review</th></tr>
     ${it.fields.map(x => `<tr class="${x.disagree_human || x.disagree_model ? 'dis' : ''} ${x.outcome ? 'done' : ''}" data-f="${esc(x.field)}">

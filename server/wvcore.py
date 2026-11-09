@@ -597,9 +597,9 @@ PSEUDO_KEYS = {
     "status_v11": ["final", "in_progress", "needs_third_annotator", "needs_adjudication", "unlabelled"],
     "synthetic": ["yes", "no"],
     "size_basis": ["measured", "estimate_only", "none"],
-    "label_source": ["human", "model_only", "unlabeled"],
+    "label_source": ["human", "model_consensus", "model_only", "unlabeled"],
     "excluded": ["yes", "no"],
-    "review_status": ["pending", "partial", "reviewed", "none"],   # human review of the assistant visual review suggestions
+    "review_status": ["pending", "partial", "reviewed", "auto_approved", "none"],   # human review / model consensus
 }
 FILTER_FIELDS = list(FIELD_OPTS)
 FILTER_KEYS = FILTER_FIELDS + list(PSEUDO_KEYS)
@@ -682,9 +682,18 @@ def image_facts(img, per, adjv, sugg=None, extra=None, st10=None, st11=None):
     ex = st10["fields"].get("exclude", ("", ""))
     excluded = "yes" if (ex[1] in ("consensus", "majority", "adjudicated", "corrected", "single") and ex[0] not in ("", "none")) or \
         any(fv.get("exclude") for fv in anns.values()) else "no"
+    auto_c = extra.get("auto_approved") or {}
+    if any_h:
+        ls = "human"
+    elif img in auto_c:
+        ls = "model_consensus"
+    elif model:
+        ls = "model_only"
+    else:
+        ls = "unlabeled"
     pseudo = {"split": split if split in PSEUDO_KEYS["split"] else "none", "approval": st10["status"], "status_v11": st11["status"],
               "synthetic": "yes" if syn else "no", "size_basis": size,
-              "label_source": "human" if any_h else "model_only" if model else "unlabeled", "excluded": excluded,
+              "label_source": ls, "excluded": excluded,
               "review_status": extra.get("review_status", {}).get(img, "none")}
     return {"human": human, "model": model, "pseudo": pseudo}
 
