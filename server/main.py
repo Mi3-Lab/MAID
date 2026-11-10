@@ -181,8 +181,12 @@ def blurred_image(i):
 
 def image_meta(i):
     r = CANDIDATES[i]; b = blurred_image(i); rec = blur_state().get(i) if b else None
+    present = bool(b or local_image(i))
     m = {k: r.get(k, "") for k in ("candidate_id", "source", "proposed_class", "title", "creator", "license", "license_url",
-                                   "source_page_url", "needs_visual_screen", "screen_reasons")} | {"image_id": i, "img": f"/img/{i}"}
+                                   "source_page_url", "needs_visual_screen", "screen_reasons")} | {"image_id": i, "img": f"/img/{i}",
+                                   "image_present": present}
+    if not present:
+        m["image_note"] = "image not downloaded yet, run fetch_images"
     if b:   # distinct URL so clients that cached the original fetch the blurred copy
         m |= {"img": f"/img/{i}?b={(rec or {}).get('version', '1')}", "blurred": True,
               "faces": [f["box"] + [f.get("score", 0)] for f in (rec or {}).get("faces", [])], "blur_detector": (rec or {}).get("detector", "")}
@@ -829,26 +833,48 @@ def removed_img(image_id: str):
     if not p: raise HTTPException(404, "no blurred copy (the unblurred original is never shown in the Removed review)")
     return FileResponse(p, media_type="image/jpeg", headers={"Cache-Control": "private, no-store"})
 
+def missing_placeholder_jpeg(image_id: str) -> bytes:
+    """A real JPEG so the annotator never shows a broken image when the file is not on disk yet."""
+    from PIL import Image, ImageDraw
+    im = Image.new("RGB", (640, 480), (32, 32, 32))
+    d = ImageDraw.Draw(im)
+    lines = ["image not downloaded yet", "run fetch_images", "", image_id]
+    y = 150
+    for line in lines:
+        try:
+            w = d.textlength(line)
+        except Exception:
+            w = 8 * len(line)
+        d.text(((640 - w) / 2, y), line, fill=(240, 200, 70))
+        y += 40
+    buf = io.BytesIO(); im.save(buf, format="JPEG", quality=85)
+    return buf.getvalue()
+
 @app.get("/img/{image_id}")
 def img(image_id: str):
     if image_id not in CANDIDATES or image_id in blocked(): raise HTTPException(404)
     p = blurred_image(image_id) or local_image(image_id)      # annotators see the face-blurred release copy when one exists
     if p: return FileResponse(p, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=604800"})
-    if not PROXY: raise HTTPException(404, "image not available locally (proxy disabled)")
-    url = CANDIDATES[image_id].get("image_url") or ""
-    if not url.startswith("https://"): raise HTTPException(404)
-    host = url.split("/")[2]
-    if BACKOFF.get(host, 0) > time.time(): raise HTTPException(503, f"{host} rate-limited us; backing off")
-    try:
-        from PIL import Image
-        r = httpx.get(url, headers=UA, timeout=30, follow_redirects=True)
-        if r.status_code == 429: BACKOFF[host] = time.time() + 600
-        if r.status_code != 200: raise HTTPException(502, f"upstream {r.status_code}")
-        im = Image.open(io.BytesIO(r.content)).convert("RGB"); im.thumbnail((640, 640))
-        out = CACHE_DIR / f"{image_id}.jpg"; im.save(out, "JPEG", quality=88)   # re-encode: drops EXIF
-        return FileResponse(out, media_type="image/jpeg")
-    except HTTPException: raise
-    except Exception as e: raise HTTPException(502, f"proxy error: {e}")
+    # Teammates should run scripts/fetch_images.py (hash + blur). Optional legacy proxy
+    # is only used when WV_IMAGE_PROXY=1; any proxy failure falls through to a placeholder
+    # JPEG so the UI is never a broken image.
+    if PROXY:
+        url = CANDIDATES[image_id].get("image_url") or ""
+        if url.startswith("https://"):
+            host = url.split("/")[2]
+            if BACKOFF.get(host, 0) <= time.time():
+                try:
+                    from PIL import Image
+                    r = httpx.get(url, headers=UA, timeout=30, follow_redirects=True)
+                    if r.status_code == 429: BACKOFF[host] = time.time() + 600
+                    elif r.status_code == 200:
+                        im = Image.open(io.BytesIO(r.content)).convert("RGB"); im.thumbnail((640, 640))
+                        out = CACHE_DIR / f"{image_id}.jpg"; im.save(out, "JPEG", quality=88)   # re-encode: drops EXIF
+                        return FileResponse(out, media_type="image/jpeg")
+                except Exception:
+                    pass
+    return Response(content=missing_placeholder_jpeg(image_id), media_type="image/jpeg",
+                    headers={"Cache-Control": "no-store", "X-WV-Image-Missing": "1"})
 
 # PWA (served last so /api, /img, /export win). sw.js must be served from / for full scope.
 # Shell JS/HTML/CSS are no-store so a service-worker or browser cache cannot pin a stale annotator UI.

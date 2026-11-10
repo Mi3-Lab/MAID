@@ -8,5 +8,10 @@ python3 -c "import fastapi, uvicorn, httpx, PIL" 2>/dev/null || python3 -m pip i
 if [ -n "${WHEELVIEW_BUILD_DIR:-}" ] || [ -d /workspace/wheelview/thumbs ]; then
   python3 scripts/fetch_images.py --from-dir "${WHEELVIEW_BUILD_DIR:-/workspace/wheelview}" --link
 fi
+# Prompt only: a full download can take hours and is resumable. Do not fail startup.
+if ! python3 scripts/fetch_images.py --check; then
+  echo "Some images are not on disk yet. The annotator will show a placeholder until you run:"
+  echo "  python3 scripts/fetch_images.py"
+fi
 python3 scripts/sync_events.py import
 cd server && exec python3 -m uvicorn main:app --host "${HOST:-127.0.0.1}" --port "$PORT"

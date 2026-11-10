@@ -301,6 +301,13 @@ function render() {
   if (!S.images.length) { $('pos').textContent = 'No images yet — press "Get batch".'; $('fields').innerHTML = ''; $('img').removeAttribute('src'); return; }
   const im = cur(); const id = im.image_id;
   if ($('img').dataset.id !== id) { $('img').dataset.id = id; $('img').src = im.img; }
+  if (im.image_present === false) {
+    $('imgmsg').textContent = im.image_note || 'image not downloaded yet, run fetch_images';
+    $('imgmsg').classList.add('missing');
+  } else {
+    $('imgmsg').textContent = '';
+    $('imgmsg').classList.remove('missing');
+  }
   const done = isDone(id), A = S.mode === 'review' ? S.auto[id] : null, A11 = S.mode === 'attr' ? S.auto11[id] : null;
   const fm = S.fmatch ? [...S.images].filter(m => S.fmatch.has(m.image_id)) : null, fi = fm ? fm.findIndex(m => m.image_id === id) : -1;
   $('fpos').innerHTML = fm ? `filter: ${fi >= 0 ? `match ${fi + 1} / ${fm.length}` : `<b>this image does not match</b> (${fm.length} match)`} in this queue` : '';
@@ -374,8 +381,8 @@ $('cv').addEventListener('pointerup', () => {
   if (w > 0.01 && h > 0.01) emit('bbox', [...(val(cur().image_id, 'bbox') || []), [x, y, w, h].map(v => Math.round(v * 1e4) / 1e4)]); else drawBoxes();
 });
 $('img').addEventListener('load', drawBoxes); window.addEventListener('resize', drawBoxes);
-$('img').addEventListener('error', () => { $('imgmsg').textContent = 'image not cached / unavailable offline'; });
-$('img').addEventListener('load', () => { $('imgmsg').textContent = ''; });
+$('img').addEventListener('error', () => { $('imgmsg').textContent = 'image not downloaded yet, run fetch_images'; $('imgmsg').classList.add('missing'); });
+$('img').addEventListener('load', () => { const im = (typeof cur === 'function' && S.images.length) ? cur() : null; if (im && im.image_present === false) { $('imgmsg').textContent = im.image_note || 'image not downloaded yet, run fetch_images'; $('imgmsg').classList.add('missing'); } else { $('imgmsg').textContent = ''; $('imgmsg').classList.remove('missing'); } });
 
 // ---------- actions ----------
 const inF = m => !S.fmatch || S.fmatch.has(m.image_id);
@@ -660,7 +667,7 @@ async function start(name) {
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
 }
 (async () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v9').catch(e => console.warn('sw', e));
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v10').catch(e => console.warn('sw', e));
   setNet();
   S.device = await kvGet('device_id'); if (!S.device) { S.device = uuid(); await kvSet('device_id', S.device); }
   try { const r = await fetch('/api/schema'); S.schema = await r.json(); await kvSet('schema', S.schema); }

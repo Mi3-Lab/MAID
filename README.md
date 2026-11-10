@@ -20,6 +20,52 @@ tests/test_e2e.py       Playwright end-to-end test (two annotators, offline peri
 images/ var/            git-ignored: image files, SQLite DB, proxy cache, server-side exports
 ```
 
+
+## Quick start (v1.1-schema, teammates)
+
+Images are not in git. After you clone `Mi3-Lab/MAID` and check out `v1.1-schema`,
+download every open-license web image the annotator and training split reference
+onto your own laptop, then start the server.
+
+PowerShell 5.1: run each command on its own line (do not use `&&`).
+
+```
+git clone https://github.com/Mi3-Lab/MAID.git
+cd MAID
+git checkout v1.1-schema
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts\fetch_images.py
+```
+
+The first `fetch_images` run is polite (about 1 request/s), resumable, and
+skips child / safety_hold / excluded images. Budget a few hours for the full
+web pool (~5,400 images). If it is interrupted, run the same command again.
+
+Then start the v1.1 annotator (port 8771; 8770 is reserved for the frozen v1.0
+review server on the lab laptop):
+
+```
+powershell -ExecutionPolicy Bypass -File run.ps1 -Port 8771
+```
+
+`run.ps1` / `run.sh` will prompt if images are still missing. The annotator
+shows "image not downloaded yet, run fetch_images" instead of a broken image.
+
+PMMA frames in the v1.1-with-auto training split (266 images, `pmma_000001`..)
+are not in `candidates.csv`. They come from Borealis DOI 10.5683/SP3/XJPQUG
+(CC0 1.0). The public Dataverse API can download the two source files
+(`video_2_1.zip` ~3.1 GB, `video_3_part1.mp4` ~2.1 GB), then
+`scripts/extract_pmma.py` cuts the frames:
+
+```
+.\.venv\Scripts\python.exe scripts\fetch_images.py --pmma
+```
+
+Or download those two files from https://doi.org/10.5683/SP3/XJPQUG into
+`var\pmma\` and run `scripts\extract_pmma.py` with `--video2-zip` and
+`--video3-mp4`.
+
 ## Run locally
 ```bash
 ./run.sh            # http://127.0.0.1:8770  (or ./run.sh 9000; HOST=0.0.0.0 ./run.sh to expose on the LAN)
@@ -121,24 +167,26 @@ committed `annotations/events/*.jsonl` (an idempotent step) and starts uvicorn.
   each annotator writes only their own file; `.gitattributes` sets `merge=union` for the rare same-annotator case.
 
 ## Images are not in git
-* **Fetching.** `scripts/fetch_images.py` fills `images/<image_id>.jpg`:
-  * `--from-dir <wheelview build> [--link]` takes them from an existing thumbnail cache.
-  * `--download [--source openverse] [--limit N]` takes them from `image_url`, politely: 1 request/s and backoff on 429.
-    Images are resized to at most 640 px and re-encoded, which drops EXIF.
-* **The server's /img/ proxy.** `/img/<id>` serves `images/`. Otherwise, by default (`WV_IMAGE_PROXY=1`), it fetches
-  `image_url` once, caches the result in `var/imgcache/`, and backs off a host for 10 minutes after a 429.
-* **Wikimedia Commons rows (2,528) have no local thumbnail yet.** `upload.wikimedia.org` was answering 429 to this build
-  machine, so these rows are **not assigned by default**: only images that can already be served are assigned. To
-  include them, either:
-  * run `fetch_images.py --download --source commons` from a machine that is not rate-limited, or
-  * set `WV_ASSIGN_WITHOUT_LOCAL_IMAGE=1` to rely on the proxy. In that case a batch only caches the images that the
-    proxy managed to fetch.
-* **Git LFS (optional).** If the team prefers images inside the repo, run `git lfs install && git lfs track "images/*.jpg"`,
-  remove `images/` and `*.jpg` from `.gitignore`, and commit.
-  * About 4,850 thumbnails are about 440 MB. That fits the GitHub LFS free quota only barely: 1 GB of storage and
-    1 GB/month of bandwidth on free plans as of this writing, so check your org's plan.
-  * Every clone that pulls LFS uses up bandwidth.
-  * The license obligations (attribution in `data/LICENSES_draft.csv`) still apply to redistributed copies.
+* **Fetching.** `scripts/fetch_images.py` fills `images/<image_id>.jpg` (or `$WV_IMAGE_DIR`) from each row's
+  open-license `image_url`. It is the one-command path for anyone who clones the repo:
+  * idempotent and resumable (existing files are skipped)
+  * polite 1 request/s, retries with backoff on 429/5xx
+  * Flickr `farm`/`c*.staticflickr.com` URLs also try `live.staticflickr.com`
+  * soft sha256 when a manifest hash is provided (`--strict-hash` to reject mismatches)
+  * skips child / safety_hold / `removed_*.txt` / license-excluded images
+  * resizes to at most 640 px and re-encodes as JPEG quality 88 (drops EXIF)
+  * then runs the same face-blur step as the lab pipeline (`scripts/auto_blur.py`) into `images_blurred/`
+  * `--limit N` for a sample; `--from-dir <wheelview build> [--link]` still copies from a local thumbs cache
+  * `--check` reports how many files are missing (used by `run.ps1` / `run.sh`)
+  * `--pmma` downloads and extracts the PMMA frames (see Quick start)
+* **The annotator.** `/img/<id>` serves the face-blurred copy when one exists, otherwise the local JPEG.
+  If the file is not on disk, the server returns a placeholder JPEG that says
+  "image not downloaded yet, run fetch_images" (and the UI shows the same message)
+  instead of a broken image. A leftover `WV_IMAGE_PROXY=1` fallback may still try the
+  source URL, but teammates should run `fetch_images` so copies are hashed and blurred.
+  Images without a local file are not assigned by default.
+* Do not add images to git or Git LFS. License obligations (attribution in
+  `data/LICENSES_draft.csv`) still apply to local copies.
 
 
 ## Self-hosting on a Windows laptop
@@ -162,7 +210,7 @@ committed `annotations/events/*.jsonl` (an idempotent step) and starts uvicorn.
   - lid close does nothing
 
   The original values are saved in `var\power_original.json`.
-- Images: unpack the thumbnails into `images\<candidate_id>.jpg`. Commons images are proxied lazily.
+- Images: run `python scripts\fetch_images.py` so `images\<candidate_id>.jpg` is filled on this machine. Commons is included; the annotator shows a placeholder until the file is downloaded.
 
 ## Image attributions / citations
 `derived/ATTRIBUTIONS.md`, `derived/attributions.csv` and `derived/attributions.bib` are rebuilt by CI on every push

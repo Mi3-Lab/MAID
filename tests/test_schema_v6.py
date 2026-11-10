@@ -115,8 +115,8 @@ with TestClient(main.app) as cl:
     check("app.js does not render a lighting= or read-only core-label summary line", "lighting=" not in js and "v1.0 labels:" not in js)
     sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")
     check("service worker is network-first and not ignoreSearch",
-          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v9" in sw)
-    check("index.html cache-busts app.js", "?v=7" in html or "?v=7" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
+          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v10" in sw)
+    check("index.html cache-busts app.js", "?v=8" in html or "?v=8" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
     check("no live securement row in UI help or field list",
           "docking bracket / tiedown" not in html.lower() and "securement_hardware" not in [f["name"] for f in cl.get("/api/schema").json()["fields"]])
     sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")

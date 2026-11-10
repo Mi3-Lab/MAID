@@ -40,7 +40,10 @@ BLUR = "pixelate(5 cells/face) + gaussian(sigma=cell); padded box x±30% top+40%
 OUT_DIR = Path(os.environ.get("WV_BLUR_DIR", ROOT / "images_blurred"))
 MANIFEST = ROOT / "data" / "blur_manifest.jsonl"
 LOCAL_MANIFEST = ROOT / "var" / "blur_manifest_local.jsonl"
-IMG_DIRS = [ROOT / "images", ROOT / "var" / "imgcache"]
+_env_img = os.environ.get("WV_IMAGE_DIR")
+IMG_DIRS = ([Path(_env_img)] if _env_img else []) + [ROOT / "images", ROOT / "var" / "imgcache"]
+# de-dupe while keeping order
+_seen = set(); IMG_DIRS = [d for d in IMG_DIRS if not (str(d) in _seen or _seen.add(str(d)))]
 
 def sha1(p): return hashlib.sha1(Path(p).read_bytes()).hexdigest()
 

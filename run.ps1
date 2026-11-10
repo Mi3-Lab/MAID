@@ -36,6 +36,13 @@ Remove-Item Env:WV_HF_DATASET -ErrorAction SilentlyContinue
 $CodeFile = Join-Path $Root 'ACCESS_CODE.txt'
 if (Test-Path $CodeFile) { $env:WV_ACCESS_CODE = (Get-Content $CodeFile -Raw).Trim() } else { Say 'WARNING: ACCESS_CODE.txt missing -> no access gate' }
 
+# Prompt (do not auto-download: a full run can take hours and is resumable).
+& $Py (Join-Path $Root 'scripts\fetch_images.py') --check
+if ($LASTEXITCODE -eq 2) {
+    Say 'Some images are not on disk yet. The annotator will show a placeholder until you run:'
+    Say "  $Py scripts\fetch_images.py"
+}
+
 do {
     cmd /c "`"$Py`" scripts\sync_events.py import >> `"$Log`" 2>&1"
     Say "starting uvicorn on ${BindHost}:$Port"
