@@ -25,7 +25,7 @@ HUMANS = ("samir", "shaaz", "devin", "wesley")
 def load_events(db, evdir):
     evs, seen = [], set()
     def add(raw):
-        e, _ = wvcore.validate(raw)
+        e, _ = wvcore.validate(raw, allow_retired=True)
         if e and e["annotator"] in HUMANS and e["uuid"] not in seen:
             seen.add(e["uuid"]); evs.append(e)
     if db and os.path.exists(db):

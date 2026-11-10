@@ -166,10 +166,10 @@ def parse_choice(text, options):
     return max(hits, key=len) if hits else None
 
 QUESTIONS = {   # field -> question; options are appended from the schema at run time (only the parent's for dependent fields)
- "environment": "Where is this photo taken?", "weather": "What is the weather or lighting?",
- "ground_wet": "Is the ground wet?", "control": "What wheelchair control is visible?",
+ "device_use_case": "Is this a specialized mobility device (sports, bariatric, complex rehab) or a standard everyday wheelchair?",
+ "control": "What wheelchair control is visible?",
  "chair_subtype": "What kind of wheelchair is this?", "drive_position": "Where are the drive wheels of this power wheelchair?",
- "ramp_deploy": "Could a vehicle wheelchair ramp be deployed here, judging only from the scene?",
+ "securement_hardware": "Is any vehicle securement hardware visible on this wheelchair?",
 }
 def prompt_for(field, options):
     return f"{QUESTIONS.get(field, field)} Answer with one of: {', '.join(o.replace('_', ' ') for o in options if o != 'unknown')}."

@@ -28,7 +28,7 @@ COLS = ["image_id", "box_idx", "n_boxes", "box_source", "device_type", "viewpoin
 def load_events(db, evdir):
     evs, seen = [], set()
     def add(raw):
-        e, _ = wvcore.validate(raw)
+        e, _ = wvcore.validate(raw, allow_retired=True)
         if e and e["uuid"] not in seen: seen.add(e["uuid"]); evs.append(e)
     if db and os.path.exists(db):
         c = sqlite3.connect(f"file:{db}?mode=ro", uri=True); c.row_factory = sqlite3.Row

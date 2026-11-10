@@ -57,19 +57,23 @@ E10 = v10_done("wv_000001", "alice") + v10_done("wv_000001", "bob") + v10_done("
 A, B = TMP / "derived_a", TMP / "derived_b"; A.mkdir(); B.mkdir()
 wvcore.materialize(E10, cands, str(A))
 check("no v1.1 files without v1.1 events", not any((A / f).exists() for f in ("labels_v11.csv", "kappa_v11.json")))
-E11 = v11_done("wv_000001", "alice") + v11_done("wv_000001", "bob") + v11_done("wv_900001", "alice", {"weather": "rain"}) \
-    + v11_done("wv_900001", "bob", {"weather": "overcast"}) + v11_done("wv_000002", "alice")
+E11 = v11_done("wv_000001", "alice") + v11_done("wv_000001", "bob") + v11_done("wv_900001", "alice", {"control": "joystick"}) \
+    + v11_done("wv_900001", "bob", {"control": "push_rims"}) + v11_done("wv_000002", "alice")
 wvcore.materialize(E10 + E11, cands, str(B))
 same = [f for f in ("labels.csv", "per_annotator_labels.csv", "adjudication_needed.csv", "kappa.json") if filecmp.cmp(A / f, B / f, shallow=False)]
 check("v1.0 derived files byte-identical with v1.1 events", len(same) == 4, f"identical: {same}")
 L11 = {r["image_id"]: r for r in csv.DictReader(open(B / "labels_v11.csv", encoding="utf-8"))}
-check("v1.1 consensus -> final", L11["wv_000001"]["status_v11"] == "final" and L11["wv_000001"]["control"] == V11[0]["options"][0])
-check("v1.1 disagreement -> needs_third_annotator", L11["wv_900001"]["status_v11"] == "needs_third_annotator" and L11["wv_900001"]["weather"] == "")
+check("v1.1 consensus -> final", L11["wv_000001"]["status_v11"] == "final" and L11["wv_000001"]["control"] == "joystick")
+check("v1.1 disagreement -> needs_third_annotator", L11["wv_900001"]["status_v11"] == "needs_third_annotator" and L11["wv_900001"]["control"] == "")
 check("v1.1 single annotator -> in_progress", L11["wv_000002"]["status_v11"] == "in_progress")
 check("contributed source kept in labels_v11", L11["wv_900001"]["source"] == "contributed")
-bad = [wvcore.validate(ev("wv_000001", "alice", "_status_v11", "maybe"))[1], wvcore.validate(ev("wv_000001", "alice", "weather", "hail"))[1],
-       wvcore.validate(dict(ev("wv_000001", "alice", "weather", "rain"), source="auto_attr", model_tag="x_attr-v1"))[1]]
+bad = [wvcore.validate(ev("wv_000001", "alice", "_status_v11", "maybe"))[1], wvcore.validate(ev("wv_000001", "alice", "control", "hail"))[1],
+       wvcore.validate(dict(ev("wv_000001", "alice", "control", "joystick"), source="auto_attr", model_tag="x_attr-v1"))[1]]
 check("validation: bad _status_v11 / bad option rejected, auto_attr provenance accepted", bad[0] and bad[1] and bad[2] is None, str(bad))
+retired_why = wvcore.validate(ev("wv_000001", "alice", "weather", "rain"))[1]
+check("validation: new write of retired weather rejected", bool(retired_why), str(retired_why))
+hist, hist_why = wvcore.validate(ev("wv_000001", "alice", "weather", "rain"), allow_retired=True)
+check("validation: historical weather accepted with allow_retired", hist is not None, hist_why)
 
 # ---------------------------------------------------------------- 2. size estimators
 from size_estimators import ChairContext, best_estimate, proxies

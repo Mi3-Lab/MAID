@@ -6,9 +6,8 @@
 
   python scripts/train_multitask.py --synthetic var/synthetic/synthetic_manifest.csv --run mt_syn   # + synthetic TRAIN rows
 
-Tasks: device_type (v1.0 label) + every single-choice v1.1 attribute (control, environment, weather, ground_wet,
-size_class, chair_subtype, drive_position, ramp_deploy) + one binary yes/no task per option of each multi-select field
-(ramp_reasons=obstruction, ramp_reasons=steep_slope, ...). chair_subtype / drive_position are dependent fields: rows
+Tasks: device_type (v1.0 label) + every live single-choice v1.1 attribute (device_use_case, control, chair_subtype,
+drive_position, securement_hardware). chair_subtype / drive_position are dependent fields: rows
 whose device_type is not manual / powered carry no value and contribute nothing to those heads.
 Model: one shared frozen image encoder (google/siglip2-so400m-patch14-224, as auto_annotate) and one head per task:
   * probe (default): per-task logistic regression on the frozen embedding, C chosen on val macro-F1.
@@ -50,7 +49,7 @@ def derive_multi(r):
         v = [x for x in (r.get(f) or "").split("+") if x]
         r[name] = "" if not v or v == ["unknown"] else ("yes" if o in v else "no")
 
-SYNTH_SCENE_FIELDS = ("environment", "weather", "ground_wet", "ramp_deploy", "ramp_reasons", "setting", "lighting")
+SYNTH_SCENE_FIELDS = ("setting",)  # schema v6: retired scene labels (environment/weather/lighting/ramp) are not training tasks
 
 def read_synthetic(path, rows):
     """Synthetic rows (train only). Refuses rows that are not split=train or whose source is not a train image here."""

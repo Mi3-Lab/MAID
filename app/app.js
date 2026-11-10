@@ -46,7 +46,7 @@ const canon = (f, v) => (typeof v === 'string' && S.schema?.value_aliases?.[f]?.
 function foldMine(events) {   // latest value per (image, field) for this annotator; ts then uuid
   const m = {};
   for (const e of events) {
-    if (e.annotator !== S.annotator || e.kind !== 'label') continue;
+    if (e.annotator !== S.annotator || !['label','correction'].includes(e.kind)) continue;
     const im = m[e.image_id] ||= {}; const k = [e.ts, e.uuid];
     const cur = im[e.field];
     if (!cur || k[0] > cur.k[0] || (k[0] === cur.k[0] && k[1] > cur.k[1])) im[e.field] = { v: canon(e.field, e.value), k, n: (cur?.n || 0) + 1 }; else cur.n++;
@@ -59,14 +59,18 @@ const val = (img, f) => {
     const v = S.history.status.fields[f][0];
     return f === 'exclude' && v === 'none' ? '' : v;
   }
-  // also prefer a just-emitted correction stored in mine
+  // this annotator's latest label/correction wins for the form
+  if (S.mine[img]?.[f] && S.mine[img][f].v !== undefined) return S.mine[img][f].v;
+  // otherwise show the latest saved value from any annotator (batch context)
+  const im = (cur()?.image_id === img ? cur() : S.images.find(x => x.image_id === img));
+  if (im?.context && im.context[f] != null && im.context[f] !== '') return im.context[f];
   return S.mine[img]?.[f]?.v;
 };
 // v1.0 fields (label/review modes, unchanged) vs v1.1 attribute fields (Attributes pass only; separate done flag).
 // Dependent fields (schema show_when, e.g. chair_subtype for manual/powered) appear only when their parent applies;
 // fields with also_in_v10_pass (chair subtype, drive wheels) also appear, optional, right after device_type in the
 // normal pass so picking "manual" offers the subtypes at once. They are v1.1 fields (counted with _status_v11 only).
-const MODEF = () => S.mode === 'attr' ? S.schema.fields.filter(f => f.since === '1.1') : S.schema.fields.filter(f => !f.since);
+const MODEF = () => S.mode === 'attr' ? S.schema.fields.slice() : S.schema.fields.filter(f => !f.since);
 function parentVal(im, p) {   // {v, model}: human value (mine, then v1.0 context) or, failing that, the model's guess
   const id = im.image_id, mv = val(id, p);
   if (mv != null && mv !== '') return { v: mv, model: false };
@@ -83,8 +87,10 @@ function optsFor(im, f) { const ob = f.options_by_parent; if (!ob) return f.opti
 function FL(im = cur()) {   // fields shown for image `im` (null: every field of the mode)
   let F = MODEF();
   if (S.mode !== 'attr') {
-    const extra = S.schema.fields.filter(f => f.also_in_v10_pass);
-    const at = F.findIndex(f => f.name === 'device_type') + 1; F = [...F.slice(0, at), ...extra, ...F.slice(at)];
+    const use = S.schema.fields.find(f => f.name === 'device_use_case');
+    const extra = S.schema.fields.filter(f => f.also_in_v10_pass && f.name !== 'device_use_case');
+    const at = F.findIndex(f => f.name === 'device_type');
+    F = [...(use ? [use] : []), ...F.slice(0, at + 1), ...extra, ...F.slice(at + 1)];
   }
   return im ? F.filter(f => shown(im, f)) : F;
 }
@@ -114,7 +120,9 @@ function prov(image_id, field) {   // review mode: every human edit carries "mod
 }
 async function emit(field, value, image_id) {
   image_id ||= cur().image_id;
-  const useCorr = S.editAny;   // opened via Go-to: every field change is an append-only correction
+  const existing = resolvedVal(image_id, field);
+  // append-only correction when a saved value already exists (any annotator), or when opened via Go-to
+  const useCorr = !!S.editAny || (existing !== undefined && existing !== null);
   let extra = useCorr ? {} : prov(image_id, field);
   if (useCorr) {
     const prev = resolvedVal(image_id, field), who = resolvedWho(image_id, field);
@@ -131,8 +139,10 @@ async function emit(field, value, image_id) {
 }
 function resolvedVal(id, field) {
   const st = S.history?.status?.fields?.[field];
-  if (st) return st[0] === 'none' && field === 'exclude' ? '' : st[0];
-  if (S.mine[id]?.[field]) return S.mine[id][field].v;
+  if (st && st[1] !== 'missing') return st[0] === 'none' && field === 'exclude' ? '' : st[0];
+  if (S.mine[id]?.[field] && S.mine[id][field].v !== undefined) return S.mine[id][field].v;
+  const im = (cur()?.image_id === id ? cur() : S.images.find(x => x.image_id === id));
+  if (im?.context && im.context[field] != null && im.context[field] !== '') return im.context[field];
   return undefined;
 }
 function resolvedWho(id, field) {
@@ -297,9 +307,9 @@ function render() {
   $('pos').innerHTML = `${S.mode === 'review' ? '<span class="tag ai">REVIEW</span> ' : ''}${S.mode === 'attr' ? '<span class="tag ai">ATTRIBUTES v1.1</span> ' : ''}${S.idx + 1} / ${S.images.length} · ${id} ${done ? '<span class="tag done">done</span>' : ''} ${val(id, 'exclude') ? '<span class="tag excl">excluded</span>' : ''}`;
   const risks = A ? (A.flags || []).filter(k => RISK[k]) : [];
   $('aibanner').hidden = !A && S.mode !== 'attr';
-  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — choose every row yourself (click or number keys); pick <b>unknown</b> when you cannot tell. ` +
+  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — latest saved values are pre-selected and can be changed (saved as append-only corrections; history is never rewritten). Pick <b>unknown</b> when you cannot tell. ` +
     (A11 ? `Orange = machine hint (${A11.model_tag}) with its confidence; it is never saved unless you click it. ` : 'No machine hints for this image. ') +
-    `<kbd>Enter</kbd> = done once every row has a value.` + (im.context ? `<div class="muted">v1.0 labels: ${Object.entries(im.context).map(([k, v]) => `${k}=<b>${v}</b>`).join(' · ')}</div>` : '');
+    `<kbd>Enter</kbd> = done once every required row has a value (including Device use case on new saves).`;
   if (A) $('aibanner').innerHTML = `<b>Machine suggestions</b> (${A.model_tag}) — orange = model's guess with its confidence; <kbd>a</kbd>/<kbd>Enter</kbd> confirms all, number keys fix a field.` +
     (risks.length ? `<div class="risk">⚠ screening: ${risks.map(k => `${RISK[k]} (${pct(A.screening[k])})`).join(', ')} — check it; exclude with <kbd>e</kbd> if true.${S.armed === id ? ' <b>Press a again to confirm anyway.</b>' : ''}</div>` : '') +
     (missSug(im) ? `<div class="risk">model sees a face (${pct(A.screening.visible_face)}) but the blur found none → "face blur missed" is pre-checked; untick (<kbd>f</kbd>) if no face is visible</div>` : '') +
@@ -314,7 +324,7 @@ function render() {
     const dep = f.depends_on ? parentVal(im, f.depends_on) : null;
     const note = (dep?.model ? ` <small class="conf" title="shown because the model suggests ${dep.v}">(AI: ${dep.v})</small>` : '') + (f.since && S.mode !== 'attr' ? ' <small class="muted">v1.1, optional</small>' : '') + (isMulti(f) ? ' <small class="muted">multi</small>' : '');
     return `<div class="row ${ri === S.row && !S.exclMode ? 'active' : ''}" data-r="${ri}"><span class="lbl">${f.label}${note}</span>` +
-      optsFor(im, f).map((o, oi) => `<span class="opt ${isSel(o) ? 'sel' : ''} ${isSug(o) ? cls : ''}" data-f="${f.name}" data-v="${o}"${isMulti(f) ? ' data-m="1"' : ''}><kbd>${oi + 1}</kbd> ${o}${isSug(o) && as && typeof as.confidence === 'number' ? ` <small class="conf">${pct(as.confidence)}</small>` : ''}</span>`).join('') +
+      optsFor(im, f).map((o, oi) => `<span class="opt ${isSel(o) ? 'sel' : ''} ${isSug(o) ? cls : ''}" data-f="${f.name}" data-v="${o}"${isMulti(f) ? ' data-m="1"' : ''}><kbd>${oi + 1}</kbd> ${(f.option_labels && f.option_labels[o]) || o}${isSug(o) && as && typeof as.confidence === 'number' ? ` <small class="conf">${pct(as.confidence)}</small>` : ''}</span>`).join('') +
       (as ? `<span class="aiv ${v === undefined ? '' : same ? 'ok' : 'fixed'}" title="model suggestion${as.model_tag ? ' (' + as.model_tag + ')' : ''}">AI: ${av}${typeof as.confidence === 'number' ? ' ' + pct(as.confidence) : ''}${v !== undefined ? (same ? ' ✓' : ' ✎') : ''}</span>` : '') + '</div>';
   }).join('');
   const ex = val(id, 'exclude') || '';
@@ -383,6 +393,12 @@ async function confirmAll() {   // review mode: accept every remaining suggestio
   if (risks.length && !val(id, 'exclude') && S.armed !== id) { S.armed = id; render(); return; }   // screening flag: 2nd press needed
   S.armed = null;
   if (!val(id, 'exclude')) {
+    if (!hasVal(val(id, 'device_use_case'))) {
+      const FLs = FL(im); S.row = Math.max(0, FLs.findIndex(f => f.name === 'device_use_case')); S.attrMsg = id;
+      render();
+      $('hist').textContent = 'Device use case is required on new saves (Specialized / Standard / Unknown).';
+      return;
+    }
     for (const f of v10rows()) { const s = canon(f, A.suggestions?.[f]?.value); if (val(id, f) === undefined && s != null) await emit(f, s); }
     if (val(id, 'face_blur_missed') === undefined && missSug(im)) await emit('face_blur_missed', true);
   }
@@ -407,7 +423,15 @@ async function done() {
   if (S.mode === 'attr') return doneAttr();
   if (S.mode === 'review' && S.auto[cur()?.image_id]) return confirmAll();
   const im = cur(); if (!im) return; const id = im.image_id;
-  if (!val(id, 'exclude')) for (const f of v10rows()) { const s = suggestion(im, f); if (val(id, f) === undefined && s != null) await emit(f, s); }
+  if (!val(id, 'exclude')) {
+    if (!hasVal(val(id, 'device_use_case'))) {
+      const FLs = FL(im); S.row = Math.max(0, FLs.findIndex(f => f.name === 'device_use_case')); S.attrMsg = id;
+      render();
+      $('hist').textContent = 'Device use case is required on new saves (Specialized / Standard / Unknown).';
+      return;
+    }
+    for (const f of v10rows()) { const s = suggestion(im, f); if (val(id, f) === undefined && s != null) await emit(f, s); }
+  }
   if (val(id, 'exclude') === undefined) await emit('exclude', '');
   await emit('_status', 'done');
   if (S.idx < S.images.length - 1) go(1); else render();

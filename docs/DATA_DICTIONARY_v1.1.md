@@ -5,9 +5,23 @@ stay exactly as they were. Nothing here changes `release/`, the v1.0 zip or `res
 with its own done flag (`_status_v11`) and its own derived files (`*_v11.*`). Those files are written only after v1.1
 events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v11.py`).
 
+## Schema v6 (2026-11-09)
+
+Retired from the annotator, new-event validation, label filter, derive/export, and training-split manifests:
+`lighting`, `environment`, `weather`, `ground_wet`, `size_class`, `ramp_deploy`, `ramp_reasons`, and size / tape-measure
+estimate columns (`est_*`, `height_cm` / `width_cm` / `length_cm`). Historical events in `annotations/events/*.jsonl`
+are never rewritten; derive and export ignore those keys. Frozen v1.0 release artifacts are unchanged.
+
+Added `device_use_case` (specialized / standard / unknown) **above** `device_type`. Unset means not yet labelled;
+new saves require a value. Machine hints, if any, stay suggestions and are never stored as human labels.
+
+The Attributes pass now pre-selects the latest saved core labels (device type, occupied, etc.) and lets any labeler
+change them; saves append correction events (latest wins).
+
+
 ## 1. v1.0 fields (unchanged)
 `device_type` (manual = non-powered / powered / other_aid / ambiguous / unclear), `setting`, `occupied`, `occlusion`,
-`propulsion`, `viewpoint`, `lighting`, `bbox`, `exclude`, `face_blur_missed`. Definitions are in `server/schema.json`.
+`propulsion`, `viewpoint`, `bbox` (`lighting` was retired in schema v6), `exclude`, `face_blur_missed`. Definitions are in `server/schema.json`.
 `device_type` itself is unchanged (manual = non-powered / powered / other_aid / ambiguous / unclear). v1.1 adds a
 **dependent** `chair_subtype` (and `drive_position` for powered chairs) below it; see section 2a. Scooters stay under
 `other_aid`; "pediatric" is a size descriptor (`size_class = pediatric_size`), never a subtype.
@@ -15,6 +29,7 @@ events exist, so v1.0's `derived/` stays byte-identical (tested in `tests/test_v
 ## 2. New human-labelled fields (since 1.1; 2 annotators, 3rd on disagreement)
 | field | values | meaning |
 |---|---|---|
+| `device_use_case` | specialized, standard, unknown | Visual judgement of intended use, shown above device type. specialized = special use cases; standard = everyday use; unknown = cannot reasonably tell. Optional on already-labelled images; required on new saves. |
 | `control` | joystick, attendant_control, push_rims, tiller, none_visible, unknown | Control interface you can **see** in the image. joystick = armrest joystick (user). attendant_control = rear/attendant joystick or push handles in use. push_rims = hand rims on the rear wheels. tiller = handlebar steering (scooters). none_visible = no control interface visible. |
 | `environment` | indoor, sidewalk, curbside, crosswalk_road, vehicle_interior, ramp_lift, parking_lot, other_outdoor, unknown | Where the device is. curbside = at the kerb edge or kerb cut. crosswalk_road = on the roadway or a crossing. ramp_lift = on a vehicle or building ramp or lift. |
 | `weather` | sunny_clear, overcast, rain, snow, fog, night, indoor_na, unknown | Visible conditions. indoor_na for indoor scenes. night when it is dark outdoors. |

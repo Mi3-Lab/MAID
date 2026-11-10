@@ -11,7 +11,7 @@ def check(name, cond, detail=""):
     results.append((name, bool(cond))); print(("PASS " if cond else "FAIL ") + name + (f" -- {detail}" if detail else ""), flush=True)
 
 import wvcore
-check("schema v5", wvcore.SCHEMA["version"] == 5)
+check("schema v6 (securement kept)", wvcore.SCHEMA["version"] >= 5 and "securement_hardware" in wvcore.FIELD_OPTS)
 check("field in COMPARE_V11", "securement_hardware" in wvcore.COMPARE_V11)
 check("options", wvcore.FIELD_OPTS["securement_hardware"] == ["docking_bracket", "tiedown_points", "not_visible", "unclear"])
 check("definitions guidance present", "NOT a safety certification" in (wvcore.SCHEMA["definitions"]["securement_hardware"].get("_vehicle_guidance") or ""))

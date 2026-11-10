@@ -27,14 +27,15 @@ sys.path.insert(0, str(ROOT / "server")); sys.path.insert(0, str(ROOT / "scripts
 import wvcore
 from size_estimate import load_events
 
-DESC = ["setting", "occupied", "occlusion", "propulsion", "viewpoint", "lighting"]
+DESC = ["setting", "occupied", "occlusion", "propulsion", "viewpoint"]
 V11 = list(wvcore.COMPARE_V11)
 SIZE_COLS = ["box_w_norm", "box_h_norm", "aspect_hw_px", "box_w_reflects", "est_height_cm", "est_height_low_cm", "est_height_high_cm",
              "est_width_cm", "est_width_low_cm", "est_width_high_cm", "est_length_cm", "est_length_low_cm", "est_length_high_cm",
              "est_basis", "est_flags"]
 MEAS_COLS = ["height_cm", "width_cm", "length_cm", "measurement_source"]
-COLS = (["image_id", "source", "split", "split_origin", "train_eligible_v10", "v11_eligible", "v11_exclusion_reason", "device_type", *DESC,
-         "v11_status", "v11_annotators", *V11, "license", "creator", "leak_group", "path", "phash_blurred"] + SIZE_COLS + MEAS_COLS)
+# Schema v6: lighting and size/measurement columns are not exported into the training-split manifest.
+COLS = ["image_id", "source", "split", "split_origin", "train_eligible_v10", "v11_eligible", "v11_exclusion_reason", "device_type", *DESC,
+         "v11_status", "v11_annotators", *V11, "license", "creator", "leak_group", "path", "phash_blurred"]
 FRACS = (("train", 70), ("val", 85), ("test", 100))
 REAL_SOURCES = ("user_measured", "manufacturer_spec", "depth_sensor", "reference_object")
 

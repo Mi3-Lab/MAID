@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Rebuild derived/ (labels.csv, per_annotator_labels.csv, adjudication_needed.csv, kappa.json, progress.json)
 from the append-only per-annotator event files annotations/events/*.jsonl. Never hand-edit derived/.
 Machine suggestions (annotations/auto/*.jsonl) are NOT events: they never count as an annotation, never enter
@@ -16,7 +16,7 @@ def load_events(evdir, reserved=(), drop_blocked=True):
         owner = Path(fn).stem
         for ln, line in enumerate(open(fn, encoding="utf-8"), 1):
             if not line.strip(): continue
-            try: e, why = wvcore.validate(json.loads(line))
+            try: e, why = wvcore.validate(json.loads(line), allow_retired=True)
             except json.JSONDecodeError: e, why = None, "invalid json"
             if e and e["annotator"] != owner: e, why = None, f"annotator {e['annotator']} in {owner}.jsonl"
             if e and e["annotator"] in reserved: e, why = None, f"{e['annotator']} is a machine model_tag, not a human annotator"

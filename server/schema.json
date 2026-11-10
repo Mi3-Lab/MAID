@@ -1,6 +1,6 @@
 {
- "version": 5,
- "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: chair_subtype=negative_camber. v5: adds securement_hardware (docking_bracket / tiedown_points / not_visible / unclear) — label only what is visible; not a safety certification.",
+ "version": 6,
+ "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: chair_subtype=negative_camber. v5: adds securement_hardware (docking_bracket / tiedown_points / not_visible / unclear) — label only what is visible; not a safety certification. v6: retires lighting, environment, weather, ground_wet, size_class, ramp_deploy, ramp_reasons (kept only as retired_fields for reading historical events). Adds device_use_case above device_type.",
  "value_aliases": {
   "device_type": {
    "lookalike": "ambiguous"
@@ -8,6 +8,24 @@
  },
  "value_aliases_note": "Historical values kept in the append-only event log, mapped to the canonical option on read (wvcore.canon). 'lookalike' was renamed 'ambiguous' on 2026-10-28; old events are never rewritten. Prefill keys (lookalike_*) are candidate source categories from data/candidates.csv, not label values.",
  "fields": [
+  {
+   "name": "device_use_case",
+   "label": "Device use case",
+   "since": "1.1",
+   "compare": "v11",
+   "also_in_v10_pass": true,
+   "required_on_save": true,
+   "options": [
+    "specialized",
+    "standard",
+    "unknown"
+   ],
+   "option_labels": {
+    "specialized": "Specialized (special use cases)",
+    "standard": "Standard (everyday use)",
+    "unknown": "Unknown (can't reasonably tell)"
+   }
+  },
   {
    "name": "device_type",
    "label": "Device type",
@@ -62,17 +80,6 @@
    "compare": true
   },
   {
-   "name": "lighting",
-   "label": "Lighting",
-   "options": [
-    "daylight",
-    "shade",
-    "indoor",
-    "low_light"
-   ],
-   "compare": true
-  },
-  {
    "name": "setting",
    "label": "Setting",
    "options": [
@@ -95,62 +102,6 @@
     "push_rims",
     "tiller",
     "none_visible",
-    "unknown"
-   ]
-  },
-  {
-   "name": "environment",
-   "label": "Environment",
-   "since": "1.1",
-   "compare": "v11",
-   "options": [
-    "indoor",
-    "sidewalk",
-    "curbside",
-    "crosswalk_road",
-    "vehicle_interior",
-    "ramp_lift",
-    "parking_lot",
-    "other_outdoor",
-    "unknown"
-   ]
-  },
-  {
-   "name": "weather",
-   "label": "Weather",
-   "since": "1.1",
-   "compare": "v11",
-   "options": [
-    "sunny_clear",
-    "overcast",
-    "rain",
-    "snow",
-    "fog",
-    "night",
-    "indoor_na",
-    "unknown"
-   ]
-  },
-  {
-   "name": "ground_wet",
-   "label": "Ground wet",
-   "since": "1.1",
-   "compare": "v11",
-   "options": [
-    "yes",
-    "no",
-    "unknown"
-   ]
-  },
-  {
-   "name": "size_class",
-   "label": "Size (visual)",
-   "since": "1.1",
-   "compare": "v11",
-   "options": [
-    "standard",
-    "wide",
-    "pediatric_size",
     "unknown"
    ]
   },
@@ -211,44 +162,6 @@
     "mid_wheel",
     "front_wheel",
     "rear_wheel",
-    "unknown"
-   ]
-  },
-  {
-   "name": "ramp_deploy",
-   "label": "Ramp deploy",
-   "since": "1.1",
-   "compare": "v11",
-   "options": [
-    "safe",
-    "unsafe",
-    "not_needed",
-    "unknown"
-   ]
-  },
-  {
-   "name": "ramp_reasons",
-   "label": "Ramp reasons",
-   "since": "1.1",
-   "compare": "v11",
-   "multi": true,
-   "depends_on": "ramp_deploy",
-   "show_when": {
-    "ramp_deploy": [
-     "unsafe",
-     "not_needed"
-    ]
-   },
-   "options": [
-    "insufficient_space",
-    "obstruction",
-    "uneven_surface",
-    "steep_slope",
-    "curb_height_issue",
-    "wet_icy_surface",
-    "traffic_hazard",
-    "no_wheelchair_user",
-    "user_not_waiting_unclear",
     "unknown"
    ]
   },
@@ -321,7 +234,7 @@
  },
  "annotators_per_image": 2,
  "max_annotators_per_image": 3,
- "note_v11": "v1.1 (2026-11-04): fields with \"since\": \"1.1\" are labelled in a separate attribute pass (app mode 'Attributes', own done flag _status_v11, own assignments). They never change v1.0 status/consensus/kappa or derived/labels.csv; they are resolved into derived/labels_v11.csv. Every v1.1 field has an explicit 'unknown' (cannot be determined from the photo). Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json 'definitions' and docs/DATA_DICTIONARY_v1.1.md. Schema v4 adds chair_subtype=negative_camber to the manual options_by_parent list (powered list unchanged).",
+ "note_v11": "v1.1 fields (\"since\": \"1.1\") are labelled in the Attributes pass (own done flag _status_v11). Schema v6: the Attributes section also shows and lets any labeler edit the latest saved core labels (device_use_case, device_type, occupied, etc.); edits append correction events, never rewrite history. device_use_case is optional on already-labelled images (unset = not yet labelled) and required on new saves. They never change v1.0 release artifacts or frozen v1.0 splits. Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json definitions and docs/DATA_DICTIONARY_v1.1.md.",
  "definitions": {
   "control": {
    "joystick": "a powered-chair joystick / hand control is visible (usually on an armrest)",
@@ -382,7 +295,7 @@
    "power_standard": "powered: standard power chair (power base, joystick, fixed seat)",
    "power_tilt_recline": "powered: power tilt / recline / elevating seating functions visible (actuators, tilted seat, headrest)",
    "unknown": "cannot tell the subtype from the photo",
-   "_note": "dependent on device_type: manual subtypes are offered when device_type is manual (a human label, or a SigLIP suggestion while the human has not chosen); powered subtypes when powered. Scooters stay device_type=other_aid (no subtype). Pediatric is NOT a subtype: see size_class=pediatric_size (child images are excluded)."
+   "_note": "dependent on device_type: manual subtypes when device_type is manual; powered subtypes when powered. Scooters stay device_type=other_aid (no subtype). Pediatric is not a subtype (child images are excluded)."
   },
   "drive_position": {
    "mid_wheel": "powered: drive wheels in the middle of the base (6-wheel look, small casters front and rear)",
@@ -418,6 +331,12 @@
    "unclear": "cannot tell from this photo whether securement hardware is present (too small, occluded, or ambiguous)",
    "_annotator_rule": "Label only what is visible. Do not infer hardware from chair brand alone. Prefer unclear over guessing.",
    "_vehicle_guidance": "docking_bracket at high model confidence may INFORM preparing a docking station for boarding; not_visible, unclear, or low confidence => defer to rider confirmation. This field is NOT a safety certification and must never alone authorize securement or boarding."
+  },
+  "device_use_case": {
+   "specialized": "the device is for a more special use case (e.g. sports, racing, heavy-duty / bariatric, pediatric-sized, rehab / tilt-recline complex seating) rather than everyday community use",
+   "standard": "the device looks like an everyday / general-purpose mobility aid (typical manual or power chair, walker, scooter for daily use)",
+   "unknown": "cannot reasonably tell the use case from the photo",
+   "_note": "a coarse visual judgement of intended use, not a clinical classification; unset (no event) means not yet labelled"
   }
  },
  "annotators_per_image_v11": 2,
@@ -441,5 +360,121 @@
  "estimate_sources": [
   "rough_estimate"
  ],
- "measurement_note": "Measured dimensions (height_cm, width_cm, length_cm) live in data/measurements.csv and are only filled from a real source (measurement_sources). Rough estimates (est_*_cm with a low/high range) are written by scripts/size_estimate.py with measurement_source='rough_estimate' into a SEPARATE file and are never copied into the measured columns. Monocular web photos have no metric scale."
+ "measurement_note": "Schema v6: size estimates and tape-measured dimensions are retired from the annotator, label filter, derive/export, and training-split manifests. Existing data/measurements.csv and scripts/size_estimate.py outputs are not deleted, but they are not exported into new training manifests. Historical size_class / ramp / weather / lighting / environment / ground_wet events stay in the append-only log and are ignored on derive.",
+ "retired_fields": [
+  {
+   "name": "lighting",
+   "label": "Lighting",
+   "options": [
+    "daylight",
+    "shade",
+    "indoor",
+    "low_light"
+   ],
+   "compare": true,
+   "retired_in": 6
+  },
+  {
+   "name": "environment",
+   "label": "Environment",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "indoor",
+    "sidewalk",
+    "curbside",
+    "crosswalk_road",
+    "vehicle_interior",
+    "ramp_lift",
+    "parking_lot",
+    "other_outdoor",
+    "unknown"
+   ],
+   "retired_in": 6
+  },
+  {
+   "name": "weather",
+   "label": "Weather",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "sunny_clear",
+    "overcast",
+    "rain",
+    "snow",
+    "fog",
+    "night",
+    "indoor_na",
+    "unknown"
+   ],
+   "retired_in": 6
+  },
+  {
+   "name": "ground_wet",
+   "label": "Ground wet",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "yes",
+    "no",
+    "unknown"
+   ],
+   "retired_in": 6
+  },
+  {
+   "name": "size_class",
+   "label": "Size (visual)",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "standard",
+    "wide",
+    "pediatric_size",
+    "unknown"
+   ],
+   "retired_in": 6
+  },
+  {
+   "name": "ramp_deploy",
+   "label": "Ramp deploy",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "safe",
+    "unsafe",
+    "not_needed",
+    "unknown"
+   ],
+   "retired_in": 6
+  },
+  {
+   "name": "ramp_reasons",
+   "label": "Ramp reasons",
+   "since": "1.1",
+   "compare": "v11",
+   "multi": true,
+   "depends_on": "ramp_deploy",
+   "show_when": {
+    "ramp_deploy": [
+     "unsafe",
+     "not_needed"
+    ]
+   },
+   "options": [
+    "insufficient_space",
+    "obstruction",
+    "uneven_surface",
+    "steep_slope",
+    "curb_height_issue",
+    "wet_icy_surface",
+    "traffic_hazard",
+    "no_wheelchair_user",
+    "user_not_waiting_unclear",
+    "unknown"
+   ],
+   "retired_in": 6
+  }
+ ],
+ "changelog_v6": "Schema v6 (2026-11-09): retire lighting (v1.0), environment, weather, ground_wet, size_class, ramp_deploy, and ramp_reasons from the annotator, validation of new events, label filter, derive/export, and training-split manifests. Historical events in annotations/events/*.jsonl are never rewritten; derive/export ignore those keys. Add device_use_case (specialized / standard / unknown) above device_type. v1.0 release artifacts stay frozen.",
+ "retired_note": "retired_fields lists schema v6 removals. Readers may accept historical values (validate(..., allow_retired=True)); new writes are rejected. Fold/export/filter ignore them."
 }

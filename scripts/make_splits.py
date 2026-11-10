@@ -32,7 +32,7 @@ FROZEN_SPLIT_OUTS = {"splits_v1.csv", "splits_v2.csv", "splits_v3.csv", "manifes
 def load_events(db, evdir):
     evs, seen = [], set()
     def add(raw):
-        e, _ = wvcore.validate(raw)
+        e, _ = wvcore.validate(raw, allow_retired=True)
         if e and e["annotator"] in HUMANS and e["uuid"] not in seen: seen.add(e["uuid"]); evs.append(e)
     n_db = n_js = 0
     if db and os.path.exists(db):

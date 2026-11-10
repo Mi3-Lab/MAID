@@ -25,8 +25,8 @@ sys.path.insert(0, str(ROOT / "server")); sys.path.insert(0, str(ROOT / "scripts
 import wvcore, assist_models as AM
 
 VLM_PROMPT_VERSION = "vlm-v1"
-CAPTION_SKIP = {"chair_subtype", "drive_position", "ramp_deploy"}   # a caption cannot answer these reliably (need VQA)
-VLM_FIELDS = ["environment", "weather", "ground_wet", "control", "chair_subtype", "drive_position", "ramp_deploy"]
+CAPTION_SKIP = {"chair_subtype", "drive_position"}   # a caption cannot answer these reliably (need VQA)
+VLM_FIELDS = [f for f in ("device_use_case", "control", "chair_subtype", "drive_position", "securement_hardware") if f in wvcore.FIELD_OPTS]
 
 def now(): return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 def sha1(p): return hashlib.sha1(open(p, "rb").read()).hexdigest()
@@ -51,6 +51,7 @@ def vlm_suggest(vlm, image):
         return out
     parent = AM.parse_choice(vlm.ask(image, "Is the wheelchair manual or powered? Answer manual, powered, or none."), ["manual", "powered"])
     for f in VLM_FIELDS:
+        if f not in wvcore.FIELD_OPTS: continue
         opts = wvcore.FIELD_OPTS[f]
         if f in wvcore.OPTIONS_BY_PARENT:
             if parent not in wvcore.OPTIONS_BY_PARENT[f]: continue

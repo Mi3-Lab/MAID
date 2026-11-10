@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Merge annotations/events/*.jsonl from the HF dataset repo into the git checkout, append-only (union by uuid).
 Existing lines are never modified or reordered; remote lines with unseen uuids are appended in remote order.
 Env: HF_TOKEN, WV_HF_DATASET (default samitesla/wheelview-data)."""
@@ -25,7 +25,7 @@ def main():
         new = []
         for line in rf.open(encoding="utf-8"):
             if not line.strip(): continue
-            try: e, why = wvcore.validate(json.loads(line))
+            try: e, why = wvcore.validate(json.loads(line), allow_retired=True)
             except json.JSONDecodeError: e, why = None, "json"
             if not e or e["annotator"] != rf.stem: skipped += 1; continue
             if e["uuid"] in have: continue

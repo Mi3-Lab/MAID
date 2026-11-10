@@ -34,14 +34,14 @@ SCENES = {"curbside": "curbside", "crossing": "crosswalk_road", "crosswalk": "cr
 VARIANTS = ["none", "overcast", "rain", "wet", "fog", "night", "dusk"]
 WEATHER_OF = {"none": "", "overcast": "overcast", "rain": "rain", "wet": "overcast", "fog": "fog", "night": "night", "dusk": ""}
 WET_OF = {"rain": "yes", "wet": "yes"}
-CHAIR_COLS = ["device_type", "chair_subtype", "drive_position", "size_class", "control", "occupied", "propulsion"]
+CHAIR_COLS = ["device_type", "chair_subtype", "drive_position", "control", "occupied", "propulsion"]
 CHAIRS = {"manual", "powered"}
 OBJ_H_CM = {"manual": 95.0, "powered": 110.0}
 BG_COLS = ["background_id", "file", "scene", "source_url", "license", "author", "people", "ground_y"]
 OUT_COLS = ["image_id", "file", "synthetic", "split", "leak_group", "source_image_id", "source_split", "background_id",
-            "background_source", "background_license", "background_author", "background_url", "scene", "environment",
-            "weather", "ground_wet", "weather_variant", "lighting_variant", "mask_source", "box_source", "transform_params",
-            "generator", "generated_at"] + [c for c in CHAIR_COLS] + ["ramp_deploy", "ramp_reasons"]
+            "background_source", "background_license", "background_author", "background_url", "scene",
+            "weather_variant", "lighting_variant", "mask_source", "box_source", "transform_params",
+            "generator", "generated_at"] + [c for c in CHAIR_COLS]
 FIRST_ID = 800001
 
 def default_manifest():
@@ -262,16 +262,15 @@ def main(argv=None):
         comp, prm = composite(bimg, crop, alpha, oh, bg["ground_y"], rng, a.camera_height_cm, shadow=0.25 if v in ("overcast", "fog", "night") else 0.45)
         comp = variant(comp, v, lt, rng)
         fn = f"images/{iid}.jpg"; comp.save(out / fn, quality=92)
-        env = bg.get("environment") or SCENES[bg["scene"]]
         row = {"image_id": iid, "file": fn, "synthetic": "true", "split": "train", "leak_group": r.get("leak_group", ""),
                "source_image_id": r["image_id"], "source_split": r["split"], "background_id": bg["background_id"],
                "background_source": f"dataset:{bg['_dataset']}" if bg["_dataset"] else "backgrounds_folder",
                "background_license": bg["license"], "background_author": bg["author"], "background_url": bg["source_url"],
-               "scene": bg["scene"], "environment": env, "weather": WEATHER_OF.get(v, ""), "ground_wet": WET_OF.get(v, ""),
+               "scene": bg["scene"],
                "weather_variant": v, "lighting_variant": lt, "mask_source": msrc, "box_source": "human" if b and not msrc.startswith("assist") else msrc,
                "transform_params": json.dumps({**prm, "src_box": box, "seed": a.seed, "k": k}, sort_keys=True),
                "generator": "synth_augment.py v1", "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-               **{c: r.get(c, "") for c in CHAIR_COLS}, "device_type": dt, "ramp_deploy": "", "ramp_reasons": ""}
+               **{c: r.get(c, "") for c in CHAIR_COLS}, "device_type": dt}
         rows.append(row)
     with open(mf, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, OUT_COLS, extrasaction="ignore"); w.writeheader(); w.writerows(rows)

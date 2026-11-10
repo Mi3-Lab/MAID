@@ -482,8 +482,8 @@ def review_assign(annotator: str, n: int = Query(30, ge=1, le=200), order: str =
     return {"annotator": ann, "model_tag": tag, "order": order,
             "images": [image_meta(i) | {"auto": recs[i]} for i in out]}
 
-# ---------- v1.1 attribute pass: control / environment / weather / ground_wet / size_class ----------
-CONTEXT_FIELDS = ("device_type", "occupied", "propulsion", "setting", "lighting", "viewpoint")
+# ---------- v1.1 attribute pass (schema v6: core labels are editable here too) ----------
+CONTEXT_FIELDS = ("device_use_case", "device_type", "occupied", "propulsion", "occlusion", "setting", "viewpoint", "control", "chair_subtype", "drive_position", "securement_hardware")
 def _release_ids():
     p = ROOT / "data" / "manifest_v2.csv"
     if not p.exists(): return set()
@@ -535,7 +535,13 @@ def attr_assign(annotator: str, n: int = Query(30, ge=1, le=200)):
     imgs = []
     for i in out:
         s10 = wvcore.image_status(i, per, adjv)
-        ctx = {f: s10["fields"][f][0] for f in CONTEXT_FIELDS if f in s10["fields"] and s10["fields"][f][0]}
+        s11 = st11.get(i) or wvcore.image_status_v11(i, per, adjv)
+        ctx = {}
+        for f in CONTEXT_FIELDS:
+            for st in (s10, s11):
+                trip = st.get("fields", {}).get(f)
+                if trip and trip[0] not in (None, ""):
+                    ctx[f] = trip[0]; break
         m = image_meta(i) | {"context": ctx}
         sg = wvcore.merged_suggestions(i, a["data"], order)   # per field: active attr model first, then other attr models
         if sg: m["auto11"] = {"image_id": i, "model_tag": a["attr_active"] or order[0], "suggestions": sg}
@@ -574,7 +580,7 @@ def _filter(q: str, ids: list | None, limit: int, counts: bool):
 @app.get("/api/filter")
 def filter_get(q: str = "", limit: int = Query(500, ge=0, le=20000), counts: bool = True):
     """Images matching a filter over every served image: {total, count, ids (first `limit`), counts, match_counts}.
-    q: 'device_type:manual,powered;weather:rain;basis:human' -- OR within a field, AND across fields."""
+    q: 'device_type:manual,powered;device_use_case:standard;basis:human' -- OR within a field, AND across fields."""
     return _filter(q, None, limit, counts)
 
 @app.post("/api/filter")

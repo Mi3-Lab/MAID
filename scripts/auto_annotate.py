@@ -105,6 +105,12 @@ P = {
 ATTR_PROMPT_VERSION = "attr-v4"   # v4: + securement_hardware (low-conf -> unclear); v3: negative_camber; v2: subtype/drive/ramp
 ATTR_TAG = "siglip2-so400m-224_" + ATTR_PROMPT_VERSION
 P_V11 = {
+ "device_use_case": {   # suggestion only; never auto-saved as a human label
+  "specialized": ["a sports or racing wheelchair", "a heavy-duty bariatric wheelchair", "a complex rehab tilt-recline wheelchair",
+                  "a specialized mobility device for a special use case"],
+  "standard": ["an everyday manual wheelchair", "a typical power wheelchair for daily community use",
+               "a standard folding wheelchair used outdoors"],
+ },
  "control": {
   "joystick": ["a power wheelchair with a joystick control on the armrest", "a hand on the joystick of an electric wheelchair",
                "a joystick controller box on a wheelchair armrest"],
@@ -206,6 +212,12 @@ P_V11_MULTI = {
                                ["a wheelchair user waiting at the curb for a bus"]),
  },
 }
+
+# Schema v6: retired attribute fields are not scored or written as suggestions (prompts kept only in P_V11_RETIRED).
+P_V11_RETIRED = {k: P_V11.pop(k) for k in ("environment", "weather", "ground_wet", "size_class", "ramp_deploy") if k in P_V11}
+P_V11_MULTI_RETIRED = dict(P_V11_MULTI)
+P_V11_MULTI = {}
+
 P_V11_PARENT = {"manual": ["a manual wheelchair with large push wheels", "a person in a manual wheelchair"],
                 "powered": ["an electric power wheelchair with a joystick", "a motorised power wheelchair with batteries"]}
 SCREEN = {   # flag -> (positive prompts, negative prompts); score = P(positive) under a 2-way softmax

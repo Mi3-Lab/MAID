@@ -6,10 +6,14 @@ from itertools import combinations
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
-FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}   # every field (v1.0 + v1.1): used for validation
+FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}   # current fields (v1.0 + v1.1): used for new-event validation
+# Schema v6 retired fields: kept only so historical events can be read. New writes are rejected; fold/export/filter ignore them.
+RETIRED_FIELDS = [f["name"] for f in SCHEMA.get("retired_fields", [])]
+RETIRED_OPTS = {f["name"]: f["options"] for f in SCHEMA.get("retired_fields", [])}
+RETIRED = set(RETIRED_FIELDS)
 # v1.0 fields (no "since") keep their exact v1.0 behaviour: status, consensus, kappa, labels.csv, per_annotator_labels.csv.
 # v1.1 attribute fields ("since": "1.1") are resolved separately (image_status_v11, labels_v11.csv) so labelling them can
-# never re-open, re-assign or change a v1.0 image or any v1.0 derived file.
+# never re-open, re-assign or change a v1.0 image or any v1.0 derived file. Retired keys are omitted from both.
 V10_FIELDS = [f["name"] for f in SCHEMA["fields"] if not f.get("since")]
 V11_FIELDS = [f["name"] for f in SCHEMA["fields"] if f.get("since") == "1.1"]
 COMPARE = [f["name"] for f in SCHEMA["fields"] if f.get("compare") is True and not f.get("since")] + ["exclude"]
@@ -95,8 +99,10 @@ def slug(name):
     s = re.sub(r"[^a-z0-9._-]+", "-", (name or "").strip().lower()).strip("-.")
     return s[:40]
 
-def validate(ev):
-    """Return (normalised_event, None) or (None, reason)."""
+def validate(ev, allow_retired=False):
+    """Return (normalised_event, None) or (None, reason).
+    Historical events for schema-v6 retired fields validate only when allow_retired=True
+    (derive / event-log import). New writes (the API) reject them."""
     try:
         e = {k: ev.get(k) for k in EVENT_KEYS}
     except AttributeError:
@@ -114,6 +120,19 @@ def validate(ev):
         if not (isinstance(v, dict) and set(v) <= {"action", "list", "reason"} and v.get("action") in REMOVAL_ACTIONS
                 and all(isinstance(v.get(k, ""), str) and len(v.get(k, "")) <= 400 for k in ("list", "reason"))): return None, "bad removal value"
         if ev.get("source") is not None or ev.get("model_tag") is not None: return None, "provenance only on label events"
+        return e, None
+    if f in RETIRED:
+        if not allow_retired:
+            return None, f"retired field {f} (removed in schema v6)"
+        opts = RETIRED_OPTS[f]
+        if f in ("ramp_reasons",) or (isinstance(v, list)):
+            if v is not None:
+                if not isinstance(v, list) or not v or len(v) > MULTI_MAX or len(set(map(str, v))) != len(v):
+                    return None, f"bad value for retired {f}"
+                if any(not isinstance(x, str) or x not in opts for x in v):
+                    return None, f"bad value for retired {f}"
+        elif v is not None and (not isinstance(v, str) or v not in opts):
+            return None, f"bad value for retired {f}"
         return e, None
     if f in FIELD_OPTS:
         # historical aliases stay valid (offline clients may still queue them); stored as sent, mapped on read
@@ -179,6 +198,7 @@ def fold(events):
     lab, adj = {}, {}
     for e in events:
         if e["kind"] == "removal": continue        # removal-review decisions are not labels (see removal_decisions)
+        if e.get("field") in RETIRED: continue     # schema v6: ignore retired keys in consensus / exports
         key = (e["ts"], e["uuid"]); v = canon(e["field"], e["value"])   # historical aliases -> canonical (read-side only)
         if e["kind"] in ("adjudication", "correction"):
             k = (e["image_id"], e["field"]); how = "corrected" if e["kind"] == "correction" else "adjudicated"
@@ -583,7 +603,7 @@ def auto_agreement(per, auto, events=None, stat=None):
 # ---------------------------------------------------------------- filtering (the ONE definition)
 # Used by the server (/api/filter), scripts/filter_images.py and (as a cached server answer) the app's filter panel.
 # A filter is {key: set(values)}: OR within a key, AND across keys. Keys are label fields (v1.0 + v1.1) or the
-# pseudo keys below. Text form (URL hash / CLI): "device_type:manual,powered;weather:rain;synthetic:no" (+ ";basis:model").
+# pseudo keys below. Text form (URL hash / CLI): "device_type:manual,powered;device_use_case:standard;synthetic:no" (+ ";basis:model").
 # Per-field values come from HUMAN labels by default (basis=human): the resolved value when the image is final for that
 # pass, else every annotator's latest value. Two special values per field:
 #   _unlabeled  - no human value for the field
@@ -596,7 +616,6 @@ PSEUDO_KEYS = {
     "approval": ["final", "in_progress", "needs_third_annotator", "needs_adjudication", "unlabelled"],
     "status_v11": ["final", "in_progress", "needs_third_annotator", "needs_adjudication", "unlabelled"],
     "synthetic": ["yes", "no"],
-    "size_basis": ["measured", "estimate_only", "none"],
     "label_source": ["human", "model_consensus", "model_only", "unlabeled"],
     "excluded": ["yes", "no"],
     "review_status": ["pending", "partial", "reviewed", "auto_approved", "none"],   # human review / model consensus

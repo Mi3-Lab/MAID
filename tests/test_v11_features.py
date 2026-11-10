@@ -29,16 +29,17 @@ def v10_done(img, ann, dev):
 
 # ---------------------------------------------------------------- 1. schema: subtypes, ramp, multi-select
 F = {f["name"]: f for f in wvcore.SCHEMA["fields"]}
-check("schema: chair_subtype, drive_position, ramp_deploy, ramp_reasons, securement_hardware are v1.1 fields",
-      all(F.get(k, {}).get("since") == "1.1" for k in ("chair_subtype", "drive_position", "ramp_deploy", "ramp_reasons", "securement_hardware")))
-check("schema v5 securement_hardware options",
+check("schema: chair_subtype, drive_position, securement_hardware, device_use_case are v1.1 fields",
+      all(F.get(k, {}).get("since") == "1.1" for k in ("chair_subtype", "drive_position", "securement_hardware", "device_use_case")))
+check("schema v5/v6 securement_hardware options",
       wvcore.FIELD_OPTS["securement_hardware"] == ["docking_bracket", "tiedown_points", "not_visible", "unclear"])
-check("schema version is 5", wvcore.SCHEMA.get("version") == 5)
+check("schema version is 6", wvcore.SCHEMA.get("version") == 6)
 check("schema: scooters stay under other_aid (no scooter subtype)", not any("scooter" in o for o in wvcore.FIELD_OPTS["chair_subtype"]))
-check("schema: pediatric is a size descriptor, not a subtype", "pediatric_size" in wvcore.FIELD_OPTS["size_class"]
+check("schema v6: size_class / lighting / weather retired", all(k in wvcore.RETIRED for k in ("size_class", "lighting", "weather", "environment", "ground_wet", "ramp_deploy", "ramp_reasons"))
+      and "pediatric_size" in wvcore.RETIRED_OPTS["size_class"]
       and not any("pediatric" in o for o in wvcore.FIELD_OPTS["chair_subtype"]))
-check("schema: ramp_deploy options", wvcore.FIELD_OPTS["ramp_deploy"] == ["safe", "unsafe", "not_needed", "unknown"])
-check("schema: ramp_reasons is multi-select", "ramp_reasons" in wvcore.MULTI_FIELDS)
+check("schema: retired ramp_deploy options kept for historical reads", wvcore.RETIRED_OPTS["ramp_deploy"] == ["safe", "unsafe", "not_needed", "unknown"])
+check("schema: ramp_reasons no longer a live multi field", "ramp_reasons" not in wvcore.MULTI_FIELDS)
 check("options_for: manual list", "standard_folding" in wvcore.options_for("chair_subtype", "manual") and "power_standard" not in wvcore.options_for("chair_subtype", "manual"))
 check("options_for: negative_camber is a manual subtype only",
       "negative_camber" in wvcore.options_for("chair_subtype", "manual")
@@ -50,17 +51,16 @@ check("options_for: powered list", "power_tilt_recline" in wvcore.options_for("c
 check("dep_ok: subtype hidden for other_aid", not wvcore.dep_ok("chair_subtype", {"device_type": "other_aid"}))
 check("dep_ok: subtype shown for manual (from context)", wvcore.dep_ok("chair_subtype", {}, {"device_type": "manual"}))
 check("dep_ok: drive_position only for powered", not wvcore.dep_ok("drive_position", {"device_type": "manual"}) and wvcore.dep_ok("drive_position", {"device_type": "powered"}))
-check("dep_ok: ramp reasons need unsafe/not_needed", not wvcore.dep_ok("ramp_reasons", {"ramp_deploy": "safe"}) and wvcore.dep_ok("ramp_reasons", {"ramp_deploy": "unsafe"}))
-ok_e, _ = wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", ["obstruction", "insufficient_space"]))
-check("validate: multi list accepted", ok_e is not None)
-check("validate: multi plain string refused", wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", "obstruction"))[0] is None)
-check("validate: 'unknown' not combinable", wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", ["unknown", "obstruction"]))[0] is None)
-check("validate: unknown reason refused", wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", ["aliens"]))[0] is None)
+ok_e, why_e = wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", ["obstruction", "insufficient_space"]), allow_retired=True)
+check("validate: historical ramp_reasons accepted when allow_retired", ok_e is not None, why_e)
+check("validate: new ramp_reasons write refused", wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", ["obstruction"]))[0] is None)
+check("validate: historical bad ramp reason still refused", wvcore.validate(ev("wv_000001", "alice", "ramp_reasons", ["aliens"]), allow_retired=True)[0] is None)
 check("hval: list -> sorted 'a+b'", wvcore.hval(["obstruction", "insufficient_space"]) == "insufficient_space+obstruction")
 
 # ---------------------------------------------------------------- 2. filter parsing + matching
-flt, basis = wvcore.parse_filter("device_type:manual,powered;weather:rain;basis:model")
-check("parse_filter: OR within, AND across, basis", flt == {"device_type": {"manual", "powered"}, "weather": {"rain"}} and basis == "model")
+flt, basis = wvcore.parse_filter("device_type:manual,powered;device_use_case:standard;basis:model")
+check("parse_filter: OR within, AND across, basis", flt == {"device_type": {"manual", "powered"}, "device_use_case": {"standard"}} and basis == "model")
+check("parse_filter: retired weather key refused", raises(lambda: wvcore.parse_filter("weather:rain")))
 check("format_filter round-trip", wvcore.parse_filter(wvcore.format_filter(flt, basis)) == (flt, basis))
 check("parse_filter: unknown key refused", raises(lambda: wvcore.parse_filter("colour:red")))
 check("parse_filter: unknown value refused", raises(lambda: wvcore.parse_filter("device_type:hovercraft")))
@@ -97,7 +97,8 @@ try:
     with TestClient(main.app) as cl:
         check("server: events accepted", cl.post("/api/events", json={"events": E10}).status_code == 200)
         k = cl.get("/api/filter/keys").json()
-        check("server: /api/filter/keys lists subtype + ramp keys", "chair_subtype" in k["keys"] and "ramp_reasons" in k["keys"] and "synthetic" in k["pseudo"])
+        check("server: /api/filter/keys lists subtype + device_use_case, not retired ramp keys",
+      "chair_subtype" in k["keys"] and "device_use_case" in k["keys"] and "ramp_reasons" not in k["keys"] and "synthetic" in k["pseudo"])
         g = cl.get("/api/filter", params={"q": "device_type:powered"}).json()
         check("server: GET /api/filter", "wv_000002" in g["ids"] and "wv_000001" not in g["ids"], json.dumps(g)[:200])
         p = cl.post("/api/filter", json={"q": "device_type:manual", "ids": ["wv_000002", "wv_000001"]}).json()
@@ -129,7 +130,7 @@ def unit(v): return v / np.linalg.norm(v)
 D = 16; E = np.stack([unit(rng.normal(size=D)) for _ in range(4)]).astype("float32")
 bank = {f: {o: unit(rng.normal(size=D)).astype("float32") for o in AA.P_V11[f]} for f in AA.P_V11}   # same options as the real prompt bank
 bank["_parent"] = {"manual": E[0], "powered": E[1]}
-bank["_multi_ramp_reasons"] = {o: (unit(rng.normal(size=D)).astype("float32"), unit(rng.normal(size=D)).astype("float32")) for o in wvcore.FIELD_OPTS["ramp_reasons"] if o != "unknown"}
+# schema v6: no live ramp_reasons suggestions
 S = AA.score_attr(E, bank)
 cs = [s["suggestions"].get("chair_subtype") for s in S]
 check("auto prompts include negative_camber (attr-v4)", "negative_camber" in AA.P_V11["chair_subtype"] and AA.ATTR_PROMPT_VERSION == "attr-v4")
@@ -185,7 +186,7 @@ recs = [json.loads(l) for l in open(vf, encoding="utf-8")] if vf.exists() else [
 check("assist_annotate: VLM hints in an _attr- file", rc == 0 and len(recs) == 2 and wvcore.is_attr_tag(recs[0]["model_tag"]) and wvcore.TAG_RE.match(recs[0]["model_tag"]))
 sg = recs[0]["suggestions"] if recs else {}
 check("assist_annotate: subtype from the parent list, unanswerable fields omitted",
-      sg.get("chair_subtype", {}).get("value") == "standard_folding" and sg.get("environment", {}).get("value") == "sidewalk" and "weather" not in sg, json.dumps(sg))
+      sg.get("chair_subtype", {}).get("value") == "standard_folding" and "weather" not in sg, json.dumps(sg))
 check("assist_annotate: drive_position not asked for a manual chair", "drive_position" not in sg)
 meta = json.load(open(TMP / "aauto" / "fake-vlm_attr-vlm-v1.meta.json", encoding="utf-8")) if vf.exists() else {}
 check("assist_annotate: meta says never human annotation + model name", meta.get("never_counts_as_human_annotation") is True and meta.get("vlm", {}).get("model") == "fake/vlm")
@@ -231,7 +232,7 @@ check("synth: tagged synthetic, train-only, source train, leak group inherited",
       all(r["synthetic"] == "true" and r["split"] == "train" and r["source_image_id"] in ("wv_000101", "wv_000102")
           and r["leak_group"] == {"wv_000101": "g1", "wv_000102": "g2"}[r["source_image_id"]] for r in rows))
 check("synth: provenance (background license/url, transform, variant)", all(r["background_license"] == "CC0-1.0" and r["background_url"] and json.loads(r["transform_params"]).get("foot_y") and r["weather_variant"] for r in rows))
-check("synth: ramp judgement never inherited", all(r["ramp_deploy"] == "" and r["ramp_reasons"] == "" for r in rows))
+check("synth: retired scene/ramp labels not in output", all("ramp_deploy" not in r and "environment" not in r and "weather" not in r for r in rows))
 check("synth: ids never collide with real ids", all(int(r["image_id"][3:]) >= SY.FIRST_ID for r in rows))
 check("synth: no model-output column names", not [c for c in rows[0] if __import__("re").search(r"sugg|confid|prob|score|logit|emb|auto|pred", c.lower())])
 im0 = Image.open(OUT / rows[0]["file"]); check("synth: output has background size", im0.size == (320, 240))
@@ -251,8 +252,8 @@ check("check_leakage: assist scripts are label-free + model scripts pass", not [
 CL.FAIL.clear()
 trows = [dict(r) for r in man]
 syn = TM.read_synthetic(str(OUT / "synthetic_manifest.csv"), trows)
-check("train_multitask.read_synthetic: rows load as train with image path + scene labels from the background",
-      len(syn) == 6 and all(s["split"] == "train" and s["_path"].endswith(".jpg") and s["environment"] == "curbside" for s in syn))
+check("train_multitask.read_synthetic: rows load as train with image path + scene from the background",
+      len(syn) == 6 and all(s["split"] == "train" and s["_path"].endswith(".jpg") and s.get("scene") == "curbside" for s in syn))
 check("train_multitask.read_synthetic: refuses val synthetic rows", raises(lambda: TM.read_synthetic(str(SD / "bad.csv"), trows)))
 
 # ---------------------------------------------------------------- 8. docs + gitignore
@@ -260,7 +261,7 @@ for d in ("FILTERING_v1.1.md", "SYNTHETIC_AUGMENTATION_v1.1.md", "RAMP_LABELS_v1
     check(f"docs/{d} exists", (ROOT / "docs" / d).exists())
 dd = (ROOT / "docs" / "DATA_DICTIONARY_v1.1.md").read_text(encoding="utf-8")
 check("data dictionary documents subtypes + ramp + securement + attr-v4",
-      "chair_subtype" in dd and "ramp_deploy" in dd and "securement_hardware" in dd and "attr-v4" in dd and "adds **no** wheelchair subtype" not in dd)
+      "chair_subtype" in dd and "device_use_case" in dd and "securement_hardware" in dd and "attr-v4" in dd and "Schema v6" in dd)
 check("data dictionary lists negative_camber in the manual subtypes", "negative_camber" in dd)
 ign = [subprocess.run(["git", "check-ignore", "-q", "--no-index", p], cwd=ROOT).returncode == 0
        for p in ("var/synthetic/images/wv_800001.jpg", "var/assist/x/masks/a.png", "data/backgrounds/a.jpg", "x/model.safetensors", "y.pt", "weights/z.bin")]

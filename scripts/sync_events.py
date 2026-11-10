@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Bridge between the server's SQLite event log and git.
   export : append server events to annotations/events/<annotator>.jsonl (append-only, dedup by uuid, server order)
   import : load every annotations/events/*.jsonl into the server DB (INSERT OR IGNORE by uuid -> idempotent)
@@ -56,7 +56,7 @@ def import_(db, evdir):
         for fn in sorted(glob.glob(os.path.join(evdir, "*.jsonl"))):
             for line in open(fn, encoding="utf-8"):
                 if not line.strip(): continue
-                e, why = wvcore.validate(json.loads(line))
+                e, why = wvcore.validate(json.loads(line), allow_retired=True)
                 if not e or e["annotator"] != Path(fn).stem: bad += 1; continue
                 pv = wvcore.prov_of(e)
                 cur = c.execute("INSERT OR IGNORE INTO events(uuid,image_id,annotator,field,value,ts,device_id,kind,received_at,prov) VALUES(?,?,?,?,?,?,?,?,?,?)",
