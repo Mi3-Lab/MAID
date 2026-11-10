@@ -667,12 +667,21 @@ async function start(name) {
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
 }
 (async () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v10').catch(e => console.warn('sw', e));
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v11').catch(e => console.warn('sw', e));
   setNet();
   S.device = await kvGet('device_id'); if (!S.device) { S.device = uuid(); await kvSet('device_id', S.device); }
-  try { const r = await fetch('/api/schema'); S.schema = await r.json(); await kvSet('schema', S.schema); }
-  catch (e) { S.schema = await kvGet('schema'); }
-  if (!S.schema) { document.body.innerHTML = '<p style="padding:20px">First load needs a connection.</p>'; return; }
+  const schemaOk = s => !!(s && Array.isArray(s.fields) && (s.fields.find(f => f.name === 'device_type')?.options || []).includes('manual') && (s.fields.find(f => f.name === 'device_type')?.options || []).includes('powered'));
+  try {
+    const r = await fetch('/api/schema', { cache: 'no-store' });
+    if (!r.ok) throw new Error('schema ' + r.status);
+    const s = await r.json();
+    if (!schemaOk(s)) throw new Error('schema missing device_type manual/powered');
+    S.schema = s; await kvSet('schema', S.schema);
+  } catch (e) {
+    const cached = await kvGet('schema');
+    S.schema = schemaOk(cached) ? cached : S.schema;
+  }
+  if (!schemaOk(S.schema)) { document.body.innerHTML = '<p style="padding:20px">First load needs a connection (or a hard refresh: Ctrl+Shift+R) so the schema with device_type manual/powered can be fetched.</p>'; return; }
   const name = await kvGet('annotator');
   if (name) start(name); else { $('login').hidden = false; $('name').focus(); }
   const go = () => { const n = slug($('name').value); if (n) start(n); };

@@ -115,10 +115,18 @@ with TestClient(main.app) as cl:
     check("app.js does not render a lighting= or read-only core-label summary line", "lighting=" not in js and "v1.0 labels:" not in js)
     sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")
     check("service worker is network-first and not ignoreSearch",
-          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v10" in sw)
-    check("index.html cache-busts app.js", "?v=8" in html or "?v=8" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
+          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v11" in sw)
+    check("index.html cache-busts app.js", "?v=9" in html or "?v=9" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
     check("no live securement row in UI help or field list",
           "docking bracket / tiedown" not in html.lower() and "securement_hardware" not in [f["name"] for f in cl.get("/api/schema").json()["fields"]])
+    sch = cl.get("/api/schema").json()
+    dt = next(f for f in sch["fields"] if f["name"] == "device_type")
+    check("API/live schema keeps manual and powered on device_type",
+          {"manual", "powered", "other_aid", "ambiguous", "unclear"} <= set(dt["options"]), str(dt.get("options")))
+    check("chair_subtype still lists negative_camber for manual chairs",
+          "negative_camber" in (next(f for f in sch["fields"] if f["name"] == "chair_subtype").get("options_by_parent") or {}).get("manual", []))
+    check("app.js rejects a cached schema that dropped manual/powered",
+          "schema missing device_type manual/powered" in js and "schemaOk" in js)
     sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")
 
 n = sum(ok for _, ok in results)
