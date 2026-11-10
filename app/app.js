@@ -465,7 +465,7 @@ $('jump').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventD
 
 async function openImage(id) {
   id = (id || '').trim().toLowerCase();
-  if (!/^wv_\d{6}$/.test(id)) { alert('Enter an image id like wv_000123'); return; }
+  if (!/^(wv_\d{6}|pmma_\d{6})$/.test(id)) { alert('Enter an image id like wv_000123'); return; }
   try {
     const h = await (await fetch('/api/images/' + encodeURIComponent(id) + '/history')).json();
     if (h.blocked) { alert(id + ' is blocked/removed; open it from Removed if you need to restore it.'); return; }
@@ -665,9 +665,11 @@ async function start(name) {
   if (m === 'review' || m === 'attr') await setMode(m); else { await loadImages(); await applyFilter(false); }
   updQueue();
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
+  const want = (new URLSearchParams(location.search).get('image') || ((location.hash.match(/(?:^|[&#])image=([^&]+)/) || [])[1] || '')).trim();
+  if (want) await openImage(want);
 }
 (async () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v11').catch(e => console.warn('sw', e));
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v12').catch(e => console.warn('sw', e));
   setNet();
   S.device = await kvGet('device_id'); if (!S.device) { S.device = uuid(); await kvSet('device_id', S.device); }
   const schemaOk = s => !!(s && Array.isArray(s.fields) && (s.fields.find(f => f.name === 'device_type')?.options || []).includes('manual') && (s.fields.find(f => f.name === 'device_type')?.options || []).includes('powered'));

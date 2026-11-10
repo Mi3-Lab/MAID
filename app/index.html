@@ -3,7 +3,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WheelView Annotate</title>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#1d4e89">
-<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css?v=9">
+<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css?v=10">
 </head><body>
 <header>
   <b>WheelView Annotate</b>
@@ -24,6 +24,7 @@
   <label class="muted" title="Open any image by id to edit (writes a correction event)">Go to <input id="jump" placeholder="wv_000123" size="10" autocomplete="off"></label>
   <button id="btnJump" title="Open this image for editing">Open</button>
   <button id="btnList">My images</button>
+  <a href="/ai" title="Live AI job status and verification of AI labels">AI review</a>
   <a href="/adjudicate.html">Adjudicate</a>
   <a href="/removed.html" title="Review images the removal rules took out; restore any that are OK">Removed</a>
   <button id="btnHelp">?</button>
@@ -88,5 +89,5 @@ that they were model-suggested; the model itself never counts as an annotator an
 Queue order (review): lowest model confidence first (default), untyped wheelchairs first, or random; images that already have one
 human label are offered first so every image gets two independent people.</p>
 <button onclick="this.closest('dialog').close()">close</button></dialog>
-<script src="/app.js?v=9"></script>
+<script src="/app.js?v=10"></script>
 </body></html>

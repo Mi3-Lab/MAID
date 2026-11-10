@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WheelView — AI review</title>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#1d4e89">
+<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css?v=10">
+</head><body class="ai-page">
+<header>
+  <b>WheelView AI review</b>
+  <span id="jobpill" class="pill">no job</span>
+  <span class="grow"></span>
+  <a href="/" title="Open the normal annotator">Annotate</a>
+  <a href="/review_assistant.html">Assistant review</a>
+  <a href="/adjudicate.html">Adjudicate</a>
+</header>
+<main class="ai-wrap">
+  <section class="ai-card" id="statuscard">
+    <h2>Live job</h2>
+    <div id="statusbody" class="muted">Loading…</div>
+    <div class="ai-bar" hidden id="barwrap"><div id="bar"></div></div>
+    <pre id="logtail" class="ai-log" hidden></pre>
+  </section>
+  <section class="ai-card" id="metricscard">
+    <h2>Summary</h2>
+    <div id="metrics">Loading…</div>
+  </section>
+  <section class="ai-card" id="tablecard">
+    <h2>AI labels</h2>
+    <p class="muted">Read-only. Opening an image in the annotator writes only append-only <b>human</b> corrections; AI votes are never stored as human labels. Majority rule: each human labeler has one vote; the 3-model consensus is one vote (<code>ai</code>). Two agreeing voters that form a majority (ai+human or human+human) proceed. An AI-vs-single-human disagreement is a tie and goes to human review.</p>
+    <div class="ai-filters" id="filters"></div>
+    <div id="tabinfo" class="muted"></div>
+    <div class="ai-table-wrap">
+      <table class="ai-table" id="tbl"><thead></thead><tbody></tbody></table>
+    </div>
+    <div class="ai-pager" id="pager"></div>
+  </section>
+</main>
+<script src="/ai.js?v=10"></script>
+</body></html>

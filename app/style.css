@@ -40,3 +40,35 @@ main{display:flex;gap:12px;padding:10px;height:calc(100vh - 44px)}
   .lbl{width:100%}.opt{padding:6px 10px;font-size:14px}.chip{padding:8px 12px;font-size:14px}
   #fpanel{top:0;width:100vw}header{gap:4px}header button{padding:4px 7px}
 }
+/* AI review page (/ai) */
+body.ai-page{background:#f4f6f9}
+.ai-wrap{padding:12px 16px;display:flex;flex-direction:column;gap:12px;max-width:1600px;margin:0 auto}
+.ai-card{background:#fff;border-radius:8px;padding:12px 16px;box-shadow:0 1px 3px #0001}
+.ai-card h2{margin:0 0 8px;font-size:16px}
+.ai-card h3{margin:12px 0 6px;font-size:14px}
+.ai-bar{height:10px;background:#e3e6ea;border-radius:6px;overflow:hidden;margin:8px 0}
+.ai-bar > div{height:100%;width:0;background:#1d4e89;transition:width .3s}
+.ai-bar > div.ok{background:#27ae60}
+.ai-bar > div.err{background:#c0392b}
+.ai-log{max-height:160px;overflow:auto;background:#1b1f24;color:#e8edf2;padding:8px;border-radius:6px;font:11px/1.35 ui-monospace,Menlo,monospace}
+.ai-metrics{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.ai-metric{flex:1 1 200px;background:#f4f6f9;border-radius:6px;padding:8px 10px;font-size:13px}
+.ai-metric-h{font-weight:700;font-size:12px;margin-bottom:4px}
+.ai-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.ai-filters label{font-size:12px}
+.ai-filters select,.ai-filters input{font:inherit;margin-left:4px}
+.ai-table-wrap{overflow:auto;max-height:70vh}
+.ai-table{border-collapse:collapse;width:100%;background:#fff;font-size:12px}
+.ai-table th,.ai-table td{padding:4px 6px;border-bottom:1px solid #e3e6ea;text-align:left;vertical-align:top}
+.ai-table th{position:sticky;top:0;background:#f4f6f9;z-index:1}
+.ai-thumb img{width:64px;height:64px;object-fit:cover;background:#222;border-radius:4px}
+.ai-badge{display:inline-block;padding:1px 6px;border-radius:10px;font-size:11px;background:#ddd}
+.ai-badge-majority_pass,.ai-badge-pass,.ai-badge-confirmed{background:#e6f5ea;color:#1e7d3a}
+.ai-badge-tie,.ai-badge-model_disputed{background:#fff4e5;color:#b35c00}
+.ai-badge-human_conflict{background:#f3e8f8;color:#8e44ad}
+.ai-badge-unverifiable{background:#eee;color:#555}
+.ai-vote{display:inline-block;margin:1px;padding:1px 6px;border-radius:10px;font-size:11px}
+.ai-vote-human{background:#e3edf9;color:#1d4e89}
+.ai-vote-ai{background:#fff4e5;color:#b35c00}
+.ai-pager{display:flex;gap:8px;align-items:center;margin-top:8px}
+.ai-open{white-space:nowrap}

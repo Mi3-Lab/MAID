@@ -15,6 +15,7 @@ def _load_auto_consensus():
     spec = _ilu.spec_from_file_location("wv_auto_consensus", path)
     mod = _ilu.module_from_spec(spec); spec.loader.exec_module(mod); return mod
 AC = _load_auto_consensus()
+import ai_review as AI
 
 ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = Path(os.environ.get("WV_DB", ROOT / "var" / "wheelview.db"))
@@ -261,7 +262,7 @@ def health():
     a = auto_state()
     out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
            "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
-           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
+           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved", "ai_review"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
            "contributed": sum(1 for r in CANDIDATES.values() if r.get("source") == "contributed")}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -888,6 +889,33 @@ def _shell(name, media, extra=None):
     hdrs = {"Cache-Control": "no-store"}
     if extra: hdrs.update(extra)
     return FileResponse(p, media_type=media, headers=hdrs)
+
+@app.get("/api/ai/status")
+def api_ai_status(n: int = 40):
+    """Live AI job progress (read-only)."""
+    return AI.status(log_n=n)
+
+@app.get("/api/ai/summary")
+def api_ai_summary():
+    """Verification + 3-model consensus metrics (read-only)."""
+    return AI.summary()
+
+@app.get("/api/ai/labels")
+def api_ai_labels(verdict: str = "", field: str = "", value: str = "", source: str = "",
+                  q: str = "", action: str = "", basis: str = "", offset: int = 0, limit: int = 50):
+    """Filterable AI-label verification table (read-only; never writes events)."""
+    return AI.query_labels(verdict=verdict, field=field, value=value, source=source,
+                           q=q, action=action, basis=basis, offset=offset, limit=limit)
+
+@app.get("/ai")
+@app.get("/ai.html")
+def ai_page():
+    return _shell("ai.html", "text/html")
+
+@app.get("/ai.js")
+def ai_js():
+    return _shell("ai.js", "application/javascript")
+
 @app.get("/sw.js")
 def sw_js():
     return _shell("sw.js", "application/javascript", {"Service-Worker-Allowed": "/"})
