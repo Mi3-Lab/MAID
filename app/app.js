@@ -66,10 +66,10 @@ const val = (img, f) => {
   if (im?.context && im.context[f] != null && im.context[f] !== '') return im.context[f];
   return S.mine[img]?.[f]?.v;
 };
-// v1.0 fields (label/review modes, unchanged) vs v1.1 attribute fields (Attributes pass only; separate done flag).
-// Dependent fields (schema show_when, e.g. chair_subtype for manual/powered) appear only when their parent applies;
-// fields with also_in_v10_pass (chair subtype, drive wheels) also appear, optional, right after device_type in the
-// normal pass so picking "manual" offers the subtypes at once. They are v1.1 fields (counted with _status_v11 only).
+// Label/review: v1.0 fields (+ device_use_case and also_in_v10_pass extras inserted by FL).
+// Attributes mode: EVERY live schema field is an editable button row (device_use_case, then device_type,
+// occupied, propulsion, occlusion, viewpoint, setting, then control/subtype/drive/securement). Never a
+// read-only summary of core labels. Dependent fields still honor show_when.
 const MODEF = () => S.mode === 'attr' ? S.schema.fields.slice() : S.schema.fields.filter(f => !f.since);
 function parentVal(im, p) {   // {v, model}: human value (mine, then v1.0 context) or, failing that, the model's guess
   const id = im.image_id, mv = val(id, p);
@@ -307,8 +307,8 @@ function render() {
   $('pos').innerHTML = `${S.mode === 'review' ? '<span class="tag ai">REVIEW</span> ' : ''}${S.mode === 'attr' ? '<span class="tag ai">ATTRIBUTES v1.1</span> ' : ''}${S.idx + 1} / ${S.images.length} · ${id} ${done ? '<span class="tag done">done</span>' : ''} ${val(id, 'exclude') ? '<span class="tag excl">excluded</span>' : ''}`;
   const risks = A ? (A.flags || []).filter(k => RISK[k]) : [];
   $('aibanner').hidden = !A && S.mode !== 'attr';
-  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — latest saved values are pre-selected and can be changed (saved as append-only corrections; history is never rewritten). Pick <b>unknown</b> when you cannot tell. ` +
-    (A11 ? `Orange = machine hint (${A11.model_tag}) with its confidence; it is never saved unless you click it. ` : 'No machine hints for this image. ') +
+  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — Device use case, device type, occupied, propulsion, occlusion, viewpoint, setting, control, subtype, and securement are <b>editable button rows</b>, pre-selected from the latest saved values. Change any of them and press Done: a correction is appended and wins globally (earlier events are kept). Pick <b>unknown</b> when you cannot tell. ` +
+    (A11 ? `Orange = machine hint (${A11.model_tag}) with its confidence; it is never saved unless you click it. ` : '') +
     `<kbd>Enter</kbd> = done once every required row has a value (including Device use case on new saves).`;
   if (A) $('aibanner').innerHTML = `<b>Machine suggestions</b> (${A.model_tag}) — orange = model's guess with its confidence; <kbd>a</kbd>/<kbd>Enter</kbd> confirms all, number keys fix a field.` +
     (risks.length ? `<div class="risk">⚠ screening: ${risks.map(k => `${RISK[k]} (${pct(A.screening[k])})`).join(', ')} — check it; exclude with <kbd>e</kbd> if true.${S.armed === id ? ' <b>Press a again to confirm anyway.</b>' : ''}</div>` : '') +
@@ -338,9 +338,11 @@ function render() {
   const h = S.mine[id] || {}; const edits = Object.values(h).reduce((a, x) => a + x.n, 0);
   if (S.attrMsg === id) { $('hist').textContent = 'Every attribute row needs a value before Done (use "unknown" when you cannot tell).'; S.attrMsg = null; }
   else if (S.editAny && S.history?.image_id === id) {
-    $('hist').textContent = (S.editAny ? 'EDIT ANY ? corrections append; latest wins.\n' : '') + historyText(id);
-  } else
-  $('hist').textContent = edits ? `${edits} edit event(s) by you on this image; any field can be changed — the latest edit wins for you only.` : '';
+    $('hist').textContent = (S.editAny ? 'EDIT ANY: corrections append; a correction by anyone wins globally.\n' : '') + historyText(id);
+  } else if (S.mode === 'attr' || edits) {
+    $('hist').textContent = (edits ? `${edits} edit event(s) by you on this image. ` : '') +
+      'Any field can be changed — a correction by anyone wins globally (append-only; earlier events are kept).';
+  } else $('hist').textContent = '';
   drawBoxes();
 }
 function drawBoxes() {
@@ -411,7 +413,7 @@ async function acceptBoxes() {
   const A = S.auto[cur()?.image_id]; if (!A?.boxes?.length) return;
   emit('bbox', A.boxes.map(b => b.box));
 }
-async function doneAttr() {   // Attributes pass: no auto-fill, every v1.1 row must be chosen explicitly
+async function doneAttr() {   // Attributes pass: no auto-fill; every visible row (core + v1.1) must have a value
   const im = cur(); if (!im) return; const id = im.image_id;
   const miss = rows().findIndex(f => !hasVal(val(id, f)));
   if (miss >= 0 && !val(id, 'exclude')) { S.row = miss; S.attrMsg = id; render(); return; }
@@ -542,7 +544,7 @@ document.addEventListener('keydown', e => {
 });
 
 // ---------- filter ----------
-// Same grammar as server/wvcore.parse_filter and scripts/filter_images.py: 'device_type:manual,powered;weather:rain;basis:either'.
+// Same grammar as server/wvcore.parse_filter and scripts/filter_images.py: 'device_type:manual,powered;device_use_case:standard;basis:either'.
 // OR within a key, AND across keys. The match set for the cached queue comes from POST /api/filter (all human labels,
 // approvals, splits, synthetic/measurement facts); offline the app falls back to a local check over YOUR labels, the
 // v1.0 context and cached machine suggestions (approximate; status/split/synthetic/size keys are then ignored).
@@ -613,7 +615,7 @@ async function fCounts() {   // dataset-wide counts for the panel (online only)
     S.fcounts = j.counts; S.fmcounts = j.match_counts; S.ftotal = j.total; S.fall = j.count;
   } catch (e) { console.warn('filter counts', e); }
 }
-const FLAB = { split: 'Split', approval: 'Approval (v1.0)', status_v11: 'Status v1.1', synthetic: 'Synthetic', size_basis: 'Size: measured / estimate', label_source: 'Label source', excluded: 'Excluded' };
+const FLAB = { split: 'Split', approval: 'Approval (v1.0)', status_v11: 'Status v1.1', synthetic: 'Synthetic', label_source: 'Label source', excluded: 'Excluded' };
 function fRender() {
   const n = Object.values(S.filter).reduce((a, v) => a + (v?.length || 0), 0);
   $('btnFilter').textContent = n ? `Filter (${n})` : 'Filter'; $('btnFilter').classList.toggle('primary', n > 0);
@@ -658,7 +660,7 @@ async function start(name) {
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
 }
 (async () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(e => console.warn('sw', e));
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v8').catch(e => console.warn('sw', e));
   setNet();
   S.device = await kvGet('device_id'); if (!S.device) { S.device = uuid(); await kvSet('device_id', S.device); }
   try { const r = await fetch('/api/schema'); S.schema = await r.json(); await kvSet('schema', S.schema); }

@@ -16,6 +16,7 @@ def ev(img, ann, field, value, kind="label", **kw):
          "ts": "2026-11-08T12:00:00.000Z", "device_id": "t"}; e.update(kw); return e
 ok, why = wvcore.validate(ev("wv_000001", "samir", "device_type", "manual", kind="correction", previous="powered", previous_by="shaaz"))
 check("validate correction with previous", ok is not None, why)
+check("previous_by may list consensus annotators with +", wvcore.validate({"uuid": str(__import__("uuid").uuid4()), "image_id": "wv_000001", "annotator": "carol", "field": "device_type", "value": "powered", "kind": "correction", "previous": "manual", "previous_by": "devin+samir+shaaz", "ts": "2026-11-09T20:00:00.000Z", "device_id": "t"})[0] is not None)
 ok, why = wvcore.validate(ev("wv_000001", "samir", "device_type", "manual", kind="correction", source="auto_review", model_tag="x"))
 check("correction refuses model provenance", ok is None)
 per, adj = wvcore.fold([

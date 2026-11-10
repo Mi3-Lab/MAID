@@ -69,7 +69,7 @@ vehicle ramp here, and is someone actually waiting? It is **not** a safety asses
 real deployment. See `docs/RAMP_LABELS_v1.1.md`.
 
 Rules for annotators: choose `unknown` when you can't tell. Machine suggestions are shown in orange and never saved,
-so a human value is only recorded when a human sets it. v1.0 labels appear as read-only context and are never changed.
+so a human value is only recorded when a human sets it. Core v1.0 labels (device type, occupied, and the other live fields) are editable in the Attributes pass; a correction is appended and wins globally.
 
 Consensus (`derived/labels_v11.csv`, `status_v11`): `final` when the done annotators agree on every field (or an
 adjudication resolves it), `needs_third_annotator` on disagreement, `in_progress` with fewer than 2 done.
@@ -97,7 +97,7 @@ generated_at`, inherited chair labels, and empty `ramp_deploy/ramp_reasons`. The
 metrics, never in a release. See `docs/SYNTHETIC_AUGMENTATION_v1.1.md`.
 
 ## 3b. Filtering
-Any field above (plus split, approval, status_v11, synthetic, size_basis, label_source, excluded) can be filtered in the
+Any live field above (plus split, approval, status_v11, synthetic, label_source, excluded) can be filtered in the
 app, the server (`/api/filter`) and `scripts/filter_images.py`. See `docs/FILTERING_v1.1.md`.
 
 ## 4. Wheelchair size: three separate layers

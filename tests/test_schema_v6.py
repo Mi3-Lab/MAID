@@ -106,6 +106,16 @@ with TestClient(main.app) as cl:
     html = cl.get("/").text
     check("UI help no longer offers weather/ramp as current labels in the Attributes shortcut title",
           "wet ground" not in html and "Device use case" in html)
+    js = (ROOT / "app" / "app.js").read_text(encoding="utf-8")
+    check("attr mode MODEF uses every live schema field (editable rows, not a read-only summary)",
+          "S.mode === 'attr' ? S.schema.fields.slice()" in js and "v1.0 labels:" not in js)
+
+    check("app.js has no 'for you only' latest-wins wording", "for you only" not in js and "wins globally" in js)
+    check("app.js does not render a lighting= or read-only core-label summary line", "lighting=" not in js and "v1.0 labels:" not in js)
+    sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")
+    check("service worker is network-first and not ignoreSearch",
+          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v8" in sw)
+    check("index.html cache-busts app.js", "?v=6.1" in html or "?v=6.1" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
 
 n = sum(ok for _, ok in results)
 print(f"\n{n}/{len(results)} passed; temp {TMP}")

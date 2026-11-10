@@ -842,4 +842,30 @@ def img(image_id: str):
     except Exception as e: raise HTTPException(502, f"proxy error: {e}")
 
 # PWA (served last so /api, /img, /export win). sw.js must be served from / for full scope.
+# Shell JS/HTML/CSS are no-store so a service-worker or browser cache cannot pin a stale annotator UI.
+APP_DIR = Path(__file__).resolve().parent.parent / "app"
+def _shell(name, media, extra=None):
+    p = APP_DIR / name
+    if not p.is_file():
+        p = ROOT / "app" / name
+    if not p.is_file():
+        raise HTTPException(404, f"{name} not found")
+    hdrs = {"Cache-Control": "no-store"}
+    if extra: hdrs.update(extra)
+    return FileResponse(p, media_type=media, headers=hdrs)
+@app.get("/sw.js")
+def sw_js():
+    return _shell("sw.js", "application/javascript", {"Service-Worker-Allowed": "/"})
+@app.get("/app.js")
+def app_js():
+    return _shell("app.js", "application/javascript")
+@app.get("/style.css")
+def app_css():
+    return _shell("style.css", "text/css")
+@app.get("/")
+def app_index():
+    return _shell("index.html", "text/html")
+@app.get("/index.html")
+def app_index_html():
+    return _shell("index.html", "text/html")
 app.mount("/", StaticFiles(directory=ROOT / "app", html=True), name="app")

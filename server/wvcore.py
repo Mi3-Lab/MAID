@@ -166,7 +166,12 @@ def validate(ev, allow_retired=False):
             else: return None, "bad previous"
             e["previous"] = pv
         if pb is not None:
-            if not isinstance(pb, str) or (pb and slug(pb) != pb and pb != "adj" and not pb.startswith("adj:")): return None, "bad previous_by"
+            # previous_by may be one slug, several slugs joined with + or comma (a consensus), adj, or adj:...
+            ok_pb = isinstance(pb, str) and (
+                (not pb) or pb in ("adj", "corr") or pb.startswith("adj:") or slug(pb) == pb
+                or (len(pb) <= 200 and all(slug(x) == x for x in re.split(r"[+,]", pb) if x))
+            )
+            if not ok_pb: return None, "bad previous_by"
             e["previous_by"] = pb
         if ev.get("source") is not None or ev.get("model_tag") is not None: return None, "model provenance not on corrections"
         return e, None
