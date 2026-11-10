@@ -26,7 +26,7 @@ import wvcore, assist_models as AM
 
 VLM_PROMPT_VERSION = "vlm-v1"
 CAPTION_SKIP = {"chair_subtype", "drive_position"}   # a caption cannot answer these reliably (need VQA)
-VLM_FIELDS = [f for f in ("device_use_case", "control", "chair_subtype", "drive_position", "securement_hardware") if f in wvcore.FIELD_OPTS]
+VLM_FIELDS = [f for f in ("device_use_case", "control", "chair_subtype", "drive_position") if f in wvcore.FIELD_OPTS]
 
 def now(): return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 def sha1(p): return hashlib.sha1(open(p, "rb").read()).hexdigest()

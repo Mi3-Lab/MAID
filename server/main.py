@@ -257,7 +257,7 @@ def health():
     a = auto_state()
     out = {"ok": True, "events": n, "candidates": len(CANDIDATES), "blocked": len(blocked() & CANDIDATES.keys()),
            "restored": sum(1 for i, d in removal_decisions().items() if d[0] == "restore" and i in block_entries()), "images_ready": images_ready(),
-           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved", "securement_hardware"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
+           "features": ["review", "blur", "attr_v11", "contributed", "filter", "multi_fields", "assist_models", "auto_approved"], "blurred_images": sum(1 for _ in BLUR_DIR.glob("*.jpg")) if BLUR_DIR.exists() else 0, "auto": {"active": a["active"], "attr_active": a["attr_active"], "models": {t: len(r) for t, r in a["data"].items()}},
            "contributed": sum(1 for r in CANDIDATES.values() if r.get("source") == "contributed")}
     if HF: out["hf"] = {k: v for k, v in HF.state.items()}
     return out
@@ -413,6 +413,15 @@ def vehicle_securement(image_id: str, model_tag: str | None = None):
     human = st["fields"].get(field)
     a = auto_state(); prefer = [a["attr_active"]] * bool(a.get("attr_active")) + (a.get("attr_order") or [])
     sg = wvcore.merged_suggestions(image_id, a["data"], prefer).get(field) or {}
+    # Field is retired from the live annotator schema, so merged_suggestions (live FIELD_OPTS only) will not
+    # include it. Still read existing SigLIP / auto files so this research endpoint keeps working.
+    if not sg:
+        for tag in prefer:
+            rec = (a["data"].get(tag) or {}).get(image_id) or {}
+            cand = (rec.get("suggestions") or {}).get(field)
+            if isinstance(cand, dict) and cand.get("value") not in (None, "", []):
+                sg = {**cand, "model_tag": tag}
+                break
     if model_tag:
         rec = auto_rec(image_id, model_tag) or {}
         sg = (rec.get("suggestions") or {}).get(field) or sg
@@ -430,7 +439,7 @@ def vehicle_securement(image_id: str, model_tag: str | None = None):
         "defer_to_rider": defer,
         "guidance": (wvcore.SCHEMA.get("definitions") or {}).get(field, {}).get("_vehicle_guidance")
                     or "Defer to rider confirmation. Not a safety certification.",
-        "options": wvcore.FIELD_OPTS.get(field, []),
+        "options": wvcore.FIELD_OPTS.get(field) or wvcore.RETIRED_OPTS.get(field, []),
     }
 
 
@@ -483,7 +492,7 @@ def review_assign(annotator: str, n: int = Query(30, ge=1, le=200), order: str =
             "images": [image_meta(i) | {"auto": recs[i]} for i in out]}
 
 # ---------- v1.1 attribute pass (schema v6: core labels are editable here too) ----------
-CONTEXT_FIELDS = ("device_use_case", "device_type", "occupied", "propulsion", "occlusion", "setting", "viewpoint", "control", "chair_subtype", "drive_position", "securement_hardware")
+CONTEXT_FIELDS = ("device_use_case", "device_type", "occupied", "propulsion", "occlusion", "setting", "viewpoint", "control", "chair_subtype", "drive_position")
 def _release_ids():
     p = ROOT / "data" / "manifest_v2.csv"
     if not p.exists(): return set()

@@ -7,7 +7,7 @@ from itertools import combinations
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = json.load(open(os.path.join(HERE, "schema.json"), encoding="utf-8"))
 FIELD_OPTS = {f["name"]: f["options"] for f in SCHEMA["fields"]}   # current fields (v1.0 + v1.1): used for new-event validation
-# Schema v6 retired fields: kept only so historical events can be read. New writes are rejected; fold/export/filter ignore them.
+# Schema v6+ retired fields: kept only so historical events can be read. New writes are rejected; fold/export/filter ignore them.
 RETIRED_FIELDS = [f["name"] for f in SCHEMA.get("retired_fields", [])]
 RETIRED_OPTS = {f["name"]: f["options"] for f in SCHEMA.get("retired_fields", [])}
 RETIRED = set(RETIRED_FIELDS)
@@ -101,7 +101,7 @@ def slug(name):
 
 def validate(ev, allow_retired=False):
     """Return (normalised_event, None) or (None, reason).
-    Historical events for schema-v6 retired fields validate only when allow_retired=True
+    Historical events for retired fields validate only when allow_retired=True
     (derive / event-log import). New writes (the API) reject them."""
     try:
         e = {k: ev.get(k) for k in EVENT_KEYS}
@@ -123,7 +123,7 @@ def validate(ev, allow_retired=False):
         return e, None
     if f in RETIRED:
         if not allow_retired:
-            return None, f"retired field {f} (removed in schema v6)"
+            return None, f"retired field {f} (removed from the live schema)"
         opts = RETIRED_OPTS[f]
         if f in ("ramp_reasons",) or (isinstance(v, list)):
             if v is not None:

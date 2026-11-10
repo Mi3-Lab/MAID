@@ -16,7 +16,8 @@ def ev(img, ann, field, value, kind="label", **kw):
          "ts": kw.pop("ts", "2026-11-09T18:00:00.000Z"), "device_id": "t-" + ann}
     e.update(kw); return e
 
-check("schema version 6", wvcore.SCHEMA.get("version") == 6)
+check("schema version 7", wvcore.SCHEMA.get("version") == 7)
+check("securement_hardware is retired, not live", "securement_hardware" in wvcore.RETIRED and "securement_hardware" not in wvcore.FIELD_OPTS and "securement_hardware" not in wvcore.COMPARE_V11)
 check("device_use_case sits above device_type",
       [f["name"] for f in wvcore.SCHEMA["fields"][:2]] == ["device_use_case", "device_type"])
 check("device_use_case option labels present",
@@ -114,8 +115,11 @@ with TestClient(main.app) as cl:
     check("app.js does not render a lighting= or read-only core-label summary line", "lighting=" not in js and "v1.0 labels:" not in js)
     sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")
     check("service worker is network-first and not ignoreSearch",
-          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v8" in sw)
-    check("index.html cache-busts app.js", "?v=6.1" in html or "?v=6.1" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
+          "network-first" in sw.lower() and "ignoreSearch" not in sw and "wv-shell-v9" in sw)
+    check("index.html cache-busts app.js", "?v=7" in html or "?v=7" in (ROOT / "app" / "index.html").read_text(encoding="utf-8"))
+    check("no live securement row in UI help or field list",
+          "docking bracket / tiedown" not in html.lower() and "securement_hardware" not in [f["name"] for f in cl.get("/api/schema").json()["fields"]])
+    sw = (ROOT / "app" / "sw.js").read_text(encoding="utf-8")
 
 n = sum(ok for _, ok in results)
 print(f"\n{n}/{len(results)} passed; temp {TMP}")

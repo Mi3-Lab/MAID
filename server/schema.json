@@ -1,6 +1,6 @@
 {
- "version": 6,
- "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: chair_subtype=negative_camber. v5: adds securement_hardware (docking_bracket / tiedown_points / not_visible / unclear) — label only what is visible; not a safety certification. v6: retires lighting, environment, weather, ground_wet, size_class, ramp_deploy, ramp_reasons (kept only as retired_fields for reading historical events). Adds device_use_case above device_type.",
+ "version": 7,
+ "note": "Field values follow WheelView report Table 1 (device_type adds 'unclear', kept out of classification splits per Section 5). Single source of truth for UI, server validation and derivation. v4: chair_subtype=negative_camber. v5: adds securement_hardware (docking_bracket / tiedown_points / not_visible / unclear) — label only what is visible; not a safety certification. v6: retires lighting, environment, weather, ground_wet, size_class, ramp_deploy, ramp_reasons. v7: retires securement_hardware (kept only as retired_fields for reading historical events). Adds device_use_case above device_type.",
  "value_aliases": {
   "device_type": {
    "lookalike": "ambiguous"
@@ -164,19 +164,6 @@
     "rear_wheel",
     "unknown"
    ]
-  },
-  {
-   "name": "securement_hardware",
-   "label": "Securement hardware",
-   "since": "1.1",
-   "compare": "v11",
-   "options": [
-    "docking_bracket",
-    "tiedown_points",
-    "not_visible",
-    "unclear"
-   ],
-   "also_in_v10_pass": true
   }
  ],
  "exclude_reasons": [
@@ -234,7 +221,7 @@
  },
  "annotators_per_image": 2,
  "max_annotators_per_image": 3,
- "note_v11": "v1.1 fields (\"since\": \"1.1\") are labelled in the Attributes pass (own done flag _status_v11). Schema v6: the Attributes section also shows and lets any labeler edit the latest saved core labels (device_use_case, device_type, occupied, etc.); edits append correction events, never rewrite history. device_use_case is optional on already-labelled images (unset = not yet labelled) and required on new saves. They never change v1.0 release artifacts or frozen v1.0 splits. Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json definitions and docs/DATA_DICTIONARY_v1.1.md.",
+ "note_v11": "v1.1 fields (\"since\": \"1.1\") are labelled in the Attributes pass (own done flag _status_v11). Schema v6: the Attributes section also shows and lets any labeler edit the latest saved core labels (device_use_case, device_type, occupied, etc.); edits append correction events, never rewrite history. Schema v7: securement_hardware is retired from the annotator (historical events kept). device_use_case is optional on already-labelled images (unset = not yet labelled) and required on new saves. They never change v1.0 release artifacts or frozen v1.0 splits. Unlabelled (no event) is different from 'unknown'. Definitions: server/schema.json definitions and docs/DATA_DICTIONARY_v1.1.md.",
  "definitions": {
   "control": {
    "joystick": "a powered-chair joystick / hand control is visible (usually on an armrest)",
@@ -473,8 +460,23 @@
     "unknown"
    ],
    "retired_in": 6
+  },
+  {
+   "name": "securement_hardware",
+   "label": "Securement hardware",
+   "since": "1.1",
+   "compare": "v11",
+   "options": [
+    "docking_bracket",
+    "tiedown_points",
+    "not_visible",
+    "unclear"
+   ],
+   "also_in_v10_pass": true,
+   "retired_in": 7
   }
  ],
  "changelog_v6": "Schema v6 (2026-11-09): retire lighting (v1.0), environment, weather, ground_wet, size_class, ramp_deploy, and ramp_reasons from the annotator, validation of new events, label filter, derive/export, and training-split manifests. Historical events in annotations/events/*.jsonl are never rewritten; derive/export ignore those keys. Add device_use_case (specialized / standard / unknown) above device_type. v1.0 release artifacts stay frozen.",
- "retired_note": "retired_fields lists schema v6 removals. Readers may accept historical values (validate(..., allow_retired=True)); new writes are rejected. Fold/export/filter ignore them."
+ "changelog_v7": "Schema v7 (2026-11-09): retire securement_hardware from the annotator UI (normal and Attributes modes), new-event validation, label filter, derive/export, and training labels. Historical events stay append-only and readable with allow_retired=True; fold/export/filter ignore the key. The /api/vehicle/securement endpoint and existing SigLIP securement files are kept.",
+ "retired_note": "retired_fields lists schema v6/v7 removals. Readers may accept historical values (validate(..., allow_retired=True)); new writes are rejected. Fold/export/filter ignore them."
 }

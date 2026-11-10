@@ -7,7 +7,7 @@
   python scripts/train_multitask.py --synthetic var/synthetic/synthetic_manifest.csv --run mt_syn   # + synthetic TRAIN rows
 
 Tasks: device_type (v1.0 label) + every live single-choice v1.1 attribute (device_use_case, control, chair_subtype,
-drive_position, securement_hardware). chair_subtype / drive_position are dependent fields: rows
+drive_position). chair_subtype / drive_position are dependent fields: rows
 whose device_type is not manual / powered carry no value and contribute nothing to those heads.
 Model: one shared frozen image encoder (google/siglip2-so400m-patch14-224, as auto_annotate) and one head per task:
   * probe (default): per-task logistic regression on the frozen embedding, C chosen on val macro-F1.

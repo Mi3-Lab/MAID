@@ -68,7 +68,7 @@ const val = (img, f) => {
 };
 // Label/review: v1.0 fields (+ device_use_case and also_in_v10_pass extras inserted by FL).
 // Attributes mode: EVERY live schema field is an editable button row (device_use_case, then device_type,
-// occupied, propulsion, occlusion, viewpoint, setting, then control/subtype/drive/securement). Never a
+// occupied, propulsion, occlusion, viewpoint, setting, then control/subtype/drive). Never a
 // read-only summary of core labels. Dependent fields still honor show_when.
 const MODEF = () => S.mode === 'attr' ? S.schema.fields.slice() : S.schema.fields.filter(f => !f.since);
 function parentVal(im, p) {   // {v, model}: human value (mine, then v1.0 context) or, failing that, the model's guess
@@ -307,7 +307,7 @@ function render() {
   $('pos').innerHTML = `${S.mode === 'review' ? '<span class="tag ai">REVIEW</span> ' : ''}${S.mode === 'attr' ? '<span class="tag ai">ATTRIBUTES v1.1</span> ' : ''}${S.idx + 1} / ${S.images.length} · ${id} ${done ? '<span class="tag done">done</span>' : ''} ${val(id, 'exclude') ? '<span class="tag excl">excluded</span>' : ''}`;
   const risks = A ? (A.flags || []).filter(k => RISK[k]) : [];
   $('aibanner').hidden = !A && S.mode !== 'attr';
-  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — Device use case, device type, occupied, propulsion, occlusion, viewpoint, setting, control, subtype, and securement are <b>editable button rows</b>, pre-selected from the latest saved values. Change any of them and press Done: a correction is appended and wins globally (earlier events are kept). Pick <b>unknown</b> when you cannot tell. ` +
+  if (S.mode === 'attr') $('aibanner').innerHTML = `<b>Attributes pass (v1.1)</b> — Device use case, device type, occupied, propulsion, occlusion, viewpoint, setting, control and subtype are <b>editable button rows</b>, pre-selected from the latest saved values. Change any of them and press Done: a correction is appended and wins globally (earlier events are kept). Pick <b>unknown</b> when you cannot tell. ` +
     (A11 ? `Orange = machine hint (${A11.model_tag}) with its confidence; it is never saved unless you click it. ` : '') +
     `<kbd>Enter</kbd> = done once every required row has a value (including Device use case on new saves).`;
   if (A) $('aibanner').innerHTML = `<b>Machine suggestions</b> (${A.model_tag}) — orange = model's guess with its confidence; <kbd>a</kbd>/<kbd>Enter</kbd> confirms all, number keys fix a field.` +
@@ -660,7 +660,7 @@ async function start(name) {
   if (navigator.onLine) { await sync(); if (!S.images.length) await getBatch(); }
 }
 (async () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v8').catch(e => console.warn('sw', e));
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=shell-v9').catch(e => console.warn('sw', e));
   setNet();
   S.device = await kvGet('device_id'); if (!S.device) { S.device = uuid(); await kvSet('device_id', S.device); }
   try { const r = await fetch('/api/schema'); S.schema = await r.json(); await kvSet('schema', S.schema); }

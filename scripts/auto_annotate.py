@@ -214,7 +214,7 @@ P_V11_MULTI = {
 }
 
 # Schema v6: retired attribute fields are not scored or written as suggestions (prompts kept only in P_V11_RETIRED).
-P_V11_RETIRED = {k: P_V11.pop(k) for k in ("environment", "weather", "ground_wet", "size_class", "ramp_deploy") if k in P_V11}
+P_V11_RETIRED = {k: P_V11.pop(k) for k in ("environment", "weather", "ground_wet", "size_class", "ramp_deploy", "securement_hardware") if k in P_V11}
 P_V11_MULTI_RETIRED = dict(P_V11_MULTI)
 P_V11_MULTI = {}
 

@@ -12,6 +12,12 @@ Retired from the annotator, new-event validation, label filter, derive/export, a
 estimate columns (`est_*`, `height_cm` / `width_cm` / `length_cm`). Historical events in `annotations/events/*.jsonl`
 are never rewritten; derive and export ignore those keys. Frozen v1.0 release artifacts are unchanged.
 
+## Schema v7 (2026-11-09)
+
+`securement_hardware` is also retired from the annotator (both normal and Attributes modes), new-event validation,
+the label filter, derive/export, and training labels. Historical events stay append-only and remain readable with
+`allow_retired=True`. The `/api/vehicle/securement` endpoint and existing SigLIP securement files are kept.
+
 Added `device_use_case` (specialized / standard / unknown) **above** `device_type`. Unset means not yet labelled;
 new saves require a value. Machine hints, if any, stay suggestions and are never stored as human labels.
 
@@ -56,7 +62,7 @@ change them; saves append correction events (latest wins).
   (`wvcore.dep_ok`).
 
 
-### 2c. Securement hardware (visible fittings only; not a certification)
+### 2c. Securement hardware (retired from the annotator in schema v7; API kept)
 `securement_hardware` records what an annotator can **see** in one photo: under-seat docking hardware, tiedown loops/brackets, nothing visible, or unclear. It does **not** certify crashworthiness, WC19 compliance, or that a vehicle may secure the chair.
 
 **Vehicle-system guidance (model/API):** when the model (or a human label) reports `docking_bracket` at **high confidence**, a boarding stack may *prepare* a docking station as a prior — still confirm with the rider. `not_visible`, `unclear`, or **low confidence** => defer to rider confirmation / additional sensing. Never use this field alone to authorize securement or boarding.

@@ -3,7 +3,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WheelView Annotate</title>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#1d4e89">
-<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css?v=6.1">
+<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css?v=7">
 </head><body>
 <header>
   <b>WheelView Annotate</b>
@@ -14,7 +14,7 @@
   <button id="btnSync" title="Sync now">Sync</button>
   <button id="btnBatch" title="Download more assigned images for offline work">Get batch</button>
   <button id="btnReview" title="Review machine pre-labels: confirm or fix (r)">Review auto labels</button>
-  <button id="btnAttr" title="v1.1 Attributes pass: editable device use case, device type, occupied, and the other core + v1.1 fields (v)">Attributes v1.1</button>
+  <button id="btnAttr" title="v1.1 Attributes pass: editable device use case, device type, occupied, control, subtype, and other live v1.1 fields (v)">Attributes v1.1</button>
   <select id="rorder" hidden title="Review queue order">
     <option value="lowconf">lowest confidence first</option>
     <option value="wheelchair">untyped wheelchairs first</option>
@@ -73,16 +73,13 @@
 <tr><td><kbd>o</kbd></td><td>show / hide the face-blur detector's boxes (magenta)</td></tr>
 <tr><td><kbd>f</kbd></td><td>a face is still recognisable after blurring → "face blur missed" (works in both modes)</td></tr>
 <tr><th colspan="2" style="text-align:left;padding-top:8px">Attributes v1.1 (<kbd>v</kbd> or the header button)</th></tr>
-<tr><td><kbd>v</kbd></td><td>switch to the v1.1 pass: saved core labels (device use case, device type, occupied, …) plus control, chair subtype, drive wheels, and securement hardware; latest values are pre-selected and editable</td></tr>
+<tr><td><kbd>v</kbd></td><td>switch to the v1.1 pass: saved core labels (device use case, device type, occupied, …) plus control, chair subtype, and drive wheels; latest values are pre-selected and editable</td></tr>
 <tr><td><kbd>1</kbd>–<kbd>9</kbd></td><td>choose a value; <b>unknown</b> when you cannot tell (never guess)</td></tr>
 <tr><td><kbd>Enter</kbd></td><td>done — only once every row has a value; orange machine hints are <b>never</b> saved unless you choose them</td></tr></table>
-<p><b>Attributes v1.1</b> (schema v6) shows the latest saved labels pre-selected — including device type, occupied, and the other core fields — and lets any labeler change them. Edits are saved as append-only corrections (latest wins); old events are never rewritten.
+<p><b>Attributes v1.1</b> (schema v7) shows the latest saved labels pre-selected — including device type, occupied, and the other core fields — and lets any labeler change them. Edits are saved as append-only corrections (latest wins); old events are never rewritten.
 <b>Device use case</b> sits above device type: <i>Specialized (special use cases)</i>, <i>Standard (everyday use)</i>, or <i>Unknown (can't reasonably tell)</i>. It is optional on already-labelled images (unset = not yet labelled) and required on new saves. Do not treat a machine hint as a human label.
 <b>Chair subtype</b> appears once the chair is manual or powered; <b>drive wheels</b> for powered chairs.
-<b>Securement hardware</b> (docking bracket / tiedown points / not visible / unclear):
-label <b>only what is visible</b> — e.g. an EZ&nbsp;Lock / Q'Straint docking pin under the seat, or WC19-style tiedown loops;
-never guess from brand alone; prefer <i>unclear</i>. This is <b>not</b> a safety certification.
-Weather, detailed environment, ground wet, lighting, size, and ramp deploy were removed in schema v6.</p>
+Weather, detailed environment, ground wet, lighting, size, ramp deploy, and securement hardware were removed from the annotator (schema v6/v7).</p>
 <p>Images are shown <b>face-blurred</b> (as they will be released) wherever <code>scripts/auto_blur.py</code> has processed them.
 If you can still recognise a face, press <kbd>f</kbd>; those images get re-blurred by hand before release.</p>
 <p>Dashed blue = weak-label suggestion from <code>proposed_class</code> (normal mode); it is only saved when you press Done or click it.
@@ -91,5 +88,5 @@ that they were model-suggested; the model itself never counts as an annotator an
 Queue order (review): lowest model confidence first (default), untyped wheelchairs first, or random; images that already have one
 human label are offered first so every image gets two independent people.</p>
 <button onclick="this.closest('dialog').close()">close</button></dialog>
-<script src="/app.js?v=6.1"></script>
+<script src="/app.js?v=7"></script>
 </body></html>

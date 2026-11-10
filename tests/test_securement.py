@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""securement_hardware schema v5 + attr-v4 low-conf -> unclear + vehicle API guidance."""
+"""securement_hardware retired in schema v7; attr-v4 low-conf and vehicle API still work."""
 import csv, json, os, sys, tempfile, uuid
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
@@ -11,16 +11,19 @@ def check(name, cond, detail=""):
     results.append((name, bool(cond))); print(("PASS " if cond else "FAIL ") + name + (f" -- {detail}" if detail else ""), flush=True)
 
 import wvcore
-check("schema v6 (securement kept)", wvcore.SCHEMA["version"] >= 5 and "securement_hardware" in wvcore.FIELD_OPTS)
-check("field in COMPARE_V11", "securement_hardware" in wvcore.COMPARE_V11)
-check("options", wvcore.FIELD_OPTS["securement_hardware"] == ["docking_bracket", "tiedown_points", "not_visible", "unclear"])
+check("schema v7: securement retired from live fields", wvcore.SCHEMA["version"] >= 7 and "securement_hardware" in wvcore.RETIRED and "securement_hardware" not in wvcore.FIELD_OPTS)
+check("field not in COMPARE_V11", "securement_hardware" not in wvcore.COMPARE_V11)
+check("retired options kept", wvcore.RETIRED_OPTS["securement_hardware"] == ["docking_bracket", "tiedown_points", "not_visible", "unclear"])
 check("definitions guidance present", "NOT a safety certification" in (wvcore.SCHEMA["definitions"]["securement_hardware"].get("_vehicle_guidance") or ""))
 e, why = wvcore.validate({"uuid": str(uuid.uuid4()), "image_id": "wv_000001", "annotator": "alice", "field": "securement_hardware",
                           "value": "docking_bracket", "kind": "label", "ts": "2026-11-09T00:00:00.000Z", "device_id": "t"})
-check("validate docking_bracket", e is not None, why)
+check("new write of securement_hardware rejected", e is None and "retired" in (why or ""), why)
 e2, why2 = wvcore.validate({"uuid": str(uuid.uuid4()), "image_id": "wv_000001", "annotator": "alice", "field": "securement_hardware",
                             "value": "ez_lock", "kind": "label", "ts": "2026-11-09T00:00:00.000Z", "device_id": "t"})
-check("reject unknown option", e2 is None)
+check("reject unknown option (still invalid even if retired)", e2 is None)
+e3, why3 = wvcore.validate({"uuid": str(uuid.uuid4()), "image_id": "wv_000001", "annotator": "alice", "field": "securement_hardware",
+                            "value": "docking_bracket", "kind": "label", "ts": "2026-11-09T00:00:00.000Z", "device_id": "t"}, allow_retired=True)
+check("historical securement accepted with allow_retired", e3 is not None, why3)
 
 import auto_annotate as AA
 import numpy as np
@@ -37,18 +40,10 @@ E = np.ones((2, d), dtype="float32") / np.sqrt(d)
 # Make first image slightly prefer docking but still below thr by flattening with TEMP... 
 # With equal vectors softmax is uniform ~0.333 < 0.45 -> unclear
 out = AA.score_attr(E, bank)
-check("low-conf maps to unclear", out[0]["suggestions"]["securement_hardware"]["value"] == "unclear", str(out[0]))
-# High-conf: one option much closer
-bank2 = {"securement_hardware": {
-    "docking_bracket": np.array([1,0,0,0,0,0,0,0], dtype="float32"),
-    "tiedown_points": np.array([0,1,0,0,0,0,0,0], dtype="float32"),
-    "not_visible": np.array([0,0,1,0,0,0,0,0], dtype="float32"),
-}}
-E2 = np.array([[1,0,0,0,0,0,0,0], [0,0,1,0,0,0,0,0]], dtype="float32")
-out2 = AA.score_attr(E2, bank2)
-check("high-conf docking kept", out2[0]["suggestions"]["securement_hardware"]["value"] == "docking_bracket"
-      and out2[0]["suggestions"]["securement_hardware"]["confidence"] >= 0.45, str(out2[0]))
-check("high-conf not_visible kept", out2[1]["suggestions"]["securement_hardware"]["value"] == "not_visible")
+check("score_attr does not emit retired securement_hardware", "securement_hardware" not in out[0]["suggestions"], str(out[0]))
+# Existing attr-v4 jsonl files and the vehicle API still use the low-conf->unclear rule; prompts stay in P_V11_RETIRED.
+check("retired prompts and low-conf threshold kept for existing model files",
+      "securement_hardware" in AA.P_V11_RETIRED and AA.ATTR_LOW_CONF.get("securement_hardware") == 0.45)
 
 # API
 ids = ["wv_000001"]
@@ -76,7 +71,7 @@ from fastapi.testclient import TestClient
 import main
 with TestClient(main.app) as cl:
     keys = cl.get("/api/filter/keys").json()
-    check("filter key securement_hardware", "securement_hardware" in keys["keys"])
+    check("filter has no live securement_hardware key", "securement_hardware" not in keys["keys"])
     r = cl.get("/api/vehicle/securement/wv_000001").json()
     check("vehicle API returns label+confidence", r["label"] == "docking_bracket" and r["confidence"] == 0.82, str(r))
     check("vehicle API guidance warns not certification", "NOT a safety certification" in (r.get("guidance") or "").upper() or "not a safety" in (r.get("guidance") or "").lower(), str(r.get("guidance"))[:120])
@@ -91,7 +86,7 @@ with TestClient(main.app) as cl:
     r2 = cl.get("/api/vehicle/securement/wv_000001").json()
     check("low conf defers to rider", r2["defer_to_rider"] is True, str(r2))
     html = cl.get("/").text
-    check("annotator help mentions securement", "Securement hardware" in html or "securement" in html.lower())
+    check("annotator help does not offer a live securement row", "docking bracket / tiedown" not in html.lower() and "securement hardware were removed" in html.lower())
 
 failed = [n for n, ok in results if not ok]
 print(f"{sum(ok for _, ok in results)}/{len(results)} passed")

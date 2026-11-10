@@ -21,7 +21,7 @@ for d in ("auto", "assist", "block", "images", "images_blurred"): (TMP / d).mkdi
 with open(TMP / "block" / "safety_hold.csv", "w", newline="") as fh:
     w = csv.writer(fh); w.writerow(["image_id", "flagged", "flagged_by", "reason"]); w.writerow(["wv_000005", "yes", "t", "hold"])
 def sg(dt, c=0.7, env="indoor"):
-    return {"device_type": {"value": dt, "confidence": c}, "environment": {"value": env, "confidence": c}}
+    return {"device_type": {"value": dt, "confidence": c}, "setting": {"value": env, "confidence": c}}
 S = {"wv_000001": sg("manual"),                    # human says powered -> disagreement
      "wv_000002": sg("powered", 0.4),               # low confidence
      "wv_000003": sg("manual", 0.7),                # child flagged -> hidden
@@ -76,12 +76,12 @@ with TestClient(main.app) as cl:
           "decisions": [{"field": "device_type", "action": "accept"}]}).status_code == 404)
     check("no labels before a human acts", labels(cl, "wv_000002") == [])
     r = cl.post("/api/assistant_review/decide", json={"reviewer": "carol", "image_id": "wv_000002", "decisions": [
-        {"field": "device_type", "action": "accept"}, {"field": "environment", "action": "edit", "value": "curbside"}]}).json()
+        {"field": "device_type", "action": "accept"}, {"field": "setting", "action": "edit", "value": "sidewalk"}]}).json()
     L = {e["field"]: e for e in labels(cl, "wv_000002")}
     check("accept + edit write human labels attributed to the reviewer", L["device_type"]["annotator"] == "carol" and L["device_type"]["value"] == "powered"
-          and L["environment"]["value"] == "curbside" and L["environment"]["annotator"] == "carol", json.dumps(r))
+          and L["setting"]["value"] == "sidewalk" and L["setting"]["annotator"] == "carol", json.dumps(r))
     check("labels carry review provenance", L["device_type"].get("source") == "auto_review" and L["device_type"].get("model_tag") == "assistant_visual_review_attr-v1"
-          and L["environment"].get("suggested") == "indoor")
+          and L["setting"].get("suggested") == "indoor")
     r = cl.post("/api/assistant_review/decide", json={"reviewer": "carol", "image_id": "wv_000007", "decisions": [{"field": "device_type", "action": "reject"}]}).json()
     check("reject writes no label", labels(cl, "wv_000007") == [] and r["results"][0]["result"] == "rejected_no_label")
     r = cl.post("/api/assistant_review/decide", json={"reviewer": "carol", "image_id": "wv_000001", "decisions": [{"field": "device_type", "action": "accept"}]}).json()
@@ -100,7 +100,7 @@ with TestClient(main.app) as cl:
     sm = cl.get("/api/assistant_review/summary").json()
     dt = sm["per_field"]["device_type"]
     check("summary: per-field accept/edit/reject rates", dt["n"] == 4 and dt["accept"] == 3 and dt["edit"] == 0 and dt["reject"] == 1
-          and dt["error_rate"] == 0.25 and sm["per_field"]["environment"]["edit"] == 1 and dt["routed_to_adjudication"] == 1, json.dumps(dt))
+          and dt["error_rate"] == 0.25 and sm["per_field"]["setting"]["edit"] == 1 and dt["routed_to_adjudication"] == 1, json.dumps(dt))
     check("summary: progress counter", sm["progress"]["reviewed"] == 1 and sm["progress"]["partial"] == 3 and sm["progress"]["images"] == 57, json.dumps(sm["progress"]))
     check("summary: audit-sample block present", "audit_sample" in sm and "per_field" in sm["audit_sample"])
     pend = cl.get("/api/assistant_review/queue", params={"status": "pending"}).json()
